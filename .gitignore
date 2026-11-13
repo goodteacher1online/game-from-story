@@ -1,0 +1,4 @@
+# Temporary screenshots and node
+*.png
+node_modules/
+.DS_Store

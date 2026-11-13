@@ -4,22 +4,26 @@ Set-Location 'C:\Users\goodt\island-avatar-scene'
 New-Item -ItemType Directory -Force -Path 'assets\models' | Out-Null
 New-Item -ItemType Directory -Force -Path 'assets\hdr'    | Out-Null
 
-Write-Host "Fetching Island model URL..." -ForegroundColor Cyan
-$isoJson = Invoke-RestMethod -Uri 'https://api.poly.pizza/v1/models?search=island&license=CC0' -Method Get
-$isoUrl  = $isoJson.results[0].download_url
+Write-Host "Downloading Island model..." -ForegroundColor Cyan
+$isoUrl = 'https://raw.githubusercontent.com/greenMakaroni/three-floating-island/master/src/components/Landing/island.glb'
 Write-Host "Island URL: $isoUrl"
-Invoke-WebRequest -Uri $isoUrl -OutFile 'assets\models\island.glb' -ErrorAction Stop
+if (-not (Test-Path 'assets\models\island.glb') -or (Get-Item 'assets\models\island.glb').Length -eq 0) {
+    Invoke-WebRequest -Uri $isoUrl -OutFile 'assets\models\island.glb' -ErrorAction Stop
+}
 
-Write-Host "Fetching Avatar model URL..." -ForegroundColor Cyan
-$avaJson = Invoke-RestMethod -Uri 'https://api.poly.pizza/v1/models?search=human&license=CC0' -Method Get
-$avaUrl  = $avaJson.results[0].download_url
+Write-Host "Downloading Avatar model..." -ForegroundColor Cyan
+$avaUrl = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/gltf/Xbot.glb'
 Write-Host "Avatar URL: $avaUrl"
-Invoke-WebRequest -Uri $avaUrl -OutFile 'assets\models\avatar.glb' -ErrorAction Stop
+if (-not (Test-Path 'assets\models\avatar.glb') -or (Get-Item 'assets\models\avatar.glb').Length -eq 0) {
+    Invoke-WebRequest -Uri $avaUrl -OutFile 'assets\models\avatar.glb' -ErrorAction Stop
+}
 
 Write-Host "Downloading HDRI..." -ForegroundColor Cyan
-$hdrUrl = 'https://cdn.polyhaven.com/file/ph/royal_esplanade_2k.hdr'
+$hdrUrl = 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/royal_esplanade_1k.hdr'
 Write-Host "HDRI URL: $hdrUrl"
-Invoke-WebRequest -Uri $hdrUrl -OutFile 'assets\hdr\environment.hdr' -ErrorAction Stop
+if (-not (Test-Path 'assets\hdr\environment.hdr') -or (Get-Item 'assets\hdr\environment.hdr').Length -eq 0) {
+    Invoke-WebRequest -Uri $hdrUrl -OutFile 'assets\hdr\environment.hdr' -ErrorAction Stop
+}
 
 Write-Host "All assets downloaded successfully." -ForegroundColor Green
 
@@ -27,14 +31,12 @@ Write-Host "All assets downloaded successfully." -ForegroundColor Green
 if (-not (Test-Path '.git')) {
     Write-Host "Initializing git repository..." -ForegroundColor Cyan
     git init
+    git branch -M main
     git remote add origin https://github.com/goodteacher1online/island-avatar-scene.git
 }
 
 Write-Host "Staging files..." -ForegroundColor Cyan
 git add .
-Write-Host "Committing changes..." -ForegroundColor Cyan
-git commit -m "Add CC0 island, avatar, and HDRI assets"
 
-# Push to GitHub only (dual-push script supports -Remote)
-Write-Host "Pushing to GitHub..." -ForegroundColor Cyan
-& "$env:USERPROFILE\.agents\skills\git-dual-sync\scripts\dual-push.ps1" -Remote origin -Message "Add CC0 assets"
+Write-Host "Pushing via dual-push.ps1..." -ForegroundColor Cyan
+& "$env:USERPROFILE\.agents\skills\git-dual-sync\scripts\dual-push.ps1" -Remote origin -Branch main -Message "Add CC0 island, avatar, and HDRI assets"
