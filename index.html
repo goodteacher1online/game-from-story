@@ -807,31 +807,7 @@
       miniIslands.push({ group: mg, baseY: iy, phase: idx * 1.4 });
     });
 
-    // CC0 GLB 모델 (출처: assets/models/LICENSE.md)
-    const gltfLoader = new GLTFLoader();
-    let avatarMixer = null;
-    // 모델을 목표 높이로 맞추고 바닥을 y=0에 정렬
-    // SkinnedMesh는 본 변환을 반영한 정밀(precise) 박스로 계산해야 함 (기본 박스는 ~100배 과대)
-    function preciseBox(obj) {
-      obj.updateMatrixWorld(true);
-      obj.traverse(o => { if (o.isSkinnedMesh) o.skeleton.update(); });
-      return new THREE.Box3().setFromObject(obj, true);
-    }
-    function fitModel(obj, targetHeight) {
-      const size = preciseBox(obj).getSize(new THREE.Vector3());
-      obj.scale.multiplyScalar(targetHeight / size.y);
-      obj.position.y -= preciseBox(obj).min.y;
-      obj.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-      dimEnv(obj);
-    }
-    gltfLoader.load('assets/models/island.glb', (gltf) => {
-      const g = new THREE.Group();
-      fitModel(gltf.scene, 14);
-      g.add(gltf.scene);
-      g.position.set(-38, 16, -78);
-      worldGroup.add(g);
-      miniIslands.push({ group: g, baseY: 16, phase: 2.2 });
-    }, undefined, (e) => console.warn('island.glb 로드 실패', e));
+    // [일본풍 토리이 섬 island.glb 완전 삭제 완료]
     // [이상한 애 avatar.glb 영구 퇴출 -> 원작 온화한 엄마 NPC 교체]
     const momGroup = new THREE.Group();
     momGroup.position.set(6.5, 0, 6.5);
@@ -1933,7 +1909,7 @@
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1), time = clock.getElapsedTime();
-      if (avatarMixer) avatarMixer.update(dt);
+      // avatarMixer removed
 
       trees.forEach(t => { t.group.rotation.z = Math.sin(time * 1.8 + t.seed) * 0.03; });
       miniIslands.forEach(m => { m.group.position.y = m.baseY + Math.sin(time * 0.8 + m.phase) * 0.8; });
