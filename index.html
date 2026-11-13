@@ -1,842 +1,2327 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>인찬이의 마음 광주리 - 3D 메타버스 동화 공간</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            overflow: hidden;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #11141c;
-            color: #f1f5f9;
-            user-select: none;
-        }
-        canvas { display: block; width: 100vw; height: 100vh; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>인찬이의 마음 광주리 — SEL 3D 오픈월드</title>
+  <link rel="icon" href="data:," />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
-        /* UI Overlays */
-        #ui-header {
-            position: absolute;
-            top: 20px;
-            left: 24px;
-            z-index: 10;
-            pointer-events: auto;
-        }
-        .story-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            padding: 6px 14px;
-            border-radius: 9999px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            font-size: 13px;
-            font-weight: 600;
-            color: #fde047;
-            letter-spacing: -0.2px;
-            margin-bottom: 8px;
-        }
-        .story-title {
-            font-size: 26px;
-            font-weight: 800;
-            color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            letter-spacing: -0.5px;
-        }
-        .story-desc {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
+    :root {
+      --bg-surface: rgba(246, 245, 240, 0.90);
+      --bg-solid: #f6f5f0;
+      --bg-card: #ffffff;
+      --ink-main: #18181b;
+      --ink-sub: #6b6b73;
+      --line-hair: rgba(24, 24, 27, 0.12);
+      --accent: #ff5800; /* Dieter Rams / Braun Signature Orange */
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-clean: 0 8px 28px rgba(15, 15, 20, 0.12);
+    }
 
-        /* Fairy Selection Pills */
-        #fairy-pills {
-            position: absolute;
-            top: 20px;
-            right: 24px;
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-            pointer-events: auto;
-            flex-wrap: wrap;
-            max-width: 460px;
-            justify-content: flex-end;
-        }
-        .fairy-pill {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #e2e8f0;
-            padding: 8px 14px;
-            border-radius: 9999px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .fairy-pill:hover {
-            transform: translateY(-2px);
-            background: rgba(30, 41, 59, 0.9);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        .fairy-pill.active {
-            box-shadow: inset 0 0 0 1.5px #fde047, 0 4px 14px rgba(253, 224, 71, 0.25);
-            color: #ffffff;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+    body, html {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #141418; color: var(--ink-main);
+    }
+    canvas#webgl { display: block; width: 100vw; height: 100vh; outline: none; }
 
-        /* Emotion Modal / Dialog */
-        #emotion-dialog {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.95);
-            background: rgba(15, 23, 42, 0.94);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 28px 32px;
-            max-width: 480px;
-            width: 90%;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            z-index: 30;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #emotion-dialog.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            pointer-events: auto;
-        }
-        .dialog-tag {
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-        .dialog-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 10px;
-        }
-        .dialog-body {
-            font-size: 15px;
-            line-height: 1.65;
-            color: #cbd5e1;
-            margin-bottom: 20px;
-        }
-        .dialog-quote {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 14px;
-            color: #fde047;
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-        .dialog-btn-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .btn-action {
-            background: #fde047;
-            color: #0f172a;
-            border: none;
-            padding: 9px 18px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: transform 0.15s, opacity 0.15s;
-        }
-        .btn-action:hover { opacity: 0.9; transform: scale(1.02); }
-        .btn-close {
-            background: rgba(255, 255, 255, 0.1);
-            color: #cbd5e1;
-            border: none;
-            padding: 9px 16px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .btn-close:hover { background: rgba(255, 255, 255, 0.18); }
+    /* =========================================
+       Dieter Rams Minimalist HUD
+       ========================================= */
+    .hud-top {
+      position: fixed; top: 16px; left: 16px; right: 16px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      pointer-events: none; z-index: 40; gap: 12px;
+    }
+    .hud-group { display: flex; flex-direction: column; gap: 8px; pointer-events: auto; }
+    .hud-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-        /* Story Chapter Bottom Bar */
-        #story-carousel-container {
-            position: absolute;
-            bottom: 24px;
-            left: 24px;
-            right: 24px;
-            z-index: 10;
-            pointer-events: auto;
-        }
-        .carousel-bar {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-        .chapter-chips {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding: 4px 0;
-            flex: 1;
-        }
-        .chapter-chips::-webkit-scrollbar { display: none; }
-        .chapter-chip {
-            white-space: nowrap;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .chapter-chip:hover {
-            background: rgba(255, 255, 255, 0.14);
-            color: #ffffff;
-        }
-        .chapter-chip.active {
-            background: #fde047;
-            color: #0f172a;
-            font-weight: 700;
-        }
-        .audio-ctrl-btn {
-            background: rgba(253, 224, 71, 0.15);
-            border: 1px solid rgba(253, 224, 71, 0.35);
-            color: #fde047;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            transition: background 0.2s;
-        }
-        .audio-ctrl-btn:hover { background: rgba(253, 224, 71, 0.25); }
+    .module-bar {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--bg-surface); backdrop-filter: blur(14px);
+      border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
+      padding: 8px 14px; box-shadow: var(--shadow-clean);
+    }
+    .brand-mark {
+      width: 28px; height: 28px; border-radius: 7px; background: var(--ink-main);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-text { display: flex; flex-direction: column; line-height: 1.25; }
+    .brand-title { font-size: 13.5px; font-weight: 700; letter-spacing: -0.3px; color: var(--ink-main); }
+    .brand-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-sub); letter-spacing: 0.4px; }
 
-        /* Scene Viewer Drawer (Side Sheet) */
-        #scene-viewer {
-            position: absolute;
-            top: 80px;
-            left: 24px;
-            width: 380px;
-            max-height: calc(100vh - 200px);
-            background: rgba(15, 23, 42, 0.92);
-            backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 15;
-            display: none;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        #scene-viewer.show { display: block; animation: slideIn 0.25s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
-        .scene-img {
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255,255,255,0.1);
-            object-fit: cover;
-            aspect-ratio: 9/16;
-            background: #000;
-        }
-        .scene-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 8px; }
-        .scene-text { font-size: 14px; line-height: 1.6; color: #cbd5e1; }
-    </style>
+    .divider-v { width: 1px; height: 22px; background: var(--line-hair); }
 
-    <!-- Three.js r160 Import Map -->
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-        }
-      }
-    </script>
+    /* 5대 감정 LED 인디케이터 */
+    .quest-leds { display: flex; align-items: center; gap: 7px; }
+    .quest-led {
+      width: 11px; height: 11px; border-radius: 50%;
+      background: rgba(24, 24, 27, 0.12); border: 1px solid rgba(24, 24, 27, 0.2);
+      transition: all 0.35s ease;
+    }
+    .quest-led.on { border-color: transparent; transform: scale(1.18); box-shadow: 0 0 10px currentColor; }
+    .quest-count {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+      color: var(--ink-main); font-variant-numeric: tabular-nums; margin-left: 2px;
+    }
+
+    /* 하드웨어 토글 버튼 (Braun 스위치 감성) */
+    .hw-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      height: 36px; padding: 0 12px; border-radius: var(--radius-md);
+      background: var(--bg-surface); backdrop-filter: blur(14px);
+      border: 1px solid var(--line-hair); color: var(--ink-main);
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      box-shadow: var(--shadow-clean); transition: all 0.15s ease;
+    }
+    .hw-btn:hover { background: #ffffff; transform: translateY(-1px); }
+    .hw-btn:active { transform: translateY(0); }
+    .hw-btn.icon-only { width: 36px; padding: 0; justify-content: center; }
+
+    .led-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #a1a1aa;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .hw-btn.active-green .led-dot { background: #16a34a; box-shadow: 0 0 8px #16a34a; }
+    .hw-btn.active-orange .led-dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .hw-btn.muted { color: var(--ink-sub); }
+
+    /* 토스트 알림 */
+    .toast-box {
+      position: fixed; top: 76px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; gap: 6px; z-index: 60;
+      pointer-events: none; align-items: center; width: max-content; max-width: 90vw;
+    }
+    .toast {
+      background: rgba(24, 24, 27, 0.90); backdrop-filter: blur(12px);
+      color: #f6f5f0; padding: 9px 16px; border-radius: var(--radius-md);
+      font-size: 12.5px; font-weight: 500; border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+      animation: toastSlide 0.25s ease forwards;
+    }
+    .toast b { color: #ff8a4c; }
+    @keyframes toastSlide {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 상황별 구역 인터랙션 배너 */
+    .zone-prompt {
+      position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(10px);
+      z-index: 48; opacity: 0; pointer-events: none; transition: all 0.22s ease;
+      background: var(--bg-surface); backdrop-filter: blur(16px);
+      border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
+      padding: 12px 18px; color: var(--ink-main); text-align: center;
+      box-shadow: var(--shadow-clean); max-width: 92vw;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .zone-prompt.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+    .zp-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+    .zp-chip { width: 8px; height: 8px; border-radius: 50%; }
+    .zp-desc { font-size: 12px; color: var(--ink-sub); }
+    .zp-btns { display: flex; gap: 8px; margin-top: 2px; }
+    .zp-btn {
+      padding: 6px 13px; border-radius: 8px; border: none; cursor: pointer;
+      font-size: 12px; font-weight: 700; color: #fff; background: var(--accent);
+      transition: opacity 0.15s;
+    }
+    .zp-btn:hover { opacity: 0.9; }
+    .zp-btn.secondary { background: rgba(24, 24, 27, 0.08); color: var(--ink-main); }
+
+    .breath-bar-wrap {
+      width: 240px; height: 14px; border-radius: 99px; background: rgba(24,24,27,0.14);
+      position: relative; overflow: hidden; display: none; border: 1px solid var(--line-hair);
+    }
+    .breath-bar-wrap.active { display: block; }
+    .timing-zone {
+      position: absolute; left: 36%; width: 28%; top: 0; bottom: 0;
+      background: rgba(22, 163, 74, 0.35); border-left: 2px solid #16a34a; border-right: 2px solid #16a34a;
+    }
+    .timing-cursor {
+      position: absolute; top: 1px; bottom: 1px; width: 8px; border-radius: 99px;
+      background: var(--accent); left: 0%; transform: translateX(-50%);
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .zp-progress {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      color: var(--ink-main); background: rgba(24,24,27,0.06); padding: 2px 8px; border-radius: 6px;
+    }
+
+    /* 하단 모듈형 컨트롤 독 */
+    .action-dock {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 4px; padding: 5px;
+      background: var(--bg-surface); backdrop-filter: blur(16px);
+      border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-clean); z-index: 45; max-width: 95vw; overflow-x: auto;
+    }
+    .act-btn {
+      display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 11px;
+      border-radius: 9px; border: 1px solid transparent; background: transparent;
+      color: var(--ink-main); font-size: 12px; font-weight: 700; cursor: pointer;
+      white-space: nowrap; transition: all 0.15s ease;
+    }
+    .act-btn:hover { background: rgba(24, 24, 27, 0.06); }
+    .act-btn.primary { background: var(--ink-main); color: #fff; }
+    .act-btn.primary:hover { background: #27272a; }
+    .act-btn .kbd {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+      padding: 2px 5px; border-radius: 4px; background: rgba(24, 24, 27, 0.08); color: var(--ink-sub);
+    }
+    .act-btn.primary .kbd { background: rgba(255,255,255,0.16); color: #e4e4e7; }
+
+    /* 우측 하단 원형 레이더 미니맵 */
+    .minimap-box {
+      position: fixed; right: 18px; bottom: 18px; z-index: 42;
+      width: 132px; height: 132px; border-radius: 50%;
+      background: var(--bg-surface); backdrop-filter: blur(14px);
+      border: 1px solid var(--line-hair); box-shadow: var(--shadow-clean);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .minimap-box canvas { border-radius: 50%; display: block; }
+    .minimap-tag {
+      position: absolute; bottom: -8px; background: var(--ink-main); color: #fff;
+      font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
+      padding: 2px 8px; border-radius: 99px; letter-spacing: 0.6px;
+    }
+
+    /* 조작 힌트 */
+    .key-hints {
+      position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.82);
+      background: rgba(24,24,27,0.7); padding: 4px 12px; border-radius: 99px;
+      pointer-events: none; z-index: 35; transition: opacity 0.4s; white-space: nowrap;
+    }
+
+    /* 모바일 조이스틱 */
+    .v-joy-zone {
+      position: fixed; bottom: 84px; left: 18px; width: 104px; height: 104px;
+      border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--line-hair);
+      display: none; align-items: center; justify-content: center; z-index: 42; touch-action: none;
+    }
+    .v-joy-knob { width: 40px; height: 40px; border-radius: 50%; background: var(--ink-main); }
+    @media (hover: none) and (pointer: coarse) {
+      .v-joy-zone { display: flex; }
+      .key-hints { display: none; }
+    }
+    @media (max-width: 768px) {
+      .minimap-box { width: 100px; height: 100px; right: 12px; bottom: 84px; }
+    }
+
+    /* =========================================
+       Dieter Rams Clean Modals
+       ========================================= */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 15, 20, 0.55);
+      backdrop-filter: blur(6px); z-index: 100; display: none;
+      align-items: center; justify-content: center; padding: 18px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      width: 100%; max-width: 500px; background: var(--bg-solid);
+      border-radius: 18px; padding: 24px; color: var(--ink-main);
+      border: 1px solid var(--line-hair); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line-hair);
+    }
+    .modal-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+    .btn-close {
+      width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line-hair);
+      background: #fff; color: var(--ink-main); font-size: 14px; cursor: pointer;
+    }
+    .btn-close:hover { background: var(--ink-main); color: #fff; }
+
+    .spirit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+    .spirit-card {
+      padding: 12px 8px; border-radius: 12px; border: 1.5px solid var(--line-hair);
+      background: var(--bg-card); display: flex; flex-direction: column; align-items: center; gap: 6px;
+      cursor: pointer; font-size: 12px; font-weight: 700; transition: all 0.15s;
+    }
+    .spirit-card:hover { border-color: var(--ink-main); }
+    .spirit-card.active { border-color: var(--accent); background: #fff7f2; color: var(--accent); }
+    .spirit-dot { width: 18px; height: 18px; border-radius: 50%; }
+
+    .btn-primary-full {
+      width: 100%; margin-top: 16px; padding: 13px; border-radius: 10px;
+      border: none; background: var(--accent); color: #fff;
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn-primary-full:hover { opacity: 0.92; }
+    .btn-secondary-full {
+      width: 100%; margin-top: 8px; padding: 10px; border-radius: 10px;
+      border: 1px solid var(--line-hair); background: #fff; color: var(--ink-sub);
+      font-size: 12.5px; font-weight: 700; cursor: pointer;
+    }
+
+    .field-label { display: block; font-size: 12px; font-weight: 700; color: var(--ink-sub); margin: 12px 0 6px; }
+    .text-input, .text-area {
+      width: 100%; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--line-hair);
+      background: #fff; font-family: inherit; font-size: 13.5px; color: var(--ink-main); outline: none;
+    }
+    .text-input:focus, .text-area:focus { border-color: var(--accent); }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .chip-btn {
+      padding: 5px 10px; border-radius: 99px; border: 1px solid var(--line-hair);
+      background: #fff; font-size: 11.5px; color: var(--ink-main); cursor: pointer;
+    }
+    .chip-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .canvas-frame {
+      width: 100%; border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--line-hair); margin: 10px 0; background: #fff;
+    }
+    canvas#farewellCanvas, canvas#trophyCanvas { width: 100%; height: auto; display: block; }
+
+    /* 스타트 로더 */
+    #preloader {
+      position: fixed; inset: 0; z-index: 999; background: #141418;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; color: #f6f5f0; transition: opacity 0.6s ease;
+    }
+    .loader-bar { width: 180px; height: 3px; background: rgba(255,255,255,0.14); border-radius: 99px; overflow: hidden; }
+    .loader-fill { width: 65%; height: 100%; background: var(--accent); animation: loadSlide 1.1s infinite ease-in-out; }
+    @keyframes loadSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(180%); } }
+
+    /* 실시간 마음 게시판 모달 전용 (디터 람스 미니멀 리스트 & 상세 뷰) */
+    .board-modal-sheet { max-width: 640px; }
+    .board-filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .board-filter-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 99px; border: 1px solid var(--line-hair);
+      background: #fff; font-size: 11.5px; font-weight: 700; color: var(--ink-sub); cursor: pointer;
+    }
+    .board-filter-btn.active { background: var(--ink-main); color: #fff; border-color: var(--ink-main); }
+    .board-list { display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 4px; }
+    .board-post-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 10px; background: #fff;
+      border: 1px solid var(--line-hair); cursor: pointer; transition: all 0.15s;
+    }
+    .board-post-item:hover { border-color: var(--ink-main); transform: translateY(-1px); }
+    .board-post-item.selected { box-shadow: inset 0 0 0 1.5px var(--ink-main); background: #faf9f6; }
+    .board-post-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .board-post-title { font-size: 13.5px; font-weight: 700; color: var(--ink-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .board-post-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-sub); flex-shrink: 0; }
+
+    .board-detail-box {
+      margin-top: 12px; padding: 16px; border-radius: 12px; background: #fff;
+      border: 1px solid var(--line-hair);
+    }
+    .board-detail-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .board-detail-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11.5px; font-weight: 700; color: var(--ink-main);
+    }
+    .board-detail-body { font-size: 13.5px; line-height: 1.7; color: var(--ink-main); }
+    .board-detail-insight {
+      margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: var(--bg-solid);
+      font-size: 12px; color: var(--ink-sub); line-height: 1.55;
+    }
+    .board-heart-btn {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+      padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line-hair);
+      background: #fff; font-size: 12px; font-weight: 700; color: var(--ink-main); cursor: pointer;
+    }
+    .board-heart-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .board-heart-btn.liked { background: #fff7f2; border-color: var(--accent); color: var(--accent); }
+  </style>
 </head>
 <body>
-    <!-- Top Left Title -->
-    <div id="ui-header">
-        <div class="story-badge">따뜻한 마음 살피기 동화</div>
-        <h1 class="story-title">《인찬이의 마음 손님》 3D 메타버스</h1>
-        <p class="story-desc">중앙의 마음 광주리와 주변의 6종 감정 요정들을 클릭해보세요</p>
-    </div>
 
-    <!-- Top Right Emotion Filter Pills -->
-    <div id="fairy-pills">
-        <button class="fairy-pill" onclick="focusFairy('joy')"><span style="color:#fde047">●</span> 기쁨이 (노랑)</button>
-        <button class="fairy-pill" onclick="focusFairy('sadness')"><span style="color:#60a5fa">●</span> 슬픔이 (파랑)</button>
-        <button class="fairy-pill" onclick="focusFairy('anger')"><span style="color:#f87171">●</span> 화 (빨강)</button>
-        <button class="fairy-pill" onclick="focusFairy('fear')"><span style="color:#c084fc">●</span> 두려움이 (보라)</button>
-        <button class="fairy-pill" onclick="focusFairy('worry')"><span style="color:#6ee7b7">●</span> 걱정이 (민트)</button>
-        <button class="fairy-pill" onclick="focusFairy('flutter')"><span style="color:#f472b6">●</span> 설렘이 (코랄)</button>
-    </div>
+  <!-- 로더 -->
+  <div id="preloader">
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 2px; color: #ff5800;">SEL METAVERSE · 01</div>
+    <div style="font-size: 20px; font-weight: 700;">인찬이의 마음 광주리</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+  </div>
 
-    <!-- Emotion Dialog Popup -->
-    <div id="emotion-dialog">
-        <div class="dialog-tag" id="dialog-tag">감정 손님</div>
-        <h3 class="dialog-title" id="dialog-title">기쁨이</h3>
-        <p class="dialog-quote" id="dialog-quote">"인찬이가 좋아하는 일이 생겼잖아!"</p>
-        <p class="dialog-body" id="dialog-body">설명 내용이 여기에 들어갑니다.</p>
-        <div class="dialog-btn-group">
-            <button class="btn-action" id="dialog-voice-btn" onclick="playVoice()">음성 듣기</button>
-            <button class="btn-close" onclick="closeDialog()">닫기</button>
+  <canvas id="webgl"></canvas>
+
+  <!-- 상단 미니멀 HUD -->
+  <div class="hud-top">
+    <div class="hud-group">
+      <div class="module-bar">
+        <div class="brand-mark" title="인찬이의 마음 광주리">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14l-1.5 9h-11z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>
         </div>
-    </div>
-
-    <!-- Side Scene Viewer (Master illustrations) -->
-    <div id="scene-viewer">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <span style="font-size:12px; font-weight:700; color:#fde047;">원작 마스터 삽화</span>
-            <button onclick="closeSceneViewer()" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;">✕</button>
+        <div class="brand-text">
+          <span class="brand-title">인찬이의 마음 광주리</span>
+          <span class="brand-sub">SEL 3D WORLD</span>
         </div>
-        <img id="viewer-img" class="scene-img" src="" alt="장면" />
-        <h4 id="viewer-title" class="scene-title">장면 제목</h4>
-        <p id="viewer-text" class="scene-text">장면 줄거리</p>
-    </div>
-
-    <!-- Bottom Carousel / Chapter Bar -->
-    <div id="story-carousel-container">
-        <div class="carousel-bar">
-            <div class="chapter-chips" id="chapter-chips-wrapper">
-                <!-- Dynamically generated chips -->
-            </div>
-            <button class="audio-ctrl-btn" onclick="toggleBGM()">
-                <span>오디오북 음성 재생</span>
-            </button>
+        <div class="divider-v"></div>
+        <div class="quest-leds" title="수집한 감정 구슬">
+          <div class="quest-led" id="dotJoy" style="color: #f59e0b;" title="기쁨"></div>
+          <div class="quest-led" id="dotSad" style="color: #3b82f6;" title="슬픔"></div>
+          <div class="quest-led" id="dotAnger" style="color: #ef4444;" title="화"></div>
+          <div class="quest-led" id="dotFear" style="color: #a855f7;" title="두려움"></div>
+          <div class="quest-led" id="dotWorry" style="color: #10b981;" title="걱정"></div>
+          <span class="quest-count" id="questCountText">0/5</span>
         </div>
+      </div>
     </div>
 
-    <!-- Hidden Audio Player -->
-    <audio id="audio-player"></audio>
+    <div class="hud-group" style="align-items: flex-end;">
+      <div class="hud-row">
+        <button class="hw-btn active-orange" id="btnTOD" title="시간대 전환 (낮 / 노을 / 밤)">
+          <span class="led-dot"></span>
+          <span id="todLabel">노을</span>
+        </button>
+        <button class="hw-btn active-green" id="btnAudio" title="사운드 켜기/끄기">
+          <span class="led-dot"></span>
+          <span class="audio-label">소리 ON</span>
+        </button>
+        <button class="hw-btn icon-only" id="btnBoard" title="실시간 마음 게시판">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/><line x1="12" y1="18" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+        </button>
+        <button class="hw-btn icon-only" id="btnCheckin" title="내 이름 & 마음 일기">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </button>
+        <button class="hw-btn icon-only" id="btnStory" title="동화 원작">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </button>
+        <button class="hw-btn icon-only" id="btnTrophy" title="마스터 수료증">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        </button>
+        <button class="hw-btn icon-only" id="btnHelp" title="조작 안내">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-        import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+  <div class="toast-box" id="toastBox"></div>
 
-        let scene, camera, renderer, composer, controls;
-        let basketGroup, fairies = {}, characterBillboards = {};
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
+  <!-- 실시간 레이더 미니맵 -->
+  <div class="minimap-box" title="마음 동산 레이더">
+    <canvas id="minimapCanvas" width="126" height="126"></canvas>
+    <span class="minimap-tag">RADAR</span>
+  </div>
 
-        // Story Emotion Definitions
-        const emotionData = {
-            joy: {
-                name: "첫 번째 손님, 기쁨이",
-                color: "#fde047",
-                hexColor: 0xfde047,
-                quote: "“안녕! 나는 기쁨이야! 인찬이가 좋아하는 일이 생겼잖아!”",
-                body: "기쁨이는 노란색 꼬마 요정으로, 가슴을 두근거리게 하고 빙글빙글 돌며 웃음을 줘요. 친구와 축구 약속을 잡았을 때처럼 즐거운 순간 폴짝 찾아옵니다.",
-                audio: "assets/inchan/audio/seg_002_기쁨이.wav"
-            },
-            sadness: {
-                name: "두 번째 손님, 슬픔이",
-                color: "#60a5fa",
-                hexColor: 0x60a5fa,
-                quote: "“비가 오는 것처럼… 눈물이 나는 건 당연해.”",
-                body: "슬픔이는 파란색 물방울 요정이에요. 소중한 것을 잃어버리거나 아쉬울 때 찾아오며, 억지로 쫓아내지 않고 가만히 머물도록 안아주면 서서히 가벼워집니다.",
-                audio: "assets/inchan/audio/seg_008_슬픔이.wav"
-            },
-            anger: {
-                name: "세 번째 손님, 화 (분노)",
-                color: "#f87171",
-                hexColor: 0xf87171,
-                quote: "“마음이 붉게 달아오르고 뜨거워져!”",
-                body: "화는 붉은 도깨비불처럼 뜨겁게 찾아오는 손님이에요. 내 생각대로 되지 않거나 억울할 때 찾아오며, 깊은 숨을 쉬며 '내가 화가 났구나' 알아채 주는 것이 필요해요.",
-                audio: "assets/inchan/audio/seg_020_화.wav"
-            },
-            fear: {
-                name: "네 번째 손님, 두려움이",
-                color: "#c084fc",
-                hexColor: 0xc084fc,
-                quote: "“어두운 곳이나 처음 겪는 일은 조금 무서워…”",
-                body: "두려움이는 보랏빛 요정으로, 낯설거나 알 수 없는 상황에서 우리를 조심하게 만들어 주며 위험을 미리 지켜주는 고마운 손님이에요.",
-                audio: "assets/inchan/audio/seg_028_두려움이.wav"
-            },
-            worry: {
-                name: "다섯 번째 손님, 걱정이",
-                color: "#6ee7b7",
-                hexColor: 0x6ee7b7,
-                quote: "“혹시 실수하면 어쩌지? 생각이 꼬리를 물어요.”",
-                body: "걱정이는 민트빛 솜구름 요정이에요. 생각이 많아질 때 머리 위를 둥둥 떠다니지만, 엄마와 이야기 나누며 마음 광주리를 함께 들면 작아져요.",
-                audio: "assets/inchan/audio/seg_035_걱정이.wav"
-            },
-            flutter: {
-                name: "새로운 손님, 설렘이",
-                color: "#f472b6",
-                hexColor: 0xf472b6,
-                quote: "“내일은 또 어떤 즐거운 일이 일어날까?”",
-                body: "설렘이는 코랄핑크빛 별빛 요정으로, 성장의 마지막 장(10장)에서 찾아오는 새로운 시작의 기대감이에요.",
-                audio: "assets/inchan/audio/seg_042_설렘이.wav"
-            }
-        };
+  <!-- 구역 진입 인터랙션 배너 -->
+  <div class="zone-prompt" id="zonePrompt">
+    <div class="zp-head">
+      <span class="zp-chip" id="zpChip"></span>
+      <span id="zpTitle">구역</span>
+      <span class="zp-progress" id="zpProgress" style="display:none;">0/3</span>
+    </div>
+    <div class="zp-desc" id="zpDesc">안내</div>
+    <div class="breath-bar-wrap" id="breathBarWrap">
+      <div class="timing-zone"></div>
+      <div class="timing-cursor" id="timingCursor"></div>
+    </div>
+    <div class="zp-btns" id="zpBtns"></div>
+  </div>
 
-        let currentActiveAudio = null;
+  <div class="key-hints" id="keyHints">WASD 이동 · SHIFT 질주 · SPACE 2단점프 · F 마법 · C 심호흡 · G 대화 · E 춤 · Q 명상</div>
+  <div class="v-joy-zone" id="joyZone"><div class="v-joy-knob" id="joyKnob"></div></div>
 
-        init();
-        loadAssets();
-        loadChapters();
-        animate();
+  <!-- 하단 모듈형 액션 바 -->
+  <div class="action-dock">
+    <button class="act-btn primary" id="btnGuestSelect"><span class="kbd">1-6</span><span>정령</span></button>
+    <button class="act-btn" id="btnShootAction"><span class="kbd">F</span><span>별빛 마법</span></button>
+    <button class="act-btn" id="btnJumpAction"><span class="kbd">SPACE</span><span>점프</span></button>
+    <button class="act-btn" id="btnBreatheWind"><span class="kbd">C</span><span>심호흡</span></button>
+    <button class="act-btn" id="btnDanceAction"><span class="kbd">E</span><span>춤</span></button>
+    <button class="act-btn" id="btnMeditateAction"><span class="kbd">Q</span><span>명상</span></button>
+    <button class="act-btn" id="btnFarewellAction"><span>작별 카드</span></button>
+  </div>
 
-        function init() {
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0e131f);
-            scene.fog = new THREE.FogExp2(0x0e131f, 0.035);
+  <!-- 모달 1: 정령 선택 -->
+  <div class="modal-overlay" id="modalSpirit">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">감정 손님 정령 선택</h3>
+        <button class="btn-close" onclick="closeModal('modalSpirit')">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--ink-sub); line-height: 1.55;">
+        오늘 내 마음 광주리에 동행할 감정 정령을 선택하세요. 지팡이의 별빛 색상과 마스코트가 바뀝니다.
+      </p>
+      <div class="spirit-grid">
+        <div class="spirit-card active" data-guest="joy"><span class="spirit-dot" style="background:#f59e0b;"></span><span>기쁨이 (별토끼)</span></div>
+        <div class="spirit-card" data-guest="sad"><span class="spirit-dot" style="background:#3b82f6;"></span><span>슬픔이 (물방울)</span></div>
+        <div class="spirit-card" data-guest="anger"><span class="spirit-dot" style="background:#ef4444;"></span><span>화 (불도깨비)</span></div>
+        <div class="spirit-card" data-guest="fear"><span class="spirit-dot" style="background:#a855f7;"></span><span>두려움 (꼬마망토)</span></div>
+        <div class="spirit-card" data-guest="worry"><span class="spirit-dot" style="background:#10b981;"></span><span>걱정이 (털실이)</span></div>
+        <div class="spirit-card" data-guest="flutter"><span class="spirit-dot" style="background:#ec4899;"></span><span>설렘이 (나비요정)</span></div>
+      </div>
+      <button class="btn-primary-full" id="btnConfirmSpirit">정령과 동행하기</button>
+    </div>
+  </div>
 
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-            camera.position.set(0, 3.5, 8.5);
+  <!-- 모달 2: 작별 카드 -->
+  <div class="modal-overlay" id="modalFarewell">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">감정 손님 작별 카드</h3>
+        <button class="btn-close" onclick="closeModal('modalFarewell')">✕</button>
+      </div>
+      <div class="canvas-frame"><canvas id="farewellCanvas" width="800" height="520"></canvas></div>
+      <button class="btn-primary-full" id="btnDownloadCard" style="background: var(--ink-main);">작별 카드 이미지 저장 (PNG)</button>
+    </div>
+  </div>
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.15;
-            renderer.shadowMap.enabled = true;
-            document.body.appendChild(renderer.domElement);
+  <!-- 모달 3: 마스터 수료증 -->
+  <div class="modal-overlay" id="modalTrophy">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">마음 광주리 마스터 수료증</h3>
+        <button class="btn-close" onclick="closeModal('modalTrophy')">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--ink-sub); line-height: 1.5;">
+        5대 감정 손님(기쁨, 슬픔, 화, 두려움, 걱정)을 모두 만나고 치유 수련을 마쳤습니다.
+      </p>
+      <div class="canvas-frame"><canvas id="trophyCanvas" width="800" height="520"></canvas></div>
+      <button class="btn-primary-full" id="btnDownloadTrophy">수료증 이미지 저장 (PNG)</button>
+    </div>
+  </div>
 
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.maxPolarAngle = Math.PI / 2 + 0.05;
-            controls.minDistance = 3;
-            controls.maxDistance = 18;
-            controls.target.set(0, 1.2, 0);
+  <!-- 모달 4: 동화 원작 -->
+  <div class="modal-overlay" id="modalStory">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">《인찬이의 마음 손님》 원작 요약</h3>
+        <button class="btn-close" onclick="closeModal('modalStory')">✕</button>
+      </div>
+      <div style="font-size: 13.5px; line-height: 1.8; color: var(--ink-main);">
+        <p><b>01. 이상한 광주리:</b> 누구나 마음속에 광주리가 있고, 감정들이 손님으로 찾아옵니다.</p>
+        <p style="margin-top: 6px;"><b>02. 기쁨이:</b> 좋아하는 일이 생길 때 찾아와 발걸음을 가볍게 만듭니다.</p>
+        <p style="margin-top: 6px;"><b>03. 슬픔이:</b> 소중한 것을 기억할 때 찾아옵니다. 울어도 괜찮아요.</p>
+        <p style="margin-top: 6px;"><b>04. 화:</b> 나를 지키고 싶을 때 옵니다. 깊은 호흡으로 진정시켜요.</p>
+        <p style="margin-top: 6px;"><b>05. 두려움:</b> 위험을 알려주는 내 안의 안전 등대입니다.</p>
+        <p style="margin-top: 6px;"><b>06. 걱정이:</b> 내일을 준비하도록 돕습니다. 털어놓으면 실타래가 풀려요.</p>
+        <p style="margin-top: 6px;"><b>07. 나쁜 감정은 없어:</b> 모든 감정은 나를 도우러 온 소중한 친구입니다.</p>
+      </div>
+    </div>
+  </div>
 
-            // Lighting Setup
-            const ambientLight = new THREE.AmbientLight(0xfff6e5, 1.2);
-            scene.add(ambientLight);
+  <!-- 모달 5: 마음 일기 & 체크인 -->
+  <div class="modal-overlay" id="modalCheckin">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">내 이름 &amp; 오늘의 마음 일기</h3>
+        <button class="btn-close" onclick="closeModal('modalCheckin')">✕</button>
+      </div>
+      <label class="field-label" for="inputPlayerName">모험가 이름</label>
+      <input class="text-input" id="inputPlayerName" type="text" maxlength="14" placeholder="예: 인찬이, 지우" />
+      <label class="field-label" for="inputMindNote">오늘 내 마음 한 줄</label>
+      <textarea class="text-area" id="inputMindNote" rows="2" maxlength="80" placeholder="오늘 마음속에 어떤 손님이 찾아왔나요?"></textarea>
+      <div class="chip-row">
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputMindNote').value='오늘 기분 좋은 일이 있어서 마음이 가벼워요!'">기분 좋은 날</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputMindNote').value='조금 속상한 일이 있었지만 마음을 토닥여주려고 해요.'">토닥임 필요</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputMindNote').value='새로운 도전을 앞두고 두근두근 설레어요!'">두근두근</button>
+      </div>
+      <button class="btn-primary-full" id="btnSaveCheckin">저장하고 전광판에 반영하기</button>
+      <button type="button" class="btn-secondary-full" id="btnResetProgress">5대 감정 구슬 수련 초기화</button>
+    </div>
+  </div>
 
-            const sunLight = new THREE.DirectionalLight(0xffeedd, 2.0);
-            sunLight.position.set(6, 12, 8);
-            sunLight.castShadow = true;
-            scene.add(sunLight);
+  <!-- 모달 6: NPC 대화 -->
+  <div class="modal-overlay" id="modalNpc">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title" id="npcModalTitle">감정 손님</h3>
+        <button class="btn-close" onclick="closeModal('modalNpc')">✕</button>
+      </div>
+      <div id="npcModalBody" style="font-size: 14px; line-height: 1.75; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid var(--line-hair);"></div>
+      <button class="btn-primary-full" id="btnNpcAction">함께 마음 돌보기</button>
+    </div>
+  </div>
 
-            const warmPillar = new THREE.PointLight(0xfde047, 2.5, 12);
-            warmPillar.position.set(0, 1.5, 0);
-            scene.add(warmPillar);
+  <!-- 모달 7: 걱정 연등 날리기 -->
+  <div class="modal-overlay" id="modalWorry">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">걱정이의 털실 풀기 &amp; 연등 날리기</h3>
+        <button class="btn-close" onclick="closeModal('modalWorry')">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--ink-sub); line-height: 1.55;">
+        마음에 엉킨 걱정을 짧게 적어 소원 연등에 담아 하늘로 날려 보내세요.
+      </p>
+      <label class="field-label" for="inputWorryText">지금 신경 쓰이는 걱정</label>
+      <input class="text-input" id="inputWorryText" type="text" maxlength="50" placeholder="예: 내일 발표를 실수할까 봐 걱정돼요" />
+      <div class="chip-row">
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='실수하면 어떡하지 하는 마음'">실수 걱정</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='친구와 서먹해질까 봐 걱정'">친구 관계</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='아직 일어나지 않은 미래 생각'">앞날 걱정</button>
+      </div>
+      <button class="btn-primary-full" id="btnReleaseWorry" style="background: #0d9488;">소원 연등 하늘로 날려보내기</button>
+    </div>
+  </div>
 
-            // Postprocessing SMAA
-            composer = new EffectComposer(renderer);
-            composer.addPass(new RenderPass(scene, camera));
-            composer.addPass(new SMAAPass(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio));
+  <!-- 모달 8: 인터랙티브 실시간 마음 게시판 -->
+  <div class="modal-overlay" id="modalBoard">
+    <div class="modal-sheet board-modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">실시간 마음 게시판 · 오늘 친구들의 마음</h3>
+        <button class="btn-close" onclick="closeModal('modalBoard')">✕</button>
+      </div>
+      <div class="board-filter-row" id="boardFilterRow">
+        <button type="button" class="board-filter-btn active" data-filter="all">전체</button>
+        <button type="button" class="board-filter-btn" data-filter="joy"><span class="zp-chip" style="background:#f59e0b;"></span>기쁨</button>
+        <button type="button" class="board-filter-btn" data-filter="sad"><span class="zp-chip" style="background:#3b82f6;"></span>슬픔</button>
+        <button type="button" class="board-filter-btn" data-filter="anger"><span class="zp-chip" style="background:#ef4444;"></span>화</button>
+        <button type="button" class="board-filter-btn" data-filter="fear"><span class="zp-chip" style="background:#a855f7;"></span>두려움</button>
+        <button type="button" class="board-filter-btn" data-filter="worry"><span class="zp-chip" style="background:#10b981;"></span>걱정</button>
+      </div>
+      <div class="board-list" id="boardList"></div>
+      <div class="board-detail-box" id="boardDetailBox">
+        <div class="board-detail-head">
+          <span class="board-detail-tag" id="bdTag">게시물을 선택해주세요</span>
+          <span class="board-post-meta" id="bdMeta"></span>
+        </div>
+        <div class="board-detail-body" id="bdBody">목록에서 친구의 마음 카드를 클릭하면 자세한 이야기와 감정 손님의 메시지를 볼 수 있습니다.</div>
+        <div class="board-detail-insight" id="bdInsight" style="display:none;"></div>
+        <button type="button" class="board-heart-btn" id="bdHeartBtn" style="display:none;">
+          <span id="bdHeartLabel">마음 공감하기</span> (<span id="bdHeartCount">0</span>)
+        </button>
+      </div>
+      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-hair);">
+        <div style="display: flex; gap: 8px;">
+          <select id="boardPostEmotion" class="text-input" style="width: 135px; flex-shrink: 0;">
+            <option value="joy">기쁨이</option>
+            <option value="sad">슬픔이</option>
+            <option value="anger">화</option>
+            <option value="fear">두려움</option>
+            <option value="worry">걱정이</option>
+            <option value="flutter">설렘이</option>
+          </select>
+          <input class="text-input" id="boardPostInput" type="text" maxlength="80" placeholder="내 마음 광주리에 찾아온 이야기를 남겨보세요..." />
+          <button type="button" class="zp-btn" id="btnSubmitPost" style="flex-shrink:0; padding: 0 16px;">올리기</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            createCozyEnvironment();
-            createHeartBasket();
+  <!-- 모달 9: 친구 아바타와 함께하기 (동화 9장: 혼자 들지 않기) -->
+  <div class="modal-overlay" id="modalFriend">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title" id="friendModalTitle">친구와 함께하기</h3>
+        <button class="btn-close" onclick="closeModal('modalFriend')">✕</button>
+      </div>
+      <div id="friendModalDesc" style="font-size: 13.5px; line-height: 1.7; background: #fff; padding: 14px; border-radius: 12px; border: 1px solid var(--line-hair); margin-bottom: 12px;"></div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button type="button" class="btn-primary-full" id="btnHelpBasket" style="margin-top:0;">광주리 같이 들어주기</button>
+        <button type="button" class="btn-secondary-full" id="btnDanceTogether" style="margin-top:0; color: var(--ink-main);">함께 춤추기</button>
+      </div>
+      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-hair);">
+        <label class="field-label" style="margin-top:0;">친구에게 따뜻한 응원 한마디</label>
+        <div style="display:flex; gap:8px;">
+          <input class="text-input" id="inputFriendCheer" type="text" maxlength="50" placeholder="예: 너의 마음을 응원해! 우리 같이 가자" />
+          <button type="button" class="zp-btn" id="btnSendCheer" style="flex-shrink:0; padding:0 14px;">보내기</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            window.addEventListener('resize', onWindowResize);
-            window.addEventListener('click', onCanvasClick);
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+    import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+    import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    // ==========================================
+    // 1. 상태 관리 & LocalStorage 영속화
+    // ==========================================
+    const state = {
+      curGuest: 'joy',
+      spirits: {
+        joy: { name: '기쁨이 (별토끼)', emoji: '🟡', color: 0xf59e0b, hex: '#f59e0b', desc: '웃음과 가벼운 발걸음' },
+        sad: { name: '슬픔이 (물방울)', emoji: '🔵', color: 0x3b82f6, hex: '#3b82f6', desc: '소중함을 달래는 눈물' },
+        anger: { name: '화 (불도깨비)', emoji: '🔴', color: 0xef4444, hex: '#ef4444', desc: '나를 지키려는 뜨거운 신호' },
+        fear: { name: '두려움 (꼬마망토)', emoji: '🟣', color: 0xa855f7, hex: '#a855f7', desc: '조심성과 안전을 살피는 지혜' },
+        worry: { name: '걱정이 (털실이)', emoji: '🟢', color: 0x10b981, hex: '#10b981', desc: '미래를 차근차근 준비하는 생각' },
+        flutter: { name: '설렘이 (나비요정)', emoji: '🌸', color: 0xec4899, hex: '#ec4899', desc: '새로운 모험을 반기는 두근거림' }
+      },
+      timeOfDay: 'sunset',
+      todConfigs: {
+        day: { bg: 0x8bc9f0, fog: 0x9cd3f5, sun: 0xfff8e7, sunInt: 1.55, hemiSky: 0xffffff, hemiGround: 0x4d6b3c, label: '낮' },
+        sunset: { bg: 0x2b1d3d, fog: 0x38244a, sun: 0xff9a5a, sunInt: 1.35, hemiSky: 0xffd1a8, hemiGround: 0x22172b, label: '노을' },
+        night: { bg: 0x0b0d17, fog: 0x111424, sun: 0x818cf8, sunInt: 0.65, hemiSky: 0x1e293b, hemiGround: 0x090b12, label: '밤' }
+      },
+      quests: { joy: false, sad: false, anger: false, fear: false, worry: false },
+      mission: { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0 },
+      coopHelped: 0,
+      activeFriendId: null,
+      stats: { joy: 42, sad: 28, anger: 19, fear: 15, worry: 24, flutter: 36 },
+      soundOn: true,
+      onlineCount: 48,
+      playerName: '인찬이',
+      mindNote: '모든 감정 손님은 나를 도우러 온 소중한 친구예요.',
+      worryText: '',
+      breathProgress: 0,
+      activeZone: null,
+      boardFilter: 'all',
+      selectedPostId: 1,
+      likedIds: [],
+      boardPosts: [
+        { id: 1, author: '지우 (5학년)', emotion: 'anger', time: '방금 전', title: '친구랑 다투고 화가 났지만 3번 심호흡했어요', body: '모둠 활동 중에 내 의견을 무시당한 것 같아서 얼굴이 화끈거렸어요. 예전 같으면 바로 소리쳤을 텐데, 마음 광주리 모닥불 앞에서 숨을 후~ 내쉬고 나니 내 마음을 차분히 말할 수 있었어요.', insight: '감정 손님 [화]의 신호: 나의 소중한 경계와 가치를 지키고 싶을 때 찾아옵니다. 3초 호흡으로 열기를 식히면 지혜로운 대화가 가능해집니다.', likes: 14 },
+        { id: 2, author: '서준 (4학년)', emotion: 'sad', time: '4분 전', title: '전학 간 단짝 친구 생각에 눈물이 났어요', body: '오늘 운동장에서 축구를 하다가 작년 짝꿍이 떠올라서 괜히 울컥했어요. 슬픔이 물방울 손님에게 "그만큼 소중한 친구였구나"라는 말을 듣고 연못에 눈물을 띄워 보내니 마음이 편안해졌어요.', insight: '감정 손님 [슬픔]의 신호: 내가 무언가를 깊이 아끼고 사랑했다는 증거입니다. 눈물은 마음을 씻어내는 자연스러운 치유 과정이에요.', likes: 19 },
+        { id: 3, author: '민서 (6학년)', emotion: 'fear', time: '12분 전', title: '영어 발표가 너무 떨렸지만 용기를 냈어요', body: '사람들 앞에서 실수할까 봐 다리가 후들거렸어요. 꼬마망토 두려움이 "미리 한 번 더 연습해 보자"고 알려준 신호라고 생각하니 오히려 든든해졌어요!', insight: '감정 손님 [두려움]의 신호: 위험을 미리 살피고 준비하라고 알려주는 고마운 안전 등대입니다.', likes: 22 },
+        { id: 4, author: '도윤 (3학년)', emotion: 'worry', time: '18분 전', title: '내일 시험 걱정, 소원 연등에 담아 날렸어요', body: '밤마다 내일 시험 망치면 어떡하지 하고 생각이 꼬리에 꼬리를 물었어요. 벤치에서 걱정을 글로 적어 하늘로 날려 보내고 나니 머릿속이 맑아졌습니다.', insight: '감정 손님 [걱정]의 신호: 막연한 걱정은 글이나 말로 꺼내면 크기가 절반으로 줄어듭니다.', likes: 11 },
+        { id: 5, author: '하은 (5학년)', emotion: 'joy', time: '25분 전', title: '급식에 좋아하는 떡볶이가 나와서 점프!', body: '별토끼 기쁨이랑 트램펄린에서 실컷 뛰었어요. 기쁨은 혼자만 간직하는 것보다 친구에게 "오늘 기분 좋다!" 하고 나눌 때 두 배가 되는 것 같아요.', insight: '감정 손님 [기쁨]의 신호: 나에게 에너지를 채워주고 주변 친구들과 웃음을 연결해 줍니다.', likes: 27 }
+      ]
+    };
+
+    const STORAGE_KEY = 'inchan_mind_basket_v5';
+    function saveProgress() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          playerName: state.playerName, mindNote: state.mindNote,
+          worryText: state.worryText, quests: state.quests, curGuest: state.curGuest,
+          boardPosts: state.boardPosts, likedIds: state.likedIds
+        }));
+      } catch (e) {}
+    }
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (d.playerName) state.playerName = d.playerName;
+        if (d.mindNote) state.mindNote = d.mindNote;
+        if (d.worryText) state.worryText = d.worryText;
+        if (d.curGuest && state.spirits[d.curGuest]) state.curGuest = d.curGuest;
+        if (d.quests) Object.keys(state.quests).forEach(k => { if (d.quests[k]) state.quests[k] = true; });
+        if (Array.isArray(d.boardPosts) && d.boardPosts.length) state.boardPosts = d.boardPosts;
+        if (Array.isArray(d.likedIds)) state.likedIds = d.likedIds;
+      } catch (e) {}
+    }
+    loadProgress();
+
+    // ==========================================
+    // 2. Three.js 씬 & 정제된 블룸 포스트프로세싱
+    // ==========================================
+    const canvas = document.getElementById('webgl');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(state.todConfigs.sunset.bg);
+    scene.fog = new THREE.FogExp2(state.todConfigs.sunset.fog, 0.0095);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 450);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+
+    const hemiLight = new THREE.HemisphereLight(state.todConfigs.sunset.hemiSky, state.todConfigs.sunset.hemiGround, 0.95);
+    scene.add(hemiLight);
+
+    const sunLight = new THREE.DirectionalLight(state.todConfigs.sunset.sun, state.todConfigs.sunset.sunInt);
+    sunLight.position.set(35, 52, 30);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.set(2048, 2048);
+    sunLight.shadow.camera.near = 10; sunLight.shadow.camera.far = 140;
+    sunLight.shadow.camera.left = -45; sunLight.shadow.camera.right = 45;
+    sunLight.shadow.camera.top = 45; sunLight.shadow.camera.bottom = -45;
+    sunLight.shadow.bias = -0.0003;
+    scene.add(sunLight);
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.36, 0.45, 0.85);
+    composer.addPass(bloomPass);
+    const pr = renderer.getPixelRatio();
+    composer.addPass(new SMAAPass(window.innerWidth * pr, window.innerHeight * pr)); // SMAA 안티앨리어싱
+    composer.addPass(new OutputPass());
+
+    // HDRI 환경광(IBL) — 배경은 시간대 색상을 유지하고 조명/반사에만 사용
+    // r160엔 scene.environmentIntensity가 없어 재질별로 약하게 적용 (1.0이면 과노출)
+    const dimEnv = (obj) => obj.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { if ('envMapIntensity' in m) m.envMapIntensity = 0.1; }); });
+    new RGBELoader().load('assets/hdr/royal_esplanade_2k.hdr', (hdrTex) => {
+      hdrTex.mapping = THREE.EquirectangularReflectionMapping;
+      scene.environment = hdrTex;
+      dimEnv(scene);
+    }, undefined, (e) => console.warn('HDRI 로드 실패', e));
+
+    // ==========================================
+    // 3. 로블록스(Roblox) 스타일 스터드/블록 월드 & 5대 랜드마크
+    // ==========================================
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
+
+    // 계단식 블록 플로팅 아일랜드
+    const islandRock = new THREE.Mesh(
+      new THREE.CylinderGeometry(54, 42, 8, 12),
+      new THREE.MeshStandardMaterial({ color: 0x4b423b, roughness: 0.9, flatShading: true })
+    );
+    islandRock.position.y = -4.2; islandRock.receiveShadow = true;
+    worldGroup.add(islandRock);
+
+    const grassMain = new THREE.Mesh(
+      new THREE.CylinderGeometry(55, 54.5, 0.6, 16),
+      new THREE.MeshStandardMaterial({ color: 0x5c8d45, roughness: 0.72, flatShading: true })
+    );
+    grassMain.position.y = -0.2; grassMain.receiveShadow = true;
+    worldGroup.add(grassMain);
+
+    // 중앙 단차 광장 (로블록스 스터드 광장 느낌)
+    const plaza = new THREE.Mesh(
+      new THREE.CylinderGeometry(14, 14.6, 0.35, 16),
+      new THREE.MeshStandardMaterial({ color: 0xe6e1d8, roughness: 0.85, flatShading: true })
+    );
+    plaza.position.y = 0.05; plaza.receiveShadow = true;
+    worldGroup.add(plaza);
+
+    // 서브 플로팅 미니 아일랜드 (배경 입체감 극대화)
+    const miniIslands = [];
+    [[-68, 8, -25, 7], [70, 12, -15, 6], [-55, 14, 52, 5.5], [64, 9, 48, 6.5]].forEach(([ix, iy, iz, ir], idx) => {
+      const mg = new THREE.Group();
+      mg.position.set(ix, iy, iz);
+      const rock = new THREE.Mesh(new THREE.CylinderGeometry(ir, ir * 0.6, 4.5, 8), new THREE.MeshStandardMaterial({ color: 0x4b423b, flatShading: true }));
+      const top = new THREE.Mesh(new THREE.CylinderGeometry(ir + 0.4, ir + 0.2, 0.6, 8), new THREE.MeshStandardMaterial({ color: 0x6ba350, flatShading: true }));
+      top.position.y = 2.4;
+      const miniTree = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.2, 2.2), new THREE.MeshStandardMaterial({ color: 0x43a047, flatShading: true }));
+      miniTree.position.y = 4.6;
+      mg.add(rock, top, miniTree);
+      worldGroup.add(mg);
+      miniIslands.push({ group: mg, baseY: iy, phase: idx * 1.4 });
+    });
+
+    // CC0 GLB 모델 (출처: assets/models/LICENSE.md)
+    const gltfLoader = new GLTFLoader();
+    let avatarMixer = null;
+    // 모델을 목표 높이로 맞추고 바닥을 y=0에 정렬
+    // SkinnedMesh는 본 변환을 반영한 정밀(precise) 박스로 계산해야 함 (기본 박스는 ~100배 과대)
+    function preciseBox(obj) {
+      obj.updateMatrixWorld(true);
+      obj.traverse(o => { if (o.isSkinnedMesh) o.skeleton.update(); });
+      return new THREE.Box3().setFromObject(obj, true);
+    }
+    function fitModel(obj, targetHeight) {
+      const size = preciseBox(obj).getSize(new THREE.Vector3());
+      obj.scale.multiplyScalar(targetHeight / size.y);
+      obj.position.y -= preciseBox(obj).min.y;
+      obj.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      dimEnv(obj);
+    }
+    gltfLoader.load('assets/models/island.glb', (gltf) => {
+      const g = new THREE.Group();
+      fitModel(gltf.scene, 14);
+      g.add(gltf.scene);
+      g.position.set(-38, 16, -78);
+      worldGroup.add(g);
+      miniIslands.push({ group: g, baseY: 16, phase: 2.2 });
+    }, undefined, (e) => console.warn('island.glb 로드 실패', e));
+    gltfLoader.load('assets/models/avatar.glb', (gltf) => {
+      const avatar = gltf.scene;
+      fitModel(avatar, 3.4);
+      avatar.position.set(7, avatar.position.y + 0.23, 7);
+      avatar.rotation.y = -Math.PI / 4;
+      worldGroup.add(avatar);
+      avatarMixer = new THREE.AnimationMixer(avatar);
+      const clip = THREE.AnimationClip.findByName(gltf.animations, 'Wave') || gltf.animations[0];
+      if (clip) avatarMixer.clipAction(clip).play();
+    }, undefined, (e) => console.warn('avatar.glb 로드 실패', e));
+
+    // 중앙: 황금 마음 광주리 제단 & 아치 게이트
+    const grandBasket = new THREE.Group();
+    const bBase = new THREE.Mesh(
+      new THREE.CylinderGeometry(5.0, 3.8, 2.6, 12, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.45, metalness: 0.2, side: THREE.DoubleSide, flatShading: true })
+    );
+    bBase.position.y = 1.4; bBase.castShadow = true;
+    const bRim = new THREE.Mesh(
+      new THREE.TorusGeometry(5.1, 0.3, 8, 24),
+      new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.35 })
+    );
+    bRim.rotation.x = Math.PI / 2; bRim.position.y = 2.7;
+    const runeRing = new THREE.Mesh(
+      new THREE.RingGeometry(6.0, 6.4, 32),
+      new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.65, side: THREE.DoubleSide })
+    );
+    runeRing.rotation.x = -Math.PI / 2; runeRing.position.y = 0.24;
+    grandBasket.add(bBase, bRim, runeRing);
+    worldGroup.add(grandBasket);
+
+    // 부유 소원 연등 (블록 스타일)
+    const skyLanterns = [];
+    for (let i = 0; i < 10; i++) {
+      const lGroup = new THREE.Group();
+      const lBody = new THREE.Mesh(
+        new THREE.BoxGeometry(0.55, 0.75, 0.55),
+        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 1.0, roughness: 0.3 })
+      );
+      lGroup.add(lBody);
+      const ang = (i / 10) * Math.PI * 2;
+      const rad = 8 + (i % 3) * 2.5;
+      lGroup.position.set(Math.cos(ang) * rad, 5 + Math.random() * 6, Math.sin(ang) * rad);
+      worldGroup.add(lGroup);
+      skyLanterns.push({ group: lGroup, speed: 0.4 + Math.random() * 0.3, ang, rad, baseY: lGroup.position.y });
+    }
+
+    // 랜드마크 좌표 & 로블록스 스타일 블록 디딤돌 길
+    const landmarkCoords = [
+      { key: 'joy', x: 22, z: 4, color: 0xf59e0b },
+      { key: 'sad', x: -23, z: 4, color: 0x3b82f6 },
+      { key: 'anger', x: 0, z: 24, color: 0xef4444 },
+      { key: 'fear', x: -17.5, z: -15.5, color: 0xa855f7 },
+      { key: 'worry', x: 20, z: -18, color: 0x10b981 }
+    ];
+    landmarkCoords.forEach(lm => {
+      for (let i = 3; i <= 8; i++) {
+        const t = i / 9;
+        const stone = new THREE.Mesh(
+          new THREE.BoxGeometry(1.3, 0.18, 1.3),
+          new THREE.MeshStandardMaterial({ color: 0xd6d3cd, emissive: lm.color, emissiveIntensity: 0.15, roughness: 0.8 })
+        );
+        stone.position.set(lm.x * t, 0.14, lm.z * t);
+        stone.rotation.y = Math.atan2(lm.x, lm.z);
+        stone.receiveShadow = true;
+        worldGroup.add(stone);
+      }
+    });
+
+    // [퀘스트 1: 동쪽] 기쁨의 트램펄린 광장
+    const joyPlaza = new THREE.Group();
+    joyPlaza.position.set(22, 0, 4);
+    const joyPad = new THREE.Mesh(new THREE.BoxGeometry(8, 0.4, 8), new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.6 }));
+    joyPad.position.y = 0.2; joyPad.receiveShadow = true;
+    const trampoline = new THREE.Mesh(new THREE.CylinderGeometry(3.1, 3.3, 0.35, 16), new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xfbbf24, emissiveIntensity: 0.5 }));
+    trampoline.position.y = 0.55;
+    joyPlaza.add(joyPad, trampoline);
+    worldGroup.add(joyPlaza);
+
+    const joyOrbGroup = new THREE.Group(); joyOrbGroup.position.set(22, 7.5, 4);
+    const joyOrbMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.65, 1), new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 1.2 }));
+    joyOrbGroup.add(joyOrbMesh, new THREE.PointLight(0xfbbf24, 1.8, 10));
+    worldGroup.add(joyOrbGroup);
+
+    // [퀘스트 2: 서쪽] 슬픔의 치유 연못
+    const lakeGroup = new THREE.Group(); lakeGroup.position.set(-23, 0, 4);
+    const lakeBank = new THREE.Mesh(new THREE.TorusGeometry(6.4, 0.55, 8, 24), new THREE.MeshStandardMaterial({ color: 0x64748b, flatShading: true }));
+    lakeBank.rotation.x = Math.PI / 2; lakeBank.position.y = 0.2;
+    const waterMesh = new THREE.Mesh(
+      new THREE.CircleGeometry(6.3, 24),
+      new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.25, roughness: 0.15, metalness: 0.3, transparent: true, opacity: 0.85 })
+    );
+    waterMesh.rotation.x = -Math.PI / 2; waterMesh.position.y = 0.22;
+    lakeGroup.add(lakeBank, waterMesh);
+    worldGroup.add(lakeGroup);
+
+    const sadOrbGroup = new THREE.Group(); sadOrbGroup.position.set(-23, 1.1, 4);
+    const sadOrbMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.55), new THREE.MeshStandardMaterial({ color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 1.3 }));
+    sadOrbGroup.add(sadOrbMesh, new THREE.PointLight(0x3b82f6, 1.8, 10));
+    worldGroup.add(sadOrbGroup);
+
+    // [퀘스트 3: 남쪽] 화의 캠프파이어 화로
+    const fireGroup = new THREE.Group(); fireGroup.position.set(0, 0, 24);
+    const fireRing = new THREE.Mesh(new THREE.CylinderGeometry(4.0, 4.4, 0.45, 12), new THREE.MeshStandardMaterial({ color: 0x52525b, flatShading: true }));
+    fireRing.position.y = 0.22; fireRing.receiveShadow = true; fireGroup.add(fireRing);
+    for (let i = 0; i < 6; i++) {
+      const log = new THREE.Mesh(new THREE.BoxGeometry(0.42, 2.4, 0.42), new THREE.MeshStandardMaterial({ color: 0x451a03 }));
+      log.rotation.z = Math.PI / 3; log.rotation.y = (i / 6) * Math.PI; log.position.y = 0.6;
+      fireGroup.add(log);
+    }
+    const campfireLight = new THREE.PointLight(0xef4444, 3.0, 18); campfireLight.position.set(0, 1.8, 0); fireGroup.add(campfireLight);
+    const fireParticles = [];
+    for (let i = 0; i < 24; i++) {
+      const fp = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.28, 0.28), new THREE.MeshBasicMaterial({ color: i % 2 === 0 ? 0xff5800 : 0xfacc15 }));
+      fireGroup.add(fp);
+      fireParticles.push({ mesh: fp, speed: 1.6 + Math.random() * 2.0, y: Math.random() * 2.0, offsetAng: Math.random() * Math.PI * 2, rad: Math.random() * 0.8 });
+    }
+    worldGroup.add(fireGroup);
+
+    const angerOrbGroup = new THREE.Group(); angerOrbGroup.position.set(0, 2.3, 24);
+    const angerOrbMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5), new THREE.MeshStandardMaterial({ color: 0xf87171, emissive: 0xdc2626, emissiveIntensity: 1.3 }));
+    angerOrbGroup.add(angerOrbMesh); worldGroup.add(angerOrbGroup);
+
+    // [퀘스트 4: 북서쪽] 두려움의 수호 등대 (완벽하게 고친 양방향 피봇 서치라이트!)
+    const lighthouseGroup = new THREE.Group();
+    lighthouseGroup.position.set(-20, 0, -18);
+
+    // 등대 줄무늬 블록 타워 (로블록스 스타일)
+    const lhPedestal = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 3.2, 1.0, 12), new THREE.MeshStandardMaterial({ color: 0x3f3f46, flatShading: true }));
+    lhPedestal.position.y = 0.5; lhPedestal.receiveShadow = true;
+    const lhLayer1 = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.6, 2.8, 12), new THREE.MeshStandardMaterial({ color: 0xf4f4f5, flatShading: true }));
+    lhLayer1.position.y = 2.4; lhLayer1.castShadow = true;
+    const lhLayer2 = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.3, 2.8, 12), new THREE.MeshStandardMaterial({ color: 0x9333ea, flatShading: true }));
+    lhLayer2.position.y = 5.2; lhLayer2.castShadow = true;
+    const lhLayer3 = new THREE.Mesh(new THREE.CylinderGeometry(1.75, 2.0, 2.2, 12), new THREE.MeshStandardMaterial({ color: 0xf4f4f5, flatShading: true }));
+    lhLayer3.position.y = 7.7; lhLayer3.castShadow = true;
+    const lhGallery = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.3, 12), new THREE.MeshStandardMaterial({ color: 0x27272a }));
+    lhGallery.position.y = 8.9;
+    const lhRoom = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 1.4, 12), new THREE.MeshStandardMaterial({ color: 0xd8b4fe, emissive: 0xa855f7, emissiveIntensity: 1.2 }));
+    lhRoom.position.y = 9.7;
+    const lhRoof = new THREE.Mesh(new THREE.ConeGeometry(1.9, 1.4, 12), new THREE.MeshStandardMaterial({ color: 0x27272a, flatShading: true }));
+    lhRoof.position.y = 11.1;
+    lighthouseGroup.add(lhPedestal, lhLayer1, lhLayer2, lhLayer3, lhGallery, lhRoom, lhRoof);
+
+    // 핵심 수정: 등대 꼭짓점 유리방(0, 9.7, 0)을 정확히 축으로 회전하는 양방향 빛줄기 피봇!
+    const lhBeamPivot = new THREE.Group();
+    lhBeamPivot.position.set(0, 9.7, 0);
+    const beamMat = new THREE.MeshBasicMaterial({
+      color: 0xc084fc, transparent: true, opacity: 0.14,
+      side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false
+    });
+    const beamGeo1 = new THREE.ConeGeometry(1.9, 16, 16, 1, true);
+    beamGeo1.translate(0, -8, 0); // 꼭짓점을 (0,0,0) 피봇에 정확히 맞춤!
+    const lhBeam1 = new THREE.Mesh(beamGeo1, beamMat);
+    lhBeam1.rotation.x = -Math.PI / 2 + 0.08;
+
+    const beamGeo2 = new THREE.ConeGeometry(1.9, 16, 16, 1, true);
+    beamGeo2.translate(0, -8, 0);
+    const lhBeam2 = new THREE.Mesh(beamGeo2, beamMat);
+    lhBeam2.rotation.x = Math.PI / 2 - 0.08;
+
+    lhBeamPivot.add(lhBeam1, lhBeam2);
+    lighthouseGroup.add(lhBeamPivot);
+    worldGroup.add(lighthouseGroup);
+
+    const fearOrbGroup = new THREE.Group(); fearOrbGroup.position.set(-17.5, 1.2, -15.5);
+    const fearOrbMesh = new THREE.Mesh(new THREE.ConeGeometry(0.45, 1.0, 8), new THREE.MeshStandardMaterial({ color: 0xd8b4fe, emissive: 0x9333ea, emissiveIntensity: 1.3 }));
+    fearOrbGroup.add(fearOrbMesh); worldGroup.add(fearOrbGroup);
+
+    // [퀘스트 5: 북동쪽] 걱정의 털실 벤치
+    const worryGroup = new THREE.Group(); worryGroup.position.set(20, 0, -18);
+    const worryPad = new THREE.Mesh(new THREE.BoxGeometry(8, 0.35, 8), new THREE.MeshStandardMaterial({ color: 0xa7f3d0, roughness: 0.7 }));
+    worryPad.position.y = 0.18; worryPad.receiveShadow = true;
+    const benchSeat = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.3, 1.1), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+    benchSeat.position.set(0, 0.85, 0); benchSeat.castShadow = true;
+    const benchBack = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.9, 0.2), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+    benchBack.position.set(0, 1.4, -0.45);
+    worryGroup.add(worryPad, benchSeat, benchBack);
+    worldGroup.add(worryGroup);
+
+    const worryOrbGroup = new THREE.Group(); worryOrbGroup.position.set(20, 1.45, -18);
+    const worryOrbMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(0.35, 0.11, 40, 8), new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x059669, emissiveIntensity: 1.3 }));
+    worryOrbGroup.add(worryOrbMesh); worldGroup.add(worryOrbGroup);
+
+    // 로블록스 스타일 2단/3단 큐브 나무 32그루
+    const trees = [];
+    for (let i = 0; i < 32; i++) {
+      const ang = (i / 32) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
+      const rad = 26 + Math.random() * 24;
+      const tg = new THREE.Group();
+      tg.position.set(Math.cos(ang) * rad, 0.1, Math.sin(ang) * rad);
+      tg.scale.setScalar(0.85 + Math.random() * 0.45);
+      const trunk = new THREE.Mesh(new THREE.BoxGeometry(0.7, 3.0, 0.7), new THREE.MeshStandardMaterial({ color: 0x6b4423 }));
+      trunk.position.y = 1.5; trunk.castShadow = true;
+      const leafColors = [0x4ade80, 0x22c55e, 0xfbbf24, 0x2dd4bf];
+      const leafMat = new THREE.MeshStandardMaterial({ color: leafColors[i % 4], roughness: 0.65 });
+      const c1 = new THREE.Mesh(new THREE.BoxGeometry(2.8, 1.6, 2.8), leafMat); c1.position.y = 3.4; c1.castShadow = true;
+      const c2 = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.3, 1.9), leafMat); c2.position.y = 4.6; c2.castShadow = true;
+      tg.add(trunk, c1, c2);
+      worldGroup.add(tg);
+      trees.push({ group: tg, seed: Math.random() * 10 });
+    }
+
+    // 반딧불이 & 밤하늘 은하수 별빛
+    const ffGeo = new THREE.BufferGeometry();
+    const ffPos = new Float32Array(70 * 3);
+    for (let i = 0; i < 70 * 3; i += 3) {
+      ffPos[i] = (Math.random() - 0.5) * 80; ffPos[i + 1] = 0.6 + Math.random() * 7; ffPos[i + 2] = (Math.random() - 0.5) * 80;
+    }
+    ffGeo.setAttribute('position', new THREE.BufferAttribute(ffPos, 3));
+    worldGroup.add(new THREE.Points(ffGeo, new THREE.PointsMaterial({ color: 0xfef08a, size: 0.35, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending })));
+
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(420 * 3);
+    for (let i = 0; i < 420; i++) {
+      const th = Math.random() * Math.PI * 2, ph = Math.random() * Math.PI * 0.45, r = 135 + Math.random() * 35;
+      starPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      starPos[i * 3 + 1] = 22 + r * Math.cos(ph);
+      starPos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const skyStarMat = new THREE.PointsMaterial({ color: 0xfef9c3, size: 0.9, transparent: true, opacity: 0.7 });
+    worldGroup.add(new THREE.Points(starGeo, skyStarMat));
+
+    // 5대 감정 손님 NPC 캐릭터 (로블록스 스타일 블록 조형)
+    const zoneNpcs = [];
+    const npcDefinitions = [
+      { key: 'joy', x: 18.5, z: 6.5, color: 0xf59e0b, title: '기쁨이 (별토끼)', dialogue: '“안녕! 나는 네 마음 광주리에 웃음을 가져다주는 별토끼 기쁨이야!<br>노란 트램펄린 위에서 마음껏 높이 점프해 볼래?”', actionLabel: '트램펄린으로 점프하러 가기' },
+      { key: 'sad', x: -18.5, z: 7.5, color: 0x3b82f6, title: '슬픔이 (물방울)', dialogue: '“안녕… 나는 소중한 것을 기억하게 해주는 물방울 슬픔이야.<br>울고 싶을 땐 참지 않아도 괜찮아. 연못에 마음의 눈물을 띄워 보내자.”', actionLabel: '치유의 눈물 띄워 보내기' },
+      { key: 'anger', x: 3.5, z: 21.5, color: 0xef4444, title: '화 (불도깨비)', dialogue: '“으르렁! 나는 네 소중한 마음을 지키려고 찾아온 불도깨비 화야.<br>너무 뜨거워지면 나도 힘들어… 모닥불 앞에서 깊게 숨을 내쉬어 줄래?”', actionLabel: '불길 달래는 심호흡 시작' },
+      { key: 'fear', x: -15.5, z: -13.5, color: 0xa855f7, title: '두려움 (꼬마망토)', dialogue: '“저기… 나는 위험을 알려주는 꼬마망토 두려움이야.<br>등대 주변의 어둠 구름 3개를 별빛 마법(F키)으로 비춰주면 용기가 생길 거야!”', actionLabel: '별빛 마법으로 어둠 비추기' },
+      { key: 'worry', x: 17.0, z: -15.5, color: 0x10b981, title: '걱정이 (털실이)', dialogue: '“음… 머릿속이 실타래처럼 엉켜버렸어.<br>벤치에 앉아 네 걱정을 소원 연등에 적어 하늘로 날려 보내자!”', actionLabel: '걱정 털실 풀고 연등 날리기' }
+    ];
+    npcDefinitions.forEach(def => {
+      const g = new THREE.Group(); g.position.set(def.x, 0, def.z);
+      const mat = new THREE.MeshStandardMaterial({ color: def.color, emissive: def.color, emissiveIntensity: 0.35, roughness: 0.4 });
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.0, 0.8), mat); body.position.y = 0.75; body.castShadow = true;
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.85, 0.85), mat); head.position.y = 1.65; head.castShadow = true;
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
+      const eL = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.18, 0.08), eyeMat); eL.position.set(-0.2, 1.7, 0.42);
+      const eR = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.18, 0.08), eyeMat); eR.position.set(0.2, 1.7, 0.42);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.85, 1.02, 24), new THREE.MeshBasicMaterial({ color: def.color, transparent: true, opacity: 0.55, side: THREE.DoubleSide }));
+      ring.rotation.x = -Math.PI / 2; ring.position.y = 0.14;
+      g.add(body, head, eL, eR, ring);
+      worldGroup.add(g);
+      zoneNpcs.push({ ...def, group: g });
+    });
+
+    // [미션 1: 기쁨 공중 별빛 링 3개]
+    const joyRings = [];
+    [[22, 5.5, 4], [24.2, 8.2, 6.2], [19.8, 10.5, 1.8]].forEach(([rx, ry, rz]) => {
+      const rg = new THREE.Mesh(
+        new THREE.TorusGeometry(1.35, 0.16, 10, 24),
+        new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xf59e0b, emissiveIntensity: 1.1 })
+      );
+      rg.position.set(rx, ry, rz);
+      worldGroup.add(rg);
+      const done = state.quests.joy;
+      rg.visible = !done;
+      joyRings.push({ mesh: rg, collected: done });
+    });
+
+    // [미션 2: 슬픔 연못가 추억 물방울 3개]
+    const sadDrops = [];
+    const sadDropStories = [
+      '작년 운동회 때 함께 달렸던 소중한 기억을 건졌어요.',
+      '비 오는 날 우산을 나눠 쓰던 따뜻한 마음을 기억해냈어요.',
+      '헤어질 때 건넸던 마지막 인사를 소중히 간직할 수 있게 됐어요.'
+    ];
+    [[-16.5, 0.9, 4], [-28.5, 0.9, 8.5], [-26.5, 0.9, -2.5]].forEach(([dx, dy, dz], idx) => {
+      const dm = new THREE.Mesh(
+        new THREE.OctahedronGeometry(0.45),
+        new THREE.MeshStandardMaterial({ color: 0x60a5fa, emissive: 0x3b82f6, emissiveIntensity: 1.2 })
+      );
+      dm.position.set(dx, dy, dz);
+      worldGroup.add(dm);
+      const done = state.quests.sad;
+      dm.visible = !done;
+      sadDrops.push({ mesh: dm, collected: done, story: sadDropStories[idx] });
+    });
+
+    // [미션 4: 두려움 등대 주변 어둠 그림자 5개 (공전+유인 이동)]
+    const fearShadows = [];
+    for (let i = 0; i < 5; i++) {
+      const ang = (i / 5) * Math.PI * 2;
+      const sg = new THREE.Group();
+      sg.add(new THREE.Mesh(new THREE.BoxGeometry(1.35, 1.35, 1.35), new THREE.MeshStandardMaterial({ color: 0x1f1230, emissive: 0x581c87, emissiveIntensity: 0.45 })));
+      sg.position.set(-20 + Math.cos(ang) * 6.0, 2.0, -18 + Math.sin(ang) * 6.0);
+      worldGroup.add(sg);
+      fearShadows.push({ group: sg, ang, rad: 4.5 + (i % 2) * 2.2, cleared: state.quests.fear });
+      if (state.quests.fear) sg.visible = false;
+    }
+
+    // [미션 5: 걱정 숲 엉킨 털실 3개]
+    const worryThreads = [];
+    [[24, 0.9, -15], [16.5, 0.9, -21], [23, 0.9, -22.5]].forEach(([wx, wy, wz]) => {
+      const wm = new THREE.Mesh(
+        new THREE.TorusKnotGeometry(0.38, 0.12, 36, 6),
+        new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x10b981, emissiveIntensity: 1.0 })
+      );
+      wm.position.set(wx, wy, wz);
+      worldGroup.add(wm);
+      const done = state.quests.worry;
+      wm.visible = !done;
+      worryThreads.push({ mesh: wm, collected: done });
+    });
+
+    // [동화 9장 협동: 살아있는 친구 아바타 4명]
+    const friendDefs = [
+      { id: 'jiwoo', name: '지우 (5학년)', shirt: 0x3b82f6, x: 7, z: 5, story: '“모둠 활동에서 내 의견이 묵살돼서 화가 났지만, 심호흡하며 차분해지려고 노력 중이야. 내 마음 광주리 같이 들어줄래?”' },
+      { id: 'seojun', name: '서준 (4학년)', shirt: 0x10b981, x: -8, z: 6, story: '“단짝 친구가 전학을 가서 마음이 무겁네… 누군가 내 이야기를 들어주고 함께 걸어주면 힘이 날 것 같아.”' },
+      { id: 'minseo', name: '민서 (6학년)', shirt: 0xa855f7, x: -6, z: -8, story: '“곧 영어 발표 순서인데 너무 떨려! 우리 같이 심호흡하고 신나게 춤춰볼래?”' },
+      { id: 'doyun', name: '도윤 (3학년)', shirt: 0xf59e0b, x: 8, z: -7, story: '“오늘 마음 광주리가 좀 무겁다! 9장 동화처럼 우리가 서로 광주리를 맞들어 주면 훨씬 가벼워진대!”' }
+    ];
+    const friendAgents = [];
+    friendDefs.forEach((fd, idx) => {
+      const fg = new THREE.Group();
+      fg.position.set(fd.x, 0, fd.z);
+      const fShirt = new THREE.MeshStandardMaterial({ color: fd.shirt, roughness: 0.5 });
+      const fSkin = new THREE.MeshStandardMaterial({ color: 0xfde0c6, roughness: 0.5 });
+      const fPants = new THREE.MeshStandardMaterial({ color: 0x27272a });
+
+      const fTorso = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.95, 0.5), fShirt); fTorso.position.y = 1.25; fTorso.castShadow = true;
+      const fHead = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.72, 0.75), fSkin); fHead.position.y = 0.88; fHead.castShadow = true;
+      const fEyeM = new THREE.MeshBasicMaterial({ color: 0x18181b });
+      const feL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feL.position.set(-0.16, 0.04, 0.37);
+      const feR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feR.position.set(0.16, 0.04, 0.37);
+      fHead.add(feL, feR); fTorso.add(fHead);
+
+      // 친구도 등 뒤에 마음 광주리를 메고 다님!
+      const fPack = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.24, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
+      fPack.position.set(0, 0.05, -0.4); fTorso.add(fPack);
+
+      const fLegL = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.75, 0.36), fPants); fLegL.position.set(-0.22, 0.38, 0);
+      const fLegR = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.75, 0.36), fPants); fLegR.position.set(0.22, 0.38, 0);
+      fg.add(fTorso, fLegL, fLegR);
+
+      // 발밑 표시 링
+      const fRing = new THREE.Mesh(new THREE.RingGeometry(0.75, 0.9, 20), new THREE.MeshBasicMaterial({ color: fd.shirt, transparent: true, opacity: 0.5, side: THREE.DoubleSide }));
+      fRing.rotation.x = -Math.PI / 2; fRing.position.y = 0.13; fg.add(fRing);
+
+      // 이름표 캔버스 스프라이트
+      const nc = document.createElement('canvas'); nc.width = 256; nc.height = 64;
+      const nctx = nc.getContext('2d');
+      nctx.fillStyle = 'rgba(24,24,27,0.82)'; nctx.fillRect(16, 10, 224, 44);
+      nctx.fillStyle = '#ffffff'; nctx.font = 'bold 24px "Noto Sans KR"'; nctx.textAlign = 'center';
+      nctx.fillText(fd.name, 128, 40);
+      const nSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(nc), transparent: true }));
+      nSprite.position.y = 2.9; nSprite.scale.set(2.4, 0.6, 1); fg.add(nSprite);
+
+      fg.userData.friendId = fd.id;
+      worldGroup.add(fg);
+      friendAgents.push({
+        ...fd, group: fg, torso: fTorso, legL: fLegL, legR: fLegR,
+        homeX: fd.x, homeZ: fd.z, angle: idx * 1.5, danceTimer: 0, helped: false
+      });
+    });
+
+    // 마음 광주리 같이 들어주기 황금 연결 빛줄기
+    const coopBeamGeo = new THREE.CylinderGeometry(0.12, 0.12, 1, 8);
+    coopBeamGeo.rotateX(Math.PI / 2);
+    const coopBeam = new THREE.Mesh(coopBeamGeo, new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.85 }));
+    coopBeam.visible = false;
+    scene.add(coopBeam);
+    let coopBeamTarget = null, coopBeamTimer = 0;
+
+    const sadRipples = [];
+    const releasedLanterns = [];
+
+    // ==========================================
+    // 4. 실시간 3D 마음 날씨 대형 전광판
+    // ==========================================
+    const screenCanvas = document.createElement('canvas');
+    screenCanvas.width = 1024; screenCanvas.height = 512;
+    const sCtx = screenCanvas.getContext('2d');
+    const screenTex = new THREE.CanvasTexture(screenCanvas);
+
+    function updateScreenCanvas() {
+      sCtx.fillStyle = '#18181b'; sCtx.fillRect(0, 0, 1024, 512);
+      sCtx.strokeStyle = '#ff5800'; sCtx.lineWidth = 6; sCtx.strokeRect(12, 12, 1000, 488);
+      sCtx.fillStyle = '#f6f5f0'; sCtx.font = 'bold 32px "Noto Sans KR"';
+      sCtx.fillText('실시간 마음 게시판 · 오늘 친구들의 마음', 48, 68);
+
+      // 우측 상단 클릭 유도 배지
+      sCtx.fillStyle = '#ff5800'; sCtx.fillRect(720, 38, 256, 38);
+      sCtx.fillStyle = '#ffffff'; sCtx.font = 'bold 17px "Noto Sans KR"';
+      sCtx.fillText('클릭하여 게시물 자세히 보기 ↗', 736, 63);
+
+      sCtx.fillStyle = '#a1a1aa'; sCtx.font = '18px "Noto Sans KR"';
+      sCtx.fillText(`함께 탐험 중: ${state.onlineCount}명 · 총 마음 기록 ${state.boardPosts.length}건`, 48, 104);
+
+      const total = Object.values(state.stats).reduce((a, b) => a + b, 0);
+      const keys = ['joy', 'sad', 'anger', 'fear', 'worry', 'flutter'];
+      let curX = 48;
+      keys.forEach(k => {
+        const w = (state.stats[k] / total) * 928;
+        sCtx.fillStyle = state.spirits[k].hex; sCtx.fillRect(curX, 124, w, 18);
+        curX += w;
+      });
+
+      // 최신 게시물 3건 카드 미리보기 (3D 전광판에서도 바로 읽힘!)
+      const previewPosts = state.boardPosts.slice(0, 3);
+      previewPosts.forEach((post, idx) => {
+        const y = 166 + idx * 92;
+        const sp = state.spirits[post.emotion] || state.spirits.joy;
+        sCtx.fillStyle = 'rgba(255,255,255,0.06)'; sCtx.fillRect(48, y, 928, 78);
+        sCtx.strokeStyle = 'rgba(255,255,255,0.14)'; sCtx.lineWidth = 1.5; sCtx.strokeRect(48, y, 928, 78);
+        sCtx.fillStyle = sp.hex; sCtx.beginPath(); sCtx.arc(76, y + 39, 9, 0, Math.PI * 2); sCtx.fill();
+        sCtx.fillStyle = '#ffffff'; sCtx.font = 'bold 22px "Noto Sans KR"';
+        sCtx.fillText(post.title.slice(0, 34), 102, y + 36);
+        sCtx.fillStyle = '#a1a1aa'; sCtx.font = '16px "Noto Sans KR"';
+        sCtx.fillText(`${post.author} · ${sp.name.split(' ')[0]} · 공감 ${post.likes}`, 102, y + 63);
+        sCtx.fillStyle = '#ff8a4c'; sCtx.font = 'bold 16px "JetBrains Mono"';
+        sCtx.fillText('READ ↗', 885, y + 45);
+      });
+
+      sCtx.fillStyle = '#ff8a4c'; sCtx.font = 'bold 18px "Noto Sans KR"';
+      sCtx.fillText(`${state.playerName}님의 오늘 마음: "${state.mindNote}"`, 48, 476);
+      screenTex.needsUpdate = true;
+    }
+    updateScreenCanvas();
+
+    const screenMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(18, 9),
+      new THREE.MeshStandardMaterial({ map: screenTex, emissive: 0x111111, emissiveMap: screenTex, roughness: 0.35 })
+    );
+    screenMesh.position.set(0, 8.2, -26);
+    worldGroup.add(screenMesh);
+
+    // 전광판 프레임 & 기둥 2개 (로블록스 스타일 구조물)
+    const boardFrame = new THREE.Mesh(new THREE.BoxGeometry(18.6, 9.6, 0.4), new THREE.MeshStandardMaterial({ color: 0x27272a }));
+    boardFrame.position.set(0, 8.2, -26.25);
+    const boardPillarL = new THREE.Mesh(new THREE.BoxGeometry(0.9, 5.0, 0.9), new THREE.MeshStandardMaterial({ color: 0x3f3f46 }));
+    boardPillarL.position.set(-7.5, 2.5, -26.25); boardPillarL.castShadow = true;
+    const boardPillarR = boardPillarL.clone(); boardPillarR.position.x = 7.5;
+    worldGroup.add(boardFrame, boardPillarL, boardPillarR);
+
+    // ==========================================
+    // 5. 로블록스 스타일 아바타 '인찬이' + 등 뒤 '실시간 마음 광주리'
+    // ==========================================
+    const playerRig = new THREE.Group();
+    playerRig.position.set(0, 0, 10);
+    scene.add(playerRig);
+
+    const skinMat = new THREE.MeshStandardMaterial({ color: 0xfde0c6, roughness: 0.5 });
+    const shirtMat = new THREE.MeshStandardMaterial({ color: 0xff5800, roughness: 0.45 });
+    const pantsMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.7 });
+
+    // 로블록스 스타일 몸통 & 머리
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.05, 0.55), shirtMat);
+    torso.position.y = 1.35; torso.castShadow = true;
+    playerRig.add(torso);
+
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.78, 0.82), skinMat);
+    head.position.y = 0.95; head.castShadow = true;
+    torso.add(head);
+
+    const cap = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.25, 0.88), new THREE.MeshStandardMaterial({ color: 0x18181b }));
+    cap.position.set(0, 0.42, 0);
+    const brim = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.08, 0.36), new THREE.MeshStandardMaterial({ color: 0xff5800 }));
+    brim.position.set(0, 0.32, 0.52);
+    head.add(cap, brim);
+
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
+    const eyeL = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.16, 0.06), eyeMat); eyeL.position.set(-0.18, 0.04, 0.41);
+    const eyeR = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.16, 0.06), eyeMat); eyeR.position.set(0.18, 0.04, 0.41);
+    head.add(eyeL, eyeR);
+
+    // 등 뒤 3D 마음 광주리 백팩 + 수집된 5색 구슬이 실제로 들어감!
+    const backpack = new THREE.Group();
+    backpack.position.set(0, 0.05, -0.46);
+    const packBody = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.28, 0.58, 10), new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.6 }));
+    const packRim = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.05, 6, 16), new THREE.MeshStandardMaterial({ color: 0xfbbf24 }));
+    packRim.rotation.x = Math.PI / 2; packRim.position.y = 0.28;
+    backpack.add(packBody, packRim);
+
+    const basketGems = {};
+    const gemOffsets = {
+      joy: [-0.14, 0.32, 0.08], sad: [0.14, 0.32, 0.08],
+      anger: [0, 0.36, -0.02], fear: [-0.12, 0.32, -0.14], worry: [0.12, 0.32, -0.14]
+    };
+    Object.keys(gemOffsets).forEach(k => {
+      const [gx, gy, gz] = gemOffsets[k];
+      const gem = new THREE.Mesh(
+        new THREE.SphereGeometry(0.1, 8, 8),
+        new THREE.MeshStandardMaterial({ color: state.spirits[k].color, emissive: state.spirits[k].color, emissiveIntensity: 1.4 })
+      );
+      gem.position.set(gx, gy, gz);
+      gem.visible = state.quests[k];
+      backpack.add(gem);
+      basketGems[k] = gem;
+    });
+    torso.add(backpack);
+
+    function makeArm(isLeft) {
+      const pivot = new THREE.Group();
+      pivot.position.set(isLeft ? -0.66 : 0.66, 0.42, 0);
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.88, 0.34), shirtMat);
+      arm.position.y = -0.36; arm.castShadow = true;
+      pivot.add(arm);
+      torso.add(pivot);
+      return pivot;
+    }
+    const leftArm = makeArm(true);
+    const rightArm = makeArm(false);
+
+    // 별빛 지팡이
+    const wandGroup = new THREE.Group();
+    wandGroup.position.set(0, -0.78, 0.25); wandGroup.rotation.x = Math.PI / 2.2;
+    const wandStick = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.3, 0.08), new THREE.MeshStandardMaterial({ color: 0xfef3c7 }));
+    const wandStarMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 1.4 });
+    const wandStar = new THREE.Mesh(new THREE.OctahedronGeometry(0.22), wandStarMat);
+    wandStar.position.y = 0.72;
+    wandGroup.add(wandStick, wandStar);
+    rightArm.add(wandGroup);
+
+    function makeLeg(isLeft) {
+      const pivot = new THREE.Group();
+      pivot.position.set(isLeft ? -0.26 : 0.26, 0.82, 0);
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.82, 0.42), pantsMat);
+      leg.position.y = -0.41; leg.castShadow = true;
+      pivot.add(leg);
+      playerRig.add(pivot);
+      return pivot;
+    }
+    const leftLeg = makeLeg(true);
+    const rightLeg = makeLeg(false);
+
+    // 동행 정령
+    const spiritGroup = new THREE.Group();
+    const spiritBodyMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 1.0 });
+    spiritGroup.add(new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.45), spiritBodyMat));
+    const spiritLight = new THREE.PointLight(0xf59e0b, 1.4, 8);
+    spiritGroup.add(spiritLight);
+    scene.add(spiritGroup);
+
+    // ==========================================
+    // 6. 카메라 컨트롤
+    // ==========================================
+    const camState = { yaw: 0.2, pitch: 0.35, distance: 11.0, isRightDragging: false, lastX: 0, lastY: 0, targetPos: new THREE.Vector3(0, 1.8, 10) };
+    canvas.addEventListener('contextmenu', e => e.preventDefault());
+    canvas.addEventListener('pointerdown', e => {
+      if (e.button === 2 || e.shiftKey) { camState.isRightDragging = true; camState.lastX = e.clientX; camState.lastY = e.clientY; }
+    });
+    window.addEventListener('pointermove', e => {
+      if (camState.isRightDragging) {
+        camState.yaw -= (e.clientX - camState.lastX) * 0.008;
+        camState.pitch = THREE.MathUtils.clamp(camState.pitch + (e.clientY - camState.lastY) * 0.007, 0.1, 1.15);
+        camState.lastX = e.clientX; camState.lastY = e.clientY;
+      }
+    });
+    window.addEventListener('pointerup', () => { camState.isRightDragging = false; });
+    window.addEventListener('wheel', e => {
+      camState.distance = THREE.MathUtils.clamp(camState.distance + e.deltaY * 0.005, 5.0, 22.0);
+    });
+
+    // ==========================================
+    // 7. 사운드 시스템 (Web Audio API + 오르골 앰비언트)
+    // ==========================================
+    let audioCtx = null, ambientTimer = null;
+    const pentatonicNotes = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (!ambientTimer && state.soundOn) {
+        ambientTimer = setInterval(() => {
+          if (!state.soundOn || !audioCtx || audioCtx.state !== 'running') return;
+          const note = pentatonicNotes[Math.floor(Math.random() * pentatonicNotes.length)];
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = 'sine'; osc.frequency.setValueAtTime(note * 0.5, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.028, audioCtx.currentTime + 0.15);
+          gain.gain.exponentialRampToValueAtTime(0.0005, audioCtx.currentTime + 2.3);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(); osc.stop(audioCtx.currentTime + 2.4);
+        }, 2300);
+      }
+    }
+
+    function playTone(freqStart, freqEnd, dur, type = 'sine', vol = 0.2) {
+      if (!state.soundOn || !audioCtx) return;
+      const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freqStart, audioCtx.currentTime);
+      if (freqEnd !== freqStart) osc.frequency.exponentialRampToValueAtTime(freqEnd, audioCtx.currentTime + dur);
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + dur + 0.02);
+    }
+    function soundJump(isDouble = false) { playTone(isDouble ? 420 : 250, isDouble ? 880 : 600, 0.22, isDouble ? 'triangle' : 'sine', 0.22); }
+    function soundMagic() { playTone(700, 1200, 0.25, 'sine', 0.18); }
+    function soundChime(f = 528) { playTone(f, f, 1.5, 'triangle', 0.18); }
+    function soundQuestComplete() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => soundChime(f), i * 110)); }
+
+    // ==========================================
+    // 8. 마법 투사체, 먼지, 치유 리추얼 & 퀘스트
+    // ==========================================
+    const magicProjectiles = [], magicImpacts = [], dustParticles = [];
+
+    function shootMagicBullet() {
+      initAudio(); soundMagic();
+      const s = state.spirits[state.curGuest];
+      const fwd = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRig.rotation.y);
+      const spawnPos = playerRig.position.clone().add(new THREE.Vector3(0, 1.4, 0)).addScaledVector(fwd, 0.8);
+      const pMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.32), new THREE.MeshStandardMaterial({ color: s.color, emissive: s.color, emissiveIntensity: 1.5 }));
+      pMesh.position.copy(spawnPos); scene.add(pMesh);
+      magicProjectiles.push({ mesh: pMesh, vel: fwd.clone().multiplyScalar(25.0), color: s.color, life: 1.6 });
+      rightArm.rotation.x = -Math.PI / 2;
+    }
+
+    function createMagicImpact(pos, colorHex) {
+      soundChime(660);
+      for (let i = 0; i < 16; i++) {
+        const p = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.18), new THREE.MeshBasicMaterial({ color: colorHex }));
+        p.position.copy(pos);
+        const th = Math.random() * Math.PI * 2, ph = Math.random() * Math.PI;
+        scene.add(p);
+        magicImpacts.push({ mesh: p, vel: new THREE.Vector3(Math.sin(ph)*Math.cos(th)*6, Math.cos(ph)*6+2, Math.sin(ph)*Math.sin(th)*6), life: 0.75 });
+      }
+    }
+
+    function createSadRipple(x, z) {
+      const rMesh = new THREE.Mesh(new THREE.RingGeometry(0.25, 0.5, 28), new THREE.MeshBasicMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.9, side: THREE.DoubleSide }));
+      rMesh.rotation.x = -Math.PI / 2; rMesh.position.set(x, 0.26, z);
+      worldGroup.add(rMesh); sadRipples.push({ mesh: rMesh, scale: 1.0, life: 1.0 });
+    }
+
+    function triggerSadRitual() {
+      initAudio();
+      createSadRipple(-23, 4); setTimeout(() => createSadRipple(-23, 4), 250); setTimeout(() => createSadRipple(-23, 4), 500);
+      soundChime(432);
+      if (!state.quests.sad) checkQuestCollect('sad', '치유의 눈물 보석 획득', '소중함을 기억하며 눈물을 연못에 띄워 마음을 다독였습니다.');
+      else showToast('연못에 잔잔한 마음의 물결이 퍼집니다.');
+    }
+
+    function spawnReleasedLantern(text) {
+      const lg = new THREE.Group();
+      lg.add(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.95, 0.7), new THREE.MeshStandardMaterial({ color: 0x6ee7b7, emissive: 0x10b981, emissiveIntensity: 1.3 })));
+      lg.position.set(20, 1.5, -18); worldGroup.add(lg);
+      releasedLanterns.push({ group: lg, life: 12.0 });
+      showToast(`<b>"${text}"</b>을(를) 소원 연등에 담아 하늘로 날려 보냈습니다.`);
+    }
+
+    function syncQuestHUD() {
+      const dotMap = { joy: 'dotJoy', sad: 'dotSad', anger: 'dotAnger', fear: 'dotFear', worry: 'dotWorry' };
+      const orbMap = { joy: joyOrbMesh, sad: sadOrbMesh, anger: angerOrbMesh, fear: fearOrbMesh, worry: worryOrbMesh };
+      Object.keys(dotMap).forEach(k => {
+        const dotEl = document.getElementById(dotMap[k]);
+        if (state.quests[k]) {
+          if (dotEl) { dotEl.classList.add('on'); dotEl.style.background = state.spirits[k].hex; }
+          if (orbMap[k]) orbMap[k].visible = false;
+          if (basketGems[k]) basketGems[k].visible = true;
+        } else {
+          if (dotEl) { dotEl.classList.remove('on'); dotEl.style.background = 'rgba(24,24,27,0.12)'; }
+          if (orbMap[k]) orbMap[k].visible = true;
+          if (basketGems[k]) basketGems[k].visible = false;
         }
+      });
+      const totalDone = Object.values(state.quests).filter(Boolean).length;
+      document.getElementById('questCountText').textContent = `${totalDone}/5`;
+    }
 
-        // Create warm nursery/kitchen floor with checker pattern
-        function createCozyEnvironment() {
-            // Ground disc with soft warm tones
-            const groundGeo = new THREE.CylinderGeometry(8, 8.5, 0.4, 48);
-            const groundMat = new THREE.MeshStandardMaterial({
-                color: 0x1e293b,
-                roughness: 0.8,
-                metalness: 0.1
-            });
-            const ground = new THREE.Mesh(groundGeo, groundMat);
-            ground.position.y = -0.2;
-            ground.receiveShadow = true;
-            scene.add(ground);
+    function checkQuestCollect(key, name, msg) {
+      if (state.quests[key]) return;
+      state.quests[key] = true;
+      saveProgress(); syncQuestHUD(); soundQuestComplete();
+      showToast(`<b>[퀘스트 달성] ${name}</b> · 등 뒤 광주리에 구슬이 담겼습니다!`);
+      if (Object.values(state.quests).filter(Boolean).length === 5) {
+        setTimeout(() => {
+          showToast('<b>축하합니다! 5대 감정 구슬을 모두 모아 광주리가 완성되었습니다.</b>');
+          soundQuestComplete(); openModal('modalTrophy'); renderTrophyCard();
+        }, 1200);
+      }
+    }
 
-            // Soft circular carpet / Kitchen rug
-            const rugGeo = new THREE.CircleGeometry(4.2, 48);
-            const rugMat = new THREE.MeshStandardMaterial({
-                color: 0x273549,
-                roughness: 0.9,
-                side: THREE.DoubleSide
-            });
-            const rug = new THREE.Mesh(rugGeo, rugMat);
-            rug.rotation.x = -Math.PI / 2;
-            rug.position.y = 0.01;
-            scene.add(rug);
+    // ==========================================
+    // 9. 입력 & 물리 & NPC 대화
+    // ==========================================
+    const input = { w: false, a: false, s: false, d: false, shift: false, joyX: 0, joyY: 0 };
+    const playerPhysics = { velY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true, isDancing: false, danceTimer: 0, isMeditating: false, walkCycle: 0, blinkTimer: 0, dustTimer: 0 };
 
-            // Floating warm star particles (Floating emotional stardust)
-            const particleCount = 200;
-            const pGeo = new THREE.BufferGeometry();
-            const pPos = new Float32Array(particleCount * 3);
-            for (let i = 0; i < particleCount * 3; i += 3) {
-                pPos[i] = (Math.random() - 0.5) * 14;
-                pPos[i + 1] = Math.random() * 6;
-                pPos[i + 2] = (Math.random() - 0.5) * 14;
-            }
-            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-            const pMat = new THREE.PointsMaterial({
-                color: 0xfde047,
-                size: 0.08,
-                transparent: true,
-                opacity: 0.6,
-                blending: THREE.AdditiveBlending
-            });
-            const particles = new THREE.Points(pGeo, pMat);
-            scene.add(particles);
+    window.addEventListener('keydown', e => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      initAudio();
+      const k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') input.w = true;
+      if (k === 's' || k === 'arrowdown') input.s = true;
+      if (k === 'a' || k === 'arrowleft') input.a = true;
+      if (k === 'd' || k === 'arrowright') input.d = true;
+      if (e.key === 'Shift') input.shift = true;
+      if (e.code === 'Space') { e.preventDefault(); doJump(); }
+      if (k === 'f') shootMagicBullet();
+      if (k === 'c') doBreatheWind();
+      if (k === 'e') doDance();
+      if (k === 'q') doMeditate();
+      if (k === 'g') interactCurrentZone();
+      if (['1','2','3','4','5','6'].includes(k)) {
+        selectGuestSpirit({ '1':'joy', '2':'sad', '3':'anger', '4':'fear', '5':'worry', '6':'flutter' }[k]);
+      }
+      document.getElementById('keyHints').style.opacity = '0';
+    });
+
+    window.addEventListener('keyup', e => {
+      const k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') input.w = false;
+      if (k === 's' || k === 'arrowdown') input.s = false;
+      if (k === 'a' || k === 'arrowleft') input.a = false;
+      if (k === 'd' || k === 'arrowright') input.d = false;
+      if (e.key === 'Shift') input.shift = false;
+    });
+
+    const raycaster = new THREE.Raycaster();
+    const pointerNDC = new THREE.Vector2();
+    function hitTestInteractive(clientX, clientY) {
+      pointerNDC.x = (clientX / window.innerWidth) * 2 - 1;
+      pointerNDC.y = -(clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(pointerNDC, camera);
+      if (raycaster.intersectObject(screenMesh).length > 0) return { type: 'board' };
+      const friendMeshes = friendAgents.map(f => f.group);
+      const fHits = raycaster.intersectObjects(friendMeshes, true);
+      if (fHits.length > 0) {
+        let obj = fHits[0].object;
+        while (obj && !obj.userData.friendId) obj = obj.parent;
+        if (obj && obj.userData.friendId) return { type: 'friend', id: obj.userData.friendId };
+      }
+      return null;
+    }
+
+    canvas.addEventListener('pointermove', e => {
+      if (!camState.isRightDragging) {
+        canvas.style.cursor = hitTestInteractive(e.clientX, e.clientY) ? 'pointer' : 'default';
+      }
+    });
+
+    canvas.addEventListener('click', e => {
+      if (e.button === 0 && !camState.isRightDragging) {
+        const hit = hitTestInteractive(e.clientX, e.clientY);
+        if (hit?.type === 'board') openBoardModal();
+        else if (hit?.type === 'friend') openFriendModal(hit.id);
+        else shootMagicBullet();
+      }
+    });
+
+    function doJump() {
+      if (playerPhysics.jumpCount < playerPhysics.maxJumps) {
+        const isDouble = (playerPhysics.jumpCount === 1);
+        playerPhysics.velY = isDouble ? 11.5 : 9.5;
+        playerPhysics.jumpCount++; playerPhysics.isGrounded = false;
+        playerRig.scale.set(0.84, 1.25, 0.84);
+        soundJump(isDouble);
+      }
+    }
+
+    let timingCursorPct = 50;
+    function doBreatheWind() {
+      initAudio(); soundChime(396);
+      const distFire = Math.hypot(playerRig.position.x, playerRig.position.z - 24);
+      if (distFire < 7.5 && !state.quests.anger) {
+        // 타이밍 호흡 게임: 중앙 초록 평온 존(36% ~ 64%)에 맞췄는가?
+        if (timingCursorPct >= 36 && timingCursorPct <= 64) {
+          state.mission.anger += 1;
+          soundChime(659);
+          document.getElementById('zpProgress').textContent = `${state.mission.anger}/3`;
+          if (state.mission.anger >= 3) {
+            campfireLight.color.set(0xfbbf24);
+            checkQuestCollect('anger', '평온의 불꽃 씨앗 획득', '타이밍에 맞춘 3번의 깊은 심호흡으로 뜨거운 화를 따뜻한 온기로 달랬습니다!');
+            lastPromptZone = null;
+          } else {
+            showToast(`<b>완벽한 호흡 적중! (${state.mission.anger}/3)</b> — 다음 리듬에 맞춰 한 번 더!`);
+          }
+        } else {
+          state.mission.anger = Math.max(0, state.mission.anger - 1);
+          document.getElementById('zpProgress').textContent = `${state.mission.anger}/3`;
+          soundChime(220);
+          showToast('<b>타이밍이 빗나갔어요!</b> 커서가 가운데 초록 존에 올 때 [C]를 눌러보세요!');
         }
+      } else {
+        showToast('<b>후~ 심호흡 불기!</b> 몸 안의 긴장을 부드럽게 내보냅니다.');
+      }
+    }
 
-        // 3D Heart Basket (마음 광주리)
-        function createHeartBasket() {
-            basketGroup = new THREE.Group();
-            basketGroup.name = "heart_basket";
+    function openFriendModal(friendId) {
+      const fr = friendAgents.find(f => f.id === friendId);
+      if (!fr) return;
+      state.activeFriendId = friendId;
+      document.getElementById('friendModalTitle').textContent = `${fr.name} · 마음 나누기`;
+      document.getElementById('friendModalDesc').innerHTML = fr.story;
+      openModal('modalFriend');
+    }
 
-            // Basket Bowl (Lathe Geometry for woven bowl feel)
-            const points = [];
-            for (let i = 0; i <= 10; i++) {
-                const t = i / 10;
-                points.push(new THREE.Vector2(Math.sin(t * Math.PI * 0.5) * 1.3, t * 0.8));
-            }
-            const bowlGeo = new THREE.LatheGeometry(points, 32);
-            const bowlMat = new THREE.MeshStandardMaterial({
-                color: 0xd97706,
-                roughness: 0.7,
-                metalness: 0.15,
-                wireframe: false
-            });
-            const bowl = new THREE.Mesh(bowlGeo, bowlMat);
-            bowl.castShadow = true;
-            basketGroup.add(bowl);
-
-            // Basket Rim (Torus)
-            const rimGeo = new THREE.TorusGeometry(1.3, 0.08, 16, 48);
-            const rimMat = new THREE.MeshStandardMaterial({ color: 0xb45309, roughness: 0.6 });
-            const rim = new THREE.Mesh(rimGeo, rimMat);
-            rim.rotation.x = Math.PI / 2;
-            rim.position.y = 0.8;
-            basketGroup.add(rim);
-
-            // Basket Handle
-            const handleGeo = new THREE.TorusGeometry(1.2, 0.06, 16, 48, Math.PI);
-            const handle = new THREE.Mesh(handleGeo, rimMat);
-            handle.position.y = 0.8;
-            basketGroup.add(handle);
-
-            // Inner Heart Glow Core
-            const coreGeo = new THREE.SphereGeometry(0.5, 32, 32);
-            const coreMat = new THREE.MeshStandardMaterial({
-                color: 0xfffbeb,
-                emissive: 0xfde047,
-                emissiveIntensity: 1.2,
-                roughness: 0.2
-            });
-            const core = new THREE.Mesh(coreGeo, coreMat);
-            core.position.y = 0.45;
-            basketGroup.add(core);
-
-            basketGroup.position.set(0, 0, 0);
-            scene.add(basketGroup);
+    function openNpcDialogue(key) {
+      const def = npcDefinitions.find(d => d.key === key);
+      if (!def) return;
+      document.getElementById('npcModalTitle').textContent = def.title;
+      document.getElementById('npcModalBody').innerHTML = def.dialogue;
+      const btn = document.getElementById('btnNpcAction');
+      btn.textContent = def.actionLabel;
+      btn.onclick = () => {
+        closeModal('modalNpc');
+        if (key === 'sad') triggerSadRitual();
+        else if (key === 'anger') doBreatheWind();
+        else if (key === 'fear') shootMagicBullet();
+        else if (key === 'worry') {
+          if (state.mission.worry < 3) showToast(`먼저 숲 주변의 엉킨 털실 매듭 3개를 풀어주세요! (${state.mission.worry}/3)`);
+          else openModal('modalWorry');
         }
+        else if (key === 'joy') showToast('노란 트램펄린 중앙을 밟아 하늘 높이 뛰어보세요!');
+      };
+      openModal('modalNpc');
+    }
 
-        // Load Inchan, Mom & Fairies
-        function loadAssets() {
-            const textureLoader = new THREE.TextureLoader();
+    function interactCurrentZone() {
+      if (!state.activeZone) { showToast('5개 구역 감정 손님, 친구 아바타, 또는 마음 게시판 근처에서 [G]를 눌러보세요.'); return; }
+      if (state.activeZone === 'board') { openBoardModal(); return; }
+      if (state.activeZone.startsWith('friend:')) { openFriendModal(state.activeZone.split(':')[1]); return; }
+      openNpcDialogue(state.activeZone);
+    }
 
-            // 1. Inchan Billboard Avatar (정수리 바보털, 점눈, 볼터치 인찬이)
-            textureLoader.load('assets/inchan/인찬이_기준앵커_정면전신.png', (tex) => {
-                tex.colorSpace = THREE.SRGBColorSpace;
-                const aspect = tex.image.width / tex.image.height;
-                const height = 2.0;
-                const planeGeo = new THREE.PlaneGeometry(height * aspect, height);
-                const planeMat = new THREE.MeshStandardMaterial({
-                    map: tex,
-                    transparent: true,
-                    alphaTest: 0.1,
-                    roughness: 0.5
-                });
-                const inchanMesh = new THREE.Mesh(planeGeo, planeMat);
-                inchanMesh.position.set(-1.8, 1.0, 0.8);
-                inchanMesh.castShadow = true;
-                inchanMesh.userData = { type: 'inchan', name: '인찬이' };
-                scene.add(inchanMesh);
-                characterBillboards['inchan'] = inchanMesh;
-            });
+    function doDance() { initAudio(); playerPhysics.isDancing = true; playerPhysics.danceTimer = 0; soundChime(660); showToast(`${state.playerName}님이 신바람 춤을 춥니다!`); }
+    function doMeditate() { initAudio(); playerPhysics.isMeditating = !playerPhysics.isMeditating; showToast(playerPhysics.isMeditating ? '공중 부양 명상 시작' : '명상 종료'); soundChime(440); }
 
-            // 2. Mom Billboard Avatar (다정하고 온화한 엄마)
-            textureLoader.load('assets/inchan/엄마_기준앵커_정면전신.png', (tex) => {
-                tex.colorSpace = THREE.SRGBColorSpace;
-                const aspect = tex.image.width / tex.image.height;
-                const height = 2.6;
-                const planeGeo = new THREE.PlaneGeometry(height * aspect, height);
-                const planeMat = new THREE.MeshStandardMaterial({
-                    map: tex,
-                    transparent: true,
-                    alphaTest: 0.1,
-                    roughness: 0.5
-                });
-                const momMesh = new THREE.Mesh(planeGeo, planeMat);
-                momMesh.position.set(1.8, 1.3, 0.2);
-                momMesh.castShadow = true;
-                momMesh.userData = { type: 'mom', name: '엄마' };
-                scene.add(momMesh);
-                characterBillboards['mom'] = momMesh;
-            });
+    function selectGuestSpirit(key) {
+      if (!state.spirits[key]) return;
+      state.curGuest = key; saveProgress();
+      const s = state.spirits[key];
+      spiritBodyMat.color.set(s.color); spiritBodyMat.emissive.set(s.color); spiritLight.color.set(s.color);
+      wandStar.material.color.set(s.color); wandStar.material.emissive.set(s.color);
+      soundChime(580);
+    }
 
-            // 3. Create 6 Emotion Fairies in 3D orbit around Heart Basket
-            const keys = Object.keys(emotionData);
-            keys.forEach((key, index) => {
-                const angle = (index / keys.length) * Math.PI * 2;
-                const radius = 2.4;
-                const fairyGroup = new THREE.Group();
+    // 시간대 전환
+    function cycleTimeOfDay() {
+      initAudio();
+      const order = ['sunset', 'night', 'day'];
+      const next = order[(order.indexOf(state.timeOfDay) + 1) % order.length];
+      state.timeOfDay = next;
+      const cfg = state.todConfigs[next];
+      document.getElementById('todLabel').textContent = cfg.label;
+      scene.background.set(cfg.bg); scene.fog.color.set(cfg.fog);
+      sunLight.color.set(cfg.sun); sunLight.intensity = cfg.sunInt;
+      hemiLight.color.set(cfg.hemiSky); hemiLight.groundColor.set(cfg.hemiGround);
+      soundChime(528);
+      showToast(`시간대가 <b>[${cfg.label}]</b>(으)로 전환되었습니다.`);
+    }
 
-                // Fairy Core
-                const fairyGeo = new THREE.SphereGeometry(0.24, 24, 24);
-                const fairyMat = new THREE.MeshStandardMaterial({
-                    color: emotionData[key].hexColor,
-                    emissive: emotionData[key].hexColor,
-                    emissiveIntensity: 0.8,
-                    roughness: 0.3
-                });
-                const fairyCore = new THREE.Mesh(fairyGeo, fairyMat);
-                fairyCore.castShadow = true;
-                fairyGroup.add(fairyCore);
+    // 모바일 조이스틱
+    const joyZone = document.getElementById('joyZone'), joyKnob = document.getElementById('joyKnob');
+    joyZone.addEventListener('pointerdown', e => { joyZone.setPointerCapture(e.pointerId); handleJoy(e); });
+    joyZone.addEventListener('pointermove', e => { if (joyZone.hasPointerCapture(e.pointerId)) handleJoy(e); });
+    joyZone.addEventListener('pointerup', e => { joyZone.releasePointerCapture(e.pointerId); input.joyX = 0; input.joyY = 0; joyKnob.style.transform = 'translate(0,0)'; });
+    function handleJoy(e) {
+      const r = joyZone.getBoundingClientRect();
+      let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      const d = Math.hypot(dx, dy); if (d > 38) { dx = (dx/d)*38; dy = (dy/d)*38; }
+      joyKnob.style.transform = `translate(${dx}px, ${dy}px)`; input.joyX = dx / 38; input.joyY = dy / 38;
+    }
 
-                // Fairy Halo Ring
-                const haloGeo = new THREE.TorusGeometry(0.38, 0.025, 12, 32);
-                const haloMat = new THREE.MeshBasicMaterial({
-                    color: emotionData[key].hexColor,
-                    transparent: true,
-                    opacity: 0.75
-                });
-                const halo = new THREE.Mesh(haloGeo, haloMat);
-                halo.rotation.x = Math.PI / 3;
-                fairyGroup.add(halo);
+    // ==========================================
+    // 10. 미니맵 레이더 & 구역 안내 & 메인 렌더 루프
+    // ==========================================
+    const mmCtx = document.getElementById('minimapCanvas').getContext('2d');
+    function drawMinimap(time) {
+      const w = 126, h = 126, cx = 63, cy = 63, sc = 1.1;
+      mmCtx.clearRect(0, 0, w, h);
+      mmCtx.strokeStyle = 'rgba(24,24,27,0.12)'; mmCtx.lineWidth = 1;
+      [22, 44].forEach(r => { mmCtx.beginPath(); mmCtx.arc(cx, cy, r, 0, Math.PI * 2); mmCtx.stroke(); });
 
-                fairyGroup.position.set(
-                    Math.cos(angle) * radius,
-                    1.2 + Math.sin(index) * 0.3,
-                    Math.sin(angle) * radius
-                );
+      mmCtx.fillStyle = '#d97706'; mmCtx.beginPath(); mmCtx.arc(cx, cy, 3.5, 0, Math.PI * 2); mmCtx.fill();
 
-                fairyGroup.userData = {
-                    key: key,
-                    baseAngle: angle,
-                    radius: radius,
-                    speed: 0.008 + index * 0.0015,
-                    type: 'fairy'
-                };
+      landmarkCoords.forEach(lm => {
+        const lx = cx + lm.x * sc, ly = cy + lm.z * sc, done = state.quests[lm.key];
+        mmCtx.fillStyle = done ? 'rgba(24,24,27,0.22)' : state.spirits[lm.key].hex;
+        mmCtx.beginPath(); mmCtx.arc(lx, ly, done ? 3 : 4.5 + Math.sin(time * 5), 0, Math.PI * 2); mmCtx.fill();
+      });
 
-                scene.add(fairyGroup);
-                fairies[key] = fairyGroup;
-            });
+      const px = cx + playerRig.position.x * sc, pz = cy + playerRig.position.z * sc;
+      mmCtx.fillStyle = '#ff5800'; mmCtx.beginPath(); mmCtx.arc(px, pz, 4.5, 0, Math.PI * 2); mmCtx.fill();
+      mmCtx.strokeStyle = '#ffffff'; mmCtx.lineWidth = 1.5; mmCtx.stroke();
+    }
+
+    let lastPromptZone = null;
+    function getZoneProgressText(zone) {
+      if (zone === 'joy' && !state.quests.joy) return `하늘 링 통과 ${state.mission.joy}/3`;
+      if (zone === 'sad' && !state.quests.sad) return `기억의 물방울 ${state.mission.sad}/3`;
+      if (zone === 'anger' && !state.quests.anger) return `호흡 리듬 성공 ${state.mission.anger}/3`;
+      if (zone === 'fear' && !state.quests.fear) return `어둠 그림자 정화 ${state.mission.fear}/5`;
+      if (zone === 'worry' && !state.quests.worry) return `털실 매듭 풀기 ${state.mission.worry}/3`;
+      return '';
+    }
+
+    function updateZonePrompt() {
+      let foundZone = null;
+      const px = playerRig.position.x, pz = playerRig.position.z;
+      const zoneRadius = { joy: 7.5, sad: 8.5, anger: 7.0, fear: 8.5, worry: 7.5 };
+      for (const lm of landmarkCoords) {
+        if (Math.hypot(px - lm.x, pz - lm.z) < zoneRadius[lm.key]) { foundZone = lm.key; break; }
+      }
+      if (!foundZone && Math.hypot(px, pz - (-21)) < 8.5) foundZone = 'board';
+      let nearFriend = null, bestFriendDist = 4.5;
+      for (const fr of friendAgents) {
+        const d = Math.hypot(px - fr.group.position.x, pz - fr.group.position.z);
+        if (d < bestFriendDist) { bestFriendDist = d; nearFriend = fr; }
+      }
+      if (nearFriend && (!foundZone || bestFriendDist < 3.0)) foundZone = 'friend:' + nearFriend.id;
+
+      state.activeZone = foundZone;
+      const box = document.getElementById('zonePrompt');
+      if (!foundZone) { if (lastPromptZone !== null) { box.classList.remove('visible'); lastPromptZone = null; } return; }
+
+      const progEl = document.getElementById('zpProgress');
+      if (!foundZone.startsWith('friend:') && foundZone !== 'board') {
+        progEl.textContent = getZoneProgressText(foundZone);
+      } else {
+        progEl.textContent = '';
+      }
+
+      if (lastPromptZone === foundZone) return;
+      lastPromptZone = foundZone;
+
+      if (foundZone.startsWith('friend:')) {
+        const fr = friendAgents.find(f => f.id === foundZone.split(':')[1]);
+        document.getElementById('zpChip').style.background = '#ff5800';
+        document.getElementById('zpTitle').textContent = `${fr.name} (동행 친구)`;
+        document.getElementById('zpDesc').textContent = `${fr.name}와(과) 이야기를 나누거나 광주리를 같이 들어줄 수 있어요.`;
+        document.getElementById('breathBarWrap').classList.remove('active');
+        const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
+        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '친구와 함께하기 (G)'; b1.onclick = () => openFriendModal(fr.id);
+        btnsEl.appendChild(b1);
+        box.classList.add('visible');
+        return;
+      }
+
+      const guides = {
+        board: { t: '실시간 마음 게시판', d: '친구들이 남긴 마음 이야기를 읽고 내 감정도 공유해 보세요!', actText: '게시판 열기 (G)', actFn: openBoardModal },
+        joy: { t: '기쁨의 트램펄린 광장', d: state.quests.joy ? '기쁨 구슬을 이미 획득했어요!' : '트램펄린과 더블 점프로 공중의 황금 링 3개를 통과하세요!' },
+        sad: { t: '슬픔의 치유 연못', d: state.quests.sad ? '연못의 물결이 마음을 달래줍니다.' : '연못 가장자리 물방울 3개를 모은 뒤 연못 중심으로 걸어가세요.', actText: '물결 일으키기', actFn: () => {
+          if (state.mission.sad < 3) showToast(`연못 주변 기억의 물방울을 먼저 모아주세요! (${state.mission.sad}/3)`);
+          else triggerSadRitual();
+        } },
+        anger: { t: '화의 캠프파이어', d: state.quests.anger ? '불길이 따뜻한 온기로 진정되었어요.' : '초록색 중앙 타이밍 구역에 커서가 왔을 때 [C] 키를 3번 누르세요!', actText: '타이밍 심호흡 (C)', actFn: doBreatheWind },
+        fear: { t: '두려움의 수호 등대', d: state.quests.fear ? '등대 빛이 용기를 비추고 있어요!' : '움직이는 어둠 그림자 5개에 [F] 키로 별빛 마법을 쏘세요.', actText: '별빛 마법 (F)', actFn: shootMagicBullet },
+        worry: { t: '걱정의 털실 벤치', d: state.quests.worry ? '소원 연등을 날려 마음이 가벼워졌어요.' : '주변에 흩어진 엉킨 털실 매듭 3개를 밟아 푼 뒤 연등을 날려보세요.', actText: '연등 날리기', actFn: () => {
+          if (state.mission.worry < 3) showToast(`먼저 숲 주변의 엉킨 털실 매듭 3개를 풀어주세요! (${state.mission.worry}/3)`);
+          else openModal('modalWorry');
+        } }
+      };
+      const g = guides[foundZone];
+      document.getElementById('zpChip').style.background = foundZone === 'board' ? '#ff5800' : state.spirits[foundZone].hex;
+      document.getElementById('zpTitle').textContent = g.t;
+      document.getElementById('zpDesc').textContent = g.d;
+      document.getElementById('breathBarWrap').classList.toggle('active', foundZone === 'anger' && !state.quests.anger);
+
+      const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
+      if (g.actText && (foundZone === 'board' || !state.quests[foundZone])) {
+        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = g.actText; b1.onclick = g.actFn; btnsEl.appendChild(b1);
+      }
+      if (foundZone !== 'board') {
+        const bNpc = document.createElement('button'); bNpc.className = 'zp-btn secondary'; bNpc.textContent = '손님 대화 (G)'; bNpc.onclick = () => openNpcDialogue(foundZone);
+        btnsEl.appendChild(bNpc);
+      }
+      box.classList.add('visible');
+    }
+
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(clock.getDelta(), 0.1), time = clock.getElapsedTime();
+      if (avatarMixer) avatarMixer.update(dt);
+
+      trees.forEach(t => { t.group.rotation.z = Math.sin(time * 1.8 + t.seed) * 0.03; });
+      miniIslands.forEach(m => { m.group.position.y = m.baseY + Math.sin(time * 0.8 + m.phase) * 0.8; });
+      runeRing.rotation.z += dt * 0.3;
+      lhBeamPivot.rotation.y += dt * 0.65; // 등대 유리방 중심 완벽한 수평 회전!
+      skyStarMat.opacity = state.timeOfDay === 'night' ? 0.9 : (state.timeOfDay === 'sunset' ? 0.45 : 0.05);
+      waterMesh.position.y = 0.22 + Math.sin(time * 2.2) * 0.035;
+
+      skyLanterns.forEach(l => { l.group.position.y = l.baseY + Math.sin(time * l.speed + l.ang) * 0.8; });
+      zoneNpcs.forEach((npc, idx) => {
+        npc.group.position.y = Math.sin(time * 2.4 + idx) * 0.1;
+        npc.group.lookAt(playerRig.position.x, npc.group.position.y, playerRig.position.z);
+      });
+      fearShadows.forEach((fs, idx) => {
+        if (fs.cleared) return;
+        const a = fs.ang + time * fs.speed;
+        const tx = -20 + Math.cos(a) * fs.rad, tz = -18 + Math.sin(a) * fs.rad;
+        const dx = playerRig.position.x - tx, dz = playerRig.position.z - tz;
+        const pDist = Math.hypot(dx, dz);
+        const pull = pDist < 12 ? 0.18 : 0;
+        fs.group.position.set(tx + dx * pull, 2.0 + Math.sin(time * 3 + idx) * 0.45, tz + dz * pull);
+        fs.group.rotation.y += dt * 1.8;
+      });
+
+      // 친구 아바타 순찰 및 황금 협력 빔 업데이트
+      friendAgents.forEach((fr, idx) => {
+        if (fr.danceTimer > 0) {
+          fr.danceTimer -= dt;
+          fr.group.rotation.y += dt * 6;
+          fr.group.position.y = Math.abs(Math.sin(time * 10 + idx)) * 0.35;
+        } else {
+          const ang = fr.phase + time * 0.35;
+          const nx = fr.homeX + Math.cos(ang) * fr.radius;
+          const nz = fr.homeZ + Math.sin(ang * 0.8) * fr.radius;
+          fr.group.rotation.y = Math.atan2(nx - fr.group.position.x, nz - fr.group.position.z);
+          fr.group.position.set(nx, Math.abs(Math.sin(time * 5 + idx)) * 0.08, nz);
         }
+      });
+      if (coopBeamTimer > 0 && coopBeamTarget) {
+        coopBeamTimer -= dt;
+        const p1 = playerRig.position.clone().setY(1.4);
+        const p2 = coopBeamTarget.position.clone().setY(1.4);
+        coopBeam.position.copy(p1).lerp(p2, 0.5);
+        coopBeam.scale.set(1, p1.distanceTo(p2), 1);
+        coopBeam.lookAt(p2);
+        coopBeam.rotateX(Math.PI / 2);
+        coopBeam.visible = true;
+      } else {
+        coopBeam.visible = false;
+      }
 
-        // Chapters & Master Scenes
-        async function loadChapters() {
-            try {
-                const [storyRes, scenesRes] = await Promise.all([
-                    fetch('assets/inchan/story_data.json'),
-                    fetch('assets/inchan/scenes_data.json')
-                ]);
-                const chapters = await storyRes.json();
-                const scenes = await scenesRes.json();
+      // 화 구역 타이밍 커서 업데이트
+      if (state.activeZone === 'anger' && !state.quests.anger) {
+        timingCursorPct = 50 + Math.sin(time * 3.0) * 48;
+        const curEl = document.getElementById('timingCursor');
+        if (curEl) curEl.style.left = `${timingCursorPct.toFixed(1)}%`;
+      }
+      for (let i = sadRipples.length - 1; i >= 0; i--) {
+        const sr = sadRipples[i]; sr.life -= dt * 0.55; sr.scale += dt * 9.0;
+        sr.mesh.scale.setScalar(sr.scale); sr.mesh.material.opacity = Math.max(0, sr.life);
+        if (sr.life <= 0) { worldGroup.remove(sr.mesh); sadRipples.splice(i, 1); }
+      }
+      for (let i = releasedLanterns.length - 1; i >= 0; i--) {
+        const rl = releasedLanterns[i]; rl.life -= dt; rl.group.position.y += dt * 2.8;
+        rl.group.position.x += Math.sin(time * 1.5 + i) * dt * 0.5;
+        if (rl.life <= 0) { worldGroup.remove(rl.group); releasedLanterns.splice(i, 1); }
+      }
+      fireParticles.forEach(fp => {
+        fp.y += dt * fp.speed; if (fp.y > 2.4) fp.y = 0;
+        fp.mesh.position.set(Math.cos(time * 3 + fp.offsetAng) * fp.rad, 0.7 + fp.y, Math.sin(time * 3 + fp.offsetAng) * fp.rad);
+        fp.mesh.scale.setScalar(Math.max(0.1, 1 - fp.y / 2.4));
+      });
+      campfireLight.intensity = (state.timeOfDay === 'night' ? 3.8 : 2.6) + Math.sin(time * 12) * 0.45;
 
-                const chipsWrapper = document.getElementById('chapter-chips-wrapper');
-                chipsWrapper.innerHTML = '';
+      joyOrbGroup.rotation.y += dt * 1.5; joyOrbGroup.position.y = 7.5 + Math.sin(time * 2.5) * 0.4;
+      sadOrbGroup.rotation.y += dt * 1.2; sadOrbGroup.position.y = 1.1 + Math.sin(time * 2) * 0.2;
+      angerOrbGroup.rotation.y += dt * 2.0; fearOrbGroup.rotation.y += dt * 1.8; worryOrbGroup.rotation.y += dt * 1.0;
 
-                chapters.forEach((ch, idx) => {
-                    const chip = document.createElement('button');
-                    chip.className = 'chapter-chip' + (idx === 0 ? ' active' : '');
-                    chip.textContent = ch.title;
-                    chip.onclick = () => selectChapter(ch, idx, scenes);
-                    chipsWrapper.appendChild(chip);
-                });
-            } catch (err) {
-                console.warn('Could not load chapter json:', err);
-            }
+      // 이동 & 발밑 로블록스 먼지 파티클
+      let mx = 0, mz = 0;
+      if (input.w) mz -= 1; if (input.s) mz += 1; if (input.a) mx -= 1; if (input.d) mx += 1;
+      if (input.joyX !== 0 || input.joyY !== 0) { mx = input.joyX; mz = input.joyY; }
+      const isMoving = (mx !== 0 || mz !== 0), speed = (input.shift ? 12.5 : 7.5);
+
+      if (isMoving && !playerPhysics.isDancing && !playerPhysics.isMeditating) {
+        const fwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
+        const rgt = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
+        const dir = new THREE.Vector3().addScaledVector(fwd, -mz).addScaledVector(rgt, mx).normalize();
+        playerRig.position.addScaledVector(dir, speed * dt);
+        playerRig.rotation.y = THREE.MathUtils.lerp(playerRig.rotation.y, Math.atan2(dir.x, dir.z), 0.22);
+
+        playerPhysics.walkCycle += dt * (input.shift ? 18 : 11);
+        leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8; rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
+        leftLeg.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.9; rightLeg.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.9;
+        torso.position.y = 1.35 + Math.abs(Math.sin(playerPhysics.walkCycle)) * 0.1;
+
+        playerPhysics.dustTimer += dt;
+        if (playerPhysics.isGrounded && playerPhysics.dustTimer > 0.16) {
+          playerPhysics.dustTimer = 0;
+          const dMesh = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.16), new THREE.MeshBasicMaterial({ color: 0xe7e5e4, transparent: true, opacity: 0.7 }));
+          dMesh.position.set(playerRig.position.x + (Math.random()-0.5)*0.4, 0.18, playerRig.position.z + (Math.random()-0.5)*0.4);
+          scene.add(dMesh); dustParticles.push({ mesh: dMesh, life: 0.45 });
         }
+      } else if (!playerPhysics.isDancing && !playerPhysics.isMeditating) {
+        leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15); rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, 0, 0.15);
+        leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, 0, 0.15); rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, 0, 0.15);
+        torso.position.y = 1.35 + Math.sin(time * 2.5) * 0.025;
+      }
 
-        function selectChapter(chapter, index, scenes) {
-            document.querySelectorAll('.chapter-chip').forEach((c, i) => {
-                c.classList.toggle('active', i === index);
-            });
+      for (let i = dustParticles.length - 1; i >= 0; i--) {
+        const dp = dustParticles[i]; dp.life -= dt;
+        dp.mesh.position.y += dt * 0.8; dp.mesh.scale.setScalar(Math.max(0.01, dp.life * 2));
+        if (dp.life <= 0) { scene.remove(dp.mesh); dustParticles.splice(i, 1); }
+      }
 
-            // Find matching scenes for chapter
-            const prefix = `${index + 1}장`;
-            const matched = scenes.find(s => s.filename.startsWith(prefix));
-
-            const viewer = document.getElementById('scene-viewer');
-            if (matched) {
-                document.getElementById('viewer-img').src = matched.path;
-                document.getElementById('viewer-title').textContent = chapter.title;
-                document.getElementById('viewer-text').textContent = chapter.content.substring(0, 220) + '...';
-                viewer.classList.add('show');
-            }
-
-            // Smooth camera look target
-            controls.target.set(0, 1.2, 0);
+      // 랜드마크 & 스토리 기반 퀘스트 검사
+      const distTrampoline = Math.hypot(playerRig.position.x - 22, playerRig.position.z - 4);
+      if (distTrampoline < 3.1 && playerRig.position.y <= 0.5) {
+        playerPhysics.velY = 18.5; playerPhysics.jumpCount = 1; playerPhysics.isGrounded = false;
+        soundJump(true); showToast('기쁨의 트램펄린에서 하늘 높이 솟구쳤습니다!');
+      }
+      joyRings.forEach((jr, idx) => {
+        if (jr.cleared) return;
+        jr.mesh.rotation.z += dt * 1.4;
+        jr.mesh.position.y = jr.baseY + Math.sin(time * 2.5 + idx) * 0.25;
+        if (playerRig.position.distanceTo(jr.mesh.position) < 2.2) {
+          jr.cleared = true; jr.mesh.visible = false;
+          state.mission.joy = joyRings.filter(r => r.cleared).length;
+          saveProgress();
+          soundChime(740 + state.mission.joy * 60);
+          createMagicImpact(jr.mesh.position, 0xfbbf24);
+          if (state.mission.joy >= 3 && !state.quests.joy) {
+            checkQuestCollect('joy', '황금 기쁨 구슬 획득', '하늘 링 3개를 모두 통과해 마음껏 기뻐하는 용기를 얻었습니다!');
+            lastPromptZone = null;
+          } else {
+            showToast(`하늘 링 통과! (${state.mission.joy}/3)`);
+          }
         }
+      });
 
-        // Interactive Click Raycasting
-        function onCanvasClick(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(scene.children, true);
-
-            if (intersects.length > 0) {
-                let obj = intersects[0].object;
-                while (obj.parent && !obj.userData?.type && obj !== scene) {
-                    obj = obj.parent;
-                }
-
-                if (obj.userData?.type === 'fairy') {
-                    showFairyDialog(obj.userData.key);
-                } else if (obj.userData?.type === 'inchan') {
-                    showInchanDialog();
-                } else if (obj.name === 'heart_basket') {
-                    showBasketDialog();
-                }
-            }
+      sadDrops.forEach((sd, idx) => {
+        if (sd.cleared) return;
+        sd.mesh.position.y = 0.8 + Math.sin(time * 3 + idx) * 0.15;
+        sd.mesh.rotation.y += dt * 1.5;
+        if (Math.hypot(playerRig.position.x - sd.mesh.position.x, playerRig.position.z - sd.mesh.position.z) < 2.0) {
+          sd.cleared = true; sd.mesh.visible = false;
+          state.mission.sad = sadDrops.filter(d => d.cleared).length;
+          saveProgress();
+          soundChime(480 + state.mission.sad * 40);
+          createMagicImpact(sd.mesh.position, 0x38bdf8);
+          showToast(state.mission.sad >= 3 ? '기억의 물방울 3개를 모두 모았어요! 이제 연못 중심으로 걸어가세요.' : `기억의 물방울 수집 (${state.mission.sad}/3) — ${sd.story}`);
         }
+      });
+      if (Math.hypot(playerRig.position.x - (-23), playerRig.position.z - 4) < 2.3 && !state.quests.sad && state.mission.sad >= 3) {
+        triggerSadRitual(); lastPromptZone = null;
+      }
 
-        function showFairyDialog(key) {
-            const data = emotionData[key];
-            if (!data) return;
-
-            const dialog = document.getElementById('emotion-dialog');
-            const tag = document.getElementById('dialog-tag');
-            tag.textContent = "감정 손님";
-            tag.style.background = data.color;
-            tag.style.color = "#0f172a";
-
-            document.getElementById('dialog-title').textContent = data.name;
-            document.getElementById('dialog-quote').textContent = data.quote;
-            document.getElementById('dialog-body').textContent = data.body;
-            currentActiveAudio = data.audio;
-
-            dialog.classList.add('show');
+      worryThreads.forEach((wt, idx) => {
+        if (wt.cleared) return;
+        wt.mesh.rotation.y += dt * 1.2; wt.mesh.rotation.x += dt * 0.8;
+        if (Math.hypot(playerRig.position.x - wt.mesh.position.x, playerRig.position.z - wt.mesh.position.z) < 2.0) {
+          wt.cleared = true; wt.mesh.visible = false;
+          state.mission.worry = worryThreads.filter(t => t.cleared).length;
+          saveProgress();
+          soundChime(520 + state.mission.worry * 45);
+          createMagicImpact(wt.mesh.position, 0xa855f7);
+          showToast(state.mission.worry >= 3 ? '엉킨 털실 매듭을 모두 풀었어요! 이제 벤치에서 소원 연등을 날려보세요.' : `털실 매듭 풀기 (${state.mission.worry}/3)`);
         }
+      });
 
-        function showInchanDialog() {
-            const dialog = document.getElementById('emotion-dialog');
-            const tag = document.getElementById('dialog-tag');
-            tag.textContent = "주인공";
-            tag.style.background = "#fde047";
-            tag.style.color = "#0f172a";
-
-            document.getElementById('dialog-title').textContent = "인찬이 (3.2등신 꼬마)";
-            document.getElementById('dialog-quote').textContent = "“엄마, 나한테도 마음 광주리가 있어? 어떤 손님이 온 거지?”";
-            document.getElementById('dialog-body').textContent = "정수리에 삐죽 솟은 단 하나의 귀여운 바보털, 점눈과 발그레한 볼터치가 매력적인 씩씩한 아이 인찬이에요. 오늘 마음 광주리에 찾아올 손님을 호기심 가득히 기다리고 있어요.";
-            currentActiveAudio = "assets/inchan/audio/seg_001_인찬이.wav";
-
-            dialog.classList.add('show');
+      if (!playerPhysics.isGrounded) {
+        playerPhysics.velY -= 26.0 * dt; playerRig.position.y += playerPhysics.velY * dt;
+        if (playerPhysics.jumpCount === 2) playerRig.rotation.x += dt * 14.0;
+        if (playerRig.position.y <= 0) {
+          playerRig.position.y = 0; playerPhysics.velY = 0; playerPhysics.jumpCount = 0; playerPhysics.isGrounded = true;
+          playerRig.rotation.x = 0; playerRig.scale.set(1.22, 0.78, 1.22);
         }
+      }
+      playerRig.scale.lerp(new THREE.Vector3(1, 1, 1), 0.16);
 
-        function showBasketDialog() {
-            const dialog = document.getElementById('emotion-dialog');
-            const tag = document.getElementById('dialog-tag');
-            tag.textContent = "마음의 중심";
-            tag.style.background = "#d97706";
-            tag.style.color = "#ffffff";
+      if (playerPhysics.isDancing) {
+        playerPhysics.danceTimer += dt * 8; playerRig.rotation.y += dt * 6;
+        leftArm.rotation.z = Math.sin(playerPhysics.danceTimer) * 1.2; rightArm.rotation.z = -Math.sin(playerPhysics.danceTimer) * 1.2;
+        torso.position.y = 1.35 + Math.abs(Math.sin(playerPhysics.danceTimer)) * 0.3;
+        if (playerPhysics.danceTimer > 20) { playerPhysics.isDancing = false; leftArm.rotation.z = 0; rightArm.rotation.z = 0; }
+      }
+      if (playerPhysics.isMeditating) { playerRig.position.y = 2.0 + Math.sin(time * 3) * 0.3; playerRig.rotation.y += dt * 0.8; }
 
-            document.getElementById('dialog-title').textContent = "황금빛 마음 광주리";
-            document.getElementById('dialog-quote').textContent = "“사람에게는 누구나 마음 광주리가 있어. 여러 감정들이 손님으로 찾아와 머물다 가지.”";
-            document.getElementById('dialog-body').textContent = "기쁨, 슬픔, 화, 두려움, 걱정, 설렘... 모든 감정은 나쁜 것이 아니라 우리를 찾아오는 소중한 손님들이에요. 광주리를 혼자 무겁게 들지 않고 주변에 나누면 마음이 한결 가벼워집니다.";
-            currentActiveAudio = "assets/inchan/audio/seg_001_인찬이.wav";
+      playerPhysics.blinkTimer += dt;
+      if (playerPhysics.blinkTimer > 3.5) {
+        eyeL.scale.y = 0.1; eyeR.scale.y = 0.1;
+        if (playerPhysics.blinkTimer > 3.65) { eyeL.scale.y = 1; eyeR.scale.y = 1; playerPhysics.blinkTimer = 0; }
+      }
+      if (Math.hypot(playerRig.position.x, playerRig.position.z) > 51) playerRig.position.setLength(51);
 
-            dialog.classList.add('show');
+      // 마법 투사체 & 두려움 그림자 정화
+      for (let i = magicProjectiles.length - 1; i >= 0; i--) {
+        const mp = magicProjectiles[i]; mp.mesh.position.addScaledVector(mp.vel, dt); mp.life -= dt;
+        let hit = false;
+        for (const fs of fearShadows) {
+          if (!fs.cleared && mp.mesh.position.distanceTo(fs.group.position) < 2.3) {
+            fs.cleared = true; fs.group.visible = false; hit = true;
+            createMagicImpact(fs.group.position, 0xfbbf24);
+            const left = fearShadows.filter(x => !x.cleared).length;
+            state.mission.fear = fearShadows.length - left;
+            saveProgress();
+            if (left === 0) {
+              beamMat.color.set(0xfbbf24);
+              checkQuestCollect('fear', '용기의 등대 수정 획득', '등대 주변 어둠 그림자 5개를 별빛 마법으로 모두 밝혀냈습니다!');
+              lastPromptZone = null;
+            } else showToast(`어둠 그림자 정화! (${state.mission.fear}/${fearShadows.length})`);
+            break;
+          }
         }
-
-        // Global functions for window onclick
-        window.focusFairy = function(key) {
-            showFairyDialog(key);
-            const fairy = fairies[key];
-            if (fairy) {
-                controls.target.copy(fairy.position);
-            }
-        };
-
-        window.closeDialog = function() {
-            document.getElementById('emotion-dialog').classList.remove('show');
-        };
-
-        window.closeSceneViewer = function() {
-            document.getElementById('scene-viewer').classList.remove('show');
-        };
-
-        window.playVoice = function() {
-            const player = document.getElementById('audio-player');
-            if (currentActiveAudio) {
-                player.src = currentActiveAudio;
-                player.play().catch(e => console.warn('Audio play prevented:', e));
-            }
-        };
-
-        window.toggleBGM = function() {
-            const player = document.getElementById('audio-player');
-            if (player.paused) {
-                player.src = "assets/inchan/audio/seg_001_인찬이.wav";
-                player.play().catch(e => console.warn('Audio play:', e));
-            } else {
-                player.pause();
-            }
-        };
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
+        if (hit || mp.mesh.position.y <= 0.2 || mp.life <= 0) {
+          if (!hit) createMagicImpact(mp.mesh.position, mp.color);
+          scene.remove(mp.mesh); magicProjectiles.splice(i, 1);
         }
+      }
+      for (let i = magicImpacts.length - 1; i >= 0; i--) {
+        const mi = magicImpacts[i]; mi.mesh.position.addScaledVector(mi.vel, dt); mi.life -= dt;
+        mi.mesh.scale.setScalar(Math.max(0.01, mi.life));
+        if (mi.life <= 0) { scene.remove(mi.mesh); magicImpacts.splice(i, 1); }
+      }
 
-        function animate(time) {
-            requestAnimationFrame(animate);
+      const targetSpirit = playerRig.position.clone().add(new THREE.Vector3(Math.cos(time * 2.5) * 1.8, 2.5 + Math.sin(time * 3.5) * 0.25, Math.sin(time * 2.5) * 1.8));
+      spiritGroup.position.lerp(targetSpirit, 0.12); spiritGroup.rotation.y = time * 2.5;
 
-            const t = time * 0.001;
+      camState.targetPos.lerp(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)), 0.14);
+      const cx = camState.targetPos.x + Math.sin(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
+      const cy = camState.targetPos.y + Math.sin(camState.pitch) * camState.distance;
+      const cz = camState.targetPos.z + Math.cos(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
+      camera.position.set(cx, Math.max(cy, 0.6), cz); camera.lookAt(camState.targetPos);
+      camera.fov = THREE.MathUtils.lerp(camera.fov, input.shift && isMoving ? 57 : 50, 0.1);
+      camera.updateProjectionMatrix();
 
-            // Basket floating gently
-            if (basketGroup) {
-                basketGroup.position.y = Math.sin(t * 1.5) * 0.08;
-                basketGroup.rotation.y = t * 0.2;
-            }
+      drawMinimap(time); updateZonePrompt();
+      composer.render();
+    }
 
-            // Fairies revolving around basket
-            Object.values(fairies).forEach((fairy, idx) => {
-                const u = fairy.userData;
-                const angle = u.baseAngle + t * (0.4 + idx * 0.05);
-                fairy.position.x = Math.cos(angle) * u.radius;
-                fairy.position.z = Math.sin(angle) * u.radius;
-                fairy.position.y = 1.0 + Math.sin(t * 2 + idx) * 0.35;
-                fairy.rotation.y = t * 1.2;
-            });
+    // ==========================================
+    // 11. UI 핸들러 & 카드 렌더링
+    // ==========================================
+    window.openModal = id => { document.getElementById(id).classList.add('open'); initAudio(); };
+    window.closeModal = id => { document.getElementById(id).classList.remove('open'); };
+    function showToast(msg) {
+      const box = document.getElementById('toastBox'), el = document.createElement('div');
+      el.className = 'toast'; el.innerHTML = msg; box.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
 
-            // Billboards look at camera
-            Object.values(characterBillboards).forEach(b => {
-                b.quaternion.copy(camera.quaternion);
-            });
+    document.getElementById('btnGuestSelect').onclick = () => openModal('modalSpirit');
+    document.getElementById('btnShootAction').onclick = shootMagicBullet;
+    document.getElementById('btnJumpAction').onclick = doJump;
+    document.getElementById('btnBreatheWind').onclick = doBreatheWind;
+    document.getElementById('btnDanceAction').onclick = doDance;
+    document.getElementById('btnMeditateAction').onclick = doMeditate;
+    document.getElementById('btnFarewellAction').onclick = () => { openModal('modalFarewell'); renderFarewell(); };
+    document.getElementById('btnTrophy').onclick = () => { openModal('modalTrophy'); renderTrophyCard(); };
+    document.getElementById('btnTOD').onclick = cycleTimeOfDay;
+    document.getElementById('btnStory').onclick = () => openModal('modalStory');
+    document.getElementById('btnHelp').onclick = () => showToast('WASD 이동 · SPACE 2단점프 · F 마법 · C 심호흡 · G 손님 대화 · 우측 하단 레이더를 따라 5대 구슬을 모아보세요!');
 
-            controls.update();
-            composer.render();
+    function updateAudioUI() {
+      const btn = document.getElementById('btnAudio');
+      btn.className = state.soundOn ? 'hw-btn active-green' : 'hw-btn muted';
+      btn.querySelector('.audio-label').textContent = state.soundOn ? '소리 ON' : '소리 OFF';
+    }
+    updateAudioUI();
+    document.getElementById('btnAudio').onclick = () => {
+      initAudio(); state.soundOn = !state.soundOn; updateAudioUI();
+      if (state.soundOn) { soundChime(528); showToast('소리가 켜졌습니다.'); }
+      else showToast('소리가 꺼졌습니다.');
+    };
+
+    const cards = document.querySelectorAll('.spirit-card');
+    cards.forEach(c => c.addEventListener('click', () => { cards.forEach(x => x.classList.remove('active')); c.classList.add('active'); soundChime(580); }));
+    document.getElementById('btnConfirmSpirit').onclick = () => {
+      const act = document.querySelector('.spirit-card.active');
+      if (act) { selectGuestSpirit(act.dataset.guest); closeModal('modalSpirit'); showToast(`[${state.spirits[act.dataset.guest].name}] 정령과 동행합니다.`); }
+    };
+
+    function renderFarewell() {
+      const ctx = document.getElementById('farewellCanvas').getContext('2d'), s = state.spirits[state.curGuest];
+      ctx.fillStyle = '#f6f5f0'; ctx.fillRect(0, 0, 800, 520);
+      ctx.strokeStyle = s.hex; ctx.lineWidth = 8; ctx.strokeRect(24, 24, 752, 472);
+      ctx.fillStyle = '#18181b'; ctx.textAlign = 'center'; ctx.font = 'bold 34px "Noto Sans KR"';
+      ctx.fillText('감정 손님 작별 카드 (환송증)', 400, 100);
+      ctx.font = '16px "Noto Sans KR"'; ctx.fillStyle = '#6b6b73';
+      ctx.fillText('《인찬이의 마음 손님》 사회정서학습(SEL) 3D 메타버스', 400, 138);
+      ctx.fillStyle = s.hex; ctx.beginPath(); ctx.arc(400, 210, 32, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#18181b'; ctx.font = 'bold 26px "Noto Sans KR"';
+      ctx.fillText(`“안녕, 나의 소중한 ${s.name}!”`, 400, 285);
+      ctx.font = '19px "Noto Sans KR"'; ctx.fillStyle = '#3f3f46';
+      ctx.fillText(`내 마음 광주리에 찾아와서 [ ${s.desc} ]를`, 400, 340);
+      ctx.fillText('알려주고 지켜줘서 정말 고마웠어. 편안하게 잘 가!', 400, 376);
+      const d = new Date(); ctx.font = '15px "Noto Sans KR"'; ctx.fillStyle = '#71717a';
+      ctx.fillText(`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 마음 모험가 ${state.playerName} 올림`, 400, 456);
+    }
+
+    function renderTrophyCard() {
+      const ctx = document.getElementById('trophyCanvas').getContext('2d');
+      ctx.fillStyle = '#f6f5f0'; ctx.fillRect(0, 0, 800, 520);
+      ctx.strokeStyle = '#ff5800'; ctx.lineWidth = 10; ctx.strokeRect(24, 24, 752, 472);
+      ctx.fillStyle = '#18181b'; ctx.textAlign = 'center'; ctx.font = 'bold 36px "Noto Sans KR"';
+      ctx.fillText('마음 광주리 마스터 수료증', 400, 98);
+      ctx.font = 'bold 18px "Noto Sans KR"'; ctx.fillStyle = '#ff5800';
+      ctx.fillText(`수여자: ${state.playerName} · 2026 사회정서학습(SEL) 연구회`, 400, 140);
+      ['#f59e0b', '#3b82f6', '#ef4444', '#a855f7', '#10b981'].forEach((col, i) => {
+        ctx.fillStyle = col; ctx.beginPath(); ctx.arc(280 + i * 60, 205, 16, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.fillStyle = '#18181b'; ctx.font = 'bold 22px "Noto Sans KR"';
+      ctx.fillText('“모든 감정 손님은 나를 돕기 위해 찾아온 소중한 신호입니다.”', 400, 272);
+      ctx.font = '17px "Noto Sans KR"'; ctx.fillStyle = '#3f3f46';
+      ctx.fillText('위 사람은 5대 감정 손님(기쁨·슬픔·화·두려움·걱정)을 모두 만나고,', 400, 322);
+      ctx.fillText('몸과 마음의 치유 수련을 훌륭히 마쳤으므로 이 수료증을 수여합니다.', 400, 356);
+      ctx.font = '15px "Noto Sans KR"'; ctx.fillStyle = '#6b6b73';
+      ctx.fillText(`오늘의 마음 기록: "${state.mindNote}"`, 400, 405);
+      const d = new Date(); ctx.fillText(`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 마음 광주리 수련 마스터 ${state.playerName}`, 400, 458);
+    }
+
+    document.getElementById('btnDownloadCard').onclick = () => { const a = document.createElement('a'); a.download = `${state.playerName}_작별카드.png`; a.href = document.getElementById('farewellCanvas').toDataURL(); a.click(); };
+    document.getElementById('btnDownloadTrophy').onclick = () => { const a = document.createElement('a'); a.download = `${state.playerName}_마스터_수료증.png`; a.href = document.getElementById('trophyCanvas').toDataURL(); a.click(); };
+
+    document.getElementById('btnCheckin').onclick = () => {
+      document.getElementById('inputPlayerName').value = state.playerName;
+      document.getElementById('inputMindNote').value = state.mindNote;
+      openModal('modalCheckin');
+    };
+    document.getElementById('btnSaveCheckin').onclick = () => {
+      const nm = document.getElementById('inputPlayerName').value.trim(), nt = document.getElementById('inputMindNote').value.trim();
+      if (nm) state.playerName = nm; if (nt) state.mindNote = nt;
+      saveProgress(); updateScreenCanvas(); closeModal('modalCheckin'); soundChime(659);
+      showToast(`${state.playerName}님의 오늘 마음 기록이 저장되었습니다.`);
+    };
+    document.getElementById('btnResetProgress').onclick = () => {
+      Object.keys(state.quests).forEach(k => state.quests[k] = false);
+      state.mission = { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0 };
+      state.breathProgress = 0; document.getElementById('breathBarFill').style.width = '0%';
+      campfireLight.color.set(0xef4444); beamMat.color.set(0xc084fc);
+      joyRings.forEach(jr => { jr.cleared = false; jr.mesh.visible = true; });
+      sadDrops.forEach(sd => { sd.cleared = false; sd.mesh.visible = true; });
+      worryThreads.forEach(wt => { wt.cleared = false; wt.mesh.visible = true; });
+      fearShadows.forEach(fs => { fs.cleared = false; fs.group.visible = true; });
+      saveProgress(); syncQuestHUD(); lastPromptZone = null; closeModal('modalCheckin');
+      showToast('수련 진행도가 초기화되었습니다.');
+    };
+    document.getElementById('btnReleaseWorry').onclick = () => {
+      state.worryText = document.getElementById('inputWorryText').value.trim() || '작은 걱정 하나';
+      saveProgress(); closeModal('modalWorry'); spawnReleasedLantern(state.worryText);
+      if (!state.quests.worry) { checkQuestCollect('worry', '생각의 털실타래 획득', '걱정을 연등에 담아 날려 보내고 마음이 가벼워졌습니다.'); lastPromptZone = null; }
+    };
+
+    // ==========================================
+    // 11-B. 친구 아바타 협력 & 크로스탭 실시간 연동
+    // ==========================================
+    const worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_v1') : null;
+    if (worldChannel) {
+      worldChannel.onmessage = e => {
+        const d = e.data;
+        if (!d) return;
+        if (d.type === 'board_sync' && d.post && !state.boardPosts.some(p => p.id === d.post.id)) {
+          state.boardPosts.unshift(d.post);
+          state.stats[d.post.emotion] = (state.stats[d.post.emotion] || 0) + 1;
+          saveProgress(); updateScreenCanvas();
+          if (document.getElementById('modalBoard').classList.contains('open')) renderBoard();
+          showToast(`다른 탭의 친구 <b>${d.post.author}</b>님이 마음 게시판에 새 글을 남겼습니다.`);
+        } else if (d.type === 'coop_cheer') {
+          showToast(`<b>${d.from}</b>님이 <b>${d.to}</b>님과 마음을 나누었습니다: ${d.msg}`);
         }
-    </script>
+      };
+    }
+
+    document.getElementById('btnHelpBasket').onclick = () => {
+      const fr = friendAgents.find(f => f.id === state.activeFriendId);
+      if (!fr) return;
+      coopBeamTarget = fr.group; coopBeamTimer = 3.5;
+      state.coopHelped += 1; saveProgress();
+      soundQuestComplete(); closeModal('modalFriend');
+      showToast(`<b>${fr.name}</b>의 마음 광주리를 함께 들어주었습니다! (총 협력 ${state.coopHelped}회)`);
+      if (worldChannel) worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: '광주리를 함께 들어주었어요!' });
+    };
+    document.getElementById('btnDanceTogether').onclick = () => {
+      const fr = friendAgents.find(f => f.id === state.activeFriendId);
+      if (!fr) return;
+      fr.danceTimer = 4.0; doDance(); closeModal('modalFriend');
+      showToast(`<b>${fr.name}</b>와(과) 함께 기쁨의 춤을 춥니다!`);
+    };
+    document.getElementById('btnSendCheer').onclick = () => {
+      const fr = friendAgents.find(f => f.id === state.activeFriendId);
+      const msg = document.getElementById('inputFriendCheer').value.trim();
+      if (!fr || !msg) { showToast('응원 메시지를 입력해 주세요.'); return; }
+      const newPost = {
+        id: Date.now(), author: state.playerName, emotion: 'joy', time: '방금 전',
+        title: `[응원] ${fr.name}에게: ${msg.slice(0, 18)}`,
+        body: `${fr.name}에게 보내는 마음 응원 — "${msg}"`,
+        insight: '9장 마음 나누기: 친구의 이야기에 귀 기울이고 응원하면 광주리가 훨씬 가벼워집니다.',
+        likes: 1
+      };
+      state.boardPosts.unshift(newPost);
+      document.getElementById('inputFriendCheer').value = '';
+      saveProgress(); updateScreenCanvas(); closeModal('modalFriend'); soundChime(659);
+      showToast(`<b>${fr.name}</b>에게 응원 메시지를 보내고 마음 게시판에 기록했습니다!`);
+      if (worldChannel) worldChannel.postMessage({ type: 'board_sync', post: newPost });
+    };
+
+    // ==========================================
+    // 12. 인터랙티브 실시간 마음 게시판 로직
+    // ==========================================
+    function openBoardModal() {
+      openModal('modalBoard');
+      renderBoard();
+    }
+
+    function selectBoardPost(id) {
+      state.selectedPostId = id;
+      const post = state.boardPosts.find(p => p.id === id);
+      if (!post) return;
+      const sp = state.spirits[post.emotion] || state.spirits.joy;
+      document.getElementById('bdTag').innerHTML = `<span class="zp-chip" style="background:${sp.hex};"></span>${sp.name} · ${post.author}`;
+      document.getElementById('bdMeta').textContent = post.time;
+      document.getElementById('bdBody').textContent = post.body;
+
+      const insEl = document.getElementById('bdInsight');
+      insEl.style.display = 'block';
+      insEl.textContent = post.insight || `감정 손님 [${sp.name.split(' ')[0]}]: ${sp.desc}`;
+
+      const hBtn = document.getElementById('bdHeartBtn');
+      const isLiked = state.likedIds.includes(id);
+      hBtn.style.display = 'inline-flex';
+      hBtn.classList.toggle('liked', isLiked);
+      document.getElementById('bdHeartLabel').textContent = isLiked ? '공감 완료' : '마음 공감하기';
+      document.getElementById('bdHeartCount').textContent = post.likes;
+      hBtn.onclick = () => {
+        if (state.likedIds.includes(id)) {
+          state.likedIds = state.likedIds.filter(x => x !== id);
+          post.likes = Math.max(0, post.likes - 1);
+        } else {
+          state.likedIds.push(id);
+          post.likes += 1;
+          soundChime(659);
+        }
+        saveProgress(); updateScreenCanvas(); renderBoard();
+      };
+      renderBoardListOnly();
+    }
+
+    function renderBoardListOnly() {
+      const listEl = document.getElementById('boardList');
+      listEl.innerHTML = '';
+      const filtered = state.boardFilter === 'all'
+        ? state.boardPosts
+        : state.boardPosts.filter(p => p.emotion === state.boardFilter);
+
+      filtered.forEach(post => {
+        const sp = state.spirits[post.emotion] || state.spirits.joy;
+        const item = document.createElement('div');
+        item.className = 'board-post-item' + (state.selectedPostId === post.id ? ' selected' : '');
+        item.innerHTML = `
+          <div class="board-post-left">
+            <span class="zp-chip" style="background:${sp.hex}; flex-shrink:0;"></span>
+            <span class="board-post-title">${post.title}</span>
+          </div>
+          <span class="board-post-meta">${post.author} · ♥${post.likes}</span>
+        `;
+        item.onclick = () => selectBoardPost(post.id);
+        listEl.appendChild(item);
+      });
+    }
+
+    function renderBoard() {
+      renderBoardListOnly();
+      if (state.selectedPostId && state.boardPosts.some(p => p.id === state.selectedPostId)) {
+        selectBoardPost(state.selectedPostId);
+      } else if (state.boardPosts.length) {
+        selectBoardPost(state.boardPosts[0].id);
+      }
+    }
+
+    document.getElementById('btnBoard').onclick = openBoardModal;
+    document.querySelectorAll('.board-filter-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.board-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.boardFilter = btn.dataset.filter;
+        renderBoardListOnly();
+      };
+    });
+
+    document.getElementById('btnSubmitPost').onclick = () => {
+      const text = document.getElementById('boardPostInput').value.trim();
+      const emo = document.getElementById('boardPostEmotion').value;
+      if (!text) { showToast('게시판에 남길 마음 이야기를 적어주세요.'); return; }
+      const sp = state.spirits[emo] || state.spirits.joy;
+      const newPost = {
+        id: Date.now(),
+        author: state.playerName,
+        emotion: emo,
+        time: '방금 전',
+        title: text.length > 26 ? text.slice(0, 26) + '…' : text,
+        body: text,
+        insight: `감정 손님 [${sp.name}]의 메시지: ${sp.desc}. 내 마음을 표현한 것만으로도 훌륭한 시작입니다.`,
+        likes: 1
+      };
+      state.boardPosts.unshift(newPost);
+      state.stats[emo] = (state.stats[emo] || 0) + 1;
+      state.onlineCount += 1;
+      state.mindNote = text;
+      state.selectedPostId = newPost.id;
+      document.getElementById('boardPostInput').value = '';
+      saveProgress(); updateScreenCanvas(); renderBoard();
+      soundQuestComplete();
+      if (worldChannel) worldChannel.postMessage({ type: 'board_sync', post: newPost });
+      showToast('실시간 마음 게시판과 3D 전광판에 내 글이 게시되었습니다!');
+    };
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    syncQuestHUD(); selectGuestSpirit(state.curGuest); updateScreenCanvas(); animate();
+    setTimeout(() => {
+      const pl = document.getElementById('preloader'); pl.style.opacity = '0'; setTimeout(() => pl.remove(), 600);
+      showToast(`<b>${state.playerName}</b>님, 마음 광주리 3D 월드에 오신 것을 환영합니다.`);
+    }, 1000);
+  </script>
 </body>
 </html>
