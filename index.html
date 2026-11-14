@@ -491,13 +491,13 @@
     }
     .story-tracker-toggle {
       background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16);
-      color: #cbd5e1; font-size: 10px; font-weight: 700; padding: 2px 7px;
+      color: #cbd5e1; font-size: 10.5px; font-weight: 700; padding: 2px 7px;
       border-radius: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
     }
     .story-tracker-toggle:hover { background: rgba(251, 191, 36, 0.22); color: #fde047; border-color: #fbbf24; }
     .story-tracker-sub {
-      font-size: 11px; color: #cbd5e1; line-height: 1.4;
-      background: rgba(255, 255, 255, 0.06); padding: 6px 8px; border-radius: 8px;
+      font-size: 11.5px; color: #cbd5e1; line-height: 1.45;
+      background: rgba(255, 255, 255, 0.06); padding: 6px 9px; border-radius: 8px;
       border-left: 3px solid #fbbf24;
     }
     .story-mission-list {
@@ -505,10 +505,10 @@
       overflow-y: auto !important; overflow-x: hidden !important;
       padding-right: 2px;
     }
-    /* 개별 스토리 미션 카드 (독립된 카드형 구조로 텍스트 겹침 완전 방지!) */
+    /* 개별 스토리 미션 카드 (하단 채팅창과 폰트 크기 11.5px 완벽 일치!) */
     .story-q-item {
-      display: flex; flex-direction: column; gap: 3px;
-      padding: 7px 9px; border-radius: 9px;
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 8px 10px; border-radius: 9px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.12);
       cursor: pointer; transition: all 0.15s ease;
@@ -521,7 +521,7 @@
     }
     .story-q-item.active {
       border-color: #fbbf24;
-      background: rgba(251, 191, 36, 0.14);
+      background: rgba(251, 191, 36, 0.15);
       box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
     }
     .story-q-item.done {
@@ -531,22 +531,33 @@
     }
     .story-q-top {
       display: flex; justify-content: space-between; align-items: center;
-      gap: 6px; font-size: 10.5px;
+      gap: 6px; font-size: 11px;
     }
     .story-q-chapter {
-      font-weight: 800; font-size: 10px; letter-spacing: -0.2px;
+      font-weight: 800; font-size: 11px; letter-spacing: -0.2px;
     }
     .story-q-prog {
-      font-weight: 700; color: #fde047; font-size: 10px;
+      font-weight: 800; color: #fde047; font-size: 11px;
       font-family: 'JetBrains Mono', monospace;
     }
     .story-q-title {
-      font-size: 11.5px; font-weight: 700; color: #ffffff;
-      line-height: 1.35; word-break: keep-all;
+      font-size: 12px; font-weight: 800; color: #ffffff;
+      line-height: 1.4; word-break: keep-all;
     }
     .story-q-desc {
-      font-size: 10.5px; color: #cbd5e1; line-height: 1.4;
+      font-size: 11.5px; color: #cbd5e1; line-height: 1.45;
       word-break: keep-all;
+    }
+    .story-q-actions {
+      display: flex; justify-content: flex-end; gap: 5px; margin-top: 2px;
+    }
+    .story-btn-autowalk {
+      background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.45);
+      color: #fde047; font-size: 10.5px; font-weight: 800; padding: 2px 8px;
+      border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    }
+    .story-btn-autowalk:hover {
+      background: #fbbf24; color: #0f172a;
     }
     .sm-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
     .sm-prog { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; color: #fde047; }
@@ -3832,23 +3843,51 @@
     }
     storyQuestMeta.forEach(makeLandmarkStorySign);
 
-    // 플레이어 발밑에서 현재 목표 스토리 미션 구역을 가리키는 3D 황금 길안내 화살표!
+    // ============================================================
+    // 3D 황금빛 별빛 도로(Golden Light Pathway) & 대형 내비게이션 링
+    // (발밑에 묻히지 않고 목적지까지 환상적으로 빛나는 28개 큐브 스터드 웨이브 런웨이!)
+    // ============================================================
     const questGuideArrow = new THREE.Group();
-    const arrowShaft = new THREE.Mesh(
-      new THREE.BoxGeometry(0.24, 0.08, 0.9),
-      new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.9 })
+
+    // 1) 발밑 대형 나침반 회전 링
+    const compassRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.15, 1.38, 24),
+      new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
     );
-    arrowShaft.position.z = 1.55;
-    const arrowHeadGeo = new THREE.ConeGeometry(0.36, 0.6, 4);
+    compassRing.rotation.x = -Math.PI / 2; compassRing.position.y = 0.08;
+
+    // 2) 굵고 선명한 대형 황금 화살표 (발밑 전방으로 시원하게 뻗음)
+    const arrowShaft = new THREE.Mesh(
+      new THREE.BoxGeometry(0.38, 0.12, 1.4),
+      new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.95 })
+    );
+    arrowShaft.position.set(0, 0.12, 1.8);
+    const arrowHeadGeo = new THREE.ConeGeometry(0.55, 0.9, 4);
     arrowHeadGeo.rotateX(Math.PI / 2);
     const arrowHead = new THREE.Mesh(
       arrowHeadGeo,
-      new THREE.MeshBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.95 })
+      new THREE.MeshBasicMaterial({ color: 0xfef08a, transparent: true, opacity: 0.98 })
     );
-    arrowHead.position.z = 2.15;
-    questGuideArrow.add(arrowShaft, arrowHead);
-    questGuideArrow.position.y = 0.25;
+    arrowHead.position.set(0, 0.12, 2.65);
+    questGuideArrow.add(compassRing, arrowShaft, arrowHead);
     scene.add(questGuideArrow);
+
+    // 3) 플레이어에서 목적지 감정 손님까지 지면 위에 쭉 펼쳐지는 황금빛 별빛 도로 (Golden Light Runway)
+    const pathwayGroup = new THREE.Group();
+    scene.add(pathwayGroup);
+    const pathwayStuds = [];
+    const NUM_PATHWAY_STUDS = 28;
+    const studGeo = new THREE.BoxGeometry(0.65, 0.08, 0.65);
+    const studMat = new THREE.MeshStandardMaterial({
+      color: 0xfbbf24, emissive: 0xf59e0b, emissiveIntensity: 1.5,
+      roughness: 0.3, transparent: true, opacity: 0.9
+    });
+    for (let i = 0; i < NUM_PATHWAY_STUDS; i++) {
+      const sm = new THREE.Mesh(studGeo, studMat);
+      sm.visible = false;
+      pathwayGroup.add(sm);
+      pathwayStuds.push(sm);
+    }
 
     function renderStoryMissionTracker() {
       const listEl = document.getElementById('storyMissionList');
@@ -3870,10 +3909,19 @@
             </div>
             <div class="story-q-title">${m.title}</div>
             <div class="story-q-desc">${m.desc}</div>
+            <div class="story-q-actions">
+              <button type="button" class="story-btn-autowalk" onclick="event.stopPropagation(); window.startAutoWalkToQuest('${m.key}')" title="해당 감정 손님이 있는 곳으로 자동으로 걸어갑니다">
+                🚶 자동 안내 걷기 ➔
+              </button>
+            </div>
           </div>
         `;
       }).join('');
     }
+
+    // 자동 걷기(Auto-Walk) 상태 관리
+    let isAutoWalking = false;
+    let autoWalkTarget = null;
 
     window.guideToStoryQuest = function(key) {
       initAudio();
@@ -3882,7 +3930,27 @@
       renderStoryMissionTracker();
       if (meta) {
         soundChime(659);
-        showToast(`🧭 <b>[${meta.chapter}]</b> 방향으로 발밑 황금 화살표가 길을 안내합니다!`);
+        showToast(`🧭 <b>[${meta.chapter}]</b> 길안내 별빛 도로가 열렸습니다! [🚶 자동 안내 걷기]를 누르면 자동으로 걸어갑니다.`);
+      }
+    };
+
+    window.startAutoWalkToQuest = function(key) {
+      initAudio();
+      activeGuidedQuestKey = key;
+      const meta = storyQuestMeta.find(m => m.key === key);
+      renderStoryMissionTracker();
+      if (meta) {
+        isAutoWalking = true;
+        autoWalkTarget = new THREE.Vector3(meta.x, 0, meta.z);
+        soundQuestComplete();
+        showToast(`🚶 <b>[${meta.chapter}]</b>(으)로 인찬이가 뚜벅뚜벅 걸어갑니다!<br><span style="font-size:11px; color:#fde047;">(방향키/WASD를 누르면 즉시 직접 조작으로 전환됩니다)</span>`);
+      }
+    };
+
+    window.stopAutoWalk = function() {
+      if (isAutoWalking) {
+        isAutoWalking = false;
+        autoWalkTarget = null;
       }
     };
 
@@ -4533,9 +4601,42 @@
       let mx = 0, mz = 0;
       if (input.w) mz -= 1; if (input.s) mz += 1; if (input.a) mx -= 1; if (input.d) mx += 1;
       if (input.joyX !== 0 || input.joyY !== 0) { mx = input.joyX; mz = input.joyY; }
+
+      // 사용자가 수동 조작 키를 입력하면 자동 걷기 즉시 해제 (사용자 조작 우선)
+      if (mx !== 0 || mz !== 0 || input.space) {
+        if (isAutoWalking) {
+          isAutoWalking = false;
+          autoWalkTarget = null;
+          showToast('🎮 <b>직접 조작 모드로 전환되었습니다.</b>');
+        }
+      }
+
+      // 자동 걷기(Auto-Walk) 중일 때 목적지 방향으로 자동 전진!
+      if (isAutoWalking && autoWalkTarget) {
+        const dx = autoWalkTarget.x - playerRig.position.x;
+        const dz = autoWalkTarget.z - playerRig.position.z;
+        const distToTarget = Math.hypot(dx, dz);
+        if (distToTarget < 3.2) {
+          isAutoWalking = false;
+          autoWalkTarget = null;
+          soundQuestComplete();
+          showToast(`🎉 <b>목적지에 도착했습니다!</b> 감정 손님과 대화해 보세요.`);
+        } else {
+          const autoDir = new THREE.Vector3(dx, 0, dz).normalize();
+          playerRig.position.addScaledVector(autoDir, 7.8 * dt);
+          resolveHorizontalCollisions();
+          playerRig.rotation.y = THREE.MathUtils.lerp(playerRig.rotation.y, Math.atan2(autoDir.x, autoDir.z), 0.24);
+          playerPhysics.walkCycle += dt * 12;
+          leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8;
+          rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
+          leftLeg.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
+          rightLeg.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8;
+        }
+      }
+
       const isMoving = (mx !== 0 || mz !== 0), speed = (input.shift ? 12.5 : 7.5);
 
-      if (isMoving && !playerPhysics.isDancing && !playerPhysics.isMeditating) {
+      if (isMoving && !playerPhysics.isDancing && !playerPhysics.isMeditating && !isAutoWalking) {
         const fwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
         const rgt = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
         const dir = new THREE.Vector3().addScaledVector(fwd, -mz).addScaledVector(rgt, mx).normalize();
@@ -4853,11 +4954,34 @@
       const guidedMeta = storyQuestMeta.find(m => m.key === activeGuidedQuestKey && !state.quests[m.key]) || storyQuestMeta.find(m => !state.quests[m.key]);
       if (guidedMeta) {
         const gDist = Math.hypot(guidedMeta.x - playerRig.position.x, guidedMeta.z - playerRig.position.z);
-        questGuideArrow.visible = (gDist > 3.5);
-        questGuideArrow.position.set(playerRig.position.x, playerRig.position.y + 0.26 + Math.sin(time * 5) * 0.05, playerRig.position.z);
-        questGuideArrow.rotation.y = Math.atan2(guidedMeta.x - playerRig.position.x, guidedMeta.z - playerRig.position.z);
+        const showGuide = (gDist > 3.5);
+        questGuideArrow.visible = showGuide;
+        if (showGuide) {
+          // 발밑 회전 링 & 전방 대형 나침반 화살표
+          questGuideArrow.position.set(playerRig.position.x, playerRig.position.y + 0.15, playerRig.position.z);
+          questGuideArrow.rotation.y = Math.atan2(guidedMeta.x - playerRig.position.x, guidedMeta.z - playerRig.position.z);
+          compassRing.rotation.z = time * 2; // 발밑 링 회전
+
+          // 플레이어에서 목적지까지 28개의 별빛 도로 스터드 물결 배치!
+          const px = playerRig.position.x, pz = playerRig.position.z;
+          const tx = guidedMeta.x, tz = guidedMeta.z;
+          for (let i = 0; i < NUM_PATHWAY_STUDS; i++) {
+            const sm = pathwayStuds[i];
+            const t = (i + 1) / (NUM_PATHWAY_STUDS + 1);
+            const sx = px + (tx - px) * t;
+            const sz = pz + (tz - pz) * t;
+            const waveY = Math.sin(time * 6 - i * 0.35) * 0.08;
+            sm.position.set(sx, 0.16 + waveY, sz);
+            sm.rotation.y = Math.atan2(tx - px, tz - pz);
+            sm.scale.setScalar(0.75 + Math.sin(time * 5 - i * 0.3) * 0.25);
+            sm.visible = true;
+          }
+        } else {
+          pathwayStuds.forEach(sm => sm.visible = false);
+        }
       } else {
         questGuideArrow.visible = false;
+        pathwayStuds.forEach(sm => sm.visible = false);
       }
 
       drawMinimap(time); updateZonePrompt();
