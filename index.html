@@ -136,18 +136,36 @@
     .zp-btn.secondary { background: rgba(24, 24, 27, 0.08); color: var(--ink-main); }
 
     .breath-bar-wrap {
-      width: 240px; height: 14px; border-radius: 99px; background: rgba(24,24,27,0.14);
-      position: relative; overflow: hidden; display: none; border: 1px solid var(--line-hair);
+      width: 380px; max-width: 90vw; height: 36px; border-radius: 20px;
+      background: linear-gradient(180deg, #1e293b, #0f172a);
+      position: relative; overflow: hidden; display: none;
+      border: 2.5px solid #f59e0b;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.6), inset 0 2px 6px rgba(255,255,255,0.1);
+      margin: 8px 0;
     }
-    .breath-bar-wrap.active { display: block; }
+    .breath-bar-wrap.active { display: flex; align-items: center; }
     .timing-zone {
-      position: absolute; left: 36%; width: 28%; top: 0; bottom: 0;
-      background: rgba(22, 163, 74, 0.35); border-left: 2px solid #16a34a; border-right: 2px solid #16a34a;
+      position: absolute; left: 35%; width: 30%; top: 0; bottom: 0;
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.45), rgba(16, 185, 129, 0.65));
+      border-left: 3px solid #22c55e; border-right: 3px solid #22c55e;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.7);
+    }
+    .timing-zone::after {
+      content: '🌱 성공 구역'; position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 11px; font-weight: 900; color: #ecfdf5; letter-spacing: -0.2px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8); pointer-events: none;
     }
     .timing-cursor {
-      position: absolute; top: 1px; bottom: 1px; width: 8px; border-radius: 99px;
-      background: var(--accent); left: 0%; transform: translateX(-50%);
-      box-shadow: 0 0 8px var(--accent);
+      position: absolute; top: 3px; bottom: 3px; width: 28px; border-radius: 99px;
+      background: radial-gradient(circle, #fde047 30%, #f59e0b 80%, #d97706 100%);
+      left: 0%; transform: translateX(-50%);
+      box-shadow: 0 0 16px #fbbf24, 0 0 6px #ffffff;
+      border: 2px solid #ffffff; z-index: 2;
+    }
+    .breath-guide-label {
+      font-size: 11.5px; font-weight: 800; color: #fbbf24;
+      text-align: center; margin-bottom: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
     .zp-progress {
       font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
@@ -508,6 +526,28 @@
       padding-right: 2px;
     }
     /* 개별 스토리 미션 카드 (하단 채팅창과 폰트 크기 11.5px 완벽 일치!) */
+    
+    /* 완료된 미션 토글 아코디언 */
+    .story-done-toggle {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 10px; border-radius: 8px;
+      background: rgba(34, 197, 94, 0.12); border: 1px dashed rgba(74, 222, 128, 0.4);
+      color: #86efac; font-size: 11.5px; font-weight: 800; cursor: pointer;
+      transition: all 0.15s ease; user-select: none; margin-top: 4px;
+    }
+    .story-done-toggle:hover {
+      background: rgba(34, 197, 94, 0.22); border-color: #4ade80;
+    }
+    .story-done-list {
+      display: flex; flex-direction: column; gap: 4px; margin-top: 4px;
+      max-height: 180px; overflow-y: auto;
+    }
+    .story-q-item.highlight-next {
+      border: 2px solid #fbbf24 !important;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.1)) !important;
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.35) !important;
+    }
+
     .story-q-item {
       display: flex; flex-direction: column; gap: 4px;
       padding: 8px 10px; border-radius: 9px;
@@ -1943,7 +1983,7 @@
     scene.background = new THREE.Color(state.todConfigs.sunset.bg);
     scene.fog = new THREE.FogExp2(state.todConfigs.sunset.fog, 0.0095);
 
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 450);
+    const camera = window.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 450);
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -3949,15 +3989,17 @@
 
     // 높이 기반 발판 및 블록 콜라이더 (Multi-level Platform Collision)
     function getGroundHeight(px, pz, py) {
-      let highest = 0; // 기본 평면
+      let highest = 0; // 기본 평면 (y=0)
+
       // 1. 설치된 블록 상단면 콜라이더 (점프해서 블록 위로 올라섰을 때만 밟음)
       for (let i = 0; i < placedBlocks.length; i++) {
         const b = placedBlocks[i];
         if (Math.abs(px - b.x) <= 0.72 && Math.abs(pz - b.z) <= 0.72) {
           const top = b.y + 0.5;
-          if (top <= py + 0.35 && top > highest) highest = top;
+          if (top <= py + 0.45 && top > highest) highest = top;
         }
       }
+
       // 2. 오비 점프맵 발판 & 수련잎 콜라이더
       for (let i = 0; i < obbyPlatforms.length; i++) {
         const p = obbyPlatforms[i];
@@ -3968,6 +4010,59 @@
           if (top <= py + 0.45 && top > highest) highest = top;
         }
       }
+
+      // 3. 나무 잎사귀 & 줄기 상단 콜라이더 (모든 나무 위 착지 가능!)
+      if (typeof trees !== 'undefined' && Array.isArray(trees)) {
+        for (let i = 0; i < trees.length; i++) {
+          const tr = trees[i];
+          if (!tr || !tr.group) continue;
+          const tx = tr.group.position.x;
+          const tz = tr.group.position.z;
+          const sc = tr.group.scale.y || 1.0;
+          const distXZ = Math.hypot(px - tx, pz - tz);
+
+          // 상단 꼭대기 잎사귀 2단 (c2: 반경 1.2 * sc, 높이 약 5.25 * sc)
+          const top2 = 5.25 * sc;
+          if (distXZ <= 1.25 * sc && top2 <= py + 0.55 && top2 > highest) {
+            highest = top2;
+          }
+          // 하단 잎사귀 1단 (c1: 반경 1.8 * sc, 높이 약 4.2 * sc)
+          const top1 = 4.2 * sc;
+          if (distXZ <= 1.85 * sc && top1 <= py + 0.55 && top1 > highest) {
+            highest = top1;
+          }
+        }
+      }
+
+      // 4. 공중 황금 링 상단 콜라이더 (하늘의 둥근 표시 위 착지 가능!)
+      if (typeof joyRings !== 'undefined' && Array.isArray(joyRings)) {
+        for (let i = 0; i < joyRings.length; i++) {
+          const jr = joyRings[i];
+          if (!jr || !jr.mesh) continue;
+          const jx = jr.mesh.position.x;
+          const jz = jr.mesh.position.z;
+          const jy = jr.mesh.position.y;
+          const distXZ = Math.hypot(px - jx, pz - jz);
+          if (distXZ <= 1.95) {
+            const ringTop = jy + 0.38;
+            if (ringTop <= py + 0.65 && ringTop > highest) {
+              highest = ringTop;
+            }
+          }
+        }
+      }
+
+      // 5. 슈퍼 점프대 / 트램펄린 상단 콜라이더
+      if (typeof bouncePadPositions !== 'undefined' && Array.isArray(bouncePadPositions)) {
+        for (let i = 0; i < bouncePadPositions.length; i++) {
+          const bp = bouncePadPositions[i];
+          if (Math.hypot(px - bp.x, pz - bp.z) <= 1.65) {
+            const padTop = bp.y + 0.35;
+            if (padTop <= py + 0.55 && padTop > highest) highest = padTop;
+          }
+        }
+      }
+
       return highest;
     }
 
@@ -4516,34 +4611,82 @@
       pathwayStuds.push(sm);
     }
 
+    let showDoneStoryQuests = false;
+    window.toggleDoneStoryQuests = function() {
+      showDoneStoryQuests = !showDoneStoryQuests;
+      renderStoryMissionTracker();
+    };
+
     function renderStoryMissionTracker() {
       const listEl = document.getElementById('storyMissionList');
       if (!listEl) return;
+
       // 아직 완료되지 않은 첫 번째 미션을 기본 길안내 타깃으로 자동 설정
       if (state.quests[activeGuidedQuestKey]) {
         const nextIncomplete = storyQuestMeta.find(m => !state.quests[m.key]);
         if (nextIncomplete) activeGuidedQuestKey = nextIncomplete.key;
       }
-      listEl.innerHTML = storyQuestMeta.map(m => {
-        const isDone = !!state.quests[m.key];
-        const curVal = isDone ? m.max : Math.min(m.max, state.mission[m.key] || 0);
-        const isActive = (activeGuidedQuestKey === m.key && !isDone);
-        return `
-          <div class="story-q-item ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}" onclick="window.guideToStoryQuest('${m.key}')">
-            <div class="story-q-top">
-              <span class="story-q-chapter" style="color:${m.color};">${m.chapter}</span>
-              <span class="story-q-prog">${isDone ? '✅ 완료' : `${curVal} / ${m.max}`}</span>
+
+      const pendingQuests = storyQuestMeta.filter(m => !state.quests[m.key]);
+      const doneQuests = storyQuestMeta.filter(m => !!state.quests[m.key]);
+
+      let html = '';
+
+      // 1. 남은 미션 (미완료 미션들): 상단에 크게 강조 노출!
+      if (pendingQuests.length > 0) {
+        html += pendingQuests.map((m, idx) => {
+          const curVal = Math.min(m.max, state.mission[m.key] || 0);
+          const isNextFirst = (idx === 0);
+          const isActive = (activeGuidedQuestKey === m.key);
+          return `
+            <div class="story-q-item ${isActive ? 'active' : ''} ${isNextFirst ? 'highlight-next' : ''}" onclick="window.guideToStoryQuest('${m.key}')">
+              <div class="story-q-top">
+                <span class="story-q-chapter" style="color:${m.color};">${m.chapter} ${isNextFirst ? '⭐ [지금 도전]' : ''}</span>
+                <span class="story-q-prog" style="color:#fbbf24; font-weight:800;">${curVal} / ${m.max}</span>
+              </div>
+              <div class="story-q-title">${m.title}</div>
+              <div class="story-q-desc">${m.desc}</div>
+              <div class="story-q-actions">
+                <button type="button" class="story-btn-autowalk" onclick="event.stopPropagation(); window.startAutoWalkToQuest('${m.key}')" title="해당 감정 손님이 있는 곳으로 자동으로 걸어갑니다">
+                  🚶 자동 안내 걷기 ➔
+                </button>
+              </div>
             </div>
-            <div class="story-q-title">${m.title}</div>
-            <div class="story-q-desc">${m.desc}</div>
-            <div class="story-q-actions">
-              <button type="button" class="story-btn-autowalk" onclick="event.stopPropagation(); window.startAutoWalkToQuest('${m.key}')" title="해당 감정 손님이 있는 곳으로 자동으로 걸어갑니다">
-                🚶 자동 안내 걷기 ➔
-              </button>
-            </div>
+          `;
+        }).join('');
+      } else {
+        html += `
+          <div style="padding:12px; text-align:center; background:rgba(34,197,94,0.15); border:1.5px solid #22c55e; border-radius:10px; color:#86efac; font-weight:800; font-size:12px;">
+            🎉 축하합니다! 5대 감정 손님 수련을 모두 마쳤습니다!<br>
+            <small style="color:#cbd5e1; font-weight:normal;">[트로피] 버튼을 눌러 골드 마스터 수료증을 확인하세요!</small>
           </div>
         `;
-      }).join('');
+      }
+
+      // 2. 완료된 미션: 한 줄 토글 아코디언으로 깔끔하게 접힘!
+      if (doneQuests.length > 0) {
+        html += `
+          <div class="story-done-toggle" onclick="window.toggleDoneStoryQuests()" title="완료된 미션 목록을 접거나 펼칩니다">
+            <span>✅ 완료된 미션 (${doneQuests.length}/5)</span>
+            <span>${showDoneStoryQuests ? '접기 ▲' : '펼치기 ▼'}</span>
+          </div>
+        `;
+        if (showDoneStoryQuests) {
+          html += `<div class="story-done-list">`;
+          html += doneQuests.map(m => `
+            <div class="story-q-item done" onclick="window.guideToStoryQuest('${m.key}')" style="opacity:0.75; padding:6px 8px;">
+              <div class="story-q-top">
+                <span class="story-q-chapter" style="color:${m.color}; font-size:10.5px;">${m.chapter}</span>
+                <span class="story-q-prog" style="color:#86efac; font-size:10.5px;">✅ 완료</span>
+              </div>
+              <div class="story-q-title" style="font-size:11px; text-decoration:line-through; color:#94a3b8;">${m.title}</div>
+            </div>
+          `).join('');
+          html += `</div>`;
+        }
+      }
+
+      listEl.innerHTML = html;
     }
 
     // 자동 걷기(Auto-Walk) 상태 관리
@@ -4754,6 +4897,58 @@
     }
 
     let timingCursorPct = 50;
+    
+    // ==========================================
+    // [화 정화 스펙터클 이벤트] 모닥불 불꽃 파티클 비산 (Disperse Fire Particles)
+    // ==========================================
+    const fireDisperseParticles = [];
+    function triggerCampfireDisperse() {
+      initAudio();
+      soundQuestComplete();
+      const fireCenter = new THREE.Vector3(0, 1.2, 24);
+      const colors = ['#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#fde047', '#ffffff'];
+
+      // 120개의 환상적인 무지개/황금 불꽃 나비 파티클 생성
+      for (let i = 0; i < 120; i++) {
+        const col = colors[i % colors.length];
+        const sz = 0.22 + Math.random() * 0.32;
+        const geo = Math.random() > 0.5 ? new THREE.DodecahedronGeometry(sz) : new THREE.BoxGeometry(sz, sz, sz);
+        const mat = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(col),
+          transparent: true,
+          opacity: 0.95
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(fireCenter);
+        mesh.position.x += (Math.random() - 0.5) * 1.6;
+        mesh.position.y += Math.random() * 0.8;
+        mesh.position.z += (Math.random() - 0.5) * 1.6;
+
+        const angle = Math.random() * Math.PI * 2;
+        const horizSpeed = 3.5 + Math.random() * 8.0;
+        const velX = Math.cos(angle) * horizSpeed;
+        const velZ = Math.sin(angle) * horizSpeed;
+        const velY = 6.0 + Math.random() * 14.0; // 높이 솟구침!
+
+        worldGroup.add(mesh);
+        fireDisperseParticles.push({
+          mesh, velX, velY, velZ,
+          rotX: (Math.random() - 0.5) * 12,
+          rotY: (Math.random() - 0.5) * 12,
+          rotZ: (Math.random() - 0.5) * 12,
+          life: 1.0,
+          decay: 0.28 + Math.random() * 0.22
+        });
+      }
+
+      // 모닥불 조명을 일시적으로 부드러운 온화한 청록/황금빛으로 진정
+      if (typeof campfireLight !== 'undefined') {
+        campfireLight.color.set(0x38bdf8);
+        campfireLight.intensity = 2.5;
+      }
+      showToast('✨ <b>[화 정화 대성공!] 활활 타던 불꽃이 평온한 무지개 별빛이 되어 밤하늘로 날아갔습니다! (+250점)</b>');
+    }
+
     function doBreatheWind() {
       initAudio(); soundChime(396);
       const distFire = Math.hypot(playerRig.position.x, playerRig.position.z - 24);
@@ -4765,19 +4960,18 @@
           window.addMindScore(70, '마음 쉼터 호흡 성공!');
           createMagicImpact(new THREE.Vector3(0, 1.2, 24), '#f97316');
           if (state.mission.anger >= 3) {
-            campfireLight.color.set(0xfbbf24);
+            triggerCampfireDisperse();
             window.addMindScore(250, '🔥 화의 불꽃 평온 전환!');
             if (!state.quests.anger) {
               checkQuestCollect('anger', '평온의 불꽃 단지 획득', '쉼터에 맞춘 3번의 깊은 심호흡으로 뜨거운 화를 따뜻한 온기로 바꿨습니다.');
-            } else {
-              showToast('🔥 <b>[대성공] 3번의 깊은 호흡으로 화를 가라앉혔습니다! (+250점)</b><br>언제든 다시 쉼터에서 호흡을 연습해보세요!');
             }
             lastPromptZone = null;
             setTimeout(() => {
               state.mission.anger = 0;
+              if (typeof campfireLight !== 'undefined') campfireLight.color.set(0xf97316);
               saveProgress();
               if (typeof updateZonePrompt === 'function') updateZonePrompt();
-            }, 2000);
+            }, 2600);
           } else {
             showToast(`🌬️ <b>완벽한 호흡 적중! (${state.mission.anger}/3)</b> (+70점) — 다음 리듬에 맞춰 한 번 더!`);
           }
@@ -4999,7 +5193,7 @@
       document.getElementById('zpChip').style.background = foundZone === 'board' ? '#ff5800' : state.spirits[foundZone].hex;
       document.getElementById('zpTitle').textContent = g.t;
       document.getElementById('zpDesc').textContent = g.d;
-      document.getElementById('breathBarWrap').classList.toggle('active', foundZone === 'anger' && !state.quests.anger);
+      document.getElementById('breathBarWrap').classList.toggle('active', foundZone === 'anger');
 
       const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
       if (g.actText && (foundZone === 'board' || foundZone === 'worry' || !state.quests[foundZone])) {
@@ -5452,11 +5646,31 @@
       }
 
       // 화 구역 타이밍 커서 업데이트
-      if (state.activeZone === 'anger' && !state.quests.anger) {
+      if (state.activeZone === 'anger') {
         timingCursorPct = 50 + Math.sin(time * 3.0) * 48;
         const curEl = document.getElementById('timingCursor');
         if (curEl) curEl.style.left = `${timingCursorPct.toFixed(1)}%`;
       }
+      
+      // [화 정화] 비산된 불꽃 파티클 애니메이션
+      for (let i = fireDisperseParticles.length - 1; i >= 0; i--) {
+        const fp = fireDisperseParticles[i];
+        fp.life -= dt * fp.decay;
+        fp.mesh.position.x += fp.velX * dt;
+        fp.mesh.position.y += fp.velY * dt;
+        fp.mesh.position.z += fp.velZ * dt;
+        fp.velY -= dt * 4.0; // 중력 영향 살짝 받으며 천천히 승천
+        fp.mesh.rotation.x += fp.rotX * dt;
+        fp.mesh.rotation.y += fp.rotY * dt;
+        fp.mesh.rotation.z += fp.rotZ * dt;
+        fp.mesh.material.opacity = Math.max(0, fp.life);
+        fp.mesh.scale.setScalar(Math.max(0.01, fp.life * 1.2));
+        if (fp.life <= 0 || fp.mesh.position.y > 60.0) {
+          worldGroup.remove(fp.mesh);
+          fireDisperseParticles.splice(i, 1);
+        }
+      }
+
       for (let i = sadRipples.length - 1; i >= 0; i--) {
         const sr = sadRipples[i]; sr.life -= dt * 0.55; sr.scale += dt * 9.0;
         sr.mesh.scale.setScalar(sr.scale); sr.mesh.material.opacity = Math.max(0, sr.life);
@@ -6130,25 +6344,250 @@
     }
 
     function renderTrophyCard() {
-      const ctx = document.getElementById('trophyCanvas').getContext('2d');
-      ctx.fillStyle = '#f6f5f0'; ctx.fillRect(0, 0, 800, 520);
-      ctx.strokeStyle = '#ff5800'; ctx.lineWidth = 10; ctx.strokeRect(24, 24, 752, 472);
-      ctx.fillStyle = '#18181b'; ctx.textAlign = 'center'; ctx.font = 'bold 36px "Noto Sans KR"';
-      ctx.fillText('마음 광주리 마스터 수료증', 400, 98);
-      ctx.font = 'bold 18px "Noto Sans KR"'; ctx.fillStyle = '#ff5800';
-      ctx.fillText(`수여자: ${state.playerName} · 2026 사회정서학습(SEL) 연구회`, 400, 140);
-      ['#f59e0b', '#3b82f6', '#ef4444', '#a855f7', '#10b981'].forEach((col, i) => {
-        ctx.fillStyle = col; ctx.beginPath(); ctx.arc(280 + i * 60, 205, 16, 0, Math.PI * 2); ctx.fill();
+      const canvas = document.getElementById('trophyCanvas');
+      if (!canvas) return;
+      canvas.width = 880; canvas.height = 560;
+      const ctx = canvas.getContext('2d');
+
+      // 1. 배경: 따뜻하고 부드러운 크림빛 양피지
+      const bgGrad = ctx.createLinearGradient(0, 0, 880, 560);
+      bgGrad.addColorStop(0, '#fffdfa');
+      bgGrad.addColorStop(1, '#fef3c7');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 880, 560);
+
+      // 2. 화려한 골드 챔피언 테두리 프레임
+      ctx.save();
+      ctx.strokeStyle = '#d97706'; ctx.lineWidth = 12;
+      ctx.strokeRect(20, 20, 840, 520);
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4;
+      ctx.strokeRect(30, 30, 820, 500);
+
+      // 네 코너 황금 별 장식
+      const corners = [[36, 36], [844, 36], [36, 524], [844, 524]];
+      corners.forEach(([cx, cy]) => {
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = '24px "Noto Sans KR"';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('⭐', cx, cy);
       });
-      ctx.fillStyle = '#18181b'; ctx.font = 'bold 22px "Noto Sans KR"';
-      ctx.fillText('“모든 감정 손님은 나를 돕기 위해 찾아온 소중한 신호입니다.”', 400, 272);
-      ctx.font = '17px "Noto Sans KR"'; ctx.fillStyle = '#3f3f46';
-      ctx.fillText('위 사람은 5대 감정 손님(기쁨·슬픔·화·두려움·걱정)을 모두 만나고,', 400, 322);
-      ctx.fillText('몸과 마음의 치유 수련을 훌륭히 마쳤으므로 이 수료증을 수여합니다.', 400, 356);
-      ctx.font = '15px "Noto Sans KR"'; ctx.fillStyle = '#6b6b73';
-      ctx.fillText(`오늘의 마음 기록: "${state.mindNote}"`, 400, 405);
-      const d = new Date(); ctx.fillText(`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 마음 광주리 수련 마스터 ${state.playerName}`, 400, 458);
+      ctx.restore();
+
+      // 3. 상단 헤더 리본 & 타이틀
+      ctx.save();
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(140, 38, 600, 62, 16);
+      else ctx.rect(140, 38, 600, 62);
+      ctx.fill();
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 30px "Noto Sans KR"';
+      ctx.fillText('👑 2026 마음 수호자 골드 챔피언 수료증 👑', 440, 80);
+      ctx.restore();
+
+      // 4. [좌측] 내 아바타 2D 일러스트 렌더링 카드 (헤어, 머리색, 셔츠, 모자 실시간 반영!)
+      ctx.save();
+      const avBoxX = 58, avBoxY = 122, avBoxW = 210, avBoxH = 260;
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(avBoxX, avBoxY, avBoxW, avBoxH, 20);
+      else ctx.rect(avBoxX, avBoxY, avBoxW, avBoxH);
+      ctx.fill();
+      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 3; ctx.stroke();
+
+      // 아바타 원형 배경
+      const avCX = avBoxX + avBoxW / 2;
+      const avCY = avBoxY + 115;
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath(); ctx.arc(avCX, avCY, 75, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#facc15'; ctx.lineWidth = 4; ctx.stroke();
+
+      // 상의 (몸통)
+      ctx.fillStyle = state.shirtColor || '#ea580c';
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(avCX - 40, avCY + 36, 80, 52, 12);
+      else ctx.rect(avCX - 40, avCY + 36, 80, 52);
+      ctx.fill();
+
+      // 얼굴 (둥근 사각형)
+      ctx.fillStyle = '#ffdfba';
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(avCX - 32, avCY - 34, 64, 60, 16);
+      else ctx.rect(avCX - 32, avCY - 34, 64, 60);
+      ctx.fill();
+
+      // 볼터치 (핑크)
+      ctx.fillStyle = 'rgba(244, 63, 94, 0.4)';
+      ctx.beginPath(); ctx.arc(avCX - 20, avCY + 6, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(avCX + 20, avCY + 6, 7, 0, Math.PI * 2); ctx.fill();
+
+      // 눈
+      ctx.fillStyle = '#18181b';
+      ctx.beginPath(); ctx.arc(avCX - 12, avCY - 2, 4.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(avCX + 12, avCY - 2, 4.5, 0, Math.PI * 2); ctx.fill();
+
+      // 미소 입
+      ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(avCX, avCY + 8, 10, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+
+      // 헤어스타일 및 머리색상 반영
+      ctx.fillStyle = state.hairColor || '#18181b';
+      const hStyle = state.hairStyle || 'dandy';
+      if (hStyle === 'dandy') {
+        ctx.beginPath();
+        ctx.arc(avCX, avCY - 28, 36, Math.PI, Math.PI * 2);
+        ctx.lineTo(avCX + 34, avCY - 10);
+        ctx.quadraticCurveTo(avCX + 10, avCY - 14, avCX, avCY - 12);
+        ctx.quadraticCurveTo(avCX - 15, avCY - 26, avCX - 34, avCY - 10);
+        ctx.closePath(); ctx.fill();
+      } else if (hStyle === 'bowl') {
+        ctx.beginPath();
+        ctx.arc(avCX, avCY - 26, 36, Math.PI * 0.9, Math.PI * 2.1);
+        ctx.lineTo(avCX + 34, avCY - 8);
+        ctx.lineTo(avCX - 34, avCY - 8);
+        ctx.closePath(); ctx.fill();
+      } else if (hStyle === 'ponytail' || hStyle === 'twin') {
+        ctx.beginPath();
+        ctx.arc(avCX, avCY - 28, 35, Math.PI, Math.PI * 2);
+        ctx.lineTo(avCX + 34, avCY - 12); ctx.lineTo(avCX - 34, avCY - 12);
+        ctx.closePath(); ctx.fill();
+        // 포니테일 리본/꽁지
+        ctx.beginPath(); ctx.arc(avCX + 38, avCY - 34, 14, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#ec4899'; ctx.beginPath(); ctx.arc(avCX + 32, avCY - 28, 6, 0, Math.PI * 2); ctx.fill();
+      } else {
+        // 기본 쇼트컷
+        ctx.beginPath();
+        ctx.arc(avCX, avCY - 28, 35, Math.PI, Math.PI * 2);
+        ctx.lineTo(avCX + 34, avCY - 12); ctx.lineTo(avCX - 34, avCY - 12);
+        ctx.closePath(); ctx.fill();
+      }
+
+      // 모자 (왕관 또는 고깔모자)
+      if (state.hatType === 'crown') {
+        ctx.fillStyle = '#facc15'; ctx.strokeStyle = '#ca8a04'; ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(avCX - 22, avCY - 44);
+        ctx.lineTo(avCX - 22, avCY - 58);
+        ctx.lineTo(avCX - 11, avCY - 50);
+        ctx.lineTo(avCX, avCY - 64);
+        ctx.lineTo(avCX + 11, avCY - 50);
+        ctx.lineTo(avCX + 22, avCY - 58);
+        ctx.lineTo(avCX + 22, avCY - 44);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+      } else if (state.hatType === 'party' || state.hatType === 'wizard') {
+        ctx.fillStyle = '#a855f7';
+        ctx.beginPath();
+        ctx.moveTo(avCX - 20, avCY - 44);
+        ctx.lineTo(avCX, avCY - 74);
+        ctx.lineTo(avCX + 20, avCY - 44);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(avCX, avCY - 74, 5, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // 아바타 하단 네임태그
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(avBoxX + 18, avBoxY + avBoxH - 44, avBoxW - 36, 32, 10);
+      else ctx.rect(avBoxX + 18, avBoxY + avBoxH - 44, avBoxW - 36, 32);
+      ctx.fill();
+      ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 15px "Noto Sans KR"';
+      ctx.fillText(`✨ ${state.playerName} ✨`, avCX, avBoxY + avBoxH - 23);
+      ctx.restore();
+
+      // 5. [우측] 학생 공식 인증 정보 & 명예의 기록
+      ctx.save();
+      ctx.textAlign = 'left';
+
+      // 칭호 & 성명
+      ctx.fillStyle = '#b45309'; ctx.font = 'bold 16px "Noto Sans KR"';
+      ctx.fillText('수여자 (마음 탐험가)', 296, 142);
+      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 28px "Noto Sans KR"';
+      ctx.fillText(`${state.playerName} 님`, 296, 178);
+
+      // 점수 뱃지 (골드 티어)
+      const scoreX = 520, scoreY = 145;
+      ctx.fillStyle = '#fef3c7';
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(scoreX, scoreY, 300, 42, 12);
+      else ctx.rect(scoreX, scoreY, 300, 42);
+      ctx.fill();
+      ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#b45309'; ctx.font = 'bold 16px "Noto Sans KR"';
+      const curScore = state.mindScore || 1850;
+      ctx.fillText(`💖 치유 점수: ${curScore}점 · 골드 Lv.5`, scoreX + 16, scoreY + 27);
+
+      // 본문 표창 문구
+      ctx.fillStyle = '#334155'; ctx.font = '500 16px "Noto Sans KR"';
+      ctx.fillText('위 어린이는 《인찬이의 마음 손님》 메타버스 공간에서', 296, 226);
+      ctx.fillText('5대 감정 손님(기쁨·슬픔·화·두려움·걱정)을 모두 반갑게 맞이하고,', 296, 252);
+      ctx.fillText('마음 광주리에 온전히 담아 슬기롭게 다스리는 방법을 훌륭히 배웠습니다.', 296, 278);
+
+      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 16.5px "Noto Sans KR"';
+      ctx.fillText('“모든 감정은 나를 돕기 위해 찾아온 소중한 마음의 친구입니다.”', 296, 318);
+
+      // 오늘의 마음 한마디
+      ctx.fillStyle = '#64748b'; ctx.font = '14.5px "Noto Sans KR"';
+      ctx.fillText(`🌱 수련 다짐: "${state.mindNote || '내 마음의 모든 손님을 따뜻하게 안아줄게요!'}"`, 296, 356);
+
+      // 날짜
+      const d = new Date();
+      ctx.fillStyle = '#475569'; ctx.font = 'bold 15px "Noto Sans KR"';
+      ctx.fillText(`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`, 296, 388);
+      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 16px "Noto Sans KR"';
+      ctx.fillText('2026 사회정서학습(SEL) 연구회 회장 배상', 450, 388);
+      ctx.restore();
+
+      // 6. [하단] 5대 감정 정령 귀여운 마스코트 엠블럼 총출동!
+      ctx.save();
+      const spiritsList = [
+        { name: '기쁨 별토끼', emoji: '🐰⭐', col: '#f59e0b', bg: '#fef3c7' },
+        { name: '슬픔 눈물요정', emoji: '💧', col: '#3b82f6', bg: '#e0f2fe' },
+        { name: '화 불도깨비', emoji: '🔥', col: '#ef4444', bg: '#fee2e2' },
+        { name: '두려움 꼬마망토', emoji: '🕯️', col: '#8b5cf6', bg: '#f3e8ff' },
+        { name: '걱정 털실이', emoji: '🧶', col: '#10b981', bg: '#d1fae5' }
+      ];
+
+      const spStartY = 416;
+      spiritsList.forEach((sp, i) => {
+        const spX = 64 + i * 128;
+        // 배지 캡슐
+        ctx.fillStyle = sp.bg;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(spX, spStartY, 116, 88, 16);
+        else ctx.rect(spX, spStartY, 116, 88);
+        ctx.fill();
+        ctx.strokeStyle = sp.col; ctx.lineWidth = 2.5; ctx.stroke();
+
+        // 이모지 캐릭터
+        ctx.font = '30px "Noto Sans KR"'; ctx.textAlign = 'center';
+        ctx.fillText(sp.emoji, spX + 58, spStartY + 42);
+
+        // 정령 이름
+        ctx.fillStyle = sp.col; ctx.font = 'bold 12.5px "Noto Sans KR"';
+        ctx.fillText(sp.name, spX + 58, spStartY + 74);
+      });
+      ctx.restore();
+
+      // 7. [우측 하단] 골드 챔피언 공식 씰(Gold Seal) 도장
+      ctx.save();
+      const sealCX = 770, sealCY = 460;
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath(); ctx.arc(sealCX, sealCY, 42, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#d97706'; ctx.lineWidth = 4; ctx.stroke();
+
+      ctx.fillStyle = '#78350f'; ctx.textAlign = 'center'; ctx.font = 'bold 11px "Noto Sans KR"';
+      ctx.fillText('2026 SEL', sealCX, sealCY - 14);
+      ctx.font = 'bold 15px "Noto Sans KR"';
+      ctx.fillText('OFFICIAL', sealCX, sealCY + 4);
+      ctx.font = 'bold 11px "Noto Sans KR"';
+      ctx.fillText('MASTER', sealCX, sealCY + 20);
+      ctx.restore();
     }
+
+
 
     document.getElementById('btnDownloadCard').onclick = () => { const a = document.createElement('a'); a.download = `${state.playerName}_작별카드.png`; a.href = document.getElementById('farewellCanvas').toDataURL(); a.click(); };
     document.getElementById('btnDownloadTrophy').onclick = () => { const a = document.createElement('a'); a.download = `${state.playerName}_마스터_수료증.png`; a.href = document.getElementById('trophyCanvas').toDataURL(); a.click(); };
@@ -7017,6 +7456,17 @@
     window.placedBlocks = placedBlocks;
     window.friendAgents = friendAgents;
     window.zoneNpcs = zoneNpcs;
+  
+    window.trees = trees;
+    window.joyRings = joyRings;
+    window.playerRig = playerRig;
+    window.updateZonePrompt = updateZonePrompt;
+    window.triggerCampfireDisperse = triggerCampfireDisperse;
+    window.renderStoryMissionTracker = renderStoryMissionTracker;
+    window.renderTrophyCard = renderTrophyCard;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+
   </script>
 
   <!-- =========================================
