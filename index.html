@@ -110,9 +110,9 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 상황별 구역 인터랙션 배너 (핫바 위로 겹침 없이 배치) */
+    /* 상황별 구역 인터랙션 배너 (단일 하단 바 위로 깔끔하게 배치) */
     .zone-prompt {
-      position: fixed; bottom: 158px; left: 50%; transform: translateX(-50%) translateY(10px);
+      position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%) translateY(10px);
       z-index: 48; opacity: 0; pointer-events: none; transition: all 0.22s ease;
       background: var(--bg-surface); backdrop-filter: blur(16px);
       border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
@@ -152,33 +152,36 @@
       color: var(--ink-main); background: rgba(24,24,27,0.06); padding: 2px 8px; border-radius: 6px;
     }
 
-    /* 하단 모듈형 컨트롤 독 */
+    /* 하단 통합 컨트롤 독 (블록 핫바 1~6 + 액션 버튼 단일 바 통합) */
     .action-dock {
-      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-      display: flex; align-items: center; gap: 4px; padding: 5px;
-      background: var(--bg-surface); backdrop-filter: blur(16px);
-      border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-clean); z-index: 45; max-width: 95vw; overflow-x: auto;
+      position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 5px; padding: 6px 10px;
+      background: rgba(24, 24, 27, 0.92); backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(255, 255, 255, 0.16); border-radius: 16px;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45); z-index: 45; max-width: 96vw; overflow-x: auto;
+    }
+    .dock-sep {
+      width: 1.5px; height: 34px; background: rgba(255, 255, 255, 0.16); margin: 0 4px; flex-shrink: 0;
     }
     .act-btn {
-      display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 11px;
-      border-radius: 9px; border: 1px solid transparent; background: transparent;
-      color: var(--ink-main); font-size: 12px; font-weight: 700; cursor: pointer;
-      white-space: nowrap; transition: all 0.15s ease;
+      display: flex; align-items: center; gap: 5px; height: 44px; padding: 0 10px;
+      border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06);
+      color: #f4f4f5; font-size: 12px; font-weight: 700; cursor: pointer;
+      white-space: nowrap; transition: all 0.15s ease; flex-shrink: 0;
     }
-    .act-btn:hover { background: rgba(24, 24, 27, 0.06); }
-    .act-btn.primary { background: var(--ink-main); color: #fff; }
-    .act-btn.primary:hover { background: #27272a; }
+    .act-btn:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-1px); }
+    .act-btn.primary { background: #ff5800; color: #fff; border-color: #fb923c; }
+    .act-btn.primary:hover { background: #ea580c; }
     .act-btn .kbd {
       font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-      padding: 2px 5px; border-radius: 4px; background: rgba(24, 24, 27, 0.08); color: var(--ink-sub);
+      padding: 2px 5px; border-radius: 4px; background: rgba(255, 255, 255, 0.14); color: #cbd5e1;
     }
-    .act-btn.primary .kbd { background: rgba(255,255,255,0.16); color: #e4e4e7; }
+    .act-btn.primary .kbd { background: rgba(0,0,0,0.22); color: #fff; }
 
     /* 우측 하단 원형 레이더 미니맵 */
     .minimap-box {
       position: fixed; right: 18px; bottom: 18px; z-index: 42;
-      width: 132px; height: 132px; border-radius: 50%;
+      width: 124px; height: 124px; border-radius: 50%;
       background: var(--bg-surface); backdrop-filter: blur(14px);
       border: 1px solid var(--line-hair); box-shadow: var(--shadow-clean);
       display: flex; align-items: center; justify-content: center;
@@ -190,27 +193,42 @@
       padding: 2px 8px; border-radius: 99px; letter-spacing: 0.6px;
     }
 
-    /* 조작 힌트 */
-    .key-hints {
-      position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.82);
-      background: rgba(24,24,27,0.7); padding: 4px 12px; border-radius: 99px;
-      pointer-events: none; z-index: 35; transition: opacity 0.4s; white-space: nowrap;
-    }
-
-    /* 모바일 조이스틱 */
+    /* 패드(태블릿) & 스마트폰 겸용 가상 조이스틱 + 터치 액션 패드 */
     .v-joy-zone {
-      position: fixed; bottom: 84px; left: 18px; width: 104px; height: 104px;
-      border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--line-hair);
-      display: none; align-items: center; justify-content: center; z-index: 42; touch-action: none;
+      position: fixed; bottom: 82px; left: 18px; width: 108px; height: 108px;
+      border-radius: 50%; background: rgba(15, 23, 42, 0.68); backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      display: none; align-items: center; justify-content: center; z-index: 46; touch-action: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     }
-    .v-joy-knob { width: 40px; height: 40px; border-radius: 50%; background: var(--ink-main); }
-    @media (hover: none) and (pointer: coarse) {
+    .v-joy-knob {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24, #ff5800);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+    }
+    .touch-action-pad {
+      position: fixed; right: 18px; bottom: 154px; z-index: 46;
+      display: flex; flex-direction: column; gap: 7px; align-items: flex-end;
+    }
+    .touch-pad-row { display: flex; gap: 7px; }
+    .touch-pad-btn {
+      height: 44px; padding: 0 13px; border-radius: 12px;
+      background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 255, 255, 0.22); color: #fff;
+      font-size: 12px; font-weight: 800; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35); user-select: none; touch-action: manipulation;
+    }
+    .touch-pad-btn:active { transform: scale(0.94); }
+    .touch-pad-btn.build { border-color: #fbbf24; color: #fde047; }
+    .touch-pad-btn.mine { border-color: #38bdf8; color: #7dd3fc; }
+    .touch-pad-btn.jump { border-color: #4ade80; color: #86efac; }
+    @media (hover: none), (pointer: coarse), (max-width: 1100px) {
       .v-joy-zone { display: flex; }
-      .key-hints { display: none; }
     }
-    @media (max-width: 768px) {
-      .minimap-box { width: 100px; height: 100px; right: 12px; bottom: 84px; }
+    @media (max-width: 900px) {
+      .minimap-box { width: 96px; height: 96px; right: 12px; bottom: 78px; }
+      .touch-action-pad { right: 12px; bottom: 184px; }
     }
 
     /* =========================================
@@ -350,75 +368,55 @@
     .mc-crosshair::before { top: 7px; left: 0; width: 16px; height: 2px; }
     .mc-crosshair::after { top: 0; left: 7px; width: 2px; height: 16px; }
 
-    .mc-hotbar-container {
-      position: fixed; bottom: 72px; left: 50%;
-      transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      z-index: 8600;
-    }
-    .mc-hotbar-guide {
-      font-size: 11px; font-weight: 700; color: #e2e8f0;
-      background: rgba(15, 23, 42, 0.86);
-      backdrop-filter: blur(10px);
-      padding: 3px 12px; border-radius: 99px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      white-space: nowrap; pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-    }
     .mc-hotbar-wrap {
-      display: flex; gap: 6px;
-      background: rgba(15, 23, 42, 0.90);
-      backdrop-filter: blur(14px);
-      padding: 6px 9px; border-radius: 14px;
-      border: 1.5px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      display: flex; align-items: center; gap: 5px; flex-shrink: 0;
     }
     .mc-slot {
-      position: relative; width: 52px; height: 50px;
-      background: rgba(30, 41, 59, 0.88);
+      position: relative; width: 52px; height: 46px;
+      background: rgba(30, 41, 59, 0.92);
       border: 2px solid #475569;
       border-radius: 10px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.14s ease;
-      user-select: none;
+      user-select: none; flex-shrink: 0;
     }
     .mc-slot:hover { border-color: #94a3b8; transform: translateY(-2px); }
     .mc-slot.active {
       border-color: #fbbf24;
-      background: rgba(245, 158, 11, 0.24);
-      box-shadow: 0 0 14px rgba(251, 191, 36, 0.65);
-      transform: translateY(-3px) scale(1.04);
+      background: rgba(245, 158, 11, 0.28);
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.65);
+      transform: translateY(-2px);
     }
     .mc-key {
       position: absolute; top: 2px; left: 4px;
-      font-size: 10px; font-weight: 800; color: #94a3b8;
+      font-size: 9px; font-weight: 800; color: #94a3b8;
       font-family: 'JetBrains Mono', monospace;
     }
     .mc-slot.active .mc-key { color: #fbbf24; }
     .mc-count {
       position: absolute; top: 2px; right: 4px;
-      font-size: 9px; font-weight: 800; color: #fef08a;
+      font-size: 8.5px; font-weight: 800; color: #fef08a;
       font-family: 'JetBrains Mono', monospace;
     }
     .mc-icon-cube {
-      width: 20px; height: 20px; border-radius: 4px;
+      width: 18px; height: 18px; border-radius: 4px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      margin-top: 3px;
+      margin-top: 2px;
     }
     .mc-label {
-      font-size: 9px; font-weight: 700; color: #f1f5f9;
+      font-size: 8.5px; font-weight: 700; color: #f1f5f9;
       margin-top: 2px; text-align: center;
       white-space: nowrap;
     }
 
-    /* 좌측 하단 실시간 멀티플레이어 광장 채팅 & 이모트 바 */
+    /* 좌측 하단 실시간 멀티플레이어 광장 채팅 & 이모트 바 (하단 통합 독 위쪽에 배치하여 겹침 완벽 방지) */
     .mp-chat-panel {
-      position: fixed; left: 18px; bottom: 18px; z-index: 50;
-      width: 270px; background: rgba(15, 23, 42, 0.86);
-      backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 14px; padding: 10px 12px; color: #f8fafc;
+      position: fixed; left: 16px; bottom: 84px; z-index: 44;
+      width: 256px; background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 14px; padding: 9px 11px; color: #f8fafc;
       box-shadow: 0 12px 28px rgba(0,0,0,0.4);
-      display: flex; flex-direction: column; gap: 6px;
+      display: flex; flex-direction: column; gap: 5px;
     }
     .mp-chat-head {
       display: flex; justify-content: space-between; align-items: center;
@@ -459,7 +457,11 @@
       white-space: nowrap; cursor: pointer;
     }
     .mp-quick-btn:hover { background: rgba(251,191,36,0.2); color: #fbbf24; border-color: #fbbf24; }
-    @media (max-width: 900px) {
+    @media (hover: none), (pointer: coarse), (max-width: 1100px) {
+      .mp-chat-panel { bottom: 204px; width: 220px; padding: 7px 9px; }
+      .mp-chat-log { height: 42px; }
+    }
+    @media (max-width: 760px) {
       .mp-chat-panel { display: none; }
     }
 
@@ -622,47 +624,15 @@
   <div id="keyHints" style="display:none;"></div>
   <div class="v-joy-zone" id="joyZone"><div class="v-joy-knob" id="joyKnob"></div></div>
 
-  <!-- 마인크래프트 스타일 조준점 & 6슬롯 핫바 (하단 독과 절대 겹치지 않는 상하 분리 구조) -->
-  <div class="mc-crosshair"></div>
-  <div class="mc-hotbar-container">
-    <div class="mc-hotbar-guide">
-      <span style="color:#fbbf24;">[우클릭 / B]</span> 블록 설치 · <span style="color:#38bdf8;">[좌클릭 / V]</span> 채굴 · <span style="color:#c084fc;">[6번 / F]</span> 별빛 마법 · <span style="color:#4ade80;">[1~6]</span> 도구 선택
+  <!-- 패드(태블릿) & 스마트폰 터치 액션 패드 (PC에서도 클릭 가능) -->
+  <div class="touch-action-pad" id="touchActionPad">
+    <div class="touch-pad-row">
+      <button type="button" class="touch-pad-btn build" id="btnTouchBuild" title="선택한 블록 놓기 (B)">🧱 블록 쌓기</button>
+      <button type="button" class="touch-pad-btn mine" id="btnTouchMine" title="곡괭이로 블록 지우기 / 광석 캐기 (V)">⛏️ 지우기/캐기</button>
     </div>
-    <div class="mc-hotbar-wrap" id="mcHotbar">
-      <div class="mc-slot active" data-slot="1" title="[1] 기쁨 블록 (우클릭/B: 설치 | 좌클릭/V: 회수)">
-        <span class="mc-key">1</span>
-        <span class="mc-count" id="cntSlot1">∞</span>
-        <div class="mc-icon-cube" style="background:#fbbf24; box-shadow:0 0 8px #f59e0b;"></div>
-        <span class="mc-label">기쁨 블록</span>
-      </div>
-      <div class="mc-slot" data-slot="2" title="[2] 슬픔 물블록 (우클릭/B: 설치 | 화로 진정 효과)">
-        <span class="mc-key">2</span>
-        <span class="mc-count" id="cntSlot2">∞</span>
-        <div class="mc-icon-cube" style="background:#38bdf8; box-shadow:0 0 8px #0284c7;"></div>
-        <span class="mc-label">슬픔 블록</span>
-      </div>
-      <div class="mc-slot" data-slot="3" title="[3] 용기 블록 (우클릭/B: 화염 탄성 블록 설치)">
-        <span class="mc-key">3</span>
-        <span class="mc-count" id="cntSlot3">∞</span>
-        <div class="mc-icon-cube" style="background:#ef4444; box-shadow:0 0 8px #b91c1c;"></div>
-        <span class="mc-label">용기 블록</span>
-      </div>
-      <div class="mc-slot" data-slot="4" title="[4] 평온 블록 (우클릭/B: 에메랄드 숲 블록 설치)">
-        <span class="mc-key">4</span>
-        <span class="mc-count" id="cntSlot4">∞</span>
-        <div class="mc-icon-cube" style="background:#22c55e; box-shadow:0 0 8px #15803d;"></div>
-        <span class="mc-label">평온 블록</span>
-      </div>
-      <div class="mc-slot" data-slot="5" title="[5] 마음 곡괭이 (좌클릭/V: 광석 채굴 & 블록 회수 전용)">
-        <span class="mc-key">5</span>
-        <div style="font-size:17px; margin-top:2px;">⛏️</div>
-        <span class="mc-label">마음 곡괭이</span>
-      </div>
-      <div class="mc-slot" data-slot="6" title="[6] 별빛 지팡이 (좌클릭/F: 어둠 정화 별빛 마법 발사)">
-        <span class="mc-key">6</span>
-        <div style="font-size:17px; margin-top:2px;">🪄</div>
-        <span class="mc-label">별빛 지팡이</span>
-      </div>
+    <div class="touch-pad-row">
+      <button type="button" class="touch-pad-btn jump" id="btnTouchJump" title="2단 점프 (SPACE)">⬆️ 점프</button>
+      <button type="button" class="touch-pad-btn" id="btnTouchMagic" title="별빛 마법 발사 (F)" style="border-color:#c084fc; color:#e9d5ff;">🪄 별빛마법</button>
     </div>
   </div>
 
@@ -672,27 +642,67 @@
     <div class="congrats-sub" id="congratsSub">내용</div>
   </div>
 
-  <!-- 하단 액션 독 (겹침 없이 깔끔하게 정렬) -->
+  <!-- 맨 하단 단일 통합 바: [1~6 블록/곡괭이/지팡이 핫바] + [캐릭터·정령·액션 버튼] -->
+  <div class="mc-crosshair"></div>
   <div class="action-dock">
-    <button class="act-btn primary" id="btnCustomizeDock"><span>👕 캐릭터 꾸미기</span></button>
-    <button class="act-btn" id="btnGuestSelect"><span>✨ 동행 정령</span></button>
-    <button class="act-btn" id="btnShootAction"><span class="kbd">F</span><span>별빛 마법</span></button>
+    <div class="mc-hotbar-wrap" id="mcHotbar">
+      <div class="mc-slot active" data-slot="1" title="[1] 기쁨 블록 — 선택 후 화면 클릭(터치) 시 블록 쌓기">
+        <span class="mc-key">1</span>
+        <span class="mc-count" id="cntSlot1">쌓기</span>
+        <div class="mc-icon-cube" style="background:#fbbf24; box-shadow:0 0 8px #f59e0b;"></div>
+        <span class="mc-label">기쁨 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="2" title="[2] 슬픔 물블록 — 선택 후 화면 클릭(터치) 시 블록 쌓기">
+        <span class="mc-key">2</span>
+        <span class="mc-count" id="cntSlot2">쌓기</span>
+        <div class="mc-icon-cube" style="background:#38bdf8; box-shadow:0 0 8px #0284c7;"></div>
+        <span class="mc-label">슬픔 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="3" title="[3] 용기 블록 — 선택 후 화면 클릭(터치) 시 블록 쌓기">
+        <span class="mc-key">3</span>
+        <span class="mc-count" id="cntSlot3">쌓기</span>
+        <div class="mc-icon-cube" style="background:#ef4444; box-shadow:0 0 8px #b91c1c;"></div>
+        <span class="mc-label">용기 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="4" title="[4] 평온 블록 — 선택 후 화면 클릭(터치) 시 블록 쌓기">
+        <span class="mc-key">4</span>
+        <span class="mc-count" id="cntSlot4">쌓기</span>
+        <div class="mc-icon-cube" style="background:#22c55e; box-shadow:0 0 8px #15803d;"></div>
+        <span class="mc-label">평온 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="5" title="[5] 마음 곡괭이 — 선택 후 블록/광석 클릭(터치) 시 지우기 & 채굴!">
+        <span class="mc-key">5</span>
+        <span class="mc-count" style="color:#38bdf8;">지우기</span>
+        <div style="font-size:16px; margin-top:2px;">⛏️</div>
+        <span class="mc-label">마음 곡괭이</span>
+      </div>
+      <div class="mc-slot" data-slot="6" title="[6] 별빛 지팡이 — 선택 후 클릭(터치) 시 별빛 마법 발사!">
+        <span class="mc-key">6</span>
+        <span class="mc-count" style="color:#c084fc;">마법</span>
+        <div style="font-size:16px; margin-top:2px;">🪄</div>
+        <span class="mc-label">별빛 지팡이</span>
+      </div>
+    </div>
+    <div class="dock-sep"></div>
+    <button class="act-btn primary" id="btnCustomizeDock"><span>👕 캐릭터 선택</span></button>
+    <button class="act-btn" id="btnGuestSelect"><span>✨ 정령</span></button>
+    <button class="act-btn" id="btnShootAction"><span class="kbd">F</span><span>마법</span></button>
     <button class="act-btn" id="btnJumpAction"><span class="kbd">SPACE</span><span>점프</span></button>
     <button class="act-btn" id="btnBreatheWind"><span class="kbd">C</span><span>심호흡</span></button>
     <button class="act-btn" id="btnDanceAction"><span class="kbd">E</span><span>춤</span></button>
     <button class="act-btn" id="btnMeditateAction"><span class="kbd">Q</span><span>명상</span></button>
-    <button class="act-btn" id="btnFarewellAction"><span>작별 카드</span></button>
+    <button class="act-btn" id="btnFarewellAction"><span>카드</span></button>
   </div>
 
-  <!-- 모달 0: 멀티플레이어 캐릭터 이름 & 아바타 꾸미기 스튜디오 -->
+  <!-- 모달 0: 월드 입장 환영 & 내 이름·캐릭터 선택 스튜디오 -->
   <div class="modal-overlay" id="modalCustomize">
     <div class="modal-sheet">
       <div class="modal-header">
-        <h3 class="modal-title">👕 내 캐릭터 이름 &amp; 아바타 꾸미기</h3>
+        <h3 class="modal-title">🌟 마음 광주리 월드 입장 · 내 이름 &amp; 캐릭터 선택</h3>
         <button class="btn-close" onclick="closeModal('modalCustomize')">✕</button>
       </div>
       <p style="font-size: 12.5px; color: var(--ink-sub); line-height: 1.5;">
-        광장에 모인 친구들에게 보여질 내 캐릭터 이름과 칭호, 의상 색상, 3D 모자 액세서리를 자유롭게 꾸며보세요!
+        여러 친구들과 함께하는 마음 광주리 광장입니다! 내 캐릭터 이름(닉네임), 칭호 배지, 옷 색상, 3D 모자를 골라 입장해 보세요.
       </p>
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div>
@@ -1218,18 +1228,18 @@
     momTagMesh.position.set(0, 3.45, 0);
     momGroup.add(momTagMesh);
 
-    // 머리 위 말풍선 (플레이어가 가까이 오면 나타남)
+    // 머리 위 말풍선 (플레이어가 가까이 오면 나타남 - 블룸 눈부심 없는 다크 슬레이트 배경)
     const bubbleCanvas = document.createElement('canvas');
     bubbleCanvas.width = 512; bubbleCanvas.height = 128;
     const bCtx = bubbleCanvas.getContext('2d');
-    bCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    bCtx.fillStyle = 'rgba(15, 23, 42, 0.92)';
     bCtx.roundRect ? bCtx.roundRect(8, 8, 496, 112, 16) : bCtx.fillRect(8, 8, 496, 112);
     bCtx.fill();
-    bCtx.lineWidth = 3; bCtx.strokeStyle = '#f59e0b'; bCtx.stroke();
+    bCtx.lineWidth = 3.5; bCtx.strokeStyle = '#fbbf24'; bCtx.stroke();
     bCtx.font = 'bold 22px "Noto Sans KR", sans-serif';
-    bCtx.fillStyle = '#0f172a'; bCtx.textAlign = 'center';
-    bCtx.fillText('“인찬아! 블록으로 쉼터를 짓고,', 256, 48);
-    bCtx.fillText('로블록스 점프맵을 정복해보렴!”', 256, 82);
+    bCtx.fillStyle = '#ffffff'; bCtx.textAlign = 'center';
+    bCtx.fillText('“인찬아! 블록으로 쉼터를 짓고,', 256, 50);
+    bCtx.fillText('로블록스 점프맵을 정복해보렴!”', 256, 86);
     const bubbleTex = new THREE.CanvasTexture(bubbleCanvas);
     bubbleTex.colorSpace = THREE.SRGBColorSpace;
     const momBubbleMesh = new THREE.Mesh(
@@ -1629,14 +1639,22 @@
       const mat = new THREE.MeshStandardMaterial({ color: def.color, emissive: def.color, emissiveIntensity: 0.35, roughness: 0.4 });
       const body = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.0, 0.8), mat); body.position.y = 0.75; body.castShadow = true;
       const head = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.85, 0.85), mat); head.position.y = 1.65; head.castShadow = true;
+      // NPC 귀여운 양팔 추가
+      const armLPivot = new THREE.Group(); armLPivot.position.set(-0.62, 1.12, 0);
+      const armLMesh = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.72, 0.28), mat); armLMesh.position.y = -0.28; armLMesh.castShadow = true;
+      armLPivot.add(armLMesh);
+      const armRPivot = new THREE.Group(); armRPivot.position.set(0.62, 1.12, 0);
+      const armRMesh = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.72, 0.28), mat); armRMesh.position.y = -0.28; armRMesh.castShadow = true;
+      armRPivot.add(armRMesh);
+
       const eyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
       const eL = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.18, 0.08), eyeMat); eL.position.set(-0.2, 1.7, 0.42);
       const eR = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.18, 0.08), eyeMat); eR.position.set(0.2, 1.7, 0.42);
       const ring = new THREE.Mesh(new THREE.RingGeometry(0.85, 1.02, 24), new THREE.MeshBasicMaterial({ color: def.color, transparent: true, opacity: 0.55, side: THREE.DoubleSide }));
       ring.rotation.x = -Math.PI / 2; ring.position.y = 0.14;
-      g.add(body, head, eL, eR, ring);
+      g.add(body, head, armLPivot, armRPivot, eL, eR, ring);
       worldGroup.add(g);
-      zoneNpcs.push({ ...def, group: g });
+      zoneNpcs.push({ ...def, group: g, armL: armLPivot, armR: armRPivot });
     });
 
     // [미션 1: 기쁨 공중 별빛 링 3개 (트램펄린 스카이 다이빙 게임)]
@@ -1828,12 +1846,33 @@
 
       const fTorso = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.95, 0.5), fShirt); fTorso.position.y = 1.25; fTorso.castShadow = true;
       const fHead = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.72, 0.75), fSkin); fHead.position.y = 0.88; fHead.castShadow = true;
+      // 친구 단정하고 귀여운 앞머리/윗머리
+      const fHair = new THREE.Mesh(new THREE.BoxGeometry(0.80, 0.36, 0.80), new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.7 }));
+      fHair.position.set(0, 0.25, -0.02);
+      fHead.add(fHair);
       const fEyeM = new THREE.MeshBasicMaterial({ color: 0x18181b });
-      const feL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feL.position.set(-0.16, 0.04, 0.37);
-      const feR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feR.position.set(0.16, 0.04, 0.37);
-      fHead.add(feL, feR);
+      const feL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feL.position.set(-0.16, 0.04, 0.38);
+      const feR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feR.position.set(0.16, 0.04, 0.38);
+      // 귀여운 볼터치
+      const fBlushM = new THREE.MeshBasicMaterial({ color: 0xf472b6, transparent: true, opacity: 0.8 });
+      const fbL = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 0.07), fBlushM); fbL.position.set(-0.22, -0.08, 0.38);
+      const fbR = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 0.07), fBlushM); fbR.position.set(0.22, -0.08, 0.38);
+      fHead.add(feL, feR, fbL, fbR);
       if (fd.hat) fHead.add(createHatMesh(fd.hat));
       fTorso.add(fHead);
+
+      // 친구 아바타 양팔 (소매 + 손) 피벗 장착!
+      const fArmL = new THREE.Group(); fArmL.position.set(-0.58, 0.36, 0);
+      const fArmLMesh = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.68, 0.28), fShirt); fArmLMesh.position.y = -0.28; fArmLMesh.castShadow = true;
+      const fHandL = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.20, 0.24), fSkin); fHandL.position.y = -0.66;
+      fArmL.add(fArmLMesh, fHandL);
+      fTorso.add(fArmL);
+
+      const fArmR = new THREE.Group(); fArmR.position.set(0.58, 0.36, 0);
+      const fArmRMesh = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.68, 0.28), fShirt); fArmRMesh.position.y = -0.28; fArmRMesh.castShadow = true;
+      const fHandR = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.20, 0.24), fSkin); fHandR.position.y = -0.66;
+      fArmR.add(fArmRMesh, fHandR);
+      fTorso.add(fArmR);
 
       // 친구도 등 뒤에 마음 광주리를 메고 다님!
       const fPack = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.24, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
@@ -1861,7 +1900,7 @@
       fg.userData.friendId = fd.id;
       worldGroup.add(fg);
       friendAgents.push({
-        ...fd, group: fg, torso: fTorso, legL: fLegL, legR: fLegR,
+        ...fd, group: fg, torso: fTorso, armL: fArmL, armR: fArmR, legL: fLegL, legR: fLegR,
         homeX: fd.x, homeZ: fd.z, phase: idx * 1.15, radius: 3.0 + (idx % 2) * 1.5,
         danceTimer: 0, helped: false, chatObj, chatIdx: 0, chatTimer: idx * 2.5
       });
@@ -2142,21 +2181,35 @@
     scene.add(spiritGroup);
 
     // ==========================================
-    // 6. 카메라 컨트롤
+    // 6. 카메라 컨트롤 (PC 마우스 드래그 + 아이패드/스마트폰 한 손가락 화면 드래그 지원)
     // ==========================================
-    const camState = { yaw: 0.2, pitch: 0.35, distance: 11.0, isRightDragging: false, lastX: 0, lastY: 0, targetPos: new THREE.Vector3(0, 1.8, 10) };
+    const camState = { yaw: 0.2, pitch: 0.35, distance: 11.0, isRightDragging: false, isPointerDown: false, dragMoved: false, lastX: 0, lastY: 0, targetPos: new THREE.Vector3(0, 1.8, 10) };
     canvas.addEventListener('contextmenu', e => e.preventDefault());
     canvas.addEventListener('pointerdown', e => {
-      if (e.button === 2 || e.shiftKey) { camState.isRightDragging = true; camState.lastX = e.clientX; camState.lastY = e.clientY; }
-    });
-    window.addEventListener('pointermove', e => {
-      if (camState.isRightDragging) {
-        camState.yaw -= (e.clientX - camState.lastX) * 0.008;
-        camState.pitch = THREE.MathUtils.clamp(camState.pitch + (e.clientY - camState.lastY) * 0.007, 0.1, 1.15);
-        camState.lastX = e.clientX; camState.lastY = e.clientY;
+      camState.isPointerDown = true;
+      camState.dragMoved = false;
+      camState.lastX = e.clientX;
+      camState.lastY = e.clientY;
+      if (e.button === 2 || e.shiftKey) {
+        camState.isRightDragging = true;
       }
     });
-    window.addEventListener('pointerup', () => { camState.isRightDragging = false; });
+    window.addEventListener('pointermove', e => {
+      if (!camState.isPointerDown) return;
+      const dx = e.clientX - camState.lastX;
+      const dy = e.clientY - camState.lastY;
+      if (Math.hypot(dx, dy) > 4) camState.dragMoved = true;
+      if (camState.isRightDragging || camState.dragMoved) {
+        camState.yaw -= dx * 0.0075;
+        camState.pitch = THREE.MathUtils.clamp(camState.pitch + dy * 0.0065, 0.1, 1.15);
+        camState.lastX = e.clientX;
+        camState.lastY = e.clientY;
+      }
+    });
+    window.addEventListener('pointerup', () => {
+      camState.isRightDragging = false;
+      camState.isPointerDown = false;
+    });
     window.addEventListener('wheel', e => {
       camState.distance = THREE.MathUtils.clamp(camState.distance + e.deltaY * 0.005, 5.0, 22.0);
     });
@@ -2244,6 +2297,20 @@
     const blockPlaceAnims = [];
     const placementRings = [];
 
+    // 3D 블록 설치 위치 미리보기(Ghost Box) & 고정 히트박스 재질
+    const hitBoxMat = new THREE.MeshBasicMaterial({ visible: false });
+    const ghostMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.32, depthWrite: false });
+    const ghostBlockMesh = new THREE.Mesh(new THREE.BoxGeometry(1.01, 1.01, 1.01), ghostMat);
+    ghostBlockMesh.raycast = () => {};
+    const ghostEdges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(1.02, 1.02, 1.02)),
+      new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 })
+    );
+    ghostEdges.raycast = () => {};
+    ghostBlockMesh.add(ghostEdges);
+    ghostBlockMesh.position.set(0, 0.5, 6);
+    worldGroup.add(ghostBlockMesh);
+
     function triggerArmSwing(targetX, targetZ) {
       playerPhysics.armSwingTimer = 0.36;
       if (typeof targetX === 'number' && typeof targetZ === 'number') {
@@ -2255,7 +2322,7 @@
       }
     }
 
-    // 마인크래프트 6슬롯 핫바 선택
+    // 마인크래프트 6슬롯 핫바 선택 (1~4: 블록 쌓기 도구, 5: 곡괭이 지우기/캐기 도구, 6: 별빛 마법 지팡이)
     function selectHotbarSlot(num) {
       currentHotbarSlot = num;
       if (num >= 1 && num <= 4) lastBlockSlot = num;
@@ -2267,29 +2334,40 @@
         handBlockMesh.visible = true;
         pickaxeGroup.visible = false;
         wandGroup.visible = false;
-        showToast(`🧱 <b>[핫바 ${num}번: ${['기쁨','슬픔(물)','용기','평온'][num-1]} 블록]</b> 우클릭(B): 블록 놓기 · 좌클릭(V): 블록 회수`);
+        ghostMat.color.copy(blockMaterials[num].color);
+        ghostBlockMesh.visible = true;
+        showToast(`🧱 <b>[${num}번: ${['기쁨','슬픔(물)','용기','평온'][num-1]} 블록]</b> 원하는 바닥·블록 옆/위를 클릭(터치)하면 자석처럼 쌓입니다!`);
       } else if (num === 5) {
         handBlockMesh.visible = false;
         pickaxeGroup.visible = true;
         wandGroup.visible = false;
-        showToast('⛏️ <b>[핫바 5번: 마음 곡괭이]</b> 좌클릭(V)으로 광석 채굴 & 블록 회수 전용!');
+        ghostMat.color.setHex(0xef4444);
+        showToast('⛏️ <b>[5번: 마음 곡괭이]</b> 지우고 싶은 블록이나 감정 광석을 클릭(터치)하면 즉시 캐냅니다!');
       } else if (num === 6) {
         handBlockMesh.visible = false;
         pickaxeGroup.visible = false;
         wandGroup.visible = true;
-        showToast('🪄 <b>[핫바 6번: 별빛 지팡이]</b> 좌클릭(F)으로 별빛 마법 발사 & 어둠 그림자 정화!');
+        ghostBlockMesh.visible = false;
+        showToast('🪄 <b>[6번: 별빛 지팡이]</b> 화면을 클릭(터치)하면 별빛 마법이 발사됩니다!');
       }
     }
 
     // 외부(멀티플레이어 탭) 또는 로컬에서 블록 생성 및 비행 착지 애니메이션
     function spawnBlockWithAnim(bx, by, bz, slotType, fromPos) {
+      bx = Math.round(bx);
+      by = Math.max(0.5, Math.round(by - 0.5) + 0.5);
+      bz = Math.round(bz);
+
       const bMat = blockMaterials[slotType] || blockMaterials[1];
       const bMesh = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.0, 1.0), bMat);
-      // 미세한 엣지 테두리 라인으로 복셀 입체감 강화
+      bMesh.raycast = () => {}; // 비행 애니메이션 중인 시각 메시가 레이캐스트를 방해하지 않도록 차단!
+
+      // 미세한 엣지 테두리 라인으로 복셀 입체감 강화 (레이캐스트 완전 제외!)
       const edges = new THREE.LineSegments(
         new THREE.EdgesGeometry(new THREE.BoxGeometry(1.005, 1.005, 1.005)),
-        new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 })
+        new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.38 })
       );
+      edges.raycast = () => {};
       bMesh.add(edges);
 
       const startP = fromPos ? fromPos.clone() : new THREE.Vector3(bx, by + 1.5, bz);
@@ -2298,7 +2376,13 @@
       bMesh.castShadow = true; bMesh.receiveShadow = true;
       worldGroup.add(bMesh);
 
-      const blockObj = { mesh: bMesh, x: bx, y: by, z: bz, type: slotType };
+      // 정확한 1x1x1 격자 스냅을 위한 고정 투명 히트박스
+      const hitBox = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.0, 1.0), hitBoxMat);
+      hitBox.position.set(bx, by, bz);
+      worldGroup.add(hitBox);
+
+      const blockObj = { mesh: bMesh, hitBox, x: bx, y: by, z: bz, type: slotType };
+      hitBox.userData.blockObj = blockObj;
       placedBlocks.push(blockObj);
 
       blockPlaceAnims.push({
@@ -2314,53 +2398,110 @@
         new THREE.RingGeometry(0.2, 0.65, 20),
         new THREE.MeshBasicMaterial({ color: bMat.color.getHex(), transparent: true, opacity: 0.9, side: THREE.DoubleSide })
       );
+      pRing.raycast = () => {};
       pRing.rotation.x = -Math.PI / 2;
       pRing.position.set(bx, by - 0.48, bz);
       worldGroup.add(pRing);
       placementRings.push({ mesh: pRing, life: 0.45 });
     }
 
+    // 마우스/터치 좌표 또는 캐릭터 전방 기준으로 정확한 격자(1x1x1) 블록 설치 좌표 계산
+    function computePlacementTarget(clientX, clientY) {
+      let usePointer = false;
+      if (typeof clientX === 'number' && typeof clientY === 'number') {
+        pointerNDC.x = (clientX / window.innerWidth) * 2 - 1;
+        pointerNDC.y = -(clientY / window.innerHeight) * 2 + 1;
+        usePointer = true;
+      } else if (pointerNDC.lengthSq() > 0.0001) {
+        usePointer = true;
+      }
+
+      let bx, by = 0.5, bz;
+      if (usePointer) {
+        raycaster.setFromCamera(pointerNDC, camera);
+        // 1순위: 이미 설치된 블록의 고정 hitBox와 교차 검사 -> 클릭한 면(윗면/옆면) 바로 옆/위에 자석 스냅!
+        const blockHitBoxes = placedBlocks.map(b => b.hitBox);
+        const groundTargets = [plaza, grassMain, islandRock, ...obbyPlatforms.map(p => p.mesh)];
+        const allHits = raycaster.intersectObjects([...blockHitBoxes, ...groundTargets], false);
+
+        if (allHits.length > 0 && allHits[0].distance < 30) {
+          const hit = allHits[0];
+          if (hit.object.userData && hit.object.userData.blockObj) {
+            const b = hit.object.userData.blockObj;
+            const n = hit.face ? hit.face.normal : new THREE.Vector3(0, 1, 0);
+            bx = b.x + Math.round(n.x);
+            by = Math.max(0.5, b.y + Math.round(n.y));
+            bz = b.z + Math.round(n.z);
+          } else {
+            // 지면/발판 클릭 시: 캐릭터 주변(최대 8칸 이내) 정수 격자의 바닥(y = 0.5)에 깔끔하게 정렬
+            bx = Math.round(hit.point.x);
+            bz = Math.round(hit.point.z);
+            const topY = Math.max(0, Math.round(hit.point.y));
+            by = topY + 0.5;
+          }
+        }
+      }
+
+      // 포인터 히트가 없거나 너무 멀면 캐릭터가 바라보는 전방 2칸 격자에 배치
+      if (typeof bx !== 'number') {
+        const fwd = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRig.rotation.y);
+        bx = Math.round(playerRig.position.x + fwd.x * 2.0);
+        bz = Math.round(playerRig.position.z + fwd.z * 2.0);
+        by = Math.max(0.5, Math.round(playerRig.position.y) + 0.5);
+      }
+
+      // 해당 (bx, by, bz) 칸에 이미 블록이 있으면 바로 위칸(by + 1.0)으로 스냅 (최대 12단)
+      let safety = 0;
+      while (placedBlocks.some(b => b.x === bx && Math.abs(b.y - by) < 0.45 && b.z === bz) && safety < 12) {
+        by += 1.0;
+        safety++;
+      }
+
+      // 캐릭터가 서 있는 몸통 자리와 겹치면 전방으로 1칸 밀어 캐릭터 끼임 방지
+      const py = playerRig.position.y;
+      if (Math.abs(bx - playerRig.position.x) < 0.85 && Math.abs(bz - playerRig.position.z) < 0.85 && (by + 0.5) > py + 0.2 && (by - 0.5) < py + 1.85) {
+        const dx = bx - playerRig.position.x;
+        const dz = bz - playerRig.position.z;
+        if (Math.abs(dx) >= Math.abs(dz)) {
+          bx = Math.round(playerRig.position.x + (dx >= 0 ? 1.3 : -1.3));
+        } else {
+          bz = Math.round(playerRig.position.z + (dz >= 0 ? 1.3 : -1.3));
+        }
+      }
+
+      return { bx, by, bz };
+    }
+
+    function updateGhostBlock() {
+      if (currentHotbarSlot >= 1 && currentHotbarSlot <= 4) {
+        const { bx, by, bz } = computePlacementTarget();
+        ghostBlockMesh.position.set(bx, by, bz);
+        ghostBlockMesh.visible = true;
+      } else if (currentHotbarSlot === 5) {
+        // 5번 곡괭이 모드일 때는 조준된 블록이 있으면 빨간 가이드 박스로 표시
+        raycaster.setFromCamera(pointerNDC, camera);
+        const bHits = raycaster.intersectObjects(placedBlocks.map(b => b.hitBox), false);
+        if (bHits.length > 0 && bHits[0].distance < 26) {
+          const b = bHits[0].object.userData.blockObj;
+          ghostBlockMesh.position.set(b.x, b.y, b.z);
+          ghostBlockMesh.visible = true;
+        } else {
+          ghostBlockMesh.visible = false;
+        }
+      } else {
+        ghostBlockMesh.visible = false;
+      }
+    }
+
     // 블록 설치 (캐릭터 회전 + 오른팔 스윙 + 손에서 날아가는 궤적 애니메이션)
-    function placeBlockAtPointer() {
+    function placeBlockAtPointer(clientX, clientY) {
       const buildSlot = (currentHotbarSlot >= 1 && currentHotbarSlot <= 4) ? currentHotbarSlot : lastBlockSlot;
       if (currentHotbarSlot >= 5) {
         selectHotbarSlot(buildSlot);
       }
       initAudio();
-      
-      let bx, by, bz;
-      const castNDC = (pointerNDC.lengthSq() > 0.001) ? pointerNDC : new THREE.Vector2(0, -0.15);
-      raycaster.setFromCamera(castNDC, camera);
-      const targets = [grassMain, plaza, islandRock, ...placedBlocks.map(b => b.mesh), ...obbyPlatforms.map(p => p.mesh)];
-      const hits = raycaster.intersectObjects(targets, true);
 
-      if (hits.length > 0 && hits[0].distance < 26) {
-        const hit = hits[0];
-        const normal = hit.face ? hit.face.normal.clone() : new THREE.Vector3(0, 1, 0);
-        normal.transformDirection(hit.object.matrixWorld);
-        const placePos = hit.point.clone().addScaledVector(normal, 0.5);
-        bx = Math.round(placePos.x);
-        by = Math.max(0.5, Math.round(placePos.y - 0.5) + 0.5);
-        bz = Math.round(placePos.z);
-      } else {
-        const camFwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
-        const forwardPos = playerRig.position.clone().addScaledVector(camFwd, 3.0);
-        bx = Math.round(forwardPos.x);
-        bz = Math.round(forwardPos.z);
-        by = 0.5;
-      }
-
-      // 같은 위치에 이미 블록이 있으면 위로 쌓기
-      while (placedBlocks.some(b => b.x === bx && Math.abs(b.y - by) < 0.6 && b.z === bz)) {
-        by += 1.0;
-      }
-
-      // 캐릭터 몸통 위치와 겹치면 전방으로 1칸 밀어 끼임 방지
-      if (Math.abs(bx - playerRig.position.x) < 0.75 && Math.abs(bz - playerRig.position.z) < 0.75 && by >= playerRig.position.y && by <= playerRig.position.y + 1.8) {
-        const camFwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
-        bx = Math.round(playerRig.position.x + camFwd.x * 2.0);
-        bz = Math.round(playerRig.position.z + camFwd.z * 2.0);
-      }
+      const { bx, by, bz } = computePlacementTarget(clientX, clientY);
 
       // 캐릭터가 블록 놓는 방향을 바라보고 오른팔을 힘차게 스윙!
       triggerArmSwing(bx, bz);
@@ -2368,6 +2509,7 @@
       rightArm.getWorldPosition(handWorldPos);
 
       spawnBlockWithAnim(bx, by, bz, buildSlot, handWorldPos);
+      resolveHorizontalCollisions();
       soundBlockPlace();
       createMagicImpact(new THREE.Vector3(bx, by, bz), blockMaterials[buildSlot].color.getHex());
 
@@ -2384,29 +2526,53 @@
         }
       } else {
         const blockNames = ['기쁨 블록', '슬픔 블록', '용기 블록', '평온 블록'];
-        showToast(`🧱 <b>[${blockNames[buildSlot-1]} 설치!]</b> 점프(SPACE)해서 블록 위로 올라가 보세요!`);
+        showToast(`🧱 <b>[${blockNames[buildSlot-1]} 설치! (${bx}, ${bz}, 높이 ${by + 0.5}m)]</b> 옆면/윗면을 클릭해 모양을 만들고 점프(SPACE)로 올라가 보세요!`);
       }
 
       if (typeof worldChannel !== 'undefined' && worldChannel) {
         worldChannel.postMessage({ type: 'mp_block_place', x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName });
       }
+      return { bx, by, bz };
     }
 
-    // 블록 및 광석 채굴 (좌클릭 또는 V키 — 별빛 마법과 완전 분리!)
+    // 블록 지우기 및 광석 채굴 (5번 마음 곡괭이 또는 V키 / 지우기 버튼)
     function mineBlockAtPointer(clientX, clientY) {
       initAudio();
       if (typeof clientX === 'number' && typeof clientY === 'number') {
         pointerNDC.x = (clientX / window.innerWidth) * 2 - 1;
         pointerNDC.y = -(clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(pointerNDC, camera);
+      } else if (pointerNDC.lengthSq() > 0.0001) {
+        raycaster.setFromCamera(pointerNDC, camera);
       } else {
         raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
       }
       
-      // 1. 감정 광석 채굴 확인
+      // 1. 플레이어가 설치한 블록 채굴/지우기 (고정 hitBox 기준 정확한 판정!)
+      const blockHitBoxes = placedBlocks.map(b => b.hitBox);
+      const bHits = raycaster.intersectObjects(blockHitBoxes, false);
+      if (bHits.length > 0 && bHits[0].distance < 28) {
+        const bInfo = bHits[0].object.userData.blockObj;
+        const bIdx = placedBlocks.indexOf(bInfo);
+        if (bIdx !== -1) {
+          triggerArmSwing(bInfo.x, bInfo.z);
+          soundBlockMine();
+          createMagicImpact(new THREE.Vector3(bInfo.x, bInfo.y, bInfo.z), blockMaterials[bInfo.type].color.getHex());
+          worldGroup.remove(bInfo.mesh);
+          worldGroup.remove(bInfo.hitBox);
+          placedBlocks.splice(bIdx, 1);
+          showToast('⛏️ <b>곡괭이로 블록을 깔끔하게 지웠습니다!</b>');
+          if (typeof worldChannel !== 'undefined' && worldChannel) {
+            worldChannel.postMessage({ type: 'mp_block_mine', x: bInfo.x, y: bInfo.y, z: bInfo.z });
+          }
+          return true;
+        }
+      }
+
+      // 2. 감정 광석 채굴 확인
       const oreTargets = emotionOres.map(o => o.userData.mesh);
       const oreHits = raycaster.intersectObjects(oreTargets, false);
-      if (oreHits.length > 0 && oreHits[0].distance < 25) {
+      if (oreHits.length > 0 && oreHits[0].distance < 26) {
         const hitOreMesh = oreHits[0].object;
         const oreGroup = hitOreMesh.parent;
         const oData = oreGroup.userData.data;
@@ -2426,31 +2592,10 @@
         return true;
       }
 
-      // 2. 플레이어가 설치한 블록 채굴/회수
-      const blockMeshes = placedBlocks.map(b => b.mesh);
-      const bHits = raycaster.intersectObjects(blockMeshes, false);
-      if (bHits.length > 0 && bHits[0].distance < 25) {
-        const hitBlock = bHits[0].object;
-        const bIdx = placedBlocks.findIndex(b => b.mesh === hitBlock);
-        if (bIdx !== -1) {
-          const bInfo = placedBlocks[bIdx];
-          triggerArmSwing(bInfo.x, bInfo.z);
-          soundBlockMine();
-          createMagicImpact(hitBlock.position, blockMaterials[bInfo.type].color.getHex());
-          worldGroup.remove(hitBlock);
-          placedBlocks.splice(bIdx, 1);
-          showToast('⛏️ 설치한 블록을 채굴하여 인벤토리로 회수했습니다.');
-          if (typeof worldChannel !== 'undefined' && worldChannel) {
-            worldChannel.postMessage({ type: 'mp_block_mine', x: bInfo.x, y: bInfo.y, z: bInfo.z });
-          }
-          return true;
-        }
-      }
-
       // 3. 걱정 털실 매듭도 곡괭이로 톡 쳐서 풀기 가능!
       const threadMeshes = worryThreads.filter(w => !w.cleared).map(w => w.mesh);
       const tHits = raycaster.intersectObjects(threadMeshes, false);
-      if (tHits.length > 0 && tHits[0].distance < 20) {
+      if (tHits.length > 0 && tHits[0].distance < 22) {
         const wt = worryThreads.find(w => w.mesh === tHits[0].object);
         if (wt && !wt.cleared) {
           wt.cleared = true; wt.mesh.visible = false;
@@ -2464,8 +2609,27 @@
         }
       }
 
-      // 허공에 좌클릭 시에도 팔 스윙 모션 재생 (별빛 마법은 절대 발사하지 않음!)
+      // 4. 터치 버튼/V키로 호출했을 때 조준점이 어긋나 있으면 캐릭터 바로 앞(3.5m 이내) 가장 가까운 블록을 자동 회수!
+      let nearestIdx = -1, nearestDist = 3.8;
+      for (let i = placedBlocks.length - 1; i >= 0; i--) {
+        const b = placedBlocks[i];
+        const d = Math.hypot(b.x - playerRig.position.x, b.z - playerRig.position.z);
+        if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
+      }
+      if (nearestIdx !== -1) {
+        const bInfo = placedBlocks[nearestIdx];
+        triggerArmSwing(bInfo.x, bInfo.z);
+        soundBlockMine();
+        createMagicImpact(new THREE.Vector3(bInfo.x, bInfo.y, bInfo.z), blockMaterials[bInfo.type].color.getHex());
+        worldGroup.remove(bInfo.mesh);
+        worldGroup.remove(bInfo.hitBox);
+        placedBlocks.splice(nearestIdx, 1);
+        showToast('⛏️ <b>가장 가까운 블록을 곡괭이로 회수했습니다!</b>');
+        return true;
+      }
+
       triggerArmSwing();
+      showToast('⛏️ 지울 블록이나 감정 광석을 바라보거나 클릭해 보세요!');
       return false;
     }
 
@@ -2508,12 +2672,12 @@
     // 높이 기반 발판 및 블록 콜라이더 (Multi-level Platform Collision)
     function getGroundHeight(px, pz, py) {
       let highest = 0; // 기본 평면
-      // 1. 설치된 블록 상단면 콜라이더
+      // 1. 설치된 블록 상단면 콜라이더 (점프해서 블록 위로 올라섰을 때만 밟음)
       for (let i = 0; i < placedBlocks.length; i++) {
         const b = placedBlocks[i];
         if (Math.abs(px - b.x) <= 0.72 && Math.abs(pz - b.z) <= 0.72) {
           const top = b.y + 0.5;
-          if (top <= py + 0.45 && top > highest) highest = top;
+          if (top <= py + 0.35 && top > highest) highest = top;
         }
       }
       // 2. 오비 점프맵 발판 & 수련잎 콜라이더
@@ -2529,20 +2693,34 @@
       return highest;
     }
 
-    // 수평 블록 충돌 판정 (캐릭터가 설치한 블록과 광석을 절대 뚫고 지나가지 못하도록 AABB 밀어내기!)
+    // 수평 블록 다중 충돌 판정 (3-Pass 정렬 AABB: 블록을 몇 개를 쌓든 절대 통과 불가!)
     function resolveHorizontalCollisions() {
       const playerRadius = 0.42;
+      const minDist = 0.5 + playerRadius; // 0.92
       const py = playerRig.position.y;
-      // 1. 설치한 블록과의 수평 벽 충돌
-      for (let i = 0; i < placedBlocks.length; i++) {
-        const b = placedBlocks[i];
-        const blockTop = b.y + 0.5;
-        const blockBottom = b.y - 0.5;
-        // 플레이어 발보다 블록 상단이 높고(이미 밟고 올라선 상태가 아님), 플레이어 머리보다 블록 하단이 낮을 때 충돌
-        if (blockTop > py + 0.38 && blockBottom < py + 1.85) {
+
+      // 3회 반복 패스로 연속된 다중 블록 벽·모서리 통과를 100% 차단
+      for (let pass = 0; pass < 3; pass++) {
+        // 플레이어와 가까운 블록부터 먼저 밀어내어 인접 블록 간 모서리 걸림/통과 방지
+        const activeBlocks = [];
+        for (let i = 0; i < placedBlocks.length; i++) {
+          const b = placedBlocks[i];
+          const blockTop = b.y + 0.5;
+          const blockBottom = b.y - 0.5;
+          if (blockTop > py + 0.28 && blockBottom < py + 1.88) {
+            const dx = playerRig.position.x - b.x;
+            const dz = playerRig.position.z - b.z;
+            if (Math.abs(dx) < minDist && Math.abs(dz) < minDist) {
+              activeBlocks.push({ b, distSq: dx * dx + dz * dz });
+            }
+          }
+        }
+        activeBlocks.sort((a, c) => a.distSq - c.distSq);
+
+        for (let i = 0; i < activeBlocks.length; i++) {
+          const b = activeBlocks[i].b;
           const dx = playerRig.position.x - b.x;
           const dz = playerRig.position.z - b.z;
-          const minDist = 0.5 + playerRadius; // 0.92
           if (Math.abs(dx) < minDist && Math.abs(dz) < minDist) {
             const overlapX = minDist - Math.abs(dx);
             const overlapZ = minDist - Math.abs(dz);
@@ -2554,16 +2732,17 @@
           }
         }
       }
-      // 2. 감정 광석과의 수평 충돌
+
+      // 감정 광석과의 수평 충돌
       for (let i = 0; i < emotionOres.length; i++) {
         const og = emotionOres[i];
         if (py < 1.2) {
           const dx = playerRig.position.x - og.position.x;
           const dz = playerRig.position.z - og.position.z;
-          const minDist = 0.6 + playerRadius;
-          if (Math.abs(dx) < minDist && Math.abs(dz) < minDist) {
-            const overlapX = minDist - Math.abs(dx);
-            const overlapZ = minDist - Math.abs(dz);
+          const oreMinDist = 0.6 + playerRadius;
+          if (Math.abs(dx) < oreMinDist && Math.abs(dz) < oreMinDist) {
+            const overlapX = oreMinDist - Math.abs(dx);
+            const overlapZ = oreMinDist - Math.abs(dz);
             if (overlapX < overlapZ) playerRig.position.x += (dx >= 0 ? overlapX : -overlapX);
             else playerRig.position.z += (dz >= 0 ? overlapZ : -overlapZ);
           }
@@ -2677,7 +2856,10 @@
         selectHotbarSlot(parseInt(k));
       }
       if (k === 'b') placeBlockAtPointer();
-      if (k === 'v') mineBlockAtPointer();
+      if (k === 'v') {
+        selectHotbarSlot(5);
+        mineBlockAtPointer();
+      }
     });
 
     window.addEventListener('keyup', e => {
@@ -2698,7 +2880,7 @@
       if (typeof momGroup !== 'undefined' && raycaster.intersectObjects(momGroup.children, true).length > 0) return { type: 'mom' };
       const friendMeshes = friendAgents.map(f => f.group);
       const fHits = raycaster.intersectObjects(friendMeshes, true);
-      if (fHits.length > 0) {
+      if (fHits.length > 0 && fHits[0].distance < 24) {
         let obj = fHits[0].object;
         while (obj && !obj.userData.friendId) obj = obj.parent;
         if (obj && obj.userData.friendId) return { type: 'friend', id: obj.userData.friendId };
@@ -2710,7 +2892,7 @@
     canvas.addEventListener('pointermove', e => {
       pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
       pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
-      if (!camState.isRightDragging) {
+      if (!camState.isRightDragging && !camState.dragMoved) {
         canvas.style.cursor = hitTestInteractive(e.clientX, e.clientY) ? 'pointer' : 'default';
       }
     });
@@ -2720,18 +2902,22 @@
       pointerDownPos.y = e.clientY;
     });
 
-    // 마우스 우클릭(드래그가 아닌 짧은 클릭): 블록 설치!
+    // 마우스 우클릭(짧은 클릭): 언제든 블록 설치(1~4번) 또는 곡괭이(5번)일 때는 블록 회수
     canvas.addEventListener('pointerup', e => {
       const dragDist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
-      if (e.button === 2 && !e.shiftKey && dragDist < 7) {
-        placeBlockAtPointer();
+      if (e.button === 2 && !e.shiftKey && dragDist < 8) {
+        if (currentHotbarSlot === 5) {
+          mineBlockAtPointer(e.clientX, e.clientY);
+        } else {
+          placeBlockAtPointer(e.clientX, e.clientY);
+        }
       }
     });
 
-    // 마우스 좌클릭: 별빛 마법과 완벽 분리! (1~5번은 채굴/회수 전용, 6번 지팡이일 때만 별빛 마법 발사)
+    // 좌클릭 및 패드/스마트폰 화면 터치: 현재 선택된 도구(1~4: 블록 쌓기, 5: 곡괭이 지우기/캐기, 6: 별빛 마법) 그대로 직관적 작동!
     canvas.addEventListener('click', e => {
       const dragDist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
-      if (e.button === 0 && dragDist < 7) {
+      if (e.button === 0 && dragDist < 8) {
         const hit = hitTestInteractive(e.clientX, e.clientY);
         if (hit?.type === 'board') openBoardModal();
         else if (hit?.type === 'mom') {
@@ -2740,10 +2926,15 @@
         }
         else if (hit?.type === 'friend') openFriendModal(hit.id);
         else {
-          if (currentHotbarSlot === 6) {
-            shootMagicBullet();
-          } else {
+          if (currentHotbarSlot >= 1 && currentHotbarSlot <= 4) {
+            // 1~4번 블록이 선택된 상태에서 바닥이나 블록 옆/위를 클릭(터치)하면 즉시 블록 쌓기!
+            placeBlockAtPointer(e.clientX, e.clientY);
+          } else if (currentHotbarSlot === 5) {
+            // 5번 곡괭이가 선택된 상태에서 클릭(터치)하면 블록 지우기 & 광석 채굴!
             mineBlockAtPointer(e.clientX, e.clientY);
+          } else if (currentHotbarSlot === 6) {
+            // 6번 별빛 지팡이가 선택된 상태에서 클릭(터치)하면 별빛 마법 발사!
+            shootMagicBullet();
           }
         }
       }
@@ -3075,6 +3266,10 @@
       zoneNpcs.forEach((npc, idx) => {
         npc.group.position.y = Math.sin(time * 2.4 + idx) * 0.1;
         npc.group.lookAt(playerRig.position.x, npc.group.position.y, playerRig.position.z);
+        if (npc.armL && npc.armR) {
+          npc.armL.rotation.x = Math.sin(time * 2.8 + idx) * 0.25;
+          npc.armR.rotation.z = -0.45 - Math.sin(time * 4.2 + idx) * 0.3; // 반갑게 손 흔들기
+        }
       });
       fearShadows.forEach((fs, idx) => {
         if (fs.cleared) return;
@@ -3087,20 +3282,30 @@
         fs.group.rotation.y += dt * 1.8;
       });
 
-      // 친구 아바타 순찰, 머리 위 말풍선 순환 및 황금 협력 빔 업데이트
+      // 친구 아바타 순찰, 양팔·다리 보행 스윙, 머리 위 말풍선 순환 및 황금 협력 빔 업데이트
       friendAgents.forEach((fr, idx) => {
         if (fr.danceTimer > 0) {
           fr.danceTimer -= dt;
           fr.group.rotation.y += dt * 6;
           fr.group.position.y = Math.abs(Math.sin(time * 10 + idx)) * 0.35;
+          if (fr.armL && fr.armR) {
+            fr.armL.rotation.z = Math.sin(time * 10 + idx) * 1.1;
+            fr.armR.rotation.z = -Math.sin(time * 10 + idx) * 1.1;
+          }
         } else {
           const ang = fr.phase + time * 0.35;
           const nx = fr.homeX + Math.cos(ang) * fr.radius;
           const nz = fr.homeZ + Math.sin(ang * 0.8) * fr.radius;
           fr.group.rotation.y = Math.atan2(nx - fr.group.position.x, nz - fr.group.position.z);
           fr.group.position.set(nx, Math.abs(Math.sin(time * 5 + idx)) * 0.08, nz);
-          fr.legL.rotation.x = Math.sin(time * 6 + idx) * 0.5;
-          fr.legR.rotation.x = -Math.sin(time * 6 + idx) * 0.5;
+          fr.legL.rotation.x = Math.sin(time * 6 + idx) * 0.55;
+          fr.legR.rotation.x = -Math.sin(time * 6 + idx) * 0.55;
+          if (fr.armL && fr.armR) {
+            fr.armL.rotation.z = 0;
+            fr.armR.rotation.z = 0;
+            fr.armL.rotation.x = -Math.sin(time * 6 + idx) * 0.55;
+            fr.armR.rotation.x = Math.sin(time * 6 + idx) * 0.55;
+          }
         }
         // 친구 머리 위 말풍선 주기적 표시
         fr.chatTimer -= dt;
@@ -3329,6 +3534,8 @@
           playerRig.position.y = groundY;
         }
       }
+      resolveHorizontalCollisions();
+      updateGhostBlock();
       playerRig.scale.lerp(new THREE.Vector3(1, 1, 1), 0.16);
 
       if (playerPhysics.isDancing) {
@@ -3496,6 +3703,16 @@
     document.getElementById('btnDanceAction').onclick = doDance;
     document.getElementById('btnMeditateAction').onclick = doMeditate;
     document.getElementById('btnFarewellAction').onclick = () => { openModal('modalFarewell'); renderFarewell(); };
+
+    // 패드(아이패드)/스마트폰/PC 겸용 우측 하단 4대 원터치 액션 패드 연결
+    const btnTouchBuild = document.getElementById('btnTouchBuild');
+    if (btnTouchBuild) btnTouchBuild.onclick = () => placeBlockAtPointer();
+    const btnTouchMine = document.getElementById('btnTouchMine');
+    if (btnTouchMine) btnTouchMine.onclick = () => { selectHotbarSlot(5); mineBlockAtPointer(); };
+    const btnTouchJump = document.getElementById('btnTouchJump');
+    if (btnTouchJump) btnTouchJump.onclick = () => doJump();
+    const btnTouchMagic = document.getElementById('btnTouchMagic');
+    if (btnTouchMagic) btnTouchMagic.onclick = () => { selectHotbarSlot(6); shootMagicBullet(); };
     document.getElementById('btnTrophy').onclick = () => { openModal('modalTrophy'); renderTrophyCard(); };
     document.getElementById('btnTOD').onclick = cycleTimeOfDay;
     document.getElementById('btnStory').onclick = () => openModal('modalStory');
@@ -3735,6 +3952,14 @@
             spawnBlockWithAnim(d.x, d.y, d.z, d.slot || 1);
             appendChatLog(d.from, `새로운 감정 블록을 설치했습니다! (${d.x}, ${d.z})`, true);
           }
+        } else if (d.type === 'mp_block_mine') {
+          const bIdx = placedBlocks.findIndex(b => b.x === d.x && Math.abs(b.y - d.y) < 0.5 && b.z === d.z);
+          if (bIdx !== -1) {
+            const bInfo = placedBlocks[bIdx];
+            worldGroup.remove(bInfo.mesh);
+            if (bInfo.hitBox) worldGroup.remove(bInfo.hitBox);
+            placedBlocks.splice(bIdx, 1);
+          }
         } else if (d.type === 'mp_customize') {
           appendChatLog(d.from, `[${d.title}] 칭호와 새 아바타 의상으로 갈아입었습니다!`, true);
         }
@@ -3892,7 +4117,9 @@
     syncQuestHUD(); selectGuestSpirit(state.curGuest); updateScreenCanvas(); animate();
     setTimeout(() => {
       const pl = document.getElementById('preloader'); pl.style.opacity = '0'; setTimeout(() => pl.remove(), 600);
-      showToast(`<b>${state.playerName}</b>님, 마음 광주리 3D 월드에 오신 것을 환영합니다.`);
+      // 최초 입장 시 자기 이름과 캐릭터 코스튬(모자·상의 컬러·칭호)을 선택하고 입장할 수 있도록 캐릭터 선택 스튜디오 자동 오픈!
+      openCustomizeStudio();
+      showToast(`👋 <b>환영합니다!</b> 내 이름과 캐릭터 모습을 선택하고 광장에 입장해 보세요!`);
     }, 1000);
   
   // ==========================================
@@ -3953,6 +4180,9 @@
     window.selectHotbarSlot = selectHotbarSlot;
     window.playerRig = playerRig;
     window.resolveHorizontalCollisions = resolveHorizontalCollisions;
+    window.placedBlocks = placedBlocks;
+    window.friendAgents = friendAgents;
+    window.zoneNpcs = zoneNpcs;
   </script>
 
   <!-- =========================================
