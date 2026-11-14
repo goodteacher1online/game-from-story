@@ -409,19 +409,112 @@
       white-space: nowrap;
     }
 
-    /* 좌측 하단 실시간 멀티플레이어 광장 채팅 & 이모트 바 (하단 통합 독 위쪽에 배치하여 겹침 완벽 방지) */
+    /* 눈에 띄지 않는 초미니멀 스크롤바 (화살표 버튼 완전 제거 & 투명 트랙) */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    }
+    *::-webkit-scrollbar { width: 4px; height: 4px; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    *::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 99px; }
+    *::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
+    *::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+    *::-webkit-scrollbar-corner { background: transparent; }
+
+    /* 좌측 상단 《인찬이의 마음 손님》 스토리 미션 보드 (상시 노출 + 접기/펼치기 + 3D 길 안내) */
+    .story-tracker {
+      position: fixed; top: 68px; left: 16px; z-index: 43;
+      width: 305px; background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(16px); border: 1.5px solid rgba(251, 191, 36, 0.45);
+      border-radius: 15px; padding: 10px 12px; color: #f8fafc;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.42);
+      display: flex; flex-direction: column; gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .story-tracker.collapsed .story-tracker-body { display: none; }
+    .story-tracker-head {
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; gap: 6px;
+    }
+    .story-tracker-title {
+      font-size: 12.5px; font-weight: 800; color: #fbbf24;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .story-tracker-toggle {
+      background: rgba(255, 255, 255, 0.1); border: none; color: #cbd5e1;
+      font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; cursor: pointer;
+    }
+    .story-tracker-sub {
+      font-size: 11px; color: #cbd5e1; line-height: 1.4;
+      background: rgba(255, 255, 255, 0.06); padding: 6px 8px; border-radius: 8px;
+      border-left: 3px solid #fbbf24;
+    }
+    .story-mission-list {
+      display: flex; flex-direction: column; gap: 5px; max-height: 225px; overflow-y: auto;
+    }
+    .story-mission-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 7px;
+      padding: 6px 8px; border-radius: 9px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .story-mission-item:hover { background: rgba(255, 255, 255, 0.12); transform: translateX(2px); }
+    .story-mission-item.active-guide {
+      border-color: #fbbf24; background: rgba(251, 191, 36, 0.14);
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.22);
+    }
+    .story-mission-item.done { opacity: 0.6; border-color: rgba(74, 222, 128, 0.4); background: rgba(34, 197, 94, 0.1); }
+    .sm-left { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .sm-chap { font-size: 11.5px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 5px; }
+    .sm-desc { font-size: 10.5px; color: #cbd5e1; line-height: 1.3; }
+    .sm-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+    .sm-prog { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; color: #fde047; }
+    .sm-guide-btn {
+      font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 5px;
+      background: rgba(251, 191, 36, 0.22); color: #fde047; border: 1px solid rgba(251, 191, 36, 0.45);
+    }
+
+    /* 좌측 하단 실시간 멀티플레이어 광장 채팅 & 이모트 바 (크기 조절 + 접기/펼치기 + 미니멀 스크롤) */
     .mp-chat-panel {
       position: fixed; left: 16px; bottom: 84px; z-index: 44;
-      width: 256px; background: rgba(15, 23, 42, 0.88);
+      width: 268px; height: 176px; min-width: 210px; max-width: 480px; min-height: 38px; max-height: 400px;
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 14px; padding: 9px 11px; color: #f8fafc;
+      border-radius: 14px; padding: 8px 11px; color: #f8fafc;
       box-shadow: 0 12px 28px rgba(0,0,0,0.4);
-      display: flex; flex-direction: column; gap: 5px;
+      display: flex; flex-direction: column; gap: 5px; overflow: hidden;
+      transition: height 0.15s ease, width 0.15s ease;
     }
+    .mp-chat-panel.minimized {
+      height: 36px !important; width: 220px !important; padding: 7px 11px;
+    }
+    .mp-chat-panel.minimized .mp-chat-log,
+    .mp-chat-panel.minimized .mp-quick-row,
+    .mp-chat-panel.minimized .mp-chat-input-row,
+    .mp-chat-panel.minimized .mp-resize-handle {
+      display: none !important;
+    }
+    .mp-chat-panel.expanded {
+      width: 360px !important; height: 270px !important;
+    }
+    .mp-resize-handle {
+      position: absolute; top: 0; right: 0; width: 18px; height: 18px;
+      cursor: nesw-resize; z-index: 5;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255, 255, 255, 0.35); font-size: 10px;
+    }
+    .mp-resize-handle:hover { color: #fbbf24; }
     .mp-chat-head {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 11px; font-weight: 700; color: #94a3b8;
+      font-size: 11px; font-weight: 700; color: #94a3b8; padding-right: 12px; flex-shrink: 0;
     }
+    .mp-win-ctrls { display: inline-flex; align-items: center; gap: 3px; }
+    .mp-win-btn {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+      color: #cbd5e1; font-size: 9.5px; font-weight: 800; padding: 1px 5px;
+      border-radius: 5px; cursor: pointer; line-height: 1.3;
+    }
+    .mp-win-btn:hover { background: rgba(251,191,36,0.25); color: #fde047; border-color: #fbbf24; }
     .mp-live-badge {
       display: inline-flex; align-items: center; gap: 5px;
       color: #4ade80; font-weight: 800;
@@ -431,38 +524,39 @@
       box-shadow: 0 0 8px #22c55e;
     }
     .mp-chat-log {
-      height: 58px; overflow-y: auto; font-size: 11.5px; line-height: 1.45;
+      flex: 1; min-height: 36px; overflow-y: auto; font-size: 11.5px; line-height: 1.45;
       display: flex; flex-direction: column; gap: 3px; color: #e2e8f0;
-      padding-right: 2px;
+      padding-right: 3px;
     }
     .mp-chat-msg b { color: #fbbf24; }
     .mp-chat-input-row {
-      display: flex; gap: 5px;
+      display: flex; gap: 5px; flex-shrink: 0;
     }
     .mp-chat-input {
-      flex: 1; height: 28px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.18);
+      flex: 1; height: 27px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.18);
       background: rgba(30, 41, 59, 0.9); color: #fff; font-size: 11.5px; padding: 0 8px; outline: none;
     }
     .mp-chat-input:focus { border-color: #fbbf24; }
     .mp-chat-send {
-      height: 28px; padding: 0 10px; border-radius: 7px; border: none;
+      height: 27px; padding: 0 10px; border-radius: 7px; border: none;
       background: #ff5800; color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;
     }
     .mp-quick-row {
-      display: flex; gap: 4px; overflow-x: auto;
+      display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; overflow: hidden;
     }
     .mp-quick-btn {
-      padding: 2px 7px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06); color: #cbd5e1; font-size: 10px;
+      padding: 2px 6px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06); color: #cbd5e1; font-size: 9.8px;
       white-space: nowrap; cursor: pointer;
     }
     .mp-quick-btn:hover { background: rgba(251,191,36,0.2); color: #fbbf24; border-color: #fbbf24; }
     @media (hover: none), (pointer: coarse), (max-width: 1100px) {
-      .mp-chat-panel { bottom: 204px; width: 220px; padding: 7px 9px; }
-      .mp-chat-log { height: 42px; }
+      .mp-chat-panel { bottom: 204px; width: 225px; height: 145px; padding: 7px 9px; }
+      .story-tracker { width: 265px; top: 64px; }
     }
     @media (max-width: 760px) {
       .mp-chat-panel { display: none; }
+      .story-tracker { width: 235px; }
     }
 
     /* 캐릭터 커스터마이징 선택 그리드 */
@@ -577,11 +671,30 @@
 
   <div class="toast-box" id="toastBox"></div>
 
-  <!-- 좌측 하단 멀티플레이어 실시간 광장 채팅 패널 -->
+  <!-- 좌측 상단: 《인찬이의 마음 손님》 5장 스토리 미션 네비게이터 -->
+  <div class="story-tracker" id="storyTracker">
+    <div class="story-tracker-head" onclick="toggleStoryTracker()">
+      <span class="story-tracker-title">📖 《인찬이의 마음 손님》 스토리 미션 <span id="storyDoneBadge">(0/5)</span></span>
+      <button type="button" class="story-tracker-toggle" id="btnStoryTrackerToggle">접기 ▲</button>
+    </div>
+    <div class="story-tracker-body">
+      <div class="story-tracker-sub" id="storyCurrentGuideText">
+        💡 <b>미션을 클릭</b>하면 인찬이 발밑에 <b>황금 화살표</b>가 나타나 감정 손님이 있는 곳으로 안내합니다!
+      </div>
+      <div class="story-mission-list" id="storyMissionList"></div>
+    </div>
+  </div>
+
+  <!-- 좌측 하단 멀티플레이어 실시간 광장 채팅 패널 (크기 조절 & 접기/확대 지원) -->
   <div class="mp-chat-panel" id="mpChatPanel">
+    <div class="mp-resize-handle" id="mpResizeHandle" title="드래그하여 채팅창 크기 조절">⤡</div>
     <div class="mp-chat-head">
-      <span class="mp-live-badge"><span class="mp-live-dot"></span>광장 함께하기 (<span id="mpOnlineNum">7</span>명)</span>
-      <span style="cursor:pointer; color:#38bdf8;" onclick="openModal('modalCustomize')">내 캐릭터 꾸미기 ↗</span>
+      <span class="mp-live-badge"><span class="mp-live-dot"></span><span id="mpRoomTitle">광장</span> (<span id="mpOnlineNum">7</span>명)</span>
+      <div class="mp-win-ctrls">
+        <button type="button" class="mp-win-btn" onclick="setChatSize('min')" title="채팅창 접기(최소화)">ㅡ</button>
+        <button type="button" class="mp-win-btn" onclick="setChatSize('norm')" title="기본 크기">□</button>
+        <button type="button" class="mp-win-btn" onclick="setChatSize('max')" title="채팅창 크게 확대">⤢</button>
+      </div>
     </div>
     <div class="mp-chat-log" id="mpChatLog">
       <div class="mp-chat-msg"><b>[시스템]</b> 마음 광주리 멀티플레이 광장에 입장했습니다!</div>
@@ -590,12 +703,11 @@
     </div>
     <div class="mp-quick-row">
       <button type="button" class="mp-quick-btn" onclick="sendMpChat('안녕! 반가워 👋')">👋 안녕!</button>
-      <button type="button" class="mp-quick-btn" onclick="sendMpChat('같이 점프맵 가자! 🌈')">🌈 점프맵 가자</button>
-      <button type="button" class="mp-quick-btn" onclick="sendMpChat('내 마음 광주리 같이 들어줘! 🧺')">🧺 광주리 도움</button>
-      <button type="button" class="mp-quick-btn" onclick="sendMpChat('멋진 블록 건축이네! 🧱')">🧱 멋진 블록!</button>
+      <button type="button" class="mp-quick-btn" onclick="sendMpChat('같이 점프맵 가자! 🌈')">🌈 점프맵</button>
+      <button type="button" class="mp-quick-btn" onclick="sendMpChat('마음 광주리 같이 들어줘! 🧺')">🧺 광주리 도움</button>
     </div>
     <div class="mp-chat-input-row">
-      <input type="text" class="mp-chat-input" id="mpChatInput" maxlength="40" placeholder="머리 위 말풍선 채팅 입력 (Enter)..." />
+      <input type="text" class="mp-chat-input" id="mpChatInput" maxlength="40" placeholder="말풍선 채팅 입력 (Enter)..." />
       <button type="button" class="mp-chat-send" id="btnMpChatSend">전송</button>
     </div>
   </div>
@@ -686,7 +798,6 @@
     <div class="dock-sep"></div>
     <button class="act-btn primary" id="btnCustomizeDock"><span>👕 캐릭터 선택</span></button>
     <button class="act-btn" id="btnGuestSelect"><span>✨ 정령</span></button>
-    <button class="act-btn" id="btnShootAction"><span class="kbd">F</span><span>마법</span></button>
     <button class="act-btn" id="btnJumpAction"><span class="kbd">SPACE</span><span>점프</span></button>
     <button class="act-btn" id="btnBreatheWind"><span class="kbd">C</span><span>심호흡</span></button>
     <button class="act-btn" id="btnDanceAction"><span class="kbd">E</span><span>춤</span></button>
@@ -702,9 +813,9 @@
         <button class="btn-close" onclick="closeModal('modalCustomize')">✕</button>
       </div>
       <p style="font-size: 12.5px; color: var(--ink-sub); line-height: 1.5;">
-        여러 친구들과 함께하는 마음 광주리 광장입니다! 내 캐릭터 이름(닉네임), 칭호 배지, 옷 색상, 3D 모자를 골라 입장해 보세요.
+        여러 친구들과 함께하는 마음 광주리 광장입니다! 내 캐릭터 이름(닉네임), 우리 반 방 코드, 옷 색상, 3D 모자를 골라 입장해 보세요.
       </p>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
         <div>
           <label class="field-label" for="custInputName">캐릭터 이름 (닉네임)</label>
           <input class="text-input" id="custInputName" type="text" maxlength="12" placeholder="예: 인찬이" />
@@ -718,6 +829,10 @@
             <option value="따뜻한 위로자">💧 따뜻한 위로자</option>
             <option value="용기 수호자">🔥 용기 수호자</option>
           </select>
+        </div>
+        <div>
+          <label class="field-label" for="custInputRoom">우리 반 방 이름 (여러 방 생성 가능)</label>
+          <input class="text-input" id="custInputRoom" type="text" maxlength="14" placeholder="예: 5학년1반" value="전체광장" />
         </div>
       </div>
 
@@ -2748,6 +2863,143 @@
           }
         }
       }
+
+      // 원형 장애물 밀어내기 헬퍼 (광주리, 등대, 화로, 전광판 기둥, 나무, NPC 등 모든 월드 콘텐츠 경계 충돌!)
+      function pushOutCircle(cx, cz, radius, maxY = 10) {
+        if (py > maxY) return;
+        const dx = playerRig.position.x - cx;
+        const dz = playerRig.position.z - cz;
+        const dist = Math.hypot(dx, dz);
+        const minR = radius + playerRadius;
+        if (dist < minR) {
+          if (dist < 0.001) {
+            playerRig.position.z += minR;
+          } else {
+            const push = minR - dist;
+            playerRig.position.x += (dx / dist) * push;
+            playerRig.position.z += (dz / dist) * push;
+          }
+        }
+      }
+
+      // 직사각형(AABB) 장애물 밀어내기 헬퍼 (털실 벤치 등)
+      function pushOutBox(bx, bz, hx, hz, maxY = 2.5) {
+        if (py > maxY) return;
+        const dx = playerRig.position.x - bx;
+        const dz = playerRig.position.z - bz;
+        const rx = hx + playerRadius;
+        const rz = hz + playerRadius;
+        if (Math.abs(dx) < rx && Math.abs(dz) < rz) {
+          const ox = rx - Math.abs(dx);
+          const oz = rz - Math.abs(dz);
+          if (ox < oz) playerRig.position.x += (dx >= 0 ? ox : -ox);
+          else playerRig.position.z += (dz >= 0 ? oz : -oz);
+        }
+      }
+
+      // 1) 중앙 황금 마음 광주리 제단 (반경 4.85m, 높이 2.9m)
+      pushOutCircle(0, 0, 4.85, 2.9);
+      // 2) 북서쪽 두려움의 수호 등대 타워 (반경 3.05m, 높이 11.5m)
+      pushOutCircle(-20, -18, 3.05, 11.5);
+      // 3) 남쪽 화의 캠프파이어 불길/장작 중심부 (반경 1.95m, 높이 2.2m)
+      pushOutCircle(0, 24, 1.95, 2.2);
+      // 4) 북동쪽 걱정의 털실 벤치 (가로 3.6m, 세로 1.2m)
+      pushOutBox(20, -18, 1.85, 0.68, 1.65);
+      // 5) 북쪽 실시간 전광판 기둥 2개
+      pushOutCircle(-7.5, -26.25, 0.78, 9.5);
+      pushOutCircle(7.5, -26.25, 0.78, 9.5);
+      // 6) 숲속 나무 32그루 기둥
+      if (typeof trees !== 'undefined') {
+        for (let i = 0; i < trees.length; i++) {
+          const tg = trees[i].group;
+          pushOutCircle(tg.position.x, tg.position.z, 0.45 * tg.scale.x, 4.5 * tg.scale.y);
+        }
+      }
+      // 7) 엄마 NPC (6.5, 6.5)
+      pushOutCircle(6.5, 6.5, 0.62, 2.6);
+      // 8) 5대 감정 손님 NPC
+      if (typeof zoneNpcs !== 'undefined') {
+        for (let i = 0; i < zoneNpcs.length; i++) {
+          const zn = zoneNpcs[i];
+          pushOutCircle(zn.x, zn.z, 0.68, 2.5);
+        }
+      }
+      // 9) 6명 광장 친구 아바타 NPC
+      if (typeof friendAgents !== 'undefined') {
+        for (let i = 0; i < friendAgents.length; i++) {
+          const fg = friendAgents[i].group;
+          pushOutCircle(fg.position.x, fg.position.z, 0.56, 2.5);
+        }
+      }
+    }
+
+    // NPC가 사용자가 만든 블록(placedBlocks) 및 월드 구조물을 통과하지 않고 자연스럽게 돌아가도록(우회) 하는 물리/우회 판정!
+    function resolveNpcCollisions(fr, dt) {
+      const npcRadius = 0.52;
+      const blockMinDist = 0.5 + npcRadius; // 1.02m
+      let pos = fr.group.position;
+      let hitAnyBlock = false;
+      let pushTotalX = 0, pushTotalZ = 0;
+
+      // 2-Pass로 사용자가 쌓은 모든 1층/2층 블록과의 충돌 검사 및 접선 우회 벡터 산출
+      for (let pass = 0; pass < 2; pass++) {
+        for (let i = 0; i < placedBlocks.length; i++) {
+          const b = placedBlocks[i];
+          if (b.y > 2.2) continue; // 공중 높은 블록은 제외, 지상 1~2단 블록은 모두 장애물 인식
+          const dx = pos.x - b.x;
+          const dz = pos.z - b.z;
+          if (Math.abs(dx) < blockMinDist && Math.abs(dz) < blockMinDist) {
+            hitAnyBlock = true;
+            const ox = blockMinDist - Math.abs(dx);
+            const oz = blockMinDist - Math.abs(dz);
+            if (ox < oz) {
+              const sx = (dx >= 0 ? ox : -ox);
+              pos.x += sx;
+              pushTotalX += sx;
+            } else {
+              const sz = (dz >= 0 ? oz : -oz);
+              pos.z += sz;
+              pushTotalZ += sz;
+            }
+          }
+        }
+      }
+
+      // NPC가 블록에 부딪히면 법선의 수직(접선) 방향으로 우회 오프셋(avoidX, avoidZ)을 누적하여 블록 옆으로 돌아가게 함!
+      if (hitAnyBlock) {
+        const len = Math.hypot(pushTotalX, pushTotalZ) || 1;
+        const nx = pushTotalX / len;
+        const nz = pushTotalZ / len;
+        // 접선 벡터 (-nz, nx) + 법선 반발력으로 블록 가장자리를 따라 자연스럽게 돌아감
+        fr.avoidX = (fr.avoidX || 0) + (nx * 1.4 - nz * 2.2) * dt * 5.0;
+        fr.avoidZ = (fr.avoidZ || 0) + (nz * 1.4 + nx * 2.2) * dt * 5.0;
+        fr.avoidX = THREE.MathUtils.clamp(fr.avoidX, -4.5, 4.5);
+        fr.avoidZ = THREE.MathUtils.clamp(fr.avoidZ, -4.5, 4.5);
+        fr.phase += dt * 0.95;
+      } else if (fr.avoidX || fr.avoidZ) {
+        // 장애물을 지나치면 서서히 원래 순찰 궤도로 복귀
+        fr.avoidX = THREE.MathUtils.lerp(fr.avoidX || 0, 0, dt * 1.5);
+        fr.avoidZ = THREE.MathUtils.lerp(fr.avoidZ || 0, 0, dt * 1.5);
+      }
+
+      // 중앙 마음 광주리, 등대, 화로, 플레이어와의 충돌 방지
+      const obstacles = [
+        { x: 0, z: 0, r: 5.2 },
+        { x: -20, z: -18, r: 3.4 },
+        { x: 0, z: 24, r: 2.3 },
+        { x: 6.5, z: 6.5, r: 0.9 },
+        { x: playerRig.position.x, z: playerRig.position.z, r: 0.95 }
+      ];
+      for (let i = 0; i < obstacles.length; i++) {
+        const ob = obstacles[i];
+        const dx = pos.x - ob.x;
+        const dz = pos.z - ob.z;
+        const d = Math.hypot(dx, dz);
+        if (d < ob.r && d > 0.001) {
+          pos.x += (dx / d) * (ob.r - d);
+          pos.z += (dz / d) * (ob.r - d);
+        }
+      }
     }
 
     // 8. 마법 투사체, 먼지, 치유 리추얼 & 퀘스트
@@ -2798,6 +3050,128 @@
       showToast(`<b>"${text}"</b>을(를) 소원 연등에 담아 하늘로 날려 보냈습니다.`);
     }
 
+    // [인찬이의 마음 손님] 5장 스토리 미션 보드 & 3D 황금 길안내 화살표 & 5대 랜드마크 대형 입간판
+    const storyQuestMeta = [
+      {
+        key: 'joy', chapter: '제1장 · 기쁨 손님 (동쪽 트램펄린)',
+        title: '별토끼와 하늘 링 3개 점프 통과하기',
+        desc: '“기쁠 땐 마음껏 웃고 뛰어올라도 돼!” 노란 트램펄린과 무지개 계단을 밟아 공중 황금 링 3개를 통과하세요.',
+        color: '#f59e0b', x: 22, z: 4, max: 3
+      },
+      {
+        key: 'sad', chapter: '제2장 · 슬픔 손님 (서쪽 치유 연못)',
+        title: '수련잎 징검다리 건너 기억 물방울 3개 모으기',
+        desc: '“소중한 걸 잃었을 때 눈물이 나는 건 당연해.” 연못 수련잎을 건너 물방울 3개를 모으고 연못 중앙으로 가세요.',
+        color: '#3b82f6', x: -23, z: 4, max: 3
+      },
+      {
+        key: 'anger', chapter: '제3장 · 화 손님 (남쪽 화산 모닥불)',
+        title: '불도깨비 모닥불 앞 타이밍 심호흡(C) 또는 물블록(2번) 놓기',
+        desc: '“내 마음을 지키려다 불길이 너무 커졌어!” 화로 앞에서 초록 타이밍에 C키 심호흡 3번 또는 2번 슬픔 물블록을 놓아주세요.',
+        color: '#ef4444', x: 0, z: 24, max: 3
+      },
+      {
+        key: 'fear', chapter: '제4장 · 두려움 손님 (북서쪽 수호 등대)',
+        title: '6번 별빛 지팡이로 등대 먹구름 그림자 5개 비추기',
+        desc: '“어두운 밤바다가 무서워…” 핫바 [6번 별빛 지팡이]를 들고 클릭(또는 F키)하여 등대 주변 먹구름 5개를 정화하세요.',
+        color: '#a855f7', x: -20, z: -18, max: 5
+      },
+      {
+        key: 'worry', chapter: '제5장 · 걱정 손님 (북동쪽 털실 벤치)',
+        title: '엉킨 초록 털실 매듭 3개 풀고 소원 연등 날리기(G)',
+        desc: '“내일 일이 자꾸 걱정돼서 실타래가 엉켰어.” 벤치 주변 초록 털실 3개를 건드려 풀고 벤치에서 G키로 연등을 날려보세요.',
+        color: '#10b981', x: 20, z: -18, max: 3
+      }
+    ];
+
+    let activeGuidedQuestKey = 'joy';
+
+    // 5대 랜드마크 상공에 멀리서도 한눈에 보이는 3D 대형 스토리 미션 입간판 생성!
+    const landmarkStorySigns = [];
+    function makeLandmarkStorySign(meta) {
+      const sc = document.createElement('canvas'); sc.width = 640; sc.height = 200;
+      const ctx = sc.getContext('2d');
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+      ctx.fillRect(10, 10, 620, 180);
+      ctx.strokeStyle = meta.color; ctx.lineWidth = 8;
+      ctx.strokeRect(10, 10, 620, 180);
+      ctx.fillStyle = meta.color; ctx.font = 'bold 24px "Noto Sans KR"'; ctx.textAlign = 'center';
+      ctx.fillText(`📖 ${meta.chapter}`, 320, 58);
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 28px "Noto Sans KR"';
+      ctx.fillText(`🎯 ${meta.title}`, 320, 110);
+      ctx.fillStyle = '#fef08a'; ctx.font = 'bold 20px "Noto Sans KR"';
+      ctx.fillText('▼ 이 구역에서 인찬이 스토리 미션을 수행하세요! ▼', 320, 158);
+      const tex = new THREE.CanvasTexture(sc);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+      sp.scale.set(7.2, 2.25, 1);
+      sp.position.set(meta.x, meta.key === 'fear' ? 13.2 : 5.2, meta.z);
+      worldGroup.add(sp);
+      landmarkStorySigns.push({ key: meta.key, sprite: sp, baseY: sp.position.y });
+    }
+    storyQuestMeta.forEach(makeLandmarkStorySign);
+
+    // 플레이어 발밑에서 현재 목표 스토리 미션 구역을 가리키는 3D 황금 길안내 화살표!
+    const questGuideArrow = new THREE.Group();
+    const arrowShaft = new THREE.Mesh(
+      new THREE.BoxGeometry(0.24, 0.08, 0.9),
+      new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.9 })
+    );
+    arrowShaft.position.z = 1.55;
+    const arrowHeadGeo = new THREE.ConeGeometry(0.36, 0.6, 4);
+    arrowHeadGeo.rotateX(Math.PI / 2);
+    const arrowHead = new THREE.Mesh(
+      arrowHeadGeo,
+      new THREE.MeshBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.95 })
+    );
+    arrowHead.position.z = 2.15;
+    questGuideArrow.add(arrowShaft, arrowHead);
+    questGuideArrow.position.y = 0.25;
+    scene.add(questGuideArrow);
+
+    function renderStoryMissionTracker() {
+      const listEl = document.getElementById('storyMissionList');
+      if (!listEl) return;
+      // 아직 완료되지 않은 첫 번째 미션을 기본 길안내 타깃으로 자동 설정
+      if (state.quests[activeGuidedQuestKey]) {
+        const nextIncomplete = storyQuestMeta.find(m => !state.quests[m.key]);
+        if (nextIncomplete) activeGuidedQuestKey = nextIncomplete.key;
+      }
+      listEl.innerHTML = storyQuestMeta.map(m => {
+        const isDone = !!state.quests[m.key];
+        const curVal = isDone ? m.max : Math.min(m.max, state.mission[m.key] || 0);
+        const isActive = (activeGuidedQuestKey === m.key && !isDone);
+        return `
+          <div class="story-q-item ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}" onclick="window.guideToStoryQuest('${m.key}')">
+            <div class="story-q-top">
+              <span class="story-q-chapter" style="color:${m.color};">${m.chapter}</span>
+              <span class="story-q-prog">${isDone ? '✅ 완료' : `${curVal} / ${m.max}`}</span>
+            </div>
+            <div class="story-q-title">${m.title}</div>
+            <div class="story-q-desc">${m.desc}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.guideToStoryQuest = function(key) {
+      initAudio();
+      activeGuidedQuestKey = key;
+      const meta = storyQuestMeta.find(m => m.key === key);
+      renderStoryMissionTracker();
+      if (meta) {
+        soundChime(659);
+        showToast(`🧭 <b>[${meta.chapter}]</b> 방향으로 발밑 황금 화살표가 길을 안내합니다!`);
+      }
+    };
+
+    window.toggleStoryTracker = function() {
+      const el = document.getElementById('storyTracker');
+      const btn = document.getElementById('btnToggleStoryTracker');
+      if (!el) return;
+      el.classList.toggle('collapsed');
+      if (btn) btn.textContent = el.classList.contains('collapsed') ? '펼치기 ▼' : '접기 ▲';
+    };
+
     function syncQuestHUD() {
       const dotMap = { joy: 'dotJoy', sad: 'dotSad', anger: 'dotAnger', fear: 'dotFear', worry: 'dotWorry' };
       const orbMap = { joy: joyOrbMesh, sad: sadOrbMesh, anger: angerOrbMesh, fear: fearOrbMesh, worry: worryOrbMesh };
@@ -2815,6 +3189,7 @@
       });
       const totalDone = Object.values(state.quests).filter(Boolean).length;
       document.getElementById('questCountText').textContent = `${totalDone}/5`;
+      renderStoryMissionTracker();
     }
 
     function checkQuestCollect(key, name, msg) {
@@ -3282,7 +3657,7 @@
         fs.group.rotation.y += dt * 1.8;
       });
 
-      // 친구 아바타 순찰, 양팔·다리 보행 스윙, 머리 위 말풍선 순환 및 황금 협력 빔 업데이트
+      // 친구 아바타 순찰 + 사용자 설치 블록 우회(돌아가기), 양팔·다리 보행 스윙, 머리 위 말풍선 순환 업데이트
       friendAgents.forEach((fr, idx) => {
         if (fr.danceTimer > 0) {
           fr.danceTimer -= dt;
@@ -3293,11 +3668,19 @@
             fr.armR.rotation.z = -Math.sin(time * 10 + idx) * 1.1;
           }
         } else {
+          const prevX = fr.group.position.x;
+          const prevZ = fr.group.position.z;
           const ang = fr.phase + time * 0.35;
-          const nx = fr.homeX + Math.cos(ang) * fr.radius;
-          const nz = fr.homeZ + Math.sin(ang * 0.8) * fr.radius;
-          fr.group.rotation.y = Math.atan2(nx - fr.group.position.x, nz - fr.group.position.z);
+          const nx = fr.homeX + Math.cos(ang) * fr.radius + (fr.avoidX || 0);
+          const nz = fr.homeZ + Math.sin(ang * 0.8) * fr.radius + (fr.avoidZ || 0);
           fr.group.position.set(nx, Math.abs(Math.sin(time * 5 + idx)) * 0.08, nz);
+          // 사용자가 만든 블록(placedBlocks) 및 장애물과 충돌 시 밀어내고 옆으로 돌아가도록 우회 오프셋 적용!
+          resolveNpcCollisions(fr, dt);
+          const moveDx = fr.group.position.x - prevX;
+          const moveDz = fr.group.position.z - prevZ;
+          if (Math.hypot(moveDx, moveDz) > 0.002) {
+            fr.group.rotation.y = THREE.MathUtils.lerp(fr.group.rotation.y, Math.atan2(moveDx, moveDz), 0.25);
+          }
           fr.legL.rotation.x = Math.sin(time * 6 + idx) * 0.55;
           fr.legR.rotation.x = -Math.sin(time * 6 + idx) * 0.55;
           if (fr.armL && fr.armR) {
@@ -3472,7 +3855,7 @@
         if (playerRig.position.distanceTo(jr.mesh.position) < 2.2) {
           jr.cleared = true; jr.mesh.visible = false;
           state.mission.joy = joyRings.filter(r => r.cleared).length;
-          saveProgress();
+          saveProgress(); renderStoryMissionTracker();
           soundChime(740 + state.mission.joy * 60);
           createMagicImpact(jr.mesh.position, 0xfbbf24);
           if (state.mission.joy >= 3 && !state.quests.joy) {
@@ -3491,7 +3874,7 @@
         if (Math.hypot(playerRig.position.x - sd.mesh.position.x, playerRig.position.z - sd.mesh.position.z) < 2.0) {
           sd.cleared = true; sd.mesh.visible = false;
           state.mission.sad = sadDrops.filter(d => d.cleared).length;
-          saveProgress();
+          saveProgress(); renderStoryMissionTracker();
           soundChime(480 + state.mission.sad * 40);
           createMagicImpact(sd.mesh.position, 0x38bdf8);
           showToast(state.mission.sad >= 3 ? '기억의 물방울 3개를 모두 모았어요! 이제 연못 중심으로 걸어가세요.' : `기억의 물방울 수집 (${state.mission.sad}/3) — ${sd.story}`);
@@ -3507,7 +3890,7 @@
         if (Math.hypot(playerRig.position.x - wt.mesh.position.x, playerRig.position.z - wt.mesh.position.z) < 2.0) {
           wt.cleared = true; wt.mesh.visible = false;
           state.mission.worry = worryThreads.filter(t => t.cleared).length;
-          saveProgress();
+          saveProgress(); renderStoryMissionTracker();
           soundChime(520 + state.mission.worry * 45);
           createMagicImpact(wt.mesh.position, 0xa855f7);
           showToast(state.mission.worry >= 3 ? '엉킨 털실 매듭을 모두 풀었어요! 이제 벤치에서 소원 연등을 날려보세요.' : `털실 매듭 풀기 (${state.mission.worry}/3)`);
@@ -3672,6 +4055,21 @@
         pet.group.rotation.y = time * 2.2;
       });
 
+      // [5대 랜드마크 대형 스토리 입간판 부유 & 플레이어 발밑 3D 황금 길안내 화살표 업데이트]
+      landmarkStorySigns.forEach((ls, idx) => {
+        ls.sprite.position.y = ls.baseY + Math.sin(time * 2.2 + idx) * 0.28;
+        ls.sprite.visible = !state.quests[ls.key];
+      });
+      const guidedMeta = storyQuestMeta.find(m => m.key === activeGuidedQuestKey && !state.quests[m.key]) || storyQuestMeta.find(m => !state.quests[m.key]);
+      if (guidedMeta) {
+        const gDist = Math.hypot(guidedMeta.x - playerRig.position.x, guidedMeta.z - playerRig.position.z);
+        questGuideArrow.visible = (gDist > 3.5);
+        questGuideArrow.position.set(playerRig.position.x, playerRig.position.y + 0.26 + Math.sin(time * 5) * 0.05, playerRig.position.z);
+        questGuideArrow.rotation.y = Math.atan2(guidedMeta.x - playerRig.position.x, guidedMeta.z - playerRig.position.z);
+      } else {
+        questGuideArrow.visible = false;
+      }
+
       drawMinimap(time); updateZonePrompt();
       composer.render();
     }
@@ -3697,7 +4095,6 @@
     }
 
     document.getElementById('btnGuestSelect').onclick = () => openModal('modalSpirit');
-    document.getElementById('btnShootAction').onclick = shootMagicBullet;
     document.getElementById('btnJumpAction').onclick = doJump;
     document.getElementById('btnBreatheWind').onclick = doBreatheWind;
     document.getElementById('btnDanceAction').onclick = doDance;
@@ -3809,12 +4206,61 @@
     };
 
     // ==========================================
-    // 11-B. 캐릭터 꾸미기 스튜디오 & 멀티플레이어 실시간 채팅/동기화
+    // 11-B. 캐릭터 꾸미기 스튜디오 & 멀티플레이어 실시간 채팅/동기화 & 채팅창 크기 조절
     // ==========================================
-    const worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_v1') : null;
+    const urlParams = new URLSearchParams(window.location.search);
+    state.roomCode = urlParams.get('room') || state.roomCode || '5학년1반';
+    let worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_' + state.roomCode) : null;
+
+    // 좌측 하단 채팅창 크기 조절 (축소/기본/확대 버튼 + 우측 상단 모서리 드래그 리사이즈)
+    window.setChatSize = function(mode) {
+      const panel = document.getElementById('mpChatPanel');
+      if (!panel) return;
+      panel.style.width = '';
+      panel.style.height = '';
+      panel.classList.remove('minimized', 'expanded');
+      if (mode === 'min') panel.classList.add('minimized');
+      else if (mode === 'max') panel.classList.add('expanded');
+    };
+
+    (function initChatResizeDrag() {
+      const panel = document.getElementById('mpChatPanel');
+      const handle = document.getElementById('mpResizeHandle');
+      if (!panel || !handle) return;
+      let dragging = false, startX = 0, startY = 0, startW = 0, startH = 0;
+      handle.addEventListener('pointerdown', e => {
+        e.stopPropagation();
+        e.preventDefault();
+        dragging = true;
+        panel.classList.remove('minimized', 'expanded');
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = panel.getBoundingClientRect();
+        startW = rect.width;
+        startH = rect.height;
+        handle.setPointerCapture(e.pointerId);
+      });
+      handle.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        e.stopPropagation();
+        const newW = Math.max(220, Math.min(540, startW + (e.clientX - startX)));
+        const newH = Math.max(120, Math.min(460, startH - (e.clientY - startY)));
+        panel.style.width = newW + 'px';
+        panel.style.height = newH + 'px';
+        const logEl = document.getElementById('mpChatLog');
+        if (logEl) logEl.style.maxHeight = Math.max(50, newH - 96) + 'px';
+      });
+      handle.addEventListener('pointerup', e => {
+        if (!dragging) return;
+        dragging = false;
+        handle.releasePointerCapture(e.pointerId);
+      });
+    })();
 
     function openCustomizeStudio() {
       document.getElementById('custInputName').value = state.playerName || '인찬이';
+      const roomEl = document.getElementById('custInputRoom');
+      if (roomEl) roomEl.value = state.roomCode || '5학년1반';
       document.getElementById('custSelectTitle').value = state.playerTitle || '마음 탐험가';
       document.querySelectorAll('#custColorRow .cust-swatch').forEach(sw => {
         sw.classList.toggle('active', sw.dataset.color === (state.shirtColor || '#ff5800'));
@@ -3850,15 +4296,17 @@
 
     document.getElementById('btnApplyCustomize').onclick = () => {
       const nm = document.getElementById('custInputName').value.trim();
+      const rm = document.getElementById('custInputRoom')?.value.trim();
       const tt = document.getElementById('custSelectTitle').value;
       if (nm) state.playerName = nm;
+      if (rm) state.roomCode = rm;
       if (tt) state.playerTitle = tt;
       updatePlayerAppearance();
       saveProgress();
       updateScreenCanvas();
       closeModal('modalCustomize');
       soundQuestComplete();
-      showToast(`✨ <b>[${state.playerTitle}] ${state.playerName}</b> 캐릭터 꾸미기가 완료되었습니다!`);
+      showToast(`✨ <b>[${state.roomCode}] [${state.playerTitle}] ${state.playerName}</b> 광장에 입장했습니다!`);
       if (worldChannel) {
         worldChannel.postMessage({
           type: 'mp_customize',
@@ -4180,6 +4628,8 @@
     window.selectHotbarSlot = selectHotbarSlot;
     window.playerRig = playerRig;
     window.resolveHorizontalCollisions = resolveHorizontalCollisions;
+    window.resolveNpcCollisions = resolveNpcCollisions;
+    window.spawnBlockWithAnim = spawnBlockWithAnim;
     window.placedBlocks = placedBlocks;
     window.friendAgents = friendAgents;
     window.zoneNpcs = zoneNpcs;
