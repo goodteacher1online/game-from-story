@@ -255,8 +255,8 @@
        Dieter Rams Clean Modals
        ========================================= */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(15, 15, 20, 0.55);
-      backdrop-filter: blur(6px); z-index: 100; display: none;
+      position: fixed; inset: 0; background: rgba(15, 15, 20, 0.65);
+      backdrop-filter: blur(6px); z-index: 9200; display: none;
       align-items: center; justify-content: center; padding: 18px;
     }
     .modal-overlay.open { display: flex; }
@@ -378,8 +378,18 @@
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 16px; height: 16px;
-      pointer-events: none; z-index: 8500;
+      pointer-events: none; z-index: 50;
       opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+    /* 모달이나 설정 대화창이 열렸을 때 화면 중앙 십자가(+) 크로스헤어 완전 숨김 */
+    body.modal-open .mc-crosshair,
+    .modal-overlay.open ~ .mc-crosshair,
+    body:has(.modal-overlay.open) .mc-crosshair,
+    body:has(#modalFriend[style*="display: flex"]) .mc-crosshair,
+    body:has(#customModal[style*="display: flex"]) .mc-crosshair {
+      display: none !important;
+      opacity: 0 !important;
     }
     .mc-crosshair::before, .mc-crosshair::after {
       content: ''; position: absolute; background: rgba(255, 255, 255, 0.9);
@@ -1346,9 +1356,8 @@
       <div class="cust-avatar-showcase">
         <div class="cust-preview-bubble-wrap">
           <div class="cust-preview-nametag" id="custPrevNametag">🌸 기쁨 수호자 · 인찬이</div>
-          <div class="cust-preview-figure" id="custPrevFigure" style="position:relative; width:96px; height:96px; border-radius:50%; overflow:hidden; background:radial-gradient(circle, #1e293b 0%, #090d16 100%); border:2.5px solid #ff9d66; box-shadow:0 0 16px rgba(255,157,102,0.4);">
-            <canvas id="robloxStudioPreviewCanvas" width="192" height="192" style="width:100%; height:100%; display:block;"></canvas>
-            <div style="position:absolute; bottom:3px; left:0; right:0; text-align:center; font-size:9px; font-weight:800; color:#fbbf24; text-shadow:0 1px 2px #000; letter-spacing:0.5px;">ROBLOX 3D</div>
+          <div class="cust-preview-figure" id="custPrevFigure" style="position:relative; width:120px; height:120px; border-radius:50%; overflow:hidden; background:radial-gradient(circle, #1e293b 0%, #090d16 100%); border:3px solid #ff9d66; box-shadow:0 0 20px rgba(255,157,102,0.45); flex-shrink:0;">
+            <canvas id="robloxStudioPreviewCanvas" width="240" height="240" style="width:100%; height:100%; display:block;"></canvas>
           </div>
         </div>
         <div class="cust-preview-info">
@@ -2453,16 +2462,19 @@
       ctx.fillStyle = '#ffffff';
       ctx.fillText(`✨ ${meta.title}`, 440, 114);
 
-      // 3. 하단 안내문
+      // 3. 하단 안내문 (어색한 화살표 제거 및 따뜻한 미션 안내)
       ctx.fillStyle = '#fef08a'; ctx.font = 'bold 20px "Noto Sans KR", sans-serif';
-      ctx.fillText('▼ 이 구역에서 인찬이 마음 미션을 함께해요! ▼', 440, 170);
+      ctx.fillText('인찬이 마음 미션 장소에 도착했습니다! ✨', 440, 170);
 
       const tex = new THREE.CanvasTexture(sc);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
       sp.scale.set(8.2, 2.05, 1);
       sp.position.set(meta.x, meta.key === 'fear' ? 13.2 : 5.2, meta.z);
-      worldGroup.add(sp);
+      if (!meta.customGroup) {
+        worldGroup.add(sp);
+      }
       landmarkStorySigns.push({ key: meta.key, sprite: sp, baseY: sp.position.y });
+      return sp;
     }
     // storyQuestMeta.forEach moved
 
@@ -2556,6 +2568,7 @@
 
     // 동물원 입구 간판
     const zooSign = makeLandmarkStorySign({
+      customGroup: true,
       chapter: '🐾 숲속 아기 동물원',
       title: '토끼·아기곰·펭귄 친구들과 교감하며 마음 달래기',
       color: '#86efac', x: -24, z: -18
@@ -2607,6 +2620,7 @@
     }
 
     const gardenSign = makeLandmarkStorySign({
+      customGroup: true,
       chapter: '🌺 치유의 유리온실 식물원',
       title: '무지개 꽃향기를 맡으며 편안하게 숨 고르기',
       color: '#f43f5e', x: -26, z: 34
@@ -2659,6 +2673,7 @@
     libraryGroup.add(bookTable, openBook);
 
     const librarySign = makeLandmarkStorySign({
+      customGroup: true,
       chapter: '📚 숲속 야외 마음 독서대',
       title: '《인찬이의 마음 손님》 원작 감정 동화책 함께 읽기',
       color: '#38bdf8', x: 22, z: -18
@@ -2712,6 +2727,7 @@
     playGroup.add(swingGroup);
 
     const playSign = makeLandmarkStorySign({
+      customGroup: true,
       chapter: '🎡 신나는 마음 놀이터',
       title: '미끄럼틀·그네·시소를 타며 친구들과 활기차게 웃기',
       color: '#fbbf24', x: 28, z: 28
@@ -2759,6 +2775,7 @@
     beachGroup.add(tube1, tube2);
 
     const beachSign = makeLandmarkStorySign({
+      customGroup: true,
       chapter: '🏖️ 치유의 물놀이 풀장',
       title: '시원한 물줄기와 파라솔 쉼터에서 마음의 땀 식히기',
       color: '#38bdf8', x: -48, z: -15
@@ -7045,8 +7062,19 @@
       });
     });
 
-    window.openModal = id => { document.getElementById(id).classList.add('open'); initAudio(); };
-    window.closeModal = id => { document.getElementById(id).classList.remove('open'); };
+    window.openModal = id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('open');
+      document.body.classList.add('modal-open');
+      initAudio();
+    };
+    window.closeModal = id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('open');
+      if (!document.querySelector('.modal-overlay.open')) {
+        document.body.classList.remove('modal-open');
+      }
+    };
     function showToast(msg) {
       const box = document.getElementById('toastBox'), el = document.createElement('div');
       while (box.children.length >= 2) box.removeChild(box.firstChild);
@@ -7486,11 +7514,11 @@
 
       robloxPreviewScene = new THREE.Scene();
       robloxPreviewCam = new THREE.PerspectiveCamera(46, 1, 0.1, 50);
-      robloxPreviewCam.position.set(0, 1.95, 4.5);
-      robloxPreviewCam.lookAt(0, 1.75, 0);
+      robloxPreviewCam.position.set(0, 1.15, 4.4);
+      robloxPreviewCam.lookAt(0, 1.15, 0);
 
       robloxPreviewRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, alpha: true, antialias: true });
-      robloxPreviewRenderer.setSize(192, 192);
+      robloxPreviewRenderer.setSize(240, 240);
       robloxPreviewRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       const ambLight = new THREE.AmbientLight(0xffffff, 1.4);
@@ -7514,6 +7542,9 @@
     }
 
     function renderRobloxStudio3DAvatar() {
+      initRobloxStudioPreview();
+      if (!robloxPreviewAvatarGroup) return;
+      robloxPreviewAvatarGroup.scale.set(0.66, 0.66, 0.66);
       initRobloxStudioPreview();
       if (!robloxPreviewAvatarGroup) return;
 
