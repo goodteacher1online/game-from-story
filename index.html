@@ -677,18 +677,49 @@
 
     /* 캐릭터 커스터마이징: 헤어스타일 및 미션 보상 아이템 UI */
     .cust-hair-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; width: 100%; margin-top: 5px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: 100%;
     }
     .cust-hair-card {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 3px; padding: 7px 6px; border-radius: 9px;
-      border: 1.5px solid var(--line-hair); background: #ffffff; cursor: pointer;
-      transition: all 0.15s ease; box-sizing: border-box; text-align: center;
+      gap: 4px; padding: 7px 4px; border-radius: 10px; min-height: 66px;
+      background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.12);
+      color: #f8fafc; cursor: pointer; transition: all 0.15s ease; position: relative;
     }
-    .cust-hair-card:hover { border-color: #fbbf24; background: #fffdf5; transform: translateY(-1px); }
-    .cust-hair-card.active { border-color: #0f172a; background: #fffbeb; box-shadow: 0 0 0 2px #fbbf24; font-weight: 800; }
-    .cust-hair-icon { font-size: 16px; line-height: 1; }
-    .cust-hair-name { font-size: 11px; font-weight: 700; color: #1e293b; white-space: nowrap; }
+    .cust-hair-card:hover {
+      background: rgba(255, 255, 255, 0.12); border-color: rgba(251, 191, 36, 0.5);
+      transform: translateY(-2px);
+    }
+    .cust-hair-card.active {
+      border-color: #fbbf24 !important;
+      background: rgba(251, 191, 36, 0.18) !important;
+      box-shadow: 0 0 0 1.5px #fbbf24, 0 4px 12px rgba(251, 191, 36, 0.25) !important;
+    }
+    .cust-hair-svg-wrap {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    }
+    .cust-hair-svg-wrap svg { width: 30px; height: 30px; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+    .cust-hair-name { font-size: 10.5px; font-weight: 700; text-align: center; white-space: nowrap; }
+    .cust-hair-tag { font-size: 9px; color: #94a3b8; font-weight: 500; transform: scale(0.92); }
+
+    /* 헤어 컬러 8종 가로 바 */
+    .cust-haircolor-row {
+      display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; width: 100%; align-items: center;
+    }
+    .cust-haircolor-btn {
+      height: 32px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer; transition: all 0.15s; position: relative; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .cust-haircolor-btn:hover { transform: scale(1.08); border-color: #fbbf24; }
+    .cust-haircolor-btn.active {
+      border-color: #fbbf24 !important;
+      box-shadow: 0 0 0 2px #fbbf24, 0 2px 8px rgba(251, 191, 36, 0.4) !important;
+      transform: scale(1.10);
+    }
+    .cust-haircolor-btn.active::after {
+      content: '✓'; color: #fff; font-size: 13px; font-weight: 900;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
 
     .cust-reward-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; width: 100%; margin-top: 5px;
@@ -765,18 +796,20 @@
     .cust-form-row {
       display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; width: 100%;
     }
-    .cust-field { display: flex; flex-direction: column; }
+    .cust-field { display: flex; flex-direction: column; align-items: center; }
     .cust-label {
       font-size: 11px; font-weight: 700; color: #94a3b8;
       height: 18px; line-height: 18px; margin-bottom: 6px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-align: center; width: 100%;
     }
     .cust-input, .cust-select {
       height: 40px !important; width: 100% !important; border-radius: 10px !important;
       background: rgba(30, 41, 59, 0.8) !important;
       border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
-      color: #f8fafc !important; font-size: 12px !important; font-weight: 600 !important;
-      padding: 0 8px !important; box-sizing: border-box !important; outline: none;
+      color: #f8fafc !important; font-size: 12.5px !important; font-weight: 700 !important;
+      padding: 0 10px !important; box-sizing: border-box !important; outline: none;
+      text-align: center !important; text-align-last: center !important;
       transition: all 0.15s;
     }
     .cust-input:focus, .cust-select:focus {
@@ -1216,51 +1249,90 @@
         </div>
       </div>
 
-      <!-- 탭 2: 3D 헤어 & 모자 (남/녀 헤어 6종, 헤어 컬러, 모자 6종) -->
+      <!-- 탭 2: 3D 헤어 & 모자 (12종 비주얼 헤어, 8종 헤어컬러, 6종 모자) -->
       <div class="cust-tab-pane" id="tabHair">
-        <div>
-          <label class="cust-label" style="margin-bottom: 8px;">헤어스타일 선택 (남/녀 &amp; 다양한 개성)</label>
-          <div class="cust-hair-grid" id="custHairGrid">
-            <button type="button" class="cust-hair-card active" data-style="short">
-              <span class="cust-hair-icon">👦</span>
-              <span class="cust-hair-name">깔끔 숏컷</span>
-            </button>
-            <button type="button" class="cust-hair-card" data-style="bowl">
-              <span class="cust-hair-icon">🧒</span>
-              <span class="cust-hair-name">바가지 볼륨컷</span>
-            </button>
-            <button type="button" class="cust-hair-card" data-style="ponytail">
-              <span class="cust-hair-icon">👧</span>
-              <span class="cust-hair-name">발랄 포니테일</span>
-            </button>
-            <button type="button" class="cust-hair-card" data-style="twintail">
-              <span class="cust-hair-icon">🎀</span>
-              <span class="cust-hair-name">귀여운 양갈래</span>
-            </button>
-            <button type="button" class="cust-hair-card" data-style="long">
-              <span class="cust-hair-icon">👩</span>
-              <span class="cust-hair-name">차분한 긴생머리</span>
-            </button>
-            <button type="button" class="cust-hair-card" data-style="wavy">
-              <span class="cust-hair-icon">✨</span>
-              <span class="cust-hair-name">풍성 웨이브펌</span>
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <label class="cust-label" style="margin-bottom: 8px;">머리 색상 선택</label>
+        <div style="margin-bottom: 12px;">
+          <label class="cust-label" style="margin-bottom: 8px; text-align: center;">🎨 머리 색상 선택 (8종 프리미엄 컬러 팔레트)</label>
           <div class="cust-haircolor-row" id="custHairColorRow">
             <button type="button" class="cust-haircolor-btn active" data-haircolor="#1c1917" style="background:#1c1917;" title="자연 흑발"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#451a03" style="background:#451a03;" title="초코 브라운"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#d97706" style="background:#d97706;" title="골드 블론드"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#db2777" style="background:#db2777;" title="벚꽃 로즈"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#0284c7" style="background:#0284c7;" title="오션 딥블루"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#451a03" style="background:#451a03;" title="다크 초코"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#78350f" style="background:#78350f;" title="밀크 브라운"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#d97706" style="background:#d97706;" title="허니 골드"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#cbd5e1" style="background:#cbd5e1;" title="애쉬 실버"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#f43f5e" style="background:#f43f5e;" title="로즈 핑크"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#0284c7" style="background:#0284c7;" title="오션 블루"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#10b981" style="background:#10b981;" title="민트 에메랄드"></button>
           </div>
         </div>
 
         <div>
-          <label class="cust-label" style="margin-bottom: 8px;">3D 모자 &amp; 액세서리 장착</label>
+          <label class="cust-label" style="margin-bottom: 8px; text-align: center;">💇 3D 헤어스타일 선택 (12종 다채로운 남/녀/개성 스타일)</label>
+          <div class="cust-hair-grid" id="custHairGrid">
+            <button type="button" class="cust-hair-card active" data-style="short" title="단정 숏컷 (남학생/여학생 기본)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 11 11 7 18 7C25 7 29 11 29 17C29 18 28 19 26 18C23 16.5 21 16 18 16C15 16 13 16.5 10 18C8 19 7 18 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M10 17L13 21M18 16V22M26 17L23 21" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+              <span class="cust-hair-name">단정 숏컷</span>
+              <span class="cust-hair-tag">공용/단정</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="bowl" title="바가지 볼륨컷 (귀여운 바가지머리)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M6 18C6 10 11 6 18 6C25 6 30 10 30 18C30 20 28 20 26 19.5C22 18.5 14 18.5 10 19.5C8 20 6 20 6 18Z" class="hair-fill" fill="#1c1917"/></svg></div>
+              <span class="cust-hair-name">바가지 볼륨</span>
+              <span class="cust-hair-tag">귀여움/남녀</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="dandy" title="댄디 쉼표컷 (앞머리가 살짝 넘겨진 댄디 스타일)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 10 12 7 18 7C25 7 29 11 29 17C28 17 25 15 20 16C17 16.5 14 19 12 21C10 20 7 19 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M20 16C23 16 26 18 28 21" stroke="currentColor" stroke-width="1.5" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/></svg></div>
+              <span class="cust-hair-name">댄디 쉼표컷</span>
+              <span class="cust-hair-tag">인기 남학생</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="ponytail" title="하이 포니테일 (발랄하게 묶은 말총머리)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><circle cx="27" cy="10" r="3.5" fill="#f43f5e"/><path d="M28 11C31 12 34 16 33 22C32 21 30 18 29 14" class="hair-fill" fill="#1c1917" stroke-width="2"/></svg></div>
+              <span class="cust-hair-name">하이 포니</span>
+              <span class="cust-hair-tag">발랄 여학생</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="twintail" title="귀여운 양갈래 (깜찍한 트윈테일)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><circle cx="7" cy="14" r="2.5" fill="#f43f5e"/><circle cx="29" cy="14" r="2.5" fill="#f43f5e"/><path d="M6 15C3 18 3 24 5 26C5 23 6 20 8 18" class="hair-fill" fill="#1c1917"/><path d="M30 15C33 18 33 24 31 26C31 23 30 20 28 18" class="hair-fill" fill="#1c1917"/></svg></div>
+              <span class="cust-hair-name">귀여운 양갈래</span>
+              <span class="cust-hair-tag">깜찍 트윈</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="long" title="차분한 긴생머리 (우아한 롱 스트레이트)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M8 17C8 10 12 7 18 7C24 7 28 10 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><path d="M7 16V29C8 29 10 27 10 25V18" class="hair-fill" fill="#1c1917"/><path d="M29 16V29C28 29 26 27 26 25V18" class="hair-fill" fill="#1c1917"/></svg></div>
+              <span class="cust-hair-name">차분 긴생머리</span>
+              <span class="cust-hair-tag">우아 롱헤어</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="wavy" title="풍성 웨이브펌 (컬이 살아있는 로맨틱 파마)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 9 12 6 18 6C24 6 29 9 29 17C29 18 27 17 25 18C23 16 20 17 18 16C15 17 13 16 11 18C9 17 7 18 7 17Z" class="hair-fill" fill="#1c1917"/><circle cx="6" cy="20" r="2.5" class="hair-fill" fill="#1c1917"/><circle cx="30" cy="20" r="2.5" class="hair-fill" fill="#1c1917"/><circle cx="5" cy="25" r="2.5" class="hair-fill" fill="#1c1917"/><circle cx="31" cy="25" r="2.5" class="hair-fill" fill="#1c1917"/></svg></div>
+              <span class="cust-hair-name">풍성 웨이브</span>
+              <span class="cust-hair-tag">로맨틱 컬</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="bob" title="단발 보브컷 (깔끔하고 세련된 똑단발)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 10 11 7 18 7C25 7 29 10 29 17V23C27 24 26 22 26 19C23 17 19 17 18 17C17 17 13 17 10 19C10 22 9 24 7 23V17Z" class="hair-fill" fill="#1c1917"/></svg></div>
+              <span class="cust-hair-name">단발 보브컷</span>
+              <span class="cust-hair-tag">세련 똑단발</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="bun" title="양당고 만두머리 (귀여운 더블 번헤어)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><circle cx="9" cy="8" r="4.5" class="hair-fill" fill="#1c1917"/><circle cx="27" cy="8" r="4.5" class="hair-fill" fill="#1c1917"/><path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><circle cx="10" cy="12" r="1.8" fill="#f43f5e"/><circle cx="26" cy="12" r="1.8" fill="#f43f5e"/></svg></div>
+              <span class="cust-hair-name">양당고 만두</span>
+              <span class="cust-hair-tag">귀요미 번</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="spiky" title="활발 삐죽머리 (에너지 넘치는 스파이키)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17L10 10L14 13L18 6L22 13L26 10L29 17C26 16 22 15 18 15C14 15 10 16 7 17Z" class="hair-fill" fill="#1c1917"/></svg></div>
+              <span class="cust-hair-name">활발 삐죽이</span>
+              <span class="cust-hair-tag">에너지 만점</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="leaf" title="내추럴 리프컷 (자연스러운 결감의 감성 리프)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 10 11 7 18 7C25 7 29 10 29 17C28 16 24 15 20 17C16 16 12 18 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M20 17C24 19 28 22 29 25" stroke="currentColor" stroke-width="1.8" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/><path d="M12 17C9 20 8 23 7 25" stroke="currentColor" stroke-width="1.8" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/></svg></div>
+              <span class="cust-hair-name">내추럴 리프</span>
+              <span class="cust-hair-tag">감성 스타일</span>
+            </button>
+            <button type="button" class="cust-hair-card" data-style="braids" title="클래식 땋은머리 (양옆으로 정성껏 땋은 브레이드)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><path d="M7 18L5 21L7 24L5 27M29 18L31 21L29 24L31 27" stroke="currentColor" stroke-width="2.5" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/><circle cx="5" cy="28" r="1.5" fill="#f43f5e"/><circle cx="31" cy="28" r="1.5" fill="#f43f5e"/></svg></div>
+              <span class="cust-hair-name">클래식 땋기</span>
+              <span class="cust-hair-tag">청순 브레이드</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px;">
+          <label class="cust-label" style="margin-bottom: 8px; text-align: center;">👑 3D 모자 &amp; 액세서리 장착</label>
           <div class="cust-hat-grid" id="custHatGrid">
             <button type="button" class="cust-hat-btn active" data-hat="ahoge">🌱 기본 바보털</button>
             <button type="button" class="cust-hat-btn" data-hat="crown">👑 황금 왕관</button>
@@ -2329,17 +2401,27 @@
     function createHairMesh(style, colorHex = 0x1c1917) {
       const hg = new THREE.Group();
       const hairMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.65 });
-      const bandMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.4 }); // 리본/머리끈
+      const bandMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.4 }); // 핑크 머리끈
 
       if (style === 'bowl') {
-        // 2. 귀여운 바가지머리 / 투블럭 볼륨컷 (귀여운 남녀 공용)
+        // 2. 바가지 볼륨컷 (둥글고 귀여운 볼륨 헤어)
         const cap = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.52, 0.92), hairMat);
         cap.position.set(0, 0.28, 0);
         const bang = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.28, 0.25), hairMat);
         bang.position.set(0, 0.16, 0.38);
         hg.add(cap, bang);
+      } else if (style === 'dandy') {
+        // 3. 댄디 쉼표컷 (앞머리가 자연스럽게 갈라져 넘겨진 댄디 스타일)
+        const top = new THREE.Mesh(new THREE.BoxGeometry(0.90, 0.48, 0.90), hairMat);
+        top.position.set(0, 0.28, 0);
+        const leftBang = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.24, 0.22), hairMat);
+        leftBang.position.set(-0.20, 0.18, 0.38);
+        const rightComma = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.22, 0.22), hairMat);
+        rightComma.position.set(0.24, 0.16, 0.38);
+        rightComma.rotation.z = -0.22;
+        hg.add(top, leftBang, rightComma);
       } else if (style === 'ponytail') {
-        // 3. 발랄한 포니테일 (뒤로 묶은 3D 큐브 포니테일 + 핑크 머리끈)
+        // 4. 하이 포니테일 (뒤로 높게 묶은 3D 큐브 포니테일 + 핑크 머리끈)
         const top = new THREE.Mesh(new THREE.BoxGeometry(0.90, 0.46, 0.90), hairMat);
         top.position.set(0, 0.28, 0);
         const bang = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.25, 0.20), hairMat);
@@ -2347,29 +2429,27 @@
         const tie = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.14, 8), bandMat);
         tie.rotation.x = Math.PI / 2;
         tie.position.set(0, 0.35, -0.50);
-        const tail = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.75, 0.32), hairMat);
+        const tail = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.80, 0.32), hairMat);
         tail.position.set(0, 0.05, -0.62);
         tail.rotation.x = 0.25;
         hg.add(top, bang, tie, tail);
       } else if (style === 'twintail') {
-        // 4. 귀여운 양갈래 머리 (트윈테일)
+        // 5. 귀여운 양갈래 머리 (트윈테일)
         const top = new THREE.Mesh(new THREE.BoxGeometry(0.90, 0.46, 0.90), hairMat);
         top.position.set(0, 0.28, 0);
         const bang = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.25, 0.20), hairMat);
         bang.position.set(0, 0.18, 0.38);
-        // 좌측 양갈래
         const tieL = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.14), bandMat);
         tieL.position.set(-0.52, 0.22, -0.10);
         const tailL = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.85, 0.24), hairMat);
         tailL.position.set(-0.54, -0.18, -0.10);
-        // 우측 양갈래
         const tieR = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.14), bandMat);
         tieR.position.set(0.52, 0.22, -0.10);
         const tailR = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.85, 0.24), hairMat);
         tailR.position.set(0.54, -0.18, -0.10);
         hg.add(top, bang, tieL, tailL, tieR, tailR);
       } else if (style === 'long') {
-        // 5. 차분하고 우아한 긴 생머리 (어깨까지 내려오는 롱 스트레이트)
+        // 6. 차분한 긴생머리 (어깨까지 내려오는 롱 스트레이트)
         const top = new THREE.Mesh(new THREE.BoxGeometry(0.90, 0.46, 0.90), hairMat);
         top.position.set(0, 0.28, 0);
         const sideL = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.95, 0.86), hairMat);
@@ -2380,18 +2460,103 @@
         back.position.set(0, -0.18, -0.42);
         hg.add(top, sideL, sideR, back);
       } else if (style === 'wavy') {
-        // 6. 풍성한 웨이브 펌 / 파마머리
+        // 7. 풍성한 웨이브 펌
         const top = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.52, 0.95), hairMat);
         top.position.set(0, 0.30, 0);
         const curl1 = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.65, 0.35), hairMat);
         curl1.position.set(-0.45, -0.05, 0.15);
         const curl2 = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.65, 0.35), hairMat);
         curl2.position.set(0.45, -0.05, 0.15);
-        const back = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.75, 0.30), hairMat);
+        const back = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.80, 0.30), hairMat);
         back.position.set(0, -0.05, -0.42);
         hg.add(top, curl1, curl2, back);
+      } else if (style === 'bob') {
+        // 8. 세련된 단발 보브컷 (턱선 라인 똑단발)
+        const top = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.50, 0.92), hairMat);
+        top.position.set(0, 0.28, 0);
+        const bang = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.25, 0.22), hairMat);
+        bang.position.set(0, 0.16, 0.38);
+        const bobL = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.62, 0.84), hairMat);
+        bobL.position.set(-0.43, 0.02, 0.04);
+        const bobR = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.62, 0.84), hairMat);
+        bobR.position.set(0.43, 0.02, 0.04);
+        const bobB = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.65, 0.22), hairMat);
+        bobB.position.set(0, 0.02, -0.40);
+        hg.add(top, bang, bobL, bobR, bobB);
+      } else if (style === 'bun') {
+        // 9. 깜찍한 양당고 만두머리 (더블 번헤어)
+        const top = new THREE.Mesh(new THREE.BoxGeometry(0.90, 0.46, 0.90), hairMat);
+        top.position.set(0, 0.28, 0);
+        const bang = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.25, 0.20), hairMat);
+        bang.position.set(0, 0.18, 0.38);
+        const bunL = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.36, 0.36), hairMat);
+        bunL.position.set(-0.48, 0.54, 0);
+        const tieL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.18), bandMat);
+        tieL.position.set(-0.48, 0.38, 0);
+        const bunR = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.36, 0.36), hairMat);
+        bunR.position.set(0.48, 0.54, 0);
+        const tieR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.18), bandMat);
+        tieR.position.set(0.48, 0.38, 0);
+        hg.add(top, bang, bunL, tieL, bunR, tieR);
+      } else if (style === 'spiky') {
+        // 10. 활발 삐죽머리 (에너지 넘치는 3D 스파이크)
+        const top = new THREE.Mesh(new THREE.BoxGeometry(0.90, 0.45, 0.90), hairMat);
+        top.position.set(0, 0.28, 0);
+        const spikeC = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.34, 0.26), hairMat);
+        spikeC.position.set(0, 0.50, 0.12);
+        spikeC.rotation.x = -0.28;
+        const spikeL = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.30, 0.24), hairMat);
+        spikeL.position.set(-0.28, 0.48, 0.04);
+        spikeL.rotation.z = 0.35;
+        const spikeR = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.30, 0.24), hairMat);
+        spikeR.position.set(0.28, 0.48, 0.04);
+        spikeR.rotation.z = -0.35;
+        const spikeB = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.28, 0.24), hairMat);
+        spikeB.position.set(0, 0.46, -0.20);
+        spikeB.rotation.x = 0.30;
+        hg.add(top, spikeC, spikeL, spikeR, spikeB);
+      } else if (style === 'leaf') {
+        // 11. 내추럴 리프컷 (자연스럽게 흐르는 결감의 감성 리프컷)
+        const top = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.48, 0.92), hairMat);
+        top.position.set(0, 0.28, 0);
+        const bangL = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.22, 0.22), hairMat);
+        bangL.position.set(-0.18, 0.18, 0.38);
+        const bangR = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.22, 0.22), hairMat);
+        bangR.position.set(0.18, 0.18, 0.38);
+        const earL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.40, 0.40), hairMat);
+        earL.position.set(-0.45, 0.08, -0.05);
+        earL.rotation.y = 0.2;
+        const earR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.40, 0.40), hairMat);
+        earR.position.set(0.45, 0.08, -0.05);
+        earR.rotation.y = -0.2;
+        hg.add(top, bangL, bangR, earL, earR);
+      } else if (style === 'braids') {
+        // 12. 클래식 땋은머리 (양옆으로 정성스레 땋아 내린 브레이드)
+        const top = new THREE.Mesh(new THREE.BoxGeometry(0.90, 0.46, 0.90), hairMat);
+        top.position.set(0, 0.28, 0);
+        const bang = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.25, 0.20), hairMat);
+        bang.position.set(0, 0.18, 0.38);
+        // 좌측 땋기 3마디 + 리본
+        const bL1 = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.24, 0.20), hairMat);
+        bL1.position.set(-0.46, 0.06, 0.10); bL1.rotation.z = 0.12;
+        const bL2 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.24, 0.18), hairMat);
+        bL2.position.set(-0.44, -0.16, 0.12); bL2.rotation.z = -0.12;
+        const bL3 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.24, 0.16), hairMat);
+        bL3.position.set(-0.42, -0.36, 0.14);
+        const tieL = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.12, 0.14), bandMat);
+        tieL.position.set(-0.42, -0.46, 0.14);
+        // 우측 땋기 3마디 + 리본
+        const bR1 = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.24, 0.20), hairMat);
+        bR1.position.set(0.46, 0.06, 0.10); bR1.rotation.z = -0.12;
+        const bR2 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.24, 0.18), hairMat);
+        bR2.position.set(0.44, -0.16, 0.12); bR2.rotation.z = 0.12;
+        const bR3 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.24, 0.16), hairMat);
+        bR3.position.set(0.42, -0.36, 0.14);
+        const tieR = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.12, 0.14), bandMat);
+        tieR.position.set(0.42, -0.46, 0.14);
+        hg.add(top, bang, bL1, bL2, bL3, tieL, bR1, bR2, bR3, tieR);
       } else {
-        // 1. 단정하고 깔끔한 숏컷 (인찬이 기본 / 남학생 대표)
+        // 1. 단정 숏컷 (인찬이 기본 / 남학생 대표)
         const top = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.45, 0.88), hairMat);
         top.position.set(0, 0.28, -0.02);
         const bang = new THREE.Mesh(new THREE.BoxGeometry(0.84, 0.22, 0.22), hairMat);
@@ -5385,9 +5550,10 @@
         hc.classList.toggle('active', hc.dataset.style === (state.hairStyle || 'short'));
       });
       // 헤어컬러 활성화 상태
-      document.querySelectorAll('#custHairColorRow .cust-swatch').forEach(hw => {
+      document.querySelectorAll('#custHairColorRow .cust-haircolor-btn').forEach(hw => {
         hw.classList.toggle('active', hw.dataset.haircolor === (state.hairColor || '#1c1917'));
       });
+      updateHairIllustrationColors(state.hairColor || '#1c1917');
 
       // 미션 보상 아이템 잠금/해제 및 착용 상태 반영
       const rewardUnlockMap = {
@@ -5446,12 +5612,18 @@
       };
     });
 
-    // 헤어컬러 클릭 이벤트
-    document.querySelectorAll('#custHairColorRow .cust-swatch').forEach(hw => {
+    // 헤어컬러 클릭 이벤트 (8종 컬러)
+    function updateHairIllustrationColors(color) {
+      document.querySelectorAll('#custHairGrid .hair-fill').forEach(el => el.setAttribute('fill', color));
+      document.querySelectorAll('#custHairGrid .hair-stroke').forEach(el => el.setAttribute('stroke', color));
+    }
+
+    document.querySelectorAll('#custHairColorRow .cust-haircolor-btn').forEach(hw => {
       hw.onclick = () => {
-        document.querySelectorAll('#custHairColorRow .cust-swatch').forEach(w => w.classList.remove('active'));
+        document.querySelectorAll('#custHairColorRow .cust-haircolor-btn').forEach(w => w.classList.remove('active'));
         hw.classList.add('active');
         state.hairColor = hw.dataset.haircolor;
+        updateHairIllustrationColors(state.hairColor);
         updatePlayerAppearance();
         soundChime(580);
       };
