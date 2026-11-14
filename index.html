@@ -1532,9 +1532,11 @@
       <label class="field-label" for="inputWorryText">지금 신경 쓰이는 걱정</label>
       <input class="text-input" id="inputWorryText" type="text" maxlength="50" placeholder="예: 내일 발표를 실수할까 봐 걱정돼요" />
       <div class="chip-row">
-        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='실수하면 어떡하지 하는 마음'">실수 걱정</button>
-        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='친구와 서먹해질까 봐 걱정'">친구 관계</button>
-        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='아직 일어나지 않은 미래 생각'">앞날 걱정</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='친구와 사이좋게 지내기 💕'">친구 사이 💕</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='실수해도 다시 용기 내기 ✨'">도전 용기 ✨</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='가족 모두 건강하고 행복하기 🍀'">가족 행복 🍀</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='내일 발표 떨리지 않고 잘하기 🎤'">발표 자신감 🎤</button>
+        <button type="button" class="chip-btn" onclick="document.getElementById('inputWorryText').value='오늘 하루도 수고했어, 나 자신! 🌙'">나를 칭찬 🌙</button>
       </div>
       <button class="btn-primary-full" id="btnReleaseWorry" style="background: #0d9488;">소원 연등 하늘로 날려보내기</button>
     </div>
@@ -4004,27 +4006,50 @@
     }
 
     function spawnReleasedLantern(text) {
-      // 1. 플레이어 소원이 담긴 메인 대형 황금 연등
+      // 1. 플레이어 소원을 담은 메인 대형 황금 연등
       const mainLg = new THREE.Group();
       const mainMesh = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.48, 0.38, 1.15, 12),
-        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 1.8, roughness: 0.3 })
+        new THREE.CylinderGeometry(0.55, 0.42, 1.25, 12),
+        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 2.2, roughness: 0.25 })
       );
       mainLg.add(mainMesh);
-      const mLight = new THREE.PointLight(0xfbbf24, 2.5, 12);
+      const mLight = new THREE.PointLight(0xfbbf24, 3.2, 16);
       mainLg.add(mLight);
+
+      // 소원 문구 3D 네임태그 스프라이트 부착 (연등과 함께 하늘로 오름)
+      try {
+        const can = document.createElement('canvas');
+        can.width = 512; can.height = 128;
+        const cx = can.getContext('2d');
+        cx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        cx.roundRect(16, 16, 480, 96, 24);
+        cx.fill();
+        cx.strokeStyle = '#fbbf24'; cx.lineWidth = 3;
+        cx.stroke();
+        cx.font = 'bold 32px "Pretendard", sans-serif';
+        cx.textAlign = 'center'; cx.textBaseline = 'middle';
+        cx.fillStyle = '#fef08a';
+        cx.fillText('🏮 ' + (text.length > 16 ? text.substring(0, 15) + '…' : text), 256, 64);
+        const tex = new THREE.CanvasTexture(can);
+        const spMat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+        const sp = new THREE.Sprite(spMat);
+        sp.position.set(0, 1.5, 0);
+        sp.scale.set(3.2, 0.8, 1);
+        mainLg.add(sp);
+      } catch(e) {}
+
       mainLg.position.set(20, 1.6, -18);
       worldGroup.add(mainLg);
-      releasedLanterns.push({ group: mainLg, speedY: 3.2, swaySpeed: 1.2, swayAmp: 0.6, life: 30.0, seed: 0 });
+      releasedLanterns.push({ group: mainLg, speedY: 3.2, swaySpeed: 1.2, swayAmp: 0.6, life: 35.0, seed: 0 });
 
-      // 2. 밤하늘을 수놓는 44개의 감정 풍등 축제 (Festival of Lanterns)
+      // 2. 밤하늘을 수놓을 44개의 감정 풍등 축제 (총 45개 은하수 장관)
       const lanternColors = [0xfef08a, 0xfde047, 0x6ee7b7, 0x38bdf8, 0xf472b6, 0xa78bfa, 0xfb923c];
       for (let i = 0; i < 44; i++) {
         const subLg = new THREE.Group();
         const col = lanternColors[i % lanternColors.length];
         const subMesh = new THREE.Mesh(
           new THREE.CylinderGeometry(0.32 + Math.random() * 0.12, 0.25 + Math.random() * 0.1, 0.85 + Math.random() * 0.25, 8),
-          new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 1.5, roughness: 0.4 })
+          new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 1.8, roughness: 0.4 })
         );
         subLg.add(subMesh);
         const ang = Math.random() * Math.PI * 2;
@@ -4037,14 +4062,45 @@
           speedY: 2.2 + Math.random() * 1.8,
           swaySpeed: 0.8 + Math.random() * 1.2,
           swayAmp: 0.3 + Math.random() * 0.5,
-          life: 25.0 + Math.random() * 15.0,
+          life: 28.0 + Math.random() * 15.0,
           seed: i + 1
         });
       }
 
+      // 낮일 때 연등 날리면 더욱 환상적인 분위기를 위해 노을/밤으로 전환
+      if (state.timeOfDay === 'day' && typeof cycleTimeOfDay === 'function') {
+        cycleTimeOfDay();
+      }
+
       soundChime(587);
+      setTimeout(() => soundChime(659), 180);
+      setTimeout(() => soundChime(784), 360);
       createMagicImpact(new THREE.Vector3(20, 2.0, -18), '#fbbf24');
-      showToast(`🏮 <b>[은하수 소원 연등 축제 장관!]</b><br><b>"${text}"</b> 소원이 45개의 아름다운 감정 연등과 함께 밤하늘 높이 피어오릅니다!`);
+
+      // 보상: 별빛가루 +10 및 털실 모으기 미션 리셋
+      state.stardustCount = (state.stardustCount || 0) + 10;
+      state.mission.worry = 0; // 즉각 리셋하여 다시 3개 모으기 가능!
+      saveProgress();
+      if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
+      if (typeof renderStoryMissionTracker === 'function') renderStoryMissionTracker();
+
+      showToast(`🏮 <b>[은하수 소원 연등 축제 장관!]</b><br><b>"${text}"</b> 소원이 45개의 환상적인 감정 연등과 함께 밤하늘 높이 피어올랐습니다! ✨ (별빛가루 +10)<br><small style="color:#a7f3d0;">잠시 후 잔디밭에 새로운 걱정 털실이 피어납니다. 또 모아서 언제든 날려보세요!</small>`);
+
+      // 1.5초 후 5개의 털실 매듭이 반짝이는 요정 마법 파티클과 함께 즉시 잔디밭에 리젠!
+      setTimeout(() => {
+        if (typeof worryThreads !== 'undefined') {
+          worryThreads.forEach((wt, idx) => {
+            wt.cleared = false;
+            wt.mesh.visible = true;
+            wt.respawnTimer = 0;
+            createMagicImpact(wt.mesh.position, '#34d399');
+          });
+          soundChime(520);
+          showToast('🌱 <b>새로운 걱정 털실 5개가 잔디밭에 피어났습니다!</b><br>3개를 밟아 풀고 소원 연등을 또 바로 날려보세요!');
+          lastPromptZone = null;
+          if (typeof updateZonePrompt === 'function') updateZonePrompt();
+        }
+      }, 1500);
     }
 
     // [인찬이의 마음 손님] 5장 스토리 미션 보드 & 3D 황금 길안내 화살표 & 5대 랜드마크 대형 입간판
@@ -4452,6 +4508,15 @@
       if (!state.activeZone) { showToast('5개 구역 감정 손님, 친구 아바타, 또는 마음 게시판 근처에서 [G]를 눌러보세요.'); return; }
       if (state.activeZone === 'board') { openBoardModal(); return; }
       if (state.activeZone === 'mom') { window.openMomModal(); return; }
+      if (state.activeZone === 'worry') {
+        if ((state.mission.worry || 0) >= 3) {
+          openModal('modalWorry');
+          return;
+        } else {
+          showToast(`🌱 <b>먼저 잔디밭의 엉킨 털실 3개를 풀어주세요!</b> (현재: ${state.mission.worry || 0}/3)`);
+          return;
+        }
+      }
       if (state.activeZone.startsWith('friend:')) { openFriendModal(state.activeZone.split(':')[1]); return; }
       openNpcDialogue(state.activeZone);
     }
@@ -4603,9 +4668,13 @@
         } },
         anger: { t: '화의 캠프파이어', d: state.quests.anger ? '불길이 따뜻한 온기로 진정되었어요.' : '초록색 중앙 타이밍 구역에 커서가 왔을 때 [C] 키를 3번 누르세요!', actText: '타이밍 심호흡 (C)', actFn: doBreatheWind },
         fear: { t: '두려움의 수호 등대', d: state.quests.fear ? '등대 빛이 용기를 비추고 있어요!' : '움직이는 어둠 그림자 5개에 [F] 키로 별빛 마법을 쏘세요.', actText: '별빛 마법 (F)', actFn: shootMagicBullet },
-        worry: { t: '걱정의 털실 벤치', d: state.quests.worry ? '소원 연등을 날려 마음이 가벼워졌어요.' : '주변에 흩어진 엉킨 털실 매듭 3개를 밟아 푼 뒤 연등을 날려보세요.', actText: '연등 날리기', actFn: () => {
-          if (state.mission.worry < 3) showToast(`먼저 숲 주변의 엉킨 털실 매듭 3개를 풀어주세요! (${state.mission.worry}/3)`);
-          else openModal('modalWorry');
+        worry: { t: '🏮 소원 연등 벤치 (걱정 손님)', d: (state.mission.worry >= 3) ? '✨ 털실 3개를 모두 풀었습니다! 지금 바로 소원 연등을 띄워보세요!' : `주변 잔디밭의 엉킨 털실을 3개 밟아 풀면 환상적인 소원 연등을 날릴 수 있어요! (현재: ${state.mission.worry || 0}/3)`, actText: '🏮 소원 연등 날리기 (G)', actFn: () => {
+          if ((state.mission.worry || 0) < 3) {
+            soundChime(440);
+            showToast(`🌱 <b>먼저 주변 잔디밭의 엉킨 털실 3개를 풀어주세요!</b> (현재: ${state.mission.worry || 0}/3)`);
+          } else {
+            openModal('modalWorry');
+          }
         } }
       };
       const g = guides[foundZone];
@@ -4615,7 +4684,7 @@
       document.getElementById('breathBarWrap').classList.toggle('active', foundZone === 'anger' && !state.quests.anger);
 
       const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
-      if (g.actText && (foundZone === 'board' || !state.quests[foundZone])) {
+      if (g.actText && (foundZone === 'board' || foundZone === 'worry' || !state.quests[foundZone])) {
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = g.actText; b1.onclick = g.actFn; btnsEl.appendChild(b1);
       }
       if (foundZone !== 'board') {
@@ -5086,7 +5155,7 @@
       worryThreads.forEach((wt, idx) => {
         if (wt.cleared) {
           wt.respawnTimer = (wt.respawnTimer || 0) + dt;
-          if (wt.respawnTimer > 15.0) {
+          if (wt.respawnTimer > 4.0) { // 4초 초고속 리젠으로 자주 연등 날리기 지원!
             wt.cleared = false;
             wt.mesh.visible = true;
             wt.respawnTimer = 0;
@@ -5242,13 +5311,21 @@
         if (wt.cleared) return;
         wt.mesh.rotation.y += dt * 1.2; wt.mesh.rotation.x += dt * 0.8;
         // 바닥 털실 3.2m 반경으로 쾌적하게 감지하여 걸어가기만 해도 밟아 풀림
+        // 바닥 털실 3.2m 반경으로 쾌적하게 감지하여 걸어가기만 해도 밟아 풀림
         if (Math.hypot(playerRig.position.x - wt.mesh.position.x, playerRig.position.z - wt.mesh.position.z) < 3.2) {
           wt.cleared = true; wt.mesh.visible = false; wt.respawnTimer = 0;
-          state.mission.worry = Math.min(3, worryThreads.filter(t => t.cleared).length);
+          state.mission.worry = Math.min(3, (state.mission.worry || 0) + 1);
           saveProgress(); renderStoryMissionTracker();
-          soundChime(520 + state.mission.worry * 45);
+          soundChime(520 + state.mission.worry * 60);
           createMagicImpact(wt.mesh.position, '#34d399');
-          showToast(state.mission.worry >= 3 ? '🧶 <b>엉킨 털실 매듭을 모두 풀었어요!</b> 벤치에 앉아 [G키]로 소원 연등을 날려보세요! (15초 후 자동 재생성)' : `🧶 <b>털실 매듭 풀기 (${state.mission.worry}/3)</b> (15초 후 재생성)`);
+          if (state.mission.worry >= 3) {
+            soundChime(659);
+            showToast('🏮 <b>[축하] 엉킨 걱정 털실 3개를 모두 풀었습니다!</b><br>벤치에서 <b>[소원 연등 날리기 (G)]</b> 버튼을 눌러 환상적인 연등 축제를 시작하세요!');
+            lastPromptZone = null;
+            if (typeof updateZonePrompt === 'function') updateZonePrompt();
+          } else {
+            showToast(`🌱 <b>털실 매듭 풀기 성공! (${state.mission.worry}/3)</b><br><small>3개를 모으면 밤하늘 소원 연등을 띄울 수 있어요!</small>`);
+          }
         }
       });
 
