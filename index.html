@@ -41,24 +41,25 @@
     .hud-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .module-bar {
-      display: inline-flex; align-items: center; gap: 12px;
+      display: inline-flex; align-items: center; gap: 10px; flex-wrap: nowrap;
       background: var(--bg-surface); backdrop-filter: blur(14px);
       border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
-      padding: 8px 14px; box-shadow: var(--shadow-clean);
+      padding: 7px 12px; box-shadow: var(--shadow-clean);
+      flex-shrink: 0;
     }
     .brand-mark {
       width: 28px; height: 28px; border-radius: 7px; background: var(--ink-main);
       color: #fff; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .brand-text { display: flex; flex-direction: column; line-height: 1.25; }
-    .brand-title { font-size: 13.5px; font-weight: 700; letter-spacing: -0.3px; color: var(--ink-main); }
-    .brand-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-sub); letter-spacing: 0.4px; }
+    .brand-text { display: flex; flex-direction: column; line-height: 1.25; white-space: nowrap; flex-shrink: 0; }
+    .brand-title { font-size: 13.5px; font-weight: 700; letter-spacing: -0.3px; color: var(--ink-main); white-space: nowrap; }
+    .brand-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-sub); letter-spacing: 0.4px; white-space: nowrap; }
 
-    .divider-v { width: 1px; height: 22px; background: var(--line-hair); }
+    .divider-v { width: 1px; height: 22px; background: var(--line-hair); flex-shrink: 0; }
 
     /* 5대 감정 LED 인디케이터 */
-    .quest-leds { display: flex; align-items: center; gap: 7px; }
+    .quest-leds { display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; }
     .quest-led {
       width: 11px; height: 11px; border-radius: 50%;
       background: rgba(24, 24, 27, 0.12); border: 1px solid rgba(24, 24, 27, 0.2);
@@ -78,6 +79,7 @@
       border: 1px solid var(--line-hair); color: var(--ink-main);
       font-size: 12px; font-weight: 700; cursor: pointer;
       box-shadow: var(--shadow-clean); transition: all 0.15s ease;
+      white-space: nowrap; flex-shrink: 0;
     }
     .hw-btn:hover { background: #ffffff; transform: translateY(-1px); }
     .hw-btn:active { transform: translateY(0); }
@@ -1017,8 +1019,15 @@
           <div class="quest-led" id="dotFear" style="color: #a855f7;" title="두려움"></div>
           <div class="quest-led" id="dotWorry" style="color: #10b981;" title="걱정"></div>
           <span class="quest-count" id="questCountText">0/5</span>
-          <div style="display:inline-flex; align-items:center; gap:4px; margin-left:10px; font-weight:700; color:#fbbf24;" title="마음 별가루 수집">
+          <div style="display:inline-flex; align-items:center; gap:4px; margin-left:8px; font-weight:700; color:#fbbf24;" title="마음 별가루 수집">
             <span style="font-size:14px;">★</span><span id="stardustText">0/15</span>
+          </div>
+          <div class="divider-v" style="margin: 0 6px;"></div>
+          <!-- 실시간 누적 마음 점수 & 감정 레벨 배지 -->
+          <div id="mindScoreBadge" style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, rgba(244,63,94,0.18), rgba(251,191,36,0.22)); padding:3px 10px; border-radius:20px; border:1.5px solid rgba(251,191,36,0.45); font-weight:800; box-shadow:0 2px 8px rgba(0,0,0,0.18);" title="누적 마음 점수 & 감정 수호 레벨">
+            <span style="font-size:14px; animation: pulse 1.8s infinite;">💖</span>
+            <span id="mindScoreText" style="color:#f43f5e; font-size:13px; font-weight:800; min-width:42px; text-shadow:0 1px 2px rgba(0,0,0,0.2);">0점</span>
+            <span id="mindLevelBadge" style="background:#fbbf24; color:#78350f; font-size:10px; font-weight:800; padding:1px 6px; border-radius:10px;">Lv.1 새싹</span>
           </div>
         </div>
         <button class="hw-btn" id="btnCustomizeTop" style="border-color:rgba(56,189,248,0.45); color:#0284c7; font-weight:700;">
@@ -1670,6 +1679,10 @@
       boardFilter: 'all',
       selectedPostId: 1,
       likedIds: [],
+      mindScore: 0,
+      mindLevel: 1,
+      combo: 1,
+      lastScoreTime: 0,
       boardPosts: [
         { id: 1, author: '지우 (5학년)', emotion: 'anger', time: '방금 전', title: '친구랑 다투고 화가 났지만 3번 심호흡했어요', body: '모둠 활동 중에 내 의견을 무시당한 것 같아서 얼굴이 화끈거렸어요. 예전 같으면 바로 소리쳤을 텐데, 마음 광주리 모닥불 앞에서 숨을 후~ 내쉬고 나니 내 마음을 차분히 말할 수 있었어요.', insight: '감정 손님 [화]의 신호: 나의 소중한 경계와 가치를 지키고 싶을 때 찾아옵니다. 3초 호흡으로 열기를 식히면 지혜로운 대화가 가능해집니다.', likes: 14 },
         { id: 2, author: '서준 (4학년)', emotion: 'sad', time: '4분 전', title: '전학 간 단짝 친구 생각에 눈물이 났어요', body: '오늘 운동장에서 축구를 하다가 작년 짝꿍이 떠올라서 괜히 울컥했어요. 슬픔이 물방울 손님에게 "그만큼 소중한 친구였구나"라는 말을 듣고 연못에 눈물을 띄워 보내니 마음이 편안해졌어요.', insight: '감정 손님 [슬픔]의 신호: 내가 무언가를 깊이 아끼고 사랑했다는 증거입니다. 눈물은 마음을 씻어내는 자연스러운 치유 과정이에요.', likes: 19 },
@@ -1687,7 +1700,7 @@
           playerName: state.playerName, playerTitle: state.playerTitle,
           shirtColor: state.shirtColor, hatType: state.hatType,
           mindNote: state.mindNote, worryText: state.worryText,
-          quests: state.quests, curGuest: state.curGuest,
+          quests: state.quests, curGuest: state.curGuest, mindScore: state.mindScore, mindLevel: state.mindLevel,
           boardPosts: state.boardPosts, likedIds: state.likedIds
         }));
       } catch (e) {}
@@ -1707,9 +1720,84 @@
         if (d.quests) Object.keys(state.quests).forEach(k => { if (d.quests[k]) state.quests[k] = true; });
         if (Array.isArray(d.boardPosts) && d.boardPosts.length) state.boardPosts = d.boardPosts;
         if (Array.isArray(d.likedIds)) state.likedIds = d.likedIds;
+        if (typeof d.mindScore === 'number') state.mindScore = d.mindScore;
+        if (typeof d.mindLevel === 'number') state.mindLevel = d.mindLevel;
       } catch (e) {}
     }
     loadProgress();
+
+    // ==========================================
+    // [게이미피케이션 점수 시스템] 마음 점수, 콤보 & 레벨업 엔진
+    // ==========================================
+    window.addMindScore = function(points, reason = '') {
+      if (!points) return;
+      const now = performance.now();
+      // 4.5초 이내 연속 획득 시 콤보 누적
+      if (state.lastScoreTime && (now - state.lastScoreTime < 4500)) {
+        state.combo = (state.combo || 1) + 1;
+      } else {
+        state.combo = 1;
+      }
+      state.lastScoreTime = now;
+
+      const mult = Math.min(5, state.combo);
+      const finalPoints = points * mult;
+      state.mindScore = (state.mindScore || 0) + finalPoints;
+
+      // 레벨 계산: Lv.1(새싹) ~ Lv.5(우주 정원사)
+      const prevLevel = state.mindLevel || 1;
+      let newLevel = 1;
+      let levelTitle = '새싹';
+      if (state.mindScore >= 5000) { newLevel = 5; levelTitle = '우주정원사'; }
+      else if (state.mindScore >= 2500) { newLevel = 4; levelTitle = '마스터'; }
+      else if (state.mindScore >= 1200) { newLevel = 3; levelTitle = '지혜등대'; }
+      else if (state.mindScore >= 500) { newLevel = 2; levelTitle = '수호자'; }
+      state.mindLevel = newLevel;
+
+      if (newLevel > prevLevel) {
+        soundChime(880);
+        setTimeout(() => soundChime(1046.5), 200);
+        showToast(`🎉 <b>[마음 레벨업!] Lv.${newLevel} ${levelTitle}</b>에 도달했습니다! 마음 광주리가 더 깊고 환하게 성장했습니다!`);
+        if (typeof createMagicImpact === 'function' && window.playerRig) {
+          createMagicImpact(window.playerRig.position, '#fbbf24');
+        }
+      }
+
+      window.updateMindScoreUI();
+      window.spawnFloatingScore(finalPoints, mult, reason);
+      saveProgress();
+    };
+
+    window.updateMindScoreUI = function() {
+      const scoreEl = document.getElementById('mindScoreText');
+      const lvlEl = document.getElementById('mindLevelBadge');
+      if (scoreEl) scoreEl.textContent = (state.mindScore || 0).toLocaleString() + '점';
+      if (lvlEl) {
+        const lv = state.mindLevel || 1;
+        const titles = { 1: '새싹', 2: '수호자', 3: '지혜등대', 4: '마스터', 5: '우주정원사' };
+        lvlEl.textContent = `Lv.${lv} ${titles[lv] || ''}`;
+      }
+    };
+
+    window.spawnFloatingScore = function(pts, combo, reason) {
+      const wrap = document.getElementById('floatingScoreWrap');
+      if (!wrap) return;
+      const item = document.createElement('div');
+      item.className = 'floating-score-item';
+      let html = '';
+      if (combo > 1) {
+        html += `<span class="combo-badge">Combo x${combo}!</span> `;
+      }
+      html += `+${pts.toLocaleString()}점 💖`;
+      if (reason) {
+        html += ` <small style="font-size:12px; font-weight:600; color:#cbd5e1;">(${reason})</small>`;
+      }
+      item.innerHTML = html;
+      wrap.appendChild(item);
+      setTimeout(() => item.remove(), 1300);
+    };
+
+    window.updateMindScoreUI();
 
     // ==========================================
     // 2. Three.js 씬 & 정제된 블룸 포스트프로세싱
@@ -4096,6 +4184,7 @@
             createMagicImpact(wt.mesh.position, '#34d399');
           });
           soundChime(520);
+          window.addMindScore(350, '소원 연등 은하수 축제!');
           showToast('🌱 <b>새로운 걱정 털실 5개가 잔디밭에 피어났습니다!</b><br>3개를 밟아 풀고 소원 연등을 또 바로 날려보세요!');
           lastPromptZone = null;
           if (typeof updateZonePrompt === 'function') updateZonePrompt();
@@ -4450,27 +4539,38 @@
     function doBreatheWind() {
       initAudio(); soundChime(396);
       const distFire = Math.hypot(playerRig.position.x, playerRig.position.z - 24);
-      if (distFire < 7.5 && !state.quests.anger) {
-        // 타이밍 호흡 게임: 중앙 초록 평온 존(36% ~ 64%)에 맞췄는가?
+      if (distFire < 7.5) {
         if (timingCursorPct >= 36 && timingCursorPct <= 64) {
-          state.mission.anger += 1;
+          state.mission.anger = Math.min(3, (state.mission.anger || 0) + 1);
           soundChime(659);
           document.getElementById('zpProgress').textContent = `${state.mission.anger}/3`;
+          window.addMindScore(70, '마음 쉼터 호흡 성공!');
+          createMagicImpact(new THREE.Vector3(0, 1.2, 24), '#f97316');
           if (state.mission.anger >= 3) {
             campfireLight.color.set(0xfbbf24);
-            checkQuestCollect('anger', '평온의 불꽃 씨앗 획득', '타이밍에 맞춘 3번의 깊은 심호흡으로 뜨거운 화를 따뜻한 온기로 달랬습니다!');
+            window.addMindScore(250, '🔥 화의 불꽃 평온 전환!');
+            if (!state.quests.anger) {
+              checkQuestCollect('anger', '평온의 불꽃 단지 획득', '쉼터에 맞춘 3번의 깊은 심호흡으로 뜨거운 화를 따뜻한 온기로 바꿨습니다.');
+            } else {
+              showToast('🔥 <b>[대성공] 3번의 깊은 호흡으로 화를 가라앉혔습니다! (+250점)</b><br>언제든 다시 쉼터에서 호흡을 연습해보세요!');
+            }
             lastPromptZone = null;
+            setTimeout(() => {
+              state.mission.anger = 0;
+              saveProgress();
+              if (typeof updateZonePrompt === 'function') updateZonePrompt();
+            }, 2000);
           } else {
-            showToast(`<b>완벽한 호흡 적중! (${state.mission.anger}/3)</b> — 다음 리듬에 맞춰 한 번 더!`);
+            showToast(`🌬️ <b>완벽한 호흡 적중! (${state.mission.anger}/3)</b> (+70점) — 다음 리듬에 맞춰 한 번 더!`);
           }
         } else {
-          state.mission.anger = Math.max(0, state.mission.anger - 1);
+          state.mission.anger = Math.max(0, (state.mission.anger || 0) - 1);
           document.getElementById('zpProgress').textContent = `${state.mission.anger}/3`;
           soundChime(220);
-          showToast('<b>타이밍이 빗나갔어요!</b> 커서가 가운데 초록 존에 올 때 [C]를 눌러보세요!');
+          showToast('<b>쉼터를 빗나갔어요!</b> 커서가 가운데 초록 존에 올 때 [C]를 눌러보세요.');
         }
       } else {
-        showToast('<b>후~ 심호흡 불기!</b> 몸 안의 긴장을 부드럽게 내보냅니다.');
+        showToast('<b>후~ 심호흡 불기!</b> 몸 안의 긴장을 부드럽게 풀어봅니다.');
       }
     }
 
@@ -5016,7 +5116,14 @@
         }
       });
       fearShadows.forEach((fs, idx) => {
-        if (fs.cleared) return;
+        if (fs.cleared) {
+          fs.respawnTimer = (fs.respawnTimer || 0) + dt;
+          if (fs.respawnTimer > 4.0) {
+            fs.cleared = false; fs.group.visible = true; fs.respawnTimer = 0;
+            createMagicImpact(fs.group.position, '#a855f7');
+          }
+          return;
+        }
         const a = fs.ang + time * fs.speed;
         const tx = -20 + Math.cos(a) * fs.rad, tz = -18 + Math.sin(a) * fs.rad;
         const dx = playerRig.position.x - tx, dz = playerRig.position.z - tz;
@@ -5271,40 +5378,81 @@
         playerPhysics.velY = 18.5; playerPhysics.jumpCount = 1; playerPhysics.isGrounded = false;
         soundJump(true); showToast('기쁨의 트램펄린에서 하늘 높이 솟구쳤습니다!');
       }
+      // 기쁨의 황금 링 (개별 4.0초 자동 리젠)
       joyRings.forEach((jr, idx) => {
-        if (jr.cleared) return;
+        if (jr.cleared) {
+          jr.respawnTimer = (jr.respawnTimer || 0) + dt;
+          if (jr.respawnTimer > 4.0) {
+            jr.cleared = false; jr.mesh.visible = true; jr.respawnTimer = 0;
+            createMagicImpact(jr.mesh.position, '#fbbf24');
+          }
+          return;
+        }
         jr.mesh.rotation.z += dt * 1.4;
         jr.mesh.position.y = jr.baseY + Math.sin(time * 2.5 + idx) * 0.25;
-        if (playerRig.position.distanceTo(jr.mesh.position) < 2.2) {
-          jr.cleared = true; jr.mesh.visible = false;
-          state.mission.joy = joyRings.filter(r => r.cleared).length;
+        if (playerRig.position.distanceTo(jr.mesh.position) < 2.4) {
+          jr.cleared = true; jr.mesh.visible = false; jr.respawnTimer = 0;
+          state.mission.joy = Math.min(3, (state.mission.joy || 0) + 1);
           saveProgress(); renderStoryMissionTracker();
           soundChime(740 + state.mission.joy * 60);
           createMagicImpact(jr.mesh.position, 0xfbbf24);
-          if (state.mission.joy >= 3 && !state.quests.joy) {
-            checkQuestCollect('joy', '황금 기쁨 구슬 획득', '하늘 링 3개를 모두 통과해 마음껏 기뻐하는 용기를 얻었습니다!');
-            lastPromptZone = null;
+          window.addMindScore(50, '황금 링 점프 통과!');
+
+          if (state.mission.joy >= 3) {
+            window.addMindScore(200, '🌟 기쁨 링 3개 올 클리어!');
+            soundChime(880);
+            if (!state.quests.joy) {
+              checkQuestCollect('joy', '황금 기쁨 구슬 획득', '하늘 링 3개를 모두 통과해 마음껏 기뻐하는 용기를 얻었습니다!');
+              lastPromptZone = null;
+            } else {
+              showToast('🌟 <b>[대성공] 하늘 링 3개를 모두 통과했습니다! (+200점)</b><br>1.5초 후 링들이 다시 피어납니다!');
+            }
+            // 1.5초 후 즉각 전체 리젠!
+            setTimeout(() => {
+              joyRings.forEach(r => { r.cleared = false; r.mesh.visible = true; r.respawnTimer = 0; createMagicImpact(r.mesh.position, '#fbbf24'); });
+              state.mission.joy = 0;
+              saveProgress(); renderStoryMissionTracker();
+            }, 1500);
           } else {
-            showToast(`하늘 링 통과! (${state.mission.joy}/3)`);
+            showToast(`⭐ <b>하늘 링 통과! (${state.mission.joy}/3)</b> (+50점)`);
           }
         }
       });
 
+      // 슬픔의 치유 연못 물방울 (개별 4.0초 자동 리젠)
       sadDrops.forEach((sd, idx) => {
-        if (sd.cleared) return;
+        if (sd.cleared) {
+          sd.respawnTimer = (sd.respawnTimer || 0) + dt;
+          if (sd.respawnTimer > 4.0) {
+            sd.cleared = false; sd.mesh.visible = true; sd.respawnTimer = 0;
+            createMagicImpact(sd.mesh.position, '#38bdf8');
+          }
+          return;
+        }
         sd.mesh.position.y = 0.8 + Math.sin(time * 3 + idx) * 0.15;
         sd.mesh.rotation.y += dt * 1.5;
-        if (Math.hypot(playerRig.position.x - sd.mesh.position.x, playerRig.position.z - sd.mesh.position.z) < 2.0) {
-          sd.cleared = true; sd.mesh.visible = false;
-          state.mission.sad = sadDrops.filter(d => d.cleared).length;
+        if (Math.hypot(playerRig.position.x - sd.mesh.position.x, playerRig.position.z - sd.mesh.position.z) < 2.3) {
+          sd.cleared = true; sd.mesh.visible = false; sd.respawnTimer = 0;
+          state.mission.sad = Math.min(3, (state.mission.sad || 0) + 1);
           saveProgress(); renderStoryMissionTracker();
           soundChime(480 + state.mission.sad * 40);
           createMagicImpact(sd.mesh.position, 0x38bdf8);
-          showToast(state.mission.sad >= 3 ? '기억의 물방울 3개를 모두 모았어요! 이제 연못 중심으로 걸어가세요.' : `기억의 물방울 수집 (${state.mission.sad}/3) — ${sd.story}`);
+          window.addMindScore(50, '기억 물방울 수집');
+          showToast(state.mission.sad >= 3 ? '💧 <b>기억의 물방울 3개를 모두 모았습니다! (+50점)</b><br>이제 연못 중앙으로 걸어가 치유의 물결을 일으켜보세요!' : `💧 <b>기억 물방울 (${state.mission.sad}/3)</b> (+50점) · ${sd.story}`);
         }
       });
-      if (Math.hypot(playerRig.position.x - (-23), playerRig.position.z - 4) < 2.3 && !state.quests.sad && state.mission.sad >= 3) {
-        triggerSadRitual(); lastPromptZone = null;
+      // 연못 중심 도달 시 퀘스트 완료 후에도 무한 치유 파동 및 즉각 리젠 지원!
+      if (Math.hypot(playerRig.position.x - (-23), playerRig.position.z - 4) < 2.5 && state.mission.sad >= 3) {
+        triggerSadRitual();
+        window.addMindScore(250, '치유의 연못 물결 완성!');
+        state.mission.sad = 0;
+        lastPromptZone = null;
+        // 1.5초 후 물방울 3개 즉시 전체 리젠!
+        setTimeout(() => {
+          sadDrops.forEach(d => { d.cleared = false; d.mesh.visible = true; d.respawnTimer = 0; createMagicImpact(d.mesh.position, '#38bdf8'); });
+          saveProgress(); renderStoryMissionTracker();
+          showToast('💧 <b>수련잎 위에 새로운 기억 물방울들이 피어났습니다!</b><br>언제든 다시 모아 마음을 치유해보세요.');
+        }, 1500);
       }
 
       worryThreads.forEach((wt, idx) => {
@@ -5417,16 +5565,30 @@
         let hit = false;
         for (const fs of fearShadows) {
           if (!fs.cleared && mp.mesh.position.distanceTo(fs.group.position) < 2.3) {
-            fs.cleared = true; fs.group.visible = false; hit = true;
+            fs.cleared = true; fs.group.visible = false; fs.respawnTimer = 0; hit = true;
             createMagicImpact(fs.group.position, 0xfbbf24);
-            const left = fearShadows.filter(x => !x.cleared).length;
-            state.mission.fear = fearShadows.length - left;
+            state.mission.fear = Math.min(fearShadows.length, (state.mission.fear || 0) + 1);
+            window.addMindScore(40, '어둠 그림자 정화');
             saveProgress();
-            if (left === 0) {
+            const left = fearShadows.filter(x => !x.cleared).length;
+            if (left === 0 || state.mission.fear >= fearShadows.length) {
               beamMat.color.set(0xfbbf24);
-              checkQuestCollect('fear', '용기의 등대 수정 획득', '등대 주변 어둠 그림자 5개를 별빛 마법으로 모두 밝혀냈습니다!');
+              window.addMindScore(300, '✨ 수호 등대 올 클리어!');
+              if (!state.quests.fear) {
+                checkQuestCollect('fear', '용기의 등대 수정 획득', '등대 주변 어둠 그림자 5개를 별빛 마법으로 모두 밝혔습니다!');
+              } else {
+                showToast('✨ <b>[대성공] 등대 주변 어둠 그림자 5개를 모두 정화했습니다! (+300점)</b>');
+              }
               lastPromptZone = null;
-            } else showToast(`어둠 그림자 정화! (${state.mission.fear}/${fearShadows.length})`);
+              setTimeout(() => {
+                fearShadows.forEach(s => { s.cleared = false; s.group.visible = true; s.respawnTimer = 0; createMagicImpact(s.group.position, '#a855f7'); });
+                state.mission.fear = 0;
+                saveProgress();
+                showToast('👻 <b>어둠 그림자가 다시 나타났습니다!</b> 계속해서 별빛 마법 [F]으로 정화해보세요.');
+              }, 1800);
+            } else {
+              showToast(`🔮 <b>어둠 그림자 정화! (${state.mission.fear}/${fearShadows.length})</b> (+40점)`);
+            }
             break;
           }
         }
@@ -6564,6 +6726,36 @@
       </div>
     </div>
   </div>
+
+
+  <!-- 플로팅 마음 점수 & 콤보 팝업 컨테이너 -->
+  <div id="floatingScoreWrap" style="position:fixed; top:75px; left:50%; transform:translateX(-50%); pointer-events:none; z-index:99999; display:flex; flex-direction:column; align-items:center; gap:4px;"></div>
+  <style>
+    @keyframes floatScoreUp {
+      0% { opacity: 0; transform: translateY(12px) scale(0.85); }
+      20% { opacity: 1; transform: translateY(0) scale(1.15); }
+      75% { opacity: 1; transform: translateY(-16px) scale(1.0); }
+      100% { opacity: 0; transform: translateY(-32px) scale(0.9); }
+    }
+    .floating-score-item {
+      font-family: 'Pretendard', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      color: #fbbf24;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1.5px solid rgba(251, 191, 36, 0.6);
+      border-radius: 16px;
+      padding: 4px 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 12px rgba(251,191,36,0.35);
+      animation: floatScoreUp 1.25s ease-out forwards;
+      white-space: nowrap;
+    }
+    .combo-badge {
+      color: #f43f5e;
+      margin-right: 6px;
+      font-style: italic;
+    }
+  </style>
 
 </body>
 </html>
