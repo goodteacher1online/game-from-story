@@ -1676,6 +1676,7 @@
         { id: 5, author: '하은 (5학년)', emotion: 'joy', time: '25분 전', title: '급식에 좋아하는 떡볶이가 나와서 점프!', body: '별토끼 기쁨이랑 트램펄린에서 실컷 뛰었어요. 기쁨은 혼자만 간직하는 것보다 친구에게 "오늘 기분 좋다!" 하고 나눌 때 두 배가 되는 것 같아요.', insight: '감정 손님 [기쁨]의 신호: 나에게 에너지를 채워주고 주변 친구들과 웃음을 연결해 줍니다.', likes: 27 }
       ]
     };
+    window.state = state;
 
     const STORAGE_KEY = 'inchan_mind_basket_v5';
     function saveProgress() {
@@ -2430,17 +2431,26 @@
 
     // [미션 5: 걱정 숲 엉킨 털실 매듭 - 벤치 좌석 위 및 주변 5개 배치 + 15초 자동 리스폰]
     const worryThreads = [];
-    // [20, 1.25, -18]은 벤치 의자 좌석 바로 위!
-    [[20, 1.25, -18], [17.5, 0.9, -16.0], [22.5, 0.9, -16.0], [17.0, 0.9, -20.5], [23.5, 0.9, -20.5]].forEach(([wx, wy, wz], idx) => {
+    // 벤치 의자 위 완전 제거! 벤치 앞과 양옆의 넓은 잔디밭 지면(y: 0.72)에 알록달록 5개 배치
+    // 플레이어가 쉽게 접근하여 발로 밟거나 터치/클릭할 수 있도록 최적화
+    const yarnGrassPositions = [
+      [20.0, 0.72, -15.0], // 벤치 바로 앞 잔디 지면
+      [16.8, 0.72, -16.2], // 벤치 좌측 앞 잔디 지면
+      [23.2, 0.72, -16.2], // 벤치 우측 앞 잔디 지면
+      [16.0, 0.72, -19.5], // 벤치 좌측 잔디 지면
+      [24.0, 0.72, -19.5]  // 벤치 우측 잔디 지면
+    ];
+    yarnGrassPositions.forEach(([wx, wy, wz], idx) => {
       const wm = new THREE.Mesh(
-        new THREE.TorusKnotGeometry(0.38, 0.12, 36, 6),
-        new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x10b981, emissiveIntensity: 1.2 })
+        new THREE.TorusKnotGeometry(0.42, 0.13, 36, 8),
+        new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x10b981, emissiveIntensity: 1.35, roughness: 0.35 })
       );
       wm.position.set(wx, wy, wz);
+      wm.userData = { type: 'worryThread', index: idx };
       worldGroup.add(wm);
       const done = state.quests.worry;
       wm.visible = !done;
-      worryThreads.push({ mesh: wm, cleared: done, respawnTimer: 0, isBenchSeat: (idx === 0) });
+      worryThreads.push({ mesh: wm, cleared: done, respawnTimer: 0 });
     });
 
     // ============================================================
@@ -2999,6 +3009,8 @@
     const playerRig = new THREE.Group();
     playerRig.position.set(0, 0, 10);
     scene.add(playerRig);
+    window.playerRig = playerRig;
+    window.mainCamera = camera;
 
     const skinMat = new THREE.MeshStandardMaterial({ color: 0xfde0c6, roughness: 0.5 });
     const shirtMat = new THREE.MeshStandardMaterial({ color: state.shirtColor || '#ff5800', roughness: 0.45 });
@@ -4340,6 +4352,18 @@
         else if (hit?.type === 'mom') {
           window.openMomModal();
         }
+        else if (hit?.type === 'worryThread') {
+          // 마우스 클릭 또는 화면 터치로 털실 매듭 풀기!
+          const wt = worryThreads[hit.index];
+          if (wt && !wt.cleared) {
+            wt.cleared = true; wt.mesh.visible = false; wt.respawnTimer = 0;
+            state.mission.worry = Math.min(3, worryThreads.filter(t => t.cleared).length);
+            saveProgress(); renderStoryMissionTracker();
+            soundChime(520 + state.mission.worry * 45);
+            createMagicImpact(wt.mesh.position, '#34d399');
+            showToast(state.mission.worry >= 3 ? '🧶 <b>엉킨 털실 매듭을 모두 풀었어요!</b> 벤치에 앉아 [G키]로 소원 연등을 날려보세요!' : `🧶 <b>털실 매듭 풀기 (${state.mission.worry}/3)</b>`);
+          }
+        }
         else if (hit?.type === 'friend') openFriendModal(hit.id);
         else {
           if (currentHotbarSlot >= 1 && currentHotbarSlot <= 4) {
@@ -4537,9 +4561,13 @@
       lastPromptZone = foundZone;
 
       if (foundZone === 'mom') {
+        const pName = state.playerName || '인찬이';
+        const childTitle = getMomChildTitle(state.hairStyle);
+        const vocative = getKoreanVocative(pName);
+
         document.getElementById('zpChip').style.background = '#f43f5e';
         document.getElementById('zpTitle').textContent = '💕 온화한 엄마 (마음의 안식처)';
-        document.getElementById('zpDesc').textContent = '“인찬아, 언제든 엄마에게 오렴. 포근하게 안아줄게.”';
+        document.getElementById('zpDesc').textContent = `“우리 ${childTitle} ${vocative}! 언제든 엄마 품에 오렴. 포근하게 안아줄게.”`;
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '엄마와 이야기 나누기 (G)'; b1.onclick = () => window.openMomModal();
@@ -4547,6 +4575,9 @@
         btnsEl.appendChild(b1);
         btnsEl.appendChild(b2);
         box.classList.add('visible');
+
+        // 머리 위 말풍선도 학생의 이름으로 다정하게 동적 변경!
+        redrawMomSpeechBubble(`“우리 ${childTitle} ${vocative}! 어서 오렴~”`, '“블록으로 쉼터를 짓고 마음껏 쉬어가렴 💕”');
         return;
       }
 
@@ -4685,6 +4716,85 @@
     let momHugTimer = 0;
     const momBurstHearts = [];
 
+    
+    // 한국어 이름 종성(받침) 판별 및 호칭 헬퍼
+    function getKoreanVocative(name) {
+      if (!name) return '인찬아';
+      const clean = name.replace(/\s*\([0-9]+학년\)/g, '').trim();
+      const lastChar = clean.charCodeAt(clean.length - 1);
+      if (lastChar < 0xAC00 || lastChar > 0xD7A3) return clean + '아';
+      const hasJongseong = (lastChar - 0xAC00) % 28 > 0;
+      return hasJongseong ? clean + '아' : clean + '야';
+    }
+
+    function getKoreanSubject(name) {
+      if (!name) return '인찬이가';
+      const clean = name.replace(/\s*\([0-9]+학년\)/g, '').trim();
+      const lastChar = clean.charCodeAt(clean.length - 1);
+      if (lastChar < 0xAC00 || lastChar > 0xD7A3) return clean + '가';
+      const hasJongseong = (lastChar - 0xAC00) % 28 > 0;
+      return hasJongseong ? clean + '이가' : clean + '가';
+    }
+
+    function getKoreanTopic(name) {
+      if (!name) return '인찬이는';
+      const clean = name.replace(/\s*\([0-9]+학년\)/g, '').trim();
+      const lastChar = clean.charCodeAt(clean.length - 1);
+      if (lastChar < 0xAC00 || lastChar > 0xD7A3) return clean + '는';
+      const hasJongseong = (lastChar - 0xAC00) % 28 > 0;
+      return hasJongseong ? clean + '이는' : clean + '는';
+    }
+
+    function getKoreanObject(name) {
+      if (!name) return '인찬이를';
+      const clean = name.replace(/\s*\([0-9]+학년\)/g, '').trim();
+      if (clean.endsWith('이')) {
+        return clean + '를';
+      }
+      const lastChar = clean.charCodeAt(clean.length - 1);
+      if (lastChar < 0xAC00 || lastChar > 0xD7A3) return clean + '를';
+      const hasJongseong = (lastChar - 0xAC00) % 28 > 0;
+      return hasJongseong ? clean + '이를' : clean + '를';
+    }
+
+    // 헤어스타일에 따른 아들/딸 다정한 호칭 반환
+    function getMomChildTitle(hairStyle) {
+      const girlStyles = ['ponytail', 'twintail', 'long', 'wavy', 'bob', 'bun', 'braids'];
+      return girlStyles.includes(hairStyle) ? '착한 딸' : '착한 아들';
+    }
+
+    // 엄마 머리 위 2D 카툰 말풍선 캔버스 동적 갱신 함수
+    function redrawMomSpeechBubble(line1, line2) {
+      if (typeof bubbleCanvas === 'undefined' || typeof bubbleTex === 'undefined') return;
+      bCtx.clearRect(0, 0, 512, 160);
+      const mx = 24, my = 12, mw = 464, mh = 108, mr = 24;
+      bCtx.shadowColor = 'rgba(0, 0, 0, 0.45)'; bCtx.shadowBlur = 12; bCtx.shadowOffsetY = 4;
+      bCtx.beginPath();
+      bCtx.moveTo(mx + mr, my);
+      bCtx.lineTo(mx + mw - mr, my);
+      bCtx.quadraticCurveTo(mx + mw, my, mx + mw, my + mr);
+      bCtx.lineTo(mx + mw, my + mh - mr);
+      bCtx.quadraticCurveTo(mx + mw, my + mh, mx + mw - mr, my + mh);
+      bCtx.lineTo(mx + mw / 2 + 18, my + mh);
+      bCtx.lineTo(mx + mw / 2, my + mh + 22);
+      bCtx.lineTo(mx + mw / 2 - 18, my + mh);
+      bCtx.lineTo(mx + mr, my + mh);
+      bCtx.quadraticCurveTo(mx, my + mh, mx, my + mh - mr);
+      bCtx.lineTo(mx, my + mr);
+      bCtx.quadraticCurveTo(mx, my, mx + mr, my);
+      bCtx.closePath();
+      bCtx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      bCtx.fill();
+      bCtx.shadowColor = 'transparent';
+      bCtx.lineWidth = 3.5; bCtx.strokeStyle = '#fbbf24'; bCtx.stroke();
+
+      bCtx.font = 'bold 22px "Noto Sans KR", sans-serif';
+      bCtx.fillStyle = '#ffffff'; bCtx.textAlign = 'center';
+      bCtx.fillText(line1, 256, 48);
+      bCtx.fillText(line2, 256, 84);
+      bubbleTex.needsUpdate = true;
+    }
+
     // 하트 버스트 파티클 풀 초기화
     const heartGeo = new THREE.BoxGeometry(0.18, 0.18, 0.18);
     const heartMats = [
@@ -4737,9 +4847,20 @@
     window.openMomModal = function() {
       initAudio();
       soundMomVoice();
+      const name = state.playerName || '인찬이';
+      const vocative = typeof getKoreanVocative === 'function' ? getKoreanVocative(name) : (name + '아');
+      const childTitle = typeof getMomChildTitle === 'function' ? getMomChildTitle(state.hairStyle) : '착한 아이';
+
+      // 상단 모달 헤더 부제목 업데이트
+      const subTitleEl = document.getElementById('momModalSub');
+      if (subTitleEl) {
+        const objName = typeof getKoreanObject === "function" ? getKoreanObject(name) : (name + "를");
+        subTitleEl.textContent = `우리 ${childTitle} ${objName} 세상에서 가장 사랑하는 엄마와의 따뜻한 정서적 교감`;
+      }
+
       const txtEl = document.getElementById('momSpeechText');
       if (txtEl) {
-        txtEl.innerHTML = '“인찬아, 오늘 마음 광주리 여행은 어땠니? 어떤 감정 손님이 찾아왔어? 기쁨, 슬픔, 화, 두려움, 걱정... 어떤 감정이든 엄마에게 편하게 털어놓으렴.”';
+        txtEl.innerHTML = `“우리 사랑하는 ${childTitle} <b>${vocative}</b>! 오늘 마음 광주리 여행은 어땠니? 기쁨, 슬픔, 화, 두려움, 걱정... 어떤 감정이든 엄마에게 편하게 털어놓으렴.”`;
       }
       openModal('modalMom');
     };
@@ -4747,25 +4868,30 @@
     window.selectMomDialogue = function(type) {
       initAudio();
       soundMomVoice();
+      const name = state.playerName || '인찬이';
+      const vocative = typeof getKoreanVocative === 'function' ? getKoreanVocative(name) : (name + '아');
+      const topic = typeof getKoreanTopic === 'function' ? getKoreanTopic(name) : (name + '는');
+      const subject = typeof getKoreanSubject === 'function' ? getKoreanSubject(name) : (name + '이가');
+      const childTitle = typeof getMomChildTitle === 'function' ? getMomChildTitle(state.hairStyle) : '착한 아이';
       const txtEl = document.getElementById('momSpeechText');
       if (!txtEl) return;
 
       if (type === 1) {
-        txtEl.innerHTML = '“정말 대견하구나, 우리 인찬이! 모든 감정 손님은 나를 지켜주고 도우러 온 소중한 친구란다. 인찬이의 마음 광주리가 사랑과 지혜로 가득 차올랐네! 엄마가 늘 응원해 💕”';
+        txtEl.innerHTML = `“정말 대견하고 자랑스럽구나, 우리 ${childTitle} <b>${name}</b>! 모든 감정 손님은 너를 지켜주고 돕는 소중한 친구란다. ${subject}의 마음 광주리가 사랑과 지혜로 가득 차올랐네! 엄마가 늘 응원할게!”`;
         soundChime(659);
         spawnHugHeartBurst();
-        showToast('🌟 엄마의 칭찬으로 마음 광주리가 환하게 빛납니다! (별빛가루 +5)');
+        showToast(`🌸 엄마의 칭찬으로 ${name}의 마음 광주리가 환하게 빛납니다! (별빛가루 +5)`);
         state.stardustCount = (state.stardustCount || 0) + 5;
         saveProgress();
       } else if (type === 2) {
-        txtEl.innerHTML = '“그랬구나... 마음이 많이 저릿하고 슬펐겠네. 소중한 것을 잃었을 땐 눈물이 나는 게 아주 자연스럽단다. 눈물은 마음의 먼지를 씻어주는 비와 같아. 엄마가 네 곁에서 따뜻하게 안아줄게.”';
+        txtEl.innerHTML = `“그랬구나.. 우리 ${childTitle} <b>${name}</b> 마음이 많이 아리고 슬펐겠네. 소중한 것을 잃었을 때 눈물이 나는 건 아주 자연스럽고 예쁜 감정이란다. 눈물은 마음의 먼지를 씻어주는 촉촉한 비와 같아. 엄마가 꼭 안아줄게.”`;
         soundChime(523);
         spawnHugHeartBurst();
         showToast('💧 슬픔을 털어놓자 엄마의 온기로 마음이 평온해집니다.');
       } else if (type === 3) {
-        txtEl.innerHTML = '“화가 불쑥 치밀어 올랐구나! 화는 네 안의 소중한 것을 지키고 싶은 용기의 또 다른 얼굴이란다. 심호흡을 깊게 후- 내쉬며 마음의 쉼터를 지어보렴. 언제나 엄마가 네 편이란다.”';
+        txtEl.innerHTML = `“화가 불쑥 치밀어 올랐구나! 화는 우리 ${childTitle} <b>${name}</b> 안의 소중한 가치를 지키고 싶은 용기의 또 다른 얼굴이란다. 심호흡을 깊게 세 번 쉬며 마음의 쉼터를 지어보자. 언제나 엄마가 네 편이란다.”`;
         soundChime(440);
-        showToast('🌿 엄마의 위로로 화의 불꽃이 따뜻한 온기로 바뀝니다.');
+        showToast('🔥 엄마의 위로로 화의 불꽃이 따뜻한 온기로 바뀝니다.');
       } else if (type === 4) {
         window.doMomHug();
       }
@@ -4776,13 +4902,18 @@
       soundMomHug();
       momHugTimer = 3.5; // 3.5초간 포옹 모션
       spawnHugHeartBurst();
+      const name = state.playerName || '인찬이';
+      const vocative = typeof getKoreanVocative === 'function' ? getKoreanVocative(name) : (name + '아');
+      const topic = typeof getKoreanTopic === 'function' ? getKoreanTopic(name) : (name + '는');
+      const childTitle = typeof getMomChildTitle === 'function' ? getMomChildTitle(state.hairStyle) : '착한 아이';
+
       const txtEl = document.getElementById('momSpeechText');
       if (txtEl) {
-        txtEl.innerHTML = '“언제든 이리 오렴! 우리 인찬이는 세상에서 가장 소중한 보물이란다. 포근한 엄마 품에서 푹 쉬렴 💕”';
+        txtEl.innerHTML = `“언제든 이리 오렴! 우리 사랑하는 ${childTitle} <b>${vocative}</b>, 넌 세상에서 가장 귀하고 소중한 보물이란다. 포근한 엄마 품에서 편안하게 쉬렴~”`;
       }
       state.stardustCount = (state.stardustCount || 0) + 5;
       saveProgress();
-      showToast('💕 엄마의 따뜻한 품에서 마음의 깊은 위로와 안식을 얻었습니다! (별빛가루 +5)');
+      showToast(`🤗 엄마의 따뜻한 품에서 ${name}의 마음에 깊은 위로와 안식이 찾아왔습니다! (별빛가루 +5)`);
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
     };
 
@@ -5110,9 +5241,8 @@
       worryThreads.forEach((wt, idx) => {
         if (wt.cleared) return;
         wt.mesh.rotation.y += dt * 1.2; wt.mesh.rotation.x += dt * 0.8;
-        // 벤치 위 털실은 3.5m, 바닥 털실은 2.6m로 넉넉하게 감지
-        const catchDist = (wt.isBenchSeat || idx === 0) ? 3.5 : 2.6;
-        if (Math.hypot(playerRig.position.x - wt.mesh.position.x, playerRig.position.z - wt.mesh.position.z) < catchDist) {
+        // 바닥 털실 3.2m 반경으로 쾌적하게 감지하여 걸어가기만 해도 밟아 풀림
+        if (Math.hypot(playerRig.position.x - wt.mesh.position.x, playerRig.position.z - wt.mesh.position.z) < 3.2) {
           wt.cleared = true; wt.mesh.visible = false; wt.respawnTimer = 0;
           state.mission.worry = Math.min(3, worryThreads.filter(t => t.cleared).length);
           saveProgress(); renderStoryMissionTracker();
@@ -6317,7 +6447,7 @@
               <span style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; font-weight: 800; font-size: 10px; padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(251,191,36,0.35);">마음의 안식처</span>
               <h3 class="modal-title" style="margin: 0; font-size: 16px;">온화한 엄마의 따뜻한 품 💕</h3>
             </div>
-            <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">인찬이를 세상에서 가장 사랑하는 엄마와의 정서적 교감</div>
+            <div id="momModalSub" style="font-size: 11px; color: #94a3b8; margin-top: 2px;">인찬이를 세상에서 가장 사랑하는 엄마와의 정서적 교감</div>
           </div>
         </div>
         <button type="button" class="btn-close" onclick="closeModal('modalMom')">✕</button>
