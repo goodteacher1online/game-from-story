@@ -412,61 +412,142 @@
     /* 눈에 띄지 않는 초미니멀 스크롤바 (화살표 버튼 완전 제거 & 투명 트랙) */
     * {
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+      scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
     }
-    *::-webkit-scrollbar { width: 4px; height: 4px; }
-    *::-webkit-scrollbar-track { background: transparent; }
-    *::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 99px; }
-    *::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.35); }
-    *::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
-    *::-webkit-scrollbar-corner { background: transparent; }
+    ::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      width: 4px !important;
+      height: 4px !important;
+    }
+    ::-webkit-scrollbar-track,
+    *::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+    ::-webkit-scrollbar-thumb,
+    *::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.22) !important;
+      border-radius: 9999px !important;
+    }
+    ::-webkit-scrollbar-thumb:hover,
+    *::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.45) !important;
+    }
+    ::-webkit-scrollbar-button,
+    *::-webkit-scrollbar-button {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    ::-webkit-scrollbar-corner,
+    *::-webkit-scrollbar-corner {
+      background: transparent !important;
+    }
 
-    /* 좌측 상단 《인찬이의 마음 손님》 스토리 미션 보드 (상시 노출 + 접기/펼치기 + 3D 길 안내) */
+    /* 모바일/태블릿 터치 전용 버추얼 조이스틱 (360도 이동) */
+    .virtual-joystick-wrap {
+      position: fixed; left: 24px; bottom: 84px;
+      width: 106px; height: 106px; z-index: 46;
+      display: none; touch-action: none; user-select: none;
+    }
+    @media (hover: none) and (pointer: coarse), (max-width: 1024px) {
+      .virtual-joystick-wrap { display: block; }
+    }
+    .joystick-base {
+      position: relative; width: 100%; height: 100%; border-radius: 50%;
+      background: rgba(15, 23, 42, 0.72); backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .joystick-thumb {
+      position: absolute; top: 50%; left: 50%;
+      width: 44px; height: 44px; margin-top: -22px; margin-left: -22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fde047, #f59e0b);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.65);
+      pointer-events: none;
+    }
+
+    /* 좌측 상단 《인찬이의 마음 손님》 스토리 미션 보드 (가로 320px 완전 통일 규격) */
     .story-tracker {
       position: fixed; top: 68px; left: 16px; z-index: 43;
-      width: 305px; background: rgba(15, 23, 42, 0.88);
+      width: 320px; max-width: calc(100vw - 32px);
+      background: rgba(15, 23, 42, 0.90);
       backdrop-filter: blur(16px); border: 1.5px solid rgba(251, 191, 36, 0.45);
-      border-radius: 15px; padding: 10px 12px; color: #f8fafc;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.42);
+      border-radius: 14px; padding: 9px 12px; color: #f8fafc;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
       display: flex; flex-direction: column; gap: 6px;
-      transition: all 0.2s ease;
+      box-sizing: border-box; transition: all 0.2s ease;
     }
     .story-tracker.collapsed .story-tracker-body { display: none; }
     .story-tracker-head {
       display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; gap: 6px;
+      cursor: pointer; gap: 8px; white-space: nowrap; flex-shrink: 0;
     }
     .story-tracker-title {
-      font-size: 12.5px; font-weight: 800; color: #fbbf24;
-      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 800; color: #fbbf24;
+      display: flex; align-items: center; gap: 6px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
     }
     .story-tracker-toggle {
-      background: rgba(255, 255, 255, 0.1); border: none; color: #cbd5e1;
-      font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; cursor: pointer;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #cbd5e1; font-size: 10px; font-weight: 700; padding: 2px 7px;
+      border-radius: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
     }
+    .story-tracker-toggle:hover { background: rgba(251, 191, 36, 0.22); color: #fde047; border-color: #fbbf24; }
     .story-tracker-sub {
       font-size: 11px; color: #cbd5e1; line-height: 1.4;
       background: rgba(255, 255, 255, 0.06); padding: 6px 8px; border-radius: 8px;
       border-left: 3px solid #fbbf24;
     }
     .story-mission-list {
-      display: flex; flex-direction: column; gap: 5px; max-height: 225px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 6px; max-height: 240px;
+      overflow-y: auto !important; overflow-x: hidden !important;
+      padding-right: 2px;
     }
-    .story-mission-item {
-      display: flex; align-items: center; justify-content: space-between; gap: 7px;
-      padding: 6px 8px; border-radius: 9px; background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer;
-      transition: all 0.15s ease;
+    /* 개별 스토리 미션 카드 (독립된 카드형 구조로 텍스트 겹침 완전 방지!) */
+    .story-q-item {
+      display: flex; flex-direction: column; gap: 3px;
+      padding: 7px 9px; border-radius: 9px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer; transition: all 0.15s ease;
+      box-sizing: border-box; width: 100%;
     }
-    .story-mission-item:hover { background: rgba(255, 255, 255, 0.12); transform: translateX(2px); }
-    .story-mission-item.active-guide {
-      border-color: #fbbf24; background: rgba(251, 191, 36, 0.14);
-      box-shadow: 0 0 12px rgba(251, 191, 36, 0.22);
+    .story-q-item:hover {
+      background: rgba(255, 255, 255, 0.10);
+      border-color: rgba(251, 191, 36, 0.4);
+      transform: translateX(2px);
     }
-    .story-mission-item.done { opacity: 0.6; border-color: rgba(74, 222, 128, 0.4); background: rgba(34, 197, 94, 0.1); }
-    .sm-left { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-    .sm-chap { font-size: 11.5px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 5px; }
-    .sm-desc { font-size: 10.5px; color: #cbd5e1; line-height: 1.3; }
+    .story-q-item.active {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.14);
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
+    }
+    .story-q-item.done {
+      border-color: rgba(74, 222, 128, 0.4);
+      background: rgba(34, 197, 94, 0.08);
+      opacity: 0.8;
+    }
+    .story-q-top {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 6px; font-size: 10.5px;
+    }
+    .story-q-chapter {
+      font-weight: 800; font-size: 10px; letter-spacing: -0.2px;
+    }
+    .story-q-prog {
+      font-weight: 700; color: #fde047; font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .story-q-title {
+      font-size: 11.5px; font-weight: 700; color: #ffffff;
+      line-height: 1.35; word-break: keep-all;
+    }
+    .story-q-desc {
+      font-size: 10.5px; color: #cbd5e1; line-height: 1.4;
+      word-break: keep-all;
+    }
     .sm-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
     .sm-prog { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; color: #fde047; }
     .sm-guide-btn {
@@ -474,16 +555,16 @@
       background: rgba(251, 191, 36, 0.22); color: #fde047; border: 1px solid rgba(251, 191, 36, 0.45);
     }
 
-    /* 좌측 하단 실시간 멀티플레이어 광장 채팅 & 이모트 바 (크기 조절 + 접기/펼치기 + 미니멀 스크롤) */
+    /* 좌측 하단 실시간 멀티플레이어 광장 채팅 패널 (스토리 미션창과 완벽한 규격/비율 일치) */
     .mp-chat-panel {
       position: fixed; left: 16px; bottom: 84px; z-index: 44;
-      width: 268px; height: 176px; min-width: 210px; max-width: 480px; min-height: 38px; max-height: 400px;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.16);
-      border-radius: 14px; padding: 8px 11px; color: #f8fafc;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.4);
-      display: flex; flex-direction: column; gap: 5px; overflow: hidden;
-      transition: height 0.15s ease, width 0.15s ease;
+      width: 320px; height: 185px; min-width: 240px; max-width: 520px; min-height: 38px; max-height: 420px;
+      background: rgba(15, 23, 42, 0.90);
+      backdrop-filter: blur(16px); border: 1.5px solid rgba(255,255,255,0.18);
+      border-radius: 14px; padding: 9px 12px; color: #f8fafc;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+      display: flex; flex-direction: column; gap: 6px; overflow: hidden;
+      box-sizing: border-box; transition: height 0.15s ease, width 0.15s ease;
     }
     .mp-chat-panel.minimized {
       height: 36px !important; width: 220px !important; padding: 7px 11px;
@@ -495,7 +576,7 @@
       display: none !important;
     }
     .mp-chat-panel.expanded {
-      width: 360px !important; height: 270px !important;
+      width: 380px !important; height: 280px !important;
     }
     .mp-resize-handle {
       position: absolute; top: 0; right: 0; width: 18px; height: 18px;
@@ -506,27 +587,45 @@
     .mp-resize-handle:hover { color: #fbbf24; }
     .mp-chat-head {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 11px; font-weight: 700; color: #94a3b8; padding-right: 12px; flex-shrink: 0;
+      font-size: 11.5px; font-weight: 700; color: #94a3b8; padding-right: 14px;
+      flex-shrink: 0; white-space: nowrap !important; overflow: hidden;
+      width: 100%; box-sizing: border-box;
     }
-    .mp-win-ctrls { display: inline-flex; align-items: center; gap: 3px; }
+    .mp-live-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis;
+      max-width: 215px; font-size: 11.5px; font-weight: 700; color: #f8fafc;
+    }
+    #mpLiveStatusLabel {
+      white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mp-win-ctrls { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; }
     .mp-win-btn {
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
-      color: #cbd5e1; font-size: 9.5px; font-weight: 800; padding: 1px 5px;
-      border-radius: 5px; cursor: pointer; line-height: 1.3;
+      color: #cbd5e1; font-size: 10px; font-weight: 800; padding: 1px 6px;
+      border-radius: 5px; cursor: pointer; line-height: 1.35; white-space: nowrap;
     }
     .mp-win-btn:hover { background: rgba(251,191,36,0.25); color: #fde047; border-color: #fbbf24; }
     .mp-live-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      color: #4ade80; font-weight: 800;
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #4ade80; font-weight: 800; font-size: 12px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
     }
     .mp-live-dot {
-      width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+      width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 8px #22c55e; flex-shrink: 0;
+    }
       box-shadow: 0 0 8px #22c55e;
     }
     .mp-chat-log {
-      flex: 1; min-height: 36px; overflow-y: auto; font-size: 11.5px; line-height: 1.45;
+      flex: 1; min-height: 36px;
+      overflow-y: auto !important; overflow-x: hidden !important;
+      word-break: break-all; word-wrap: break-word;
+      font-size: 11.5px; line-height: 1.45;
       display: flex; flex-direction: column; gap: 3px; color: #e2e8f0;
-      padding-right: 3px;
+      padding-right: 4px;
+      scrollbar-width: thin !important;
+      scrollbar-color: rgba(255, 255, 255, 0.22) transparent !important;
     }
     .mp-chat-msg b { color: #fbbf24; }
     .mp-chat-input-row {
@@ -542,36 +641,59 @@
       background: #ff5800; color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;
     }
     .mp-quick-row {
-      display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; overflow: hidden;
+      display: flex; gap: 4px; overflow-x: auto !important; overflow-y: hidden !important;
+      flex-shrink: 0; padding-bottom: 2px;
+      scrollbar-width: none !important; -ms-overflow-style: none !important;
+    }
+    .mp-quick-row::-webkit-scrollbar {
+      display: none !important; width: 0 !important; height: 0 !important;
     }
     .mp-quick-btn {
-      padding: 2px 6px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.14);
+      padding: 2px 7px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.06); color: #cbd5e1; font-size: 9.8px;
-      white-space: nowrap; cursor: pointer;
+      white-space: nowrap; cursor: pointer; flex-shrink: 0;
     }
     .mp-quick-btn:hover { background: rgba(251,191,36,0.2); color: #fbbf24; border-color: #fbbf24; }
     @media (hover: none), (pointer: coarse), (max-width: 1100px) {
-      .mp-chat-panel { bottom: 204px; width: 225px; height: 145px; padding: 7px 9px; }
+      .mp-chat-panel { bottom: 204px; width: 250px; height: 160px; padding: 7px 9px; }
       .story-tracker { width: 265px; top: 64px; }
     }
     @media (max-width: 760px) {
-      .mp-chat-panel { display: none; }
+      .mp-chat-panel { bottom: 204px; width: 220px; height: 36px; }
+      .mp-chat-panel.expanded { width: 300px !important; height: 210px !important; }
       .story-tracker { width: 235px; }
     }
 
-    /* 캐릭터 커스터마이징 선택 그리드 */
+    /* 캐릭터 커스터마이징 선택 카드 그리드 (가로 100% 꽉 채우는 카드형 디자인) */
+    .cust-color-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 6px;
+    }
+    .cust-color-card {
+      display: flex; align-items: center; gap: 7px; padding: 8px 10px; border-radius: 10px;
+      border: 1.5px solid var(--line-hair); background: #fff; cursor: pointer;
+      transition: all 0.15s ease; width: 100%; box-sizing: border-box; user-select: none;
+    }
+    .cust-color-card:hover { border-color: #fbbf24; background: #fffdf5; transform: translateY(-1px); }
+    .cust-color-card.active { border-color: #18181b; background: #fffbeb; box-shadow: 0 0 0 2px #fbbf24; font-weight: 800; }
+    .cust-color-chip {
+      width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
+    .cust-color-text {
+      font-size: 11px; font-weight: 700; color: var(--ink-main); white-space: nowrap;
+    }
     .cust-swatch-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
     .cust-swatch {
       width: 36px; height: 36px; border-radius: 10px; border: 2.5px solid transparent;
       cursor: pointer; transition: transform 0.15s; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     .cust-swatch.active { border-color: #18181b; transform: scale(1.12); box-shadow: 0 0 0 2px #fbbf24; }
-    .cust-hat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 6px; }
+    .cust-hat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 6px; width: 100%; }
     .cust-hat-btn {
       padding: 9px 6px; border-radius: 10px; border: 1.5px solid var(--line-hair);
-      background: #fff; font-size: 12px; font-weight: 700; color: var(--ink-main);
+      background: #fff; font-size: 11.5px; font-weight: 700; color: var(--ink-main);
       cursor: pointer; text-align: center; transition: all 0.15s;
     }
+    .cust-hat-btn:hover { border-color: #fbbf24; transform: translateY(-1px); }
     .cust-hat-btn.active { border-color: var(--accent); background: #fff7f2; color: var(--accent); }
 
     /* 오비 클리어 & 타이쿤 레벨업 축하 배너 */
@@ -674,7 +796,7 @@
   <!-- 좌측 상단: 《인찬이의 마음 손님》 5장 스토리 미션 네비게이터 -->
   <div class="story-tracker" id="storyTracker">
     <div class="story-tracker-head" onclick="toggleStoryTracker()">
-      <span class="story-tracker-title">📖 《인찬이의 마음 손님》 스토리 미션 <span id="storyDoneBadge">(0/5)</span></span>
+      <span class="story-tracker-title">📖 《마음 손님》 스토리 미션 <span id="storyDoneBadge" style="color:#fde047; font-family:'JetBrains Mono',monospace;">(0/5)</span></span>
       <button type="button" class="story-tracker-toggle" id="btnStoryTrackerToggle">접기 ▲</button>
     </div>
     <div class="story-tracker-body">
@@ -689,7 +811,7 @@
   <div class="mp-chat-panel" id="mpChatPanel">
     <div class="mp-resize-handle" id="mpResizeHandle" title="드래그하여 채팅창 크기 조절">⤡</div>
     <div class="mp-chat-head">
-      <span class="mp-live-badge"><span class="mp-live-dot"></span><span id="mpLiveStatusLabel"><span id="mpRoomTitle">광장 함께하기</span> (<span id="mpOnlineNum">7</span> 명)</span></span>
+      <span class="mp-live-badge"><span class="mp-live-dot"></span><span id="mpLiveStatusLabel"><span id="mpRoomTitle">플레이룸 광장</span> (<span id="mpOnlineNum">1</span>명)</span></span>
       <div class="mp-win-ctrls">
         <button type="button" class="mp-win-btn" onclick="setChatSize('min')" title="채팅창 접기(최소화)">ㅡ</button>
         <button type="button" class="mp-win-btn" onclick="setChatSize('norm')" title="기본 크기">□</button>
@@ -823,11 +945,20 @@
         <div>
           <label class="field-label" for="custSelectTitle">머리 위 칭호 배지</label>
           <select class="text-input" id="custSelectTitle">
-            <option value="마음 탐험가">🌟 마음 탐험가</option>
-            <option value="블록 건축왕">🧱 블록 건축왕</option>
-            <option value="점프맵 마스터">🌈 점프맵 마스터</option>
-            <option value="따뜻한 위로자">💧 따뜻한 위로자</option>
-            <option value="용기 수호자">🔥 용기 수호자</option>
+            <option value="기쁨 수호자">🌸 기쁨 수호자 (환한 미소)</option>
+            <option value="슬픔 치유사">💧 슬픔 치유사 (따뜻한 위로)</option>
+            <option value="용기 마스터">🔥 용기 마스터 (열정의 심장)</option>
+            <option value="평온 명상가">🌿 평온 명상가 (깊은 호흡)</option>
+            <option value="생각 정리왕">🧶 생각 정리왕 (실타래 풀기)</option>
+            <option value="무지개 건축가">🌈 무지개 건축가 (창의적 다리)</option>
+            <option value="별빛 마법사">✨ 별빛 마법사 (치유의 등대)</option>
+            <option value="마음 탐험가">🌟 마음 탐험가 (5대 감정 모험)</option>
+            <option value="햇살 요정">☀️ 햇살 요정 (긍정의 에너지)</option>
+            <option value="기억 보관사">📖 기억 보관사 (소중한 이야기)</option>
+            <option value="정의의 불꽃">⚡ 정의의 불꽃 (불도깨비 용기)</option>
+            <option value="어둠의 길잡이">🌙 어둠의 길잡이 (수호 등불)</option>
+            <option value="광주리 영웅">🧺 광주리 영웅 (마음 나눔)</option>
+            <option value="점프맵 챔피언">🚀 점프맵 챔피언 (천공 정복)</option>
           </select>
         </div>
         <div>
@@ -836,14 +967,32 @@
         </div>
       </div>
 
-      <label class="field-label">상의(후드티) 컬러 선택</label>
-      <div class="cust-swatch-row" id="custColorRow">
-        <div class="cust-swatch active" data-color="#ff5800" style="background:#ff5800;" title="코랄 오렌지"></div>
-        <div class="cust-swatch" data-color="#3b82f6" style="background:#3b82f6;" title="스카이 블루"></div>
-        <div class="cust-swatch" data-color="#10b981" style="background:#10b981;" title="에메랄드 민트"></div>
-        <div class="cust-swatch" data-color="#a855f7" style="background:#a855f7;" title="로얄 퍼플"></div>
-        <div class="cust-swatch" data-color="#f59e0b" style="background:#f59e0b;" title="선샤인 골드"></div>
-        <div class="cust-swatch" data-color="#ec4899" style="background:#ec4899;" title="벚꽃 핑크"></div>
+      <label class="field-label">상의(후드티) 컬러 선택 (카드 가로 전체 확장)</label>
+      <div class="cust-color-grid" id="custColorRow">
+        <button type="button" class="cust-color-card cust-swatch active" data-color="#ff5800">
+          <span class="cust-color-chip" style="background:#ff5800;"></span>
+          <span class="cust-color-text">코랄 오렌지</span>
+        </button>
+        <button type="button" class="cust-color-card cust-swatch" data-color="#3b82f6">
+          <span class="cust-color-chip" style="background:#3b82f6;"></span>
+          <span class="cust-color-text">스카이 블루</span>
+        </button>
+        <button type="button" class="cust-color-card cust-swatch" data-color="#10b981">
+          <span class="cust-color-chip" style="background:#10b981;"></span>
+          <span class="cust-color-text">에메랄드 민트</span>
+        </button>
+        <button type="button" class="cust-color-card cust-swatch" data-color="#a855f7">
+          <span class="cust-color-chip" style="background:#a855f7;"></span>
+          <span class="cust-color-text">로얄 퍼플</span>
+        </button>
+        <button type="button" class="cust-color-card cust-swatch" data-color="#f59e0b">
+          <span class="cust-color-chip" style="background:#f59e0b;"></span>
+          <span class="cust-color-text">선샤인 골드</span>
+        </button>
+        <button type="button" class="cust-color-card cust-swatch" data-color="#ec4899">
+          <span class="cust-color-chip" style="background:#ec4899;"></span>
+          <span class="cust-color-text">벚꽃 핑크</span>
+        </button>
       </div>
 
       <label class="field-label">3D 머리 꾸미기 &amp; 액세서리 장착</label>
@@ -1202,24 +1351,24 @@
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    // 계단식 블록 플로팅 아일랜드
+    // 계단식 블록 플로팅 아일랜드 (반경 72m, 지름 144m의 웅장한 대형 감정 월드!)
     const islandRock = new THREE.Mesh(
-      new THREE.CylinderGeometry(54, 42, 8, 12),
+      new THREE.CylinderGeometry(72, 56, 11, 20),
       new THREE.MeshStandardMaterial({ color: 0x4b423b, roughness: 0.9, flatShading: true })
     );
-    islandRock.position.y = -4.2; islandRock.receiveShadow = true;
+    islandRock.position.y = -5.5; islandRock.receiveShadow = true;
     worldGroup.add(islandRock);
 
     const grassMain = new THREE.Mesh(
-      new THREE.CylinderGeometry(55, 54.5, 0.6, 16),
+      new THREE.CylinderGeometry(73.5, 72.5, 0.8, 24),
       new THREE.MeshStandardMaterial({ color: 0x5c8d45, roughness: 0.72, flatShading: true })
     );
     grassMain.position.y = -0.2; grassMain.receiveShadow = true;
     worldGroup.add(grassMain);
 
-    // 중앙 단차 광장 (로블록스 스터드 광장 느낌)
+    // 중앙 단차 광장 (로블록스 스터드 광장 느낌, 반경 18m)
     const plaza = new THREE.Mesh(
-      new THREE.CylinderGeometry(14, 14.6, 0.35, 16),
+      new THREE.CylinderGeometry(18, 18.8, 0.4, 24),
       new THREE.MeshStandardMaterial({ color: 0xe6e1d8, roughness: 0.85, flatShading: true })
     );
     plaza.position.y = 0.05; plaza.receiveShadow = true;
@@ -1701,11 +1850,11 @@
     const worryOrbMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(0.35, 0.11, 40, 8), new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x059669, emissiveIntensity: 1.3 }));
     worryOrbGroup.add(worryOrbMesh); worldGroup.add(worryOrbGroup);
 
-    // 로블록스 스타일 2단/3단 큐브 나무 32그루
+    // 로블록스 스타일 2단/3단 큐브 나무 48그루 (넓은 섬 전역에 풍성하게 배치)
     const trees = [];
-    for (let i = 0; i < 32; i++) {
-      const ang = (i / 32) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
-      const rad = 26 + Math.random() * 24;
+    for (let i = 0; i < 48; i++) {
+      const ang = (i / 48) * Math.PI * 2 + (Math.random() - 0.5) * 0.25;
+      const rad = 28 + Math.random() * 38;
       const tg = new THREE.Group();
       tg.position.set(Math.cos(ang) * rad, 0.1, Math.sin(ang) * rad);
       tg.scale.setScalar(0.85 + Math.random() * 0.45);
@@ -1845,18 +1994,19 @@
       if (state.quests.fear) sg.visible = false;
     }
 
-    // [미션 5: 걱정 숲 엉킨 털실 매듭 3개]
+    // [미션 5: 걱정 숲 엉킨 털실 매듭 - 벤치 좌석 위 및 주변 5개 배치 + 15초 자동 리스폰]
     const worryThreads = [];
-    [[24, 0.9, -15], [16.5, 0.9, -21], [23, 0.9, -22.5]].forEach(([wx, wy, wz]) => {
+    // [20, 1.25, -18]은 벤치 의자 좌석 바로 위!
+    [[20, 1.25, -18], [17.5, 0.9, -16.0], [22.5, 0.9, -16.0], [17.0, 0.9, -20.5], [23.5, 0.9, -20.5]].forEach(([wx, wy, wz], idx) => {
       const wm = new THREE.Mesh(
-        new THREE.TorusKnotGeometry(0.42, 0.13, 36, 6),
-        new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x10b981, emissiveIntensity: 1.1 })
+        new THREE.TorusKnotGeometry(0.38, 0.12, 36, 6),
+        new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x10b981, emissiveIntensity: 1.2 })
       );
       wm.position.set(wx, wy, wz);
       worldGroup.add(wm);
       const done = state.quests.worry;
       wm.visible = !done;
-      worryThreads.push({ mesh: wm, cleared: done });
+      worryThreads.push({ mesh: wm, cleared: done, respawnTimer: 0, isBenchSeat: (idx === 0) });
     });
 
     // 3D 모자 생성 헬퍼 (내 캐릭터 & 멀티플레이 친구 아바타 공용)
@@ -2532,7 +2682,7 @@
         usePointer = true;
       }
 
-      let bx, by = 0.5, bz;
+      let bx, by, bz;
       if (usePointer) {
         raycaster.setFromCamera(pointerNDC, camera);
         // 1순위: 이미 설치된 블록의 고정 hitBox와 교차 검사 -> 클릭한 면(윗면/옆면) 바로 옆/위에 자석 스냅!
@@ -2540,49 +2690,62 @@
         const groundTargets = [plaza, grassMain, islandRock, ...obbyPlatforms.map(p => p.mesh)];
         const allHits = raycaster.intersectObjects([...blockHitBoxes, ...groundTargets], false);
 
-        if (allHits.length > 0 && allHits[0].distance < 30) {
+        if (allHits.length > 0 && allHits[0].distance < 35) {
           const hit = allHits[0];
           if (hit.object.userData && hit.object.userData.blockObj) {
             const b = hit.object.userData.blockObj;
-            const n = hit.face ? hit.face.normal : new THREE.Vector3(0, 1, 0);
-            bx = b.x + Math.round(n.x);
-            by = Math.max(0.5, b.y + Math.round(n.y));
-            bz = b.z + Math.round(n.z);
+            // 클릭된 위치(hit.point)와 블록 중심(b.x, b.y, b.z)의 상대 좌표로 클릭된 면(Face) 완벽 판정!
+            const dx = hit.point.x - b.x;
+            const dy = hit.point.y - b.y;
+            const dz = hit.point.z - b.z;
+            const ax = Math.abs(dx), ay = Math.abs(dy), az = Math.abs(dz);
+            let nx = 0, ny = 0, nz = 0;
+            if (ay >= ax && ay >= az) {
+              ny = dy >= 0 ? 1 : -1;
+            } else if (ax >= az) {
+              nx = dx >= 0 ? 1 : -1;
+            } else {
+              nz = dz >= 0 ? 1 : -1;
+            }
+            bx = b.x + nx;
+            by = Math.max(0.5, b.y + ny);
+            bz = b.z + nz;
           } else {
-            // 지면/발판 클릭 시: 캐릭터 주변(최대 8칸 이내) 정수 격자의 바닥(y = 0.5)에 깔끔하게 정렬
+            // 지면/발판 클릭 시: 클릭한 지점 정수 격자에 배치
             bx = Math.round(hit.point.x);
             bz = Math.round(hit.point.z);
-            const topY = Math.max(0, Math.round(hit.point.y));
-            by = topY + 0.5;
+            // 해당 칸에 이미 블록이 있다면 그 중 가장 높은 블록 바로 위에 차곡차곡 스택!
+            const existingInCol = placedBlocks.filter(b => b.x === bx && b.z === bz);
+            if (existingInCol.length > 0) {
+              const maxY = Math.max(...existingInCol.map(b => b.y));
+              by = maxY + 1.0;
+            } else {
+              const groundY = Math.max(0, Math.round(hit.point.y));
+              by = groundY + 0.5;
+            }
           }
         }
       }
 
-      // 포인터 히트가 없거나 너무 멀면 캐릭터가 바라보는 전방 2칸 격자에 배치
+      // 포인터 히트가 없거나 너무 먼 경우: 캐릭터 전방 2칸 정수 격자에 배치
       if (typeof bx !== 'number') {
         const fwd = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRig.rotation.y);
         bx = Math.round(playerRig.position.x + fwd.x * 2.0);
         bz = Math.round(playerRig.position.z + fwd.z * 2.0);
-        by = Math.max(0.5, Math.round(playerRig.position.y) + 0.5);
+        const existingInCol = placedBlocks.filter(b => b.x === bx && b.z === bz);
+        if (existingInCol.length > 0) {
+          const maxY = Math.max(...existingInCol.map(b => b.y));
+          by = maxY + 1.0;
+        } else {
+          by = Math.max(0.5, Math.round(playerRig.position.y) + 0.5);
+        }
       }
 
-      // 해당 (bx, by, bz) 칸에 이미 블록이 있으면 바로 위칸(by + 1.0)으로 스냅 (최대 12단)
+      // 이미 정확히 같은 위치에 블록이 있다면 바로 위칸으로 올려 겹침 방지
       let safety = 0;
-      while (placedBlocks.some(b => b.x === bx && Math.abs(b.y - by) < 0.45 && b.z === bz) && safety < 12) {
+      while (placedBlocks.some(b => b.x === bx && Math.abs(b.y - by) < 0.45 && b.z === bz) && safety < 16) {
         by += 1.0;
         safety++;
-      }
-
-      // 캐릭터가 서 있는 몸통 자리와 겹치면 전방으로 1칸 밀어 캐릭터 끼임 방지
-      const py = playerRig.position.y;
-      if (Math.abs(bx - playerRig.position.x) < 0.85 && Math.abs(bz - playerRig.position.z) < 0.85 && (by + 0.5) > py + 0.2 && (by - 0.5) < py + 1.85) {
-        const dx = bx - playerRig.position.x;
-        const dz = bz - playerRig.position.z;
-        if (Math.abs(dx) >= Math.abs(dz)) {
-          bx = Math.round(playerRig.position.x + (dx >= 0 ? 1.3 : -1.3));
-        } else {
-          bz = Math.round(playerRig.position.z + (dz >= 0 ? 1.3 : -1.3));
-        }
       }
 
       return { bx, by, bz };
@@ -2815,47 +2978,63 @@
       return highest;
     }
 
-    // 수평 블록 다중 충돌 판정 (3-Pass 정렬 AABB: 블록을 몇 개를 쌓든 절대 통과 불가!)
-    function resolveHorizontalCollisions() {
+    // 수평 블록 다중 충돌 판정 (축 분리 Axis-Separated AABB: 블록 100개를 쌓아도 절대 관통 불가!)
+    function resolveHorizontalCollisions(axis = null) {
       const playerRadius = 0.42;
-      const minDist = 0.5 + playerRadius; // 0.92
+      const minDist = 0.5 + playerRadius; // 0.92m
       const py = playerRig.position.y;
 
-      // 3회 반복 패스로 연속된 다중 블록 벽·모서리 통과를 100% 차단
-      for (let pass = 0; pass < 3; pass++) {
-        // 플레이어와 가까운 블록부터 먼저 밀어내어 인접 블록 간 모서리 걸림/통과 방지
-        const activeBlocks = [];
-        for (let i = 0; i < placedBlocks.length; i++) {
-          const b = placedBlocks[i];
-          const blockTop = b.y + 0.5;
-          const blockBottom = b.y - 0.5;
-          if (blockTop > py + 0.28 && blockBottom < py + 1.88) {
-            const dx = playerRig.position.x - b.x;
-            const dz = playerRig.position.z - b.z;
-            if (Math.abs(dx) < minDist && Math.abs(dz) < minDist) {
-              activeBlocks.push({ b, distSq: dx * dx + dz * dz });
-            }
-          }
-        }
-        activeBlocks.sort((a, c) => a.distSq - c.distSq);
-
-        for (let i = 0; i < activeBlocks.length; i++) {
-          const b = activeBlocks[i].b;
+      // 1. 설치된 블록(placedBlocks)과의 완벽한 축 분리 충돌 검사
+      for (let i = 0; i < placedBlocks.length; i++) {
+        const b = placedBlocks[i];
+        const blockTop = b.y + 0.5;
+        const blockBottom = b.y - 0.5;
+        if (blockTop > py + 0.28 && blockBottom < py + 1.88) {
           const dx = playerRig.position.x - b.x;
           const dz = playerRig.position.z - b.z;
-          if (Math.abs(dx) < minDist && Math.abs(dz) < minDist) {
-            const overlapX = minDist - Math.abs(dx);
-            const overlapZ = minDist - Math.abs(dz);
-            if (overlapX < overlapZ) {
+          const absX = Math.abs(dx);
+          const absZ = Math.abs(dz);
+
+          if (axis === 'x') {
+            if (absX < minDist && absZ < (minDist - 0.05)) {
+              const overlapX = minDist - absX;
               playerRig.position.x += (dx >= 0 ? overlapX : -overlapX);
-            } else {
+            }
+          } else if (axis === 'z') {
+            if (absZ < minDist && absX < (minDist - 0.05)) {
+              const overlapZ = minDist - absZ;
               playerRig.position.z += (dz >= 0 ? overlapZ : -overlapZ);
+            }
+          } else {
+            // 축 미지정 시 2축 동시 밀어내기
+            if (absX < minDist && absZ < minDist) {
+              const overlapX = minDist - absX;
+              const overlapZ = minDist - absZ;
+              if (overlapX < overlapZ) {
+                playerRig.position.x += (dx >= 0 ? overlapX : -overlapX);
+              } else {
+                playerRig.position.z += (dz >= 0 ? overlapZ : -overlapZ);
+              }
             }
           }
         }
       }
 
-      // 감정 광석과의 수평 충돌
+      // 2. 오비 점프맵 발판 측면 충돌 (발판 아래나 옆에서 측면을 뚫고 지나가는 것 방지)
+      if (typeof obbyPlatforms !== 'undefined') {
+        for (let i = 0; i < obbyPlatforms.length; i++) {
+          const p = obbyPlatforms[i];
+          const halfW = p.w / 2;
+          const halfD = p.d / 2;
+          const pTop = p.mesh.position.y + p.h / 2;
+          const pBottom = p.mesh.position.y - p.h / 2;
+          if (pTop > py + 0.35 && pBottom < py + 1.85) {
+            pushOutBox(p.mesh.position.x, p.mesh.position.z, halfW, halfD, pTop);
+          }
+        }
+      }
+
+      // 3. 감정 광석과의 수평 충돌
       for (let i = 0; i < emotionOres.length; i++) {
         const og = emotionOres[i];
         if (py < 1.2) {
@@ -2915,11 +3094,11 @@
       // 5) 북쪽 실시간 전광판 기둥 2개
       pushOutCircle(-7.5, -26.25, 0.78, 9.5);
       pushOutCircle(7.5, -26.25, 0.78, 9.5);
-      // 6) 숲속 나무 32그루 기둥
+      // 6) 숲속 나무 48그루 기둥 (두꺼운 기둥 반경 0.75m로 확실한 충돌 차단!)
       if (typeof trees !== 'undefined') {
         for (let i = 0; i < trees.length; i++) {
           const tg = trees[i].group;
-          pushOutCircle(tg.position.x, tg.position.z, 0.45 * tg.scale.x, 4.5 * tg.scale.y);
+          pushOutCircle(tg.position.x, tg.position.z, 0.72 * tg.scale.x, 5.0 * tg.scale.y);
         }
       }
       // 7) 엄마 NPC (6.5, 6.5)
@@ -2938,9 +3117,15 @@
           pushOutCircle(fg.position.x, fg.position.z, 0.56, 2.5);
         }
       }
+
+      // 10) 섬 전체 외곽 추락 방지 경계 (확장된 대형 섬 반경 70.0m)
+      const distIsland = Math.hypot(playerRig.position.x, playerRig.position.z);
+      if (distIsland > 70.0) {
+        playerRig.position.setLength(70.0);
+      }
     }
 
-    // NPC가 사용자가 만든 블록(placedBlocks) 및 월드 구조물을 통과하지 않고 자연스럽게 돌아가도록(우회) 하는 물리/우회 판정!
+    // NPC가 사용자가 만든 블록(placedBlocks) 및 월드 구조물을 통과하지 않고 완벽하게 돌아가도록(우회) 하는 물리/스티어링 판정!
     function resolveNpcCollisions(fr, dt) {
       const npcRadius = 0.52;
       const blockMinDist = 0.5 + npcRadius; // 1.02m
@@ -2948,11 +3133,11 @@
       let hitAnyBlock = false;
       let pushTotalX = 0, pushTotalZ = 0;
 
-      // 2-Pass로 사용자가 쌓은 모든 1층/2층 블록과의 충돌 검사 및 접선 우회 벡터 산출
+      // 2-Pass로 사용자가 쌓은 모든 블록과의 충돌 검사 및 접선 우회 벡터 산출
       for (let pass = 0; pass < 2; pass++) {
         for (let i = 0; i < placedBlocks.length; i++) {
           const b = placedBlocks[i];
-          if (b.y > 2.2) continue; // 공중 높은 블록은 제외, 지상 1~2단 블록은 모두 장애물 인식
+          if (b.y > 2.5) continue; // 공중 높은 블록은 통과 가능, 지상 1~2단 블록은 엄격한 장애물
           const dx = pos.x - b.x;
           const dz = pos.z - b.z;
           if (Math.abs(dx) < blockMinDist && Math.abs(dz) < blockMinDist) {
@@ -2977,16 +3162,16 @@
         const len = Math.hypot(pushTotalX, pushTotalZ) || 1;
         const nx = pushTotalX / len;
         const nz = pushTotalZ / len;
-        // 접선 벡터 (-nz, nx) + 법선 반발력으로 블록 가장자리를 따라 자연스럽게 돌아감
-        fr.avoidX = (fr.avoidX || 0) + (nx * 1.4 - nz * 2.2) * dt * 5.0;
-        fr.avoidZ = (fr.avoidZ || 0) + (nz * 1.4 + nx * 2.2) * dt * 5.0;
-        fr.avoidX = THREE.MathUtils.clamp(fr.avoidX, -4.5, 4.5);
-        fr.avoidZ = THREE.MathUtils.clamp(fr.avoidZ, -4.5, 4.5);
-        fr.phase += dt * 0.95;
+        // 접선 벡터 (-nz, nx)로 블록 가장자리를 따라 자연스럽게 우회 회피!
+        fr.avoidX = (fr.avoidX || 0) + (nx * 1.5 - nz * 2.5) * dt * 6.0;
+        fr.avoidZ = (fr.avoidZ || 0) + (nz * 1.5 + nx * 2.5) * dt * 6.0;
+        fr.avoidX = THREE.MathUtils.clamp(fr.avoidX, -5.0, 5.0);
+        fr.avoidZ = THREE.MathUtils.clamp(fr.avoidZ, -5.0, 5.0);
+        fr.phase += dt * 1.1; // 걸음 템포를 앞당겨 막힌 곳에서 즉시 탈출
       } else if (fr.avoidX || fr.avoidZ) {
         // 장애물을 지나치면 서서히 원래 순찰 궤도로 복귀
-        fr.avoidX = THREE.MathUtils.lerp(fr.avoidX || 0, 0, dt * 1.5);
-        fr.avoidZ = THREE.MathUtils.lerp(fr.avoidZ || 0, 0, dt * 1.5);
+        fr.avoidX = THREE.MathUtils.lerp(fr.avoidX || 0, 0, dt * 1.8);
+        fr.avoidZ = THREE.MathUtils.lerp(fr.avoidZ || 0, 0, dt * 1.8);
       }
 
       // 중앙 마음 광주리, 등대, 화로, 플레이어와의 충돌 방지
@@ -3050,11 +3235,47 @@
     }
 
     function spawnReleasedLantern(text) {
-      const lg = new THREE.Group();
-      lg.add(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.95, 0.7), new THREE.MeshStandardMaterial({ color: 0x6ee7b7, emissive: 0x10b981, emissiveIntensity: 1.3 })));
-      lg.position.set(20, 1.5, -18); worldGroup.add(lg);
-      releasedLanterns.push({ group: lg, life: 12.0 });
-      showToast(`<b>"${text}"</b>을(를) 소원 연등에 담아 하늘로 날려 보냈습니다.`);
+      // 1. 플레이어 소원이 담긴 메인 대형 황금 연등
+      const mainLg = new THREE.Group();
+      const mainMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.48, 0.38, 1.15, 12),
+        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 1.8, roughness: 0.3 })
+      );
+      mainLg.add(mainMesh);
+      const mLight = new THREE.PointLight(0xfbbf24, 2.5, 12);
+      mainLg.add(mLight);
+      mainLg.position.set(20, 1.6, -18);
+      worldGroup.add(mainLg);
+      releasedLanterns.push({ group: mainLg, speedY: 3.2, swaySpeed: 1.2, swayAmp: 0.6, life: 30.0, seed: 0 });
+
+      // 2. 밤하늘을 수놓는 44개의 감정 풍등 축제 (Festival of Lanterns)
+      const lanternColors = [0xfef08a, 0xfde047, 0x6ee7b7, 0x38bdf8, 0xf472b6, 0xa78bfa, 0xfb923c];
+      for (let i = 0; i < 44; i++) {
+        const subLg = new THREE.Group();
+        const col = lanternColors[i % lanternColors.length];
+        const subMesh = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.32 + Math.random() * 0.12, 0.25 + Math.random() * 0.1, 0.85 + Math.random() * 0.25, 8),
+          new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 1.5, roughness: 0.4 })
+        );
+        subLg.add(subMesh);
+        const ang = Math.random() * Math.PI * 2;
+        const rad = 2.0 + Math.random() * 28.0;
+        const startY = 0.5 + Math.random() * 3.5;
+        subLg.position.set(20 + Math.cos(ang) * rad, startY, -18 + Math.sin(ang) * rad);
+        worldGroup.add(subLg);
+        releasedLanterns.push({
+          group: subLg,
+          speedY: 2.2 + Math.random() * 1.8,
+          swaySpeed: 0.8 + Math.random() * 1.2,
+          swayAmp: 0.3 + Math.random() * 0.5,
+          life: 25.0 + Math.random() * 15.0,
+          seed: i + 1
+        });
+      }
+
+      soundChime(587);
+      createMagicImpact(new THREE.Vector3(20, 2.0, -18), '#fbbf24');
+      showToast(`🏮 <b>[은하수 소원 연등 축제 장관!]</b><br><b>"${text}"</b> 소원이 45개의 아름다운 감정 연등과 함께 밤하늘 높이 피어오릅니다!`);
     }
 
     // [인찬이의 마음 손님] 5장 스토리 미션 보드 & 3D 황금 길안내 화살표 & 5대 랜드마크 대형 입간판
@@ -3777,11 +3998,32 @@
         sr.mesh.scale.setScalar(sr.scale); sr.mesh.material.opacity = Math.max(0, sr.life);
         if (sr.life <= 0) { worldGroup.remove(sr.mesh); sadRipples.splice(i, 1); }
       }
+      // 45개 소원 연등 은하수 축제 부드러운 상승 & 밤하늘 흩날림
       for (let i = releasedLanterns.length - 1; i >= 0; i--) {
-        const rl = releasedLanterns[i]; rl.life -= dt; rl.group.position.y += dt * 2.8;
-        rl.group.position.x += Math.sin(time * 1.5 + i) * dt * 0.5;
-        if (rl.life <= 0) { worldGroup.remove(rl.group); releasedLanterns.splice(i, 1); }
+        const rl = releasedLanterns[i];
+        rl.life -= dt;
+        rl.group.position.y += dt * (rl.speedY || 2.8);
+        rl.group.position.x += Math.sin(time * (rl.swaySpeed || 1.2) + rl.seed) * dt * (rl.swayAmp || 0.5);
+        rl.group.position.z += Math.cos(time * 0.9 + rl.seed) * dt * (rl.swayAmp || 0.4);
+        rl.group.rotation.y += dt * 0.4;
+        if (rl.life <= 0 || rl.group.position.y > 85.0) {
+          worldGroup.remove(rl.group);
+          releasedLanterns.splice(i, 1);
+        }
       }
+
+      // 걱정의 털실 15초 자동 리스폰 (다른 친구들과 재도전을 위해 지속 재생성!)
+      worryThreads.forEach((wt, idx) => {
+        if (wt.cleared) {
+          wt.respawnTimer = (wt.respawnTimer || 0) + dt;
+          if (wt.respawnTimer > 15.0) {
+            wt.cleared = false;
+            wt.mesh.visible = true;
+            wt.respawnTimer = 0;
+            createMagicImpact(wt.mesh.position, '#34d399');
+          }
+        }
+      });
       fireParticles.forEach(fp => {
         fp.y += dt * fp.speed; if (fp.y > 2.4) fp.y = 0;
         fp.mesh.position.set(Math.cos(time * 3 + fp.offsetAng) * fp.rad, 0.7 + fp.y, Math.sin(time * 3 + fp.offsetAng) * fp.rad);
@@ -3896,13 +4138,15 @@
       worryThreads.forEach((wt, idx) => {
         if (wt.cleared) return;
         wt.mesh.rotation.y += dt * 1.2; wt.mesh.rotation.x += dt * 0.8;
-        if (Math.hypot(playerRig.position.x - wt.mesh.position.x, playerRig.position.z - wt.mesh.position.z) < 2.0) {
-          wt.cleared = true; wt.mesh.visible = false;
-          state.mission.worry = worryThreads.filter(t => t.cleared).length;
+        // 벤치 위 털실은 3.5m, 바닥 털실은 2.6m로 넉넉하게 감지
+        const catchDist = (wt.isBenchSeat || idx === 0) ? 3.5 : 2.6;
+        if (Math.hypot(playerRig.position.x - wt.mesh.position.x, playerRig.position.z - wt.mesh.position.z) < catchDist) {
+          wt.cleared = true; wt.mesh.visible = false; wt.respawnTimer = 0;
+          state.mission.worry = Math.min(3, worryThreads.filter(t => t.cleared).length);
           saveProgress(); renderStoryMissionTracker();
           soundChime(520 + state.mission.worry * 45);
-          createMagicImpact(wt.mesh.position, 0xa855f7);
-          showToast(state.mission.worry >= 3 ? '엉킨 털실 매듭을 모두 풀었어요! 이제 벤치에서 소원 연등을 날려보세요.' : `털실 매듭 풀기 (${state.mission.worry}/3)`);
+          createMagicImpact(wt.mesh.position, '#34d399');
+          showToast(state.mission.worry >= 3 ? '🧶 <b>엉킨 털실 매듭을 모두 풀었어요!</b> 벤치에 앉아 [G키]로 소원 연등을 날려보세요! (15초 후 자동 재생성)' : `🧶 <b>털실 매듭 풀기 (${state.mission.worry}/3)</b> (15초 후 재생성)`);
         }
       });
 
@@ -3943,7 +4187,7 @@
         eyeL.scale.y = 0.1; eyeR.scale.y = 0.1;
         if (playerPhysics.blinkTimer > 3.65) { eyeL.scale.y = 1; eyeR.scale.y = 1; playerPhysics.blinkTimer = 0; }
       }
-      if (Math.hypot(playerRig.position.x, playerRig.position.z) > 51) playerRig.position.setLength(51);
+      if (Math.hypot(playerRig.position.x, playerRig.position.z) > 70) playerRig.position.setLength(70);
 
       // Playroom 인터넷 원격 플레이어 3D 아바타 동기화 및 애니메이션
       if (window.playroomConnected && remotePlayers.size > 0) {
@@ -4355,8 +4599,8 @@
       const labelEl = document.getElementById('mpLiveStatusLabel');
       if (labelEl) {
         labelEl.innerHTML = window.playroomConnected
-          ? `🟢 실시간 플레이룸 (${state.roomCode} · ${count}명 온라인)`
-          : `🟢 광장 함께하기 (${count} 명)`;
+          ? `🟢 [${state.roomCode}] · ${count}명 온라인`
+          : `🟢 광장 함께하기 (${count}명)`;
       }
     }
 
