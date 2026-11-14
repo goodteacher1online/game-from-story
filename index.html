@@ -689,7 +689,7 @@
   <div class="mp-chat-panel" id="mpChatPanel">
     <div class="mp-resize-handle" id="mpResizeHandle" title="드래그하여 채팅창 크기 조절">⤡</div>
     <div class="mp-chat-head">
-      <span class="mp-live-badge"><span class="mp-live-dot"></span><span id="mpRoomTitle">광장</span> (<span id="mpOnlineNum">7</span>명)</span>
+      <span class="mp-live-badge"><span class="mp-live-dot"></span><span id="mpLiveStatusLabel"><span id="mpRoomTitle">광장 함께하기</span> (<span id="mpOnlineNum">7</span> 명)</span></span>
       <div class="mp-win-ctrls">
         <button type="button" class="mp-win-btn" onclick="setChatSize('min')" title="채팅창 접기(최소화)">ㅡ</button>
         <button type="button" class="mp-win-btn" onclick="setChatSize('norm')" title="기본 크기">□</button>
@@ -1048,6 +1048,7 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/playroomkit/multiplayer.full.umd.js"></script>
   <script type="importmap">
     {
       "imports": {
@@ -2647,6 +2648,9 @@
       if (typeof worldChannel !== 'undefined' && worldChannel) {
         worldChannel.postMessage({ type: 'mp_block_place', x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName });
       }
+      if (window.playroomConnected && window.Playroom?.RPC) {
+        window.Playroom.RPC.call('mp_block_place', { x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName }, window.Playroom.RPC.Mode.OTHERS);
+      }
       return { bx, by, bz };
     }
 
@@ -2679,6 +2683,9 @@
           showToast('⛏️ <b>곡괭이로 블록을 깔끔하게 지웠습니다!</b>');
           if (typeof worldChannel !== 'undefined' && worldChannel) {
             worldChannel.postMessage({ type: 'mp_block_mine', x: bInfo.x, y: bInfo.y, z: bInfo.z });
+          }
+          if (window.playroomConnected && window.Playroom?.RPC) {
+            window.Playroom.RPC.call('mp_block_mine', { x: bInfo.x, y: bInfo.y, z: bInfo.z, from: state.playerName }, window.Playroom.RPC.Mode.OTHERS);
           }
           return true;
         }
@@ -3625,6 +3632,8 @@
       setTimeout(() => playTone(523.25, 659.25, 0.35, 'sine'), 100);
     }
 
+    let lastPlayroomSyncTime = 0;
+
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1), time = clock.getElapsedTime();
@@ -3936,6 +3945,49 @@
       }
       if (Math.hypot(playerRig.position.x, playerRig.position.z) > 51) playerRig.position.setLength(51);
 
+      // Playroom 인터넷 원격 플레이어 3D 아바타 동기화 및 애니메이션
+      if (window.playroomConnected && remotePlayers.size > 0) {
+        remotePlayers.forEach(r => {
+          const rPos = r.player.getState('pos');
+          if (rPos) {
+            r.group.position.lerp(new THREE.Vector3(rPos.x, rPos.y, rPos.z), 0.22);
+            r.group.rotation.y = THREE.MathUtils.lerp(r.group.rotation.y, rPos.rotY || 0, 0.22);
+            if (rPos.isMoving) {
+              r.walkCycle = (r.walkCycle || 0) + dt * 12;
+              r.legL.rotation.x = Math.sin(r.walkCycle) * 0.8;
+              r.legR.rotation.x = -Math.sin(r.walkCycle) * 0.8;
+              r.armL.rotation.x = -Math.sin(r.walkCycle) * 0.7;
+              r.armR.rotation.x = Math.sin(r.walkCycle) * 0.7;
+            } else {
+              r.legL.rotation.x = THREE.MathUtils.lerp(r.legL.rotation.x, 0, 0.15);
+              r.legR.rotation.x = THREE.MathUtils.lerp(r.legR.rotation.x, 0, 0.15);
+              r.armL.rotation.x = THREE.MathUtils.lerp(r.armL.rotation.x, 0, 0.15);
+              r.armR.rotation.x = THREE.MathUtils.lerp(r.armR.rotation.x, 0, 0.15);
+            }
+          }
+          if (r.chatTimer > 0) {
+            r.chatTimer -= dt;
+            if (r.chatTimer <= 0) r.chatObj.sprite.visible = false;
+          }
+        });
+      }
+
+      // 내 위치를 Playroom에 초당 약 7회(140ms 간격) throttled 전송
+      if (window.playroomConnected && window.Playroom?.myPlayer()) {
+        const nowMs = performance.now();
+        if (nowMs - lastPlayroomSyncTime > 140) {
+          lastPlayroomSyncTime = nowMs;
+          window.Playroom.myPlayer().setState('pos', {
+            x: Number(playerRig.position.x.toFixed(2)),
+            y: Number(playerRig.position.y.toFixed(2)),
+            z: Number(playerRig.position.z.toFixed(2)),
+            rotY: Number(playerRig.rotation.y.toFixed(2)),
+            isMoving: !!(isMoving),
+            isDancing: !!(playerPhysics.isDancing)
+          }, false);
+        }
+      }
+
       // 마법 투사체 & 두려움 그림자 정화
       for (let i = magicProjectiles.length - 1; i >= 0; i--) {
         const mp = magicProjectiles[i]; mp.mesh.position.addScaledVector(mp.vel, dt); mp.life -= dt;
@@ -4206,11 +4258,197 @@
     };
 
     // ==========================================
-    // 11-B. 캐릭터 꾸미기 스튜디오 & 멀티플레이어 실시간 채팅/동기화 & 채팅창 크기 조절
+    // 11-B. Playroom Kit 실시간 클라우드 멀티플레이어 & 캐릭터 스튜디오
     // ==========================================
     const urlParams = new URLSearchParams(window.location.search);
     state.roomCode = urlParams.get('room') || state.roomCode || '5학년1반';
     let worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_' + state.roomCode) : null;
+    window.playroomConnected = false;
+    const remotePlayers = new Map();
+
+    // 원격 접속자 3D 로블록스 아바타 생성 헬퍼
+    function createRemoteAvatar(player) {
+      const pId = player.id;
+      if (remotePlayers.has(pId)) return remotePlayers.get(pId);
+
+      const prof = player.getState('profile') || { name: '친구', title: '마음 탐험가', shirtColor: '#3b82f6', hatType: 'ahoge' };
+      const rg = new THREE.Group();
+      rg.position.set(0, 0, 10);
+
+      const rShirt = new THREE.MeshStandardMaterial({ color: prof.shirtColor || '#3b82f6', roughness: 0.45 });
+      const rSkin = new THREE.MeshStandardMaterial({ color: 0xfde0c6, roughness: 0.5 });
+      const rPants = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.7 });
+
+      const rTorso = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.05, 0.55), rShirt);
+      rTorso.position.y = 1.35; rTorso.castShadow = true;
+      rg.add(rTorso);
+
+      const rHead = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.78, 0.82), rSkin);
+      rHead.position.y = 0.95; rHead.castShadow = true;
+      rTorso.add(rHead);
+
+      const rHair = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.45, 0.88), new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.6 }));
+      rHair.position.set(0, 0.28, -0.02);
+      rHead.add(rHair);
+
+      if (prof.hatType && prof.hatType !== 'ahoge') {
+        rHead.add(createHatMesh(prof.hatType));
+      } else {
+        const ahoge = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.35, 6), new THREE.MeshStandardMaterial({ color: 0x27272a }));
+        ahoge.position.set(0.08, 0.55, 0.05); ahoge.rotation.z = -0.35;
+        rHead.add(ahoge);
+      }
+
+      // 양팔
+      const rArmL = new THREE.Group(); rArmL.position.set(-0.64, 0.45, 0);
+      const rArmLMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.82, 0.34), rShirt); rArmLMesh.position.y = -0.41; rArmLMesh.castShadow = true;
+      rArmL.add(rArmLMesh); rTorso.add(rArmL);
+
+      const rArmR = new THREE.Group(); rArmR.position.set(0.64, 0.45, 0);
+      const rArmRMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.82, 0.34), rShirt); rArmRMesh.position.y = -0.41; rArmRMesh.castShadow = true;
+      rArmR.add(rArmRMesh); rTorso.add(rArmR);
+
+      // 양다리
+      const rLegL = new THREE.Group(); rLegL.position.set(-0.26, 0.82, 0);
+      const rLegLMesh = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.82, 0.42), rPants); rLegLMesh.position.y = -0.41; rLegLMesh.castShadow = true;
+      rLegL.add(rLegLMesh); rg.add(rLegL);
+
+      const rLegR = new THREE.Group(); rLegR.position.set(0.26, 0.82, 0);
+      const rLegRMesh = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.82, 0.42), rPants); rLegRMesh.position.y = -0.41; rLegRMesh.castShadow = true;
+      rLegR.add(rLegRMesh); rg.add(rLegR);
+
+      // 머리 위 3D 네임태그 & 실시간 말풍선
+      const rTagObj = makeNameSprite(prof.name, prof.title || '친구', prof.shirtColor || '#38bdf8');
+      rTagObj.sprite.position.set(0, 3.35, 0);
+      rg.add(rTagObj.sprite);
+
+      const rChatObj = makeChatBubbleSprite('');
+      rChatObj.sprite.position.set(0, 4.25, 0);
+      rChatObj.sprite.visible = false;
+      rg.add(rChatObj.sprite);
+
+      scene.add(rg);
+      const data = {
+        player, group: rg, torso: rTorso, head: rHead, shirtMat: rShirt,
+        armL: rArmL, armR: rArmR, legL: rLegL, legR: rLegR,
+        tagObj: rTagObj, chatObj: rChatObj, chatTimer: 0, walkCycle: 0,
+        prof
+      };
+      remotePlayers.set(pId, data);
+      appendChatLog(prof.name, `광장에 입장했습니다! [${state.roomCode}]`, true);
+      updateOnlineStatusText();
+      return data;
+    }
+
+    function removeRemoteAvatar(pId) {
+      if (remotePlayers.has(pId)) {
+        const r = remotePlayers.get(pId);
+        scene.remove(r.group);
+        appendChatLog(r.prof?.name || '친구', '광장에서 퇴장했습니다.', true);
+        remotePlayers.delete(pId);
+        updateOnlineStatusText();
+      }
+    }
+
+    function updateOnlineStatusText() {
+      const count = (remotePlayers.size + 1);
+      const labelEl = document.getElementById('mpLiveStatusLabel');
+      if (labelEl) {
+        labelEl.innerHTML = window.playroomConnected
+          ? `🟢 실시간 플레이룸 (${state.roomCode} · ${count}명 온라인)`
+          : `🟢 광장 함께하기 (${count} 명)`;
+      }
+    }
+
+    // PlayroomKit 인터넷 실시간 멀티플레이어 초기화
+    async function initPlayroom() {
+      if (typeof window.Playroom === 'undefined') {
+        console.warn('[PlayroomKit] 라이브러리 로드 대기 중이거나 오프라인 모드로 실행합니다.');
+        return;
+      }
+      try {
+        await window.Playroom.insertCoin({
+          skipLobby: true,
+          roomCode: state.roomCode,
+          maxPlayersPerRoom: 60
+        });
+        window.playroomConnected = true;
+        showToast(`🌐 <b>[Playroom 실시간 인터넷 멀티플레이 연결 성공!]</b><br>방 코드: <b>${state.roomCode}</b> · 교실 전체 친구들과 실시간 동기화됩니다!`);
+        updateOnlineStatusText();
+
+        const me = window.Playroom.myPlayer();
+        me.setState('profile', {
+          name: state.playerName,
+          title: state.playerTitle,
+          shirtColor: state.shirtColor,
+          hatType: state.hatType
+        }, true);
+
+        // 다른 플레이어 참여 시
+        window.Playroom.onPlayerJoin(player => {
+          if (player.id === me.id) return;
+          createRemoteAvatar(player);
+          player.onQuit(() => removeRemoteAvatar(player.id));
+        });
+
+        // 실시간 RPC 원격 이벤트 등록 (블록 설치/채굴, 채팅, 게시판)
+        window.Playroom.RPC.register('mp_block_place', (data) => {
+          if (!placedBlocks.some(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z)) {
+            spawnBlockWithAnim(data.x, data.y, data.z, data.slot || 1);
+            appendChatLog(data.from, `새로운 감정 블록을 놓았습니다! (${data.x}, ${data.z})`, true);
+          }
+        });
+
+        window.Playroom.RPC.register('mp_block_mine', (data) => {
+          const bIdx = placedBlocks.findIndex(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z);
+          if (bIdx !== -1) {
+            const bInfo = placedBlocks[bIdx];
+            worldGroup.remove(bInfo.mesh);
+            if (bInfo.hitBox) worldGroup.remove(bInfo.hitBox);
+            placedBlocks.splice(bIdx, 1);
+            soundBlockMine();
+            appendChatLog(data.from, `블록을 회수/채굴했습니다.`, true);
+          }
+        });
+
+        window.Playroom.RPC.register('mp_chat', (data) => {
+          appendChatLog(data.from, data.msg);
+          showToast(`💬 <b>[${data.from}]</b> ${data.msg}`);
+          if (data.id && remotePlayers.has(data.id)) {
+            const r = remotePlayers.get(data.id);
+            drawChatBubbleCanvas(r.chatObj.ctx, data.msg, '#38bdf8');
+            r.chatObj.tex.needsUpdate = true;
+            r.chatObj.sprite.visible = true;
+            r.chatTimer = 5.5;
+          }
+        });
+
+        window.Playroom.RPC.register('mp_board_sync', (data) => {
+          if (data.post && !state.boardPosts.some(p => p.id === data.post.id)) {
+            state.boardPosts.unshift(data.post);
+            state.stats[data.post.emotion] = (state.stats[data.post.emotion] || 0) + 1;
+            saveProgress(); updateScreenCanvas();
+            if (document.getElementById('modalBoard').classList.contains('open')) renderBoard();
+            showToast(`친구 <b>${data.post.author}</b>님이 실시간 마음 게시판에 글을 남겼습니다.`);
+          }
+        });
+
+        window.Playroom.RPC.register('mp_profile_update', (data) => {
+          if (data.id && remotePlayers.has(data.id)) {
+            const r = remotePlayers.get(data.id);
+            r.prof = data.prof;
+            r.shirtMat.color.set(data.prof.shirtColor || '#3b82f6');
+            drawNameCanvas(r.tagObj.ctx, data.prof.name, data.prof.title || '친구', data.prof.shirtColor || '#38bdf8');
+            r.tagObj.tex.needsUpdate = true;
+          }
+        });
+
+      } catch (err) {
+        console.warn('[PlayroomKit] 연결 실패, 브라우저 탭 간 통신(BroadcastChannel)으로 대체합니다:', err);
+        window.playroomConnected = false;
+        updateOnlineStatusText();
+      }
+    }
 
     // 좌측 하단 채팅창 크기 조절 (축소/기본/확대 버튼 + 우측 상단 모서리 드래그 리사이즈)
     window.setChatSize = function(mode) {
@@ -4294,10 +4532,11 @@
       };
     });
 
-    document.getElementById('btnApplyCustomize').onclick = () => {
+    document.getElementById('btnApplyCustomize').onclick = async () => {
       const nm = document.getElementById('custInputName').value.trim();
       const rm = document.getElementById('custInputRoom')?.value.trim();
       const tt = document.getElementById('custSelectTitle').value;
+      const oldRoom = state.roomCode;
       if (nm) state.playerName = nm;
       if (rm) state.roomCode = rm;
       if (tt) state.playerTitle = tt;
@@ -4306,7 +4545,17 @@
       updateScreenCanvas();
       closeModal('modalCustomize');
       soundQuestComplete();
-      showToast(`✨ <b>[${state.roomCode}] [${state.playerTitle}] ${state.playerName}</b> 광장에 입장했습니다!`);
+      showToast(`✨ <b>[${state.roomCode}] [${state.playerTitle}] ${state.playerName}</b> 캐릭터 등록 완료!`);
+
+      // 방 코드가 바뀌었거나 아직 Playroom 연결 전이면 연결 시도
+      if (!window.playroomConnected || oldRoom !== state.roomCode) {
+        initPlayroom();
+      } else if (window.playroomConnected && window.Playroom?.myPlayer()) {
+        const prof = { name: state.playerName, title: state.playerTitle, shirtColor: state.shirtColor, hatType: state.hatType };
+        window.Playroom.myPlayer().setState('profile', prof, true);
+        window.Playroom.RPC.call('mp_profile_update', { id: window.Playroom.myPlayer().id, prof }, window.Playroom.RPC.Mode.OTHERS);
+      }
+
       if (worldChannel) {
         worldChannel.postMessage({
           type: 'mp_customize',
@@ -4347,6 +4596,14 @@
       showPlayerBubble(text);
       appendChatLog(state.playerName, text);
       soundChime(659);
+
+      if (window.playroomConnected && window.Playroom?.RPC) {
+        window.Playroom.RPC.call('mp_chat', {
+          from: state.playerName,
+          msg: text,
+          id: window.Playroom.myPlayer()?.id
+        }, window.Playroom.RPC.Mode.OTHERS);
+      }
 
       if (worldChannel) {
         worldChannel.postMessage({ type: 'mp_chat', from: state.playerName, msg: text });
