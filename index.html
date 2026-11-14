@@ -959,7 +959,33 @@
     .congrats-title { font-size: 18px; font-weight: 800; color: #fbbf24; margin-bottom: 4px; }
     .congrats-sub { font-size: 13.5px; color: #e2e8f0; }
 
-  </style>
+  
+    .mom-choice-btn {
+      text-align: left !important;
+      padding: 11px 14px !important;
+      border-radius: 12px !important;
+      background: rgba(30, 41, 59, 0.85) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.14) !important;
+      color: #f8fafc !important;
+      font-size: 12.5px !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      transition: all 0.15s ease !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .mom-choice-btn:hover {
+      background: rgba(251, 191, 36, 0.22) !important;
+      border-color: #fbbf24 !important;
+      transform: translateX(5px) scale(1.01) !important;
+      box-shadow: 0 4px 14px rgba(251, 191, 36, 0.2) !important;
+    }
+    .mom-choice-btn span:first-child { font-size: 17px; }
+
+</style>
 </head>
 <body>
 
@@ -4251,8 +4277,7 @@
         const hit = hitTestInteractive(e.clientX, e.clientY);
         if (hit?.type === 'board') openBoardModal();
         else if (hit?.type === 'mom') {
-          soundMomVoice();
-          document.getElementById('momDialog').style.display = 'block';
+          window.openMomModal();
         }
         else if (hit?.type === 'friend') openFriendModal(hit.id);
         else {
@@ -4341,6 +4366,7 @@
     function interactCurrentZone() {
       if (!state.activeZone) { showToast('5개 구역 감정 손님, 친구 아바타, 또는 마음 게시판 근처에서 [G]를 눌러보세요.'); return; }
       if (state.activeZone === 'board') { openBoardModal(); return; }
+      if (state.activeZone === 'mom') { window.openMomModal(); return; }
       if (state.activeZone.startsWith('friend:')) { openFriendModal(state.activeZone.split(':')[1]); return; }
       openNpcDialogue(state.activeZone);
     }
@@ -4425,6 +4451,9 @@
         if (Math.hypot(px - lm.x, pz - lm.z) < zoneRadius[lm.key]) { foundZone = lm.key; break; }
       }
       if (!foundZone && Math.hypot(px, pz - (-21)) < 8.5) foundZone = 'board';
+      // 온화한 엄마 NPC 근접 감지 (중앙 광주리 인근 6.5, 6.5)
+      const distToMom = Math.hypot(px - 6.5, pz - 6.5);
+      if (!foundZone && distToMom < 5.2) foundZone = 'mom';
       let nearFriend = null, bestFriendDist = 4.5;
       for (const fr of friendAgents) {
         const d = Math.hypot(px - fr.group.position.x, pz - fr.group.position.z);
@@ -4445,6 +4474,20 @@
 
       if (lastPromptZone === foundZone) return;
       lastPromptZone = foundZone;
+
+      if (foundZone === 'mom') {
+        document.getElementById('zpChip').style.background = '#f43f5e';
+        document.getElementById('zpTitle').textContent = '💕 온화한 엄마 (마음의 안식처)';
+        document.getElementById('zpDesc').textContent = '“인찬아, 언제든 엄마에게 오렴. 포근하게 안아줄게.”';
+        document.getElementById('breathBarWrap').classList.remove('active');
+        const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
+        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '엄마와 이야기 나누기 (G)'; b1.onclick = () => window.openMomModal();
+        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '따뜻하게 안아드리기 🤗'; b2.onclick = () => window.doMomHug();
+        btnsEl.appendChild(b1);
+        btnsEl.appendChild(b2);
+        box.classList.add('visible');
+        return;
+      }
 
       if (foundZone.startsWith('friend:')) {
         const fr = friendAgents.find(f => f.id === foundZone.split(':')[1]);
@@ -4573,6 +4616,114 @@
       if (!audioCtx) return;
       playTone(200, 650, 0.35, 'sine');
     }
+
+    
+    // ============================================================
+    // [온화한 엄마 상호작용 시스템: 대화 선택지, 3D 포옹, 하트 버스트, 치유 보상]
+    // ============================================================
+    let momHugTimer = 0;
+    const momBurstHearts = [];
+
+    // 하트 버스트 파티클 풀 초기화
+    const heartGeo = new THREE.BoxGeometry(0.18, 0.18, 0.18);
+    const heartMats = [
+      new THREE.MeshBasicMaterial({ color: 0xf43f5e }),
+      new THREE.MeshBasicMaterial({ color: 0xfb7185 }),
+      new THREE.MeshBasicMaterial({ color: 0xfbbf24 }),
+      new THREE.MeshBasicMaterial({ color: 0xf472b6 })
+    ];
+    for (let i = 0; i < 30; i++) {
+      const hm = new THREE.Mesh(heartGeo, heartMats[i % heartMats.length]);
+      hm.visible = false;
+      worldGroup.add(hm);
+      momBurstHearts.push({
+        mesh: hm,
+        vx: 0, vy: 0, vz: 0,
+        rotSpeed: 0,
+        life: 0, maxLife: 1.0
+      });
+    }
+
+    function spawnHugHeartBurst() {
+      const originX = 6.5, originY = 1.6, originZ = 6.5;
+      momBurstHearts.forEach((h, idx) => {
+        h.mesh.position.set(
+          originX + (Math.random() - 0.5) * 0.8,
+          originY + (Math.random() - 0.5) * 0.5,
+          originZ + (Math.random() - 0.5) * 0.8
+        );
+        const speed = 1.8 + Math.random() * 2.5;
+        const angle = Math.random() * Math.PI * 2;
+        h.vx = Math.cos(angle) * speed * 0.7;
+        h.vy = 2.2 + Math.random() * 2.8;
+        h.vz = Math.sin(angle) * speed * 0.7;
+        h.rotSpeed = (Math.random() - 0.5) * 8;
+        h.life = 0;
+        h.maxLife = 1.6 + Math.random() * 0.8;
+        h.mesh.visible = true;
+        h.mesh.scale.setScalar(1.0 + Math.random() * 0.5);
+      });
+    }
+
+    function soundMomHug() {
+      if (!audioCtx) return;
+      // 따뜻한 오르골 하모니 아르페지오 (도-미-솔-도)
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+        setTimeout(() => playTone(freq, freq * 1.05, 0.45, 'sine'), i * 110);
+      });
+    }
+
+    window.openMomModal = function() {
+      initAudio();
+      soundMomVoice();
+      const txtEl = document.getElementById('momSpeechText');
+      if (txtEl) {
+        txtEl.innerHTML = '“인찬아, 오늘 마음 광주리 여행은 어땠니? 어떤 감정 손님이 찾아왔어? 기쁨, 슬픔, 화, 두려움, 걱정... 어떤 감정이든 엄마에게 편하게 털어놓으렴.”';
+      }
+      openModal('modalMom');
+    };
+
+    window.selectMomDialogue = function(type) {
+      initAudio();
+      soundMomVoice();
+      const txtEl = document.getElementById('momSpeechText');
+      if (!txtEl) return;
+
+      if (type === 1) {
+        txtEl.innerHTML = '“정말 대견하구나, 우리 인찬이! 모든 감정 손님은 나를 지켜주고 도우러 온 소중한 친구란다. 인찬이의 마음 광주리가 사랑과 지혜로 가득 차올랐네! 엄마가 늘 응원해 💕”';
+        soundChime(659);
+        spawnHugHeartBurst();
+        showToast('🌟 엄마의 칭찬으로 마음 광주리가 환하게 빛납니다! (별빛가루 +5)');
+        state.stardustCount = (state.stardustCount || 0) + 5;
+        saveProgress();
+      } else if (type === 2) {
+        txtEl.innerHTML = '“그랬구나... 마음이 많이 저릿하고 슬펐겠네. 소중한 것을 잃었을 땐 눈물이 나는 게 아주 자연스럽단다. 눈물은 마음의 먼지를 씻어주는 비와 같아. 엄마가 네 곁에서 따뜻하게 안아줄게.”';
+        soundChime(523);
+        spawnHugHeartBurst();
+        showToast('💧 슬픔을 털어놓자 엄마의 온기로 마음이 평온해집니다.');
+      } else if (type === 3) {
+        txtEl.innerHTML = '“화가 불쑥 치밀어 올랐구나! 화는 네 안의 소중한 것을 지키고 싶은 용기의 또 다른 얼굴이란다. 심호흡을 깊게 후- 내쉬며 마음의 쉼터를 지어보렴. 언제나 엄마가 네 편이란다.”';
+        soundChime(440);
+        showToast('🌿 엄마의 위로로 화의 불꽃이 따뜻한 온기로 바뀝니다.');
+      } else if (type === 4) {
+        window.doMomHug();
+      }
+    };
+
+    window.doMomHug = function() {
+      initAudio();
+      soundMomHug();
+      momHugTimer = 3.5; // 3.5초간 포옹 모션
+      spawnHugHeartBurst();
+      const txtEl = document.getElementById('momSpeechText');
+      if (txtEl) {
+        txtEl.innerHTML = '“언제든 이리 오렴! 우리 인찬이는 세상에서 가장 소중한 보물이란다. 포근한 엄마 품에서 푹 쉬렴 💕”';
+      }
+      state.stardustCount = (state.stardustCount || 0) + 5;
+      saveProgress();
+      showToast('💕 엄마의 따뜻한 품에서 마음의 깊은 위로와 안식을 얻었습니다! (별빛가루 +5)');
+      if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
+    };
 
     function soundMomVoice() {
       if (!audioCtx) return;
@@ -5034,18 +5185,65 @@
       camera.updateProjectionMatrix();
 
       
-      // [엄마 3D NPC 애니메이션 & 말풍선]
-      if (typeof momRightArmPivot !== 'undefined') {
-        momRightArmPivot.rotation.z = Math.sin(time * 3.5) * 0.35 - 0.7;
+      // [엄마 3D NPC 생동감 인터랙티브 애니메이션 & 포옹 모션]
+      if (typeof momRightArmPivot !== 'undefined' && typeof momGroup !== 'undefined') {
         const distToMom = Math.hypot(playerRig.position.x - 6.5, playerRig.position.z - 6.5);
+        
+        // 인찬이가 가까이 오면 부드럽게 인찬이를 향해 몸체와 머리 회전
+        if (distToMom < 6.8) {
+          const targetAngle = Math.atan2(playerRig.position.x - 6.5, playerRig.position.z - 6.5);
+          momGroup.rotation.y += (targetAngle - momGroup.rotation.y) * 0.08;
+          momHead.rotation.x = Math.sin(time * 2.0) * 0.05 + 0.08; // 따뜻하게 고개 끄덕임
+        } else {
+          momGroup.rotation.y += (0 - momGroup.rotation.y) * 0.04;
+          momHead.rotation.x = Math.sin(time * 1.5) * 0.04;
+        }
+
+        // 포옹 상태 모션 or 평소 손인사 모션
+        if (momHugTimer > 0) {
+          momHugTimer -= dt;
+          // 포옹: 양팔을 인찬이 쪽으로 활짝 뻗어 감싸 안음
+          momRightArmPivot.rotation.z = 0.5;
+          momRightArmPivot.rotation.x = -1.2;
+          momArmL.rotation.z = -0.5;
+          momArmL.rotation.x = -1.2;
+        } else {
+          // 평소: 오른팔로 부드럽게 손을 흔들며 맞이
+          momRightArmPivot.rotation.z = Math.sin(time * 3.5) * 0.35 - 0.7;
+          momRightArmPivot.rotation.x = 0;
+          momArmL.rotation.z = 0;
+          momArmL.rotation.x = 0;
+        }
+
         if (momBubbleMesh) {
-          momBubbleMesh.visible = (distToMom < 5.8);
+          momBubbleMesh.visible = (distToMom < 4.8);
           momBubbleMesh.lookAt(camera.position);
         }
         if (momTagMesh) momTagMesh.lookAt(camera.position);
+
+        // 상시 하트 파티클 회전
         momHearts.forEach(h => {
           h.mesh.position.y = h.baseY + Math.sin(time * 3 + h.phase) * 0.25;
           h.mesh.rotation.y += dt * 2.5;
+        });
+
+        // 포옹 시 솟구치는 3D 하트 버스트 파티클 업데이트
+        momBurstHearts.forEach(h => {
+          if (h.mesh.visible) {
+            h.life += dt;
+            if (h.life >= h.maxLife) {
+              h.mesh.visible = false;
+            } else {
+              h.mesh.position.x += h.vx * dt;
+              h.mesh.position.y += h.vy * dt;
+              h.mesh.position.z += h.vz * dt;
+              h.vy -= 1.8 * dt; // 중력 감속
+              h.mesh.rotation.x += h.rotSpeed * dt;
+              h.mesh.rotation.y += h.rotSpeed * dt;
+              const scale = Math.max(0.01, (1.0 - h.life / h.maxLife));
+              h.mesh.scale.setScalar(scale);
+            }
+          }
         });
       }
 
@@ -6045,15 +6243,57 @@
     </div>
   </div>
 
-  <!-- 엄마 NPC 대화 다이얼로그 -->
-  <div id="momDialog" style="display:none; position:fixed; bottom:90px; left:50%; transform:translateX(-50%); z-index:9000; background:rgba(30,41,59,0.95); backdrop-filter:blur(16px); border:1.5px solid #fbbf24; border-radius:18px; padding:18px 24px; max-width:520px; width:90%; box-shadow:0 20px 40px rgba(0,0,0,0.6); color:#fff;">
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-      <span style="background:#fbbf24; color:#0f172a; font-weight:800; font-size:11px; padding:3px 8px; border-radius:6px;">엄마의 따뜻한 말</span>
-      <h4 style="font-size:16px; font-weight:700;">온화한 미소의 엄마</h4>
-    </div>
-    <p id="momDialogText" style="font-size:14.5px; line-height:1.6; color:#f1f5f9; margin-bottom:12px;">"인찬아, 무슨 일 있어? 사실 사람에게는 누구나 이상한 광주리가 있단다. 마음 광주리라고 하지. 어떤 감정 손님이 찾아오든 엄마가 항상 네 편이란다."</p>
-    <div style="display:flex; justify-content:flex-end;">
-      <button onclick="document.getElementById('momDialog').style.display='none'" class="hw-btn" style="background:#fbbf24; color:#0f172a; font-weight:800;">알겠어요, 엄마!</button>
+  <!-- 온화한 엄마 인터랙티브 SEL 감성 대화 & 치유 모달 -->
+  <div class="modal-overlay" id="modalMom">
+    <div class="modal-sheet" style="max-width: 520px; background: rgba(15, 23, 42, 0.96) !important; color: #f8fafc !important; border: 1.5px solid rgba(251, 191, 36, 0.5) !important; border-radius: 20px !important; box-shadow: 0 24px 60px rgba(0,0,0,0.8), 0 0 40px rgba(244, 63, 94, 0.3) !important;">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #f43f5e); display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 12px rgba(244,63,94,0.4);">
+            👩‍👧
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; font-weight: 800; font-size: 10px; padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(251,191,36,0.35);">마음의 안식처</span>
+              <h3 class="modal-title" style="margin: 0; font-size: 16px;">온화한 엄마의 따뜻한 품 💕</h3>
+            </div>
+            <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">인찬이를 세상에서 가장 사랑하는 엄마와의 정서적 교감</div>
+          </div>
+        </div>
+        <button type="button" class="btn-close" onclick="closeModal('modalMom')">✕</button>
+      </div>
+
+      <!-- 엄마의 대화 말풍선 -->
+      <div id="momSpeechBox" style="background: rgba(15, 23, 42, 0.65); border: 1.5px solid rgba(251, 191, 36, 0.3); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; position: relative;">
+        <p id="momSpeechText" style="margin: 0; font-size: 13.5px; line-height: 1.65; color: #f8fafc; font-weight: 500;">
+          “인찬아, 오늘 마음 광주리 여행은 어땠니? 어떤 감정 손님이 찾아왔어? 기쁨, 슬픔, 화, 두려움, 걱정... 어떤 감정이든 엄마에게 편하게 털어놓으렴.”
+        </p>
+      </div>
+
+      <!-- 학생 선택지 4가지 (SEL 감정 표현) -->
+      <div style="display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px;">
+        <button type="button" class="mom-choice-btn" onclick="selectMomDialogue(1)" style="text-align: left; padding: 9px 12px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #f1f5f9; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px;">
+          <span>🌸</span> <span>“엄마, 미션을 하며 감정 손님들을 친구로 소중히 맞이했어요!”</span>
+        </button>
+        <button type="button" class="mom-choice-btn" onclick="selectMomDialogue(2)" style="text-align: left; padding: 9px 12px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #f1f5f9; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px;">
+          <span>💧</span> <span>“엄마, 오늘 친구 생각에 서운하고 눈물이 날 뻔했어요...”</span>
+        </button>
+        <button type="button" class="mom-choice-btn" onclick="selectMomDialogue(3)" style="text-align: left; padding: 9px 12px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #f1f5f9; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px;">
+          <span>🔥</span> <span>“화가 불쑥 치밀어 올라서 마음이 터질 것 같았어요.”</span>
+        </button>
+        <button type="button" class="mom-choice-btn" onclick="selectMomDialogue(4)" style="text-align: left; padding: 9px 12px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #f1f5f9; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px;">
+          <span>🤗</span> <span>“엄마, 그냥 따뜻하게 꼬옥 안아주세요!”</span>
+        </button>
+      </div>
+
+      <!-- 하단 액션 버튼들 -->
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button type="button" onclick="doMomHug()" style="padding: 10px 18px; border-radius: 10px; background: linear-gradient(135deg, #f43f5e, #fb7185); color: #fff; font-size: 12.5px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(244,63,94,0.4); display: flex; align-items: center; gap: 6px;">
+          <span>🤗</span> <span>따뜻하게 안아드리기 (+별빛 5)</span>
+        </button>
+        <button type="button" onclick="closeModal('modalMom')" style="padding: 10px 16px; border-radius: 10px; background: rgba(255,255,255,0.08); color: #cbd5e1; font-size: 12.5px; font-weight: 700; border: 1px solid rgba(255,255,255,0.15); cursor: pointer;">
+          고마워요, 엄마!
+        </button>
+      </div>
     </div>
   </div>
 
