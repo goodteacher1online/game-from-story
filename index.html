@@ -743,166 +743,254 @@
     .cust-color-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 6px;
     }
-    /* ============================================================
-       프리미엄 다크 슬레이트 글래스모피즘 캐릭터 커스텀 모달 전용 CSS
+        /* ============================================================
+       프리미엄 다크 슬레이트 글래스모피즘 캐릭터 커스텀 스튜디오 전용 CSS
        ============================================================ */
     .cust-modal-sheet {
-      width: 100% !important; max-width: 540px !important;
-      background: rgba(15, 23, 42, 0.95) !important;
-      backdrop-filter: blur(24px) !important;
-      border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
-      border-radius: 20px !important; padding: 22px 24px !important;
+      width: 100% !important; max-width: 580px !important;
+      background: rgba(15, 23, 42, 0.96) !important;
+      backdrop-filter: blur(28px) !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
+      border-radius: 24px !important; padding: 24px 26px !important;
       color: #f8fafc !important;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7) !important;
-      max-height: 90vh; overflow-y: auto !important;
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+      max-height: 92vh; overflow-y: auto !important;
       box-sizing: border-box;
+      position: relative;
     }
+    .cust-modal-sheet::-webkit-scrollbar { width: 6px; }
+    .cust-modal-sheet::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
     .cust-modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 8px; padding-bottom: 12px;
+      text-align: center;
+      margin-bottom: 14px; padding-bottom: 14px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      position: relative;
+    }
+    .cust-badge-top {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 12px;
+      background: rgba(255, 88, 0, 0.18); border: 1px solid rgba(255, 88, 0, 0.35);
+      color: #ff9d66; font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
+      margin-bottom: 6px;
     }
     .cust-modal-title {
-      font-size: 16px; font-weight: 800; color: #ffffff;
-      display: flex; align-items: center; gap: 7px;
+      font-size: 18px; font-weight: 800; color: #ffffff;
+      text-align: center; margin: 0 0 6px 0; letter-spacing: -0.3px;
+    }
+    .cust-modal-desc {
+      font-size: 12px; color: #94a3b8; line-height: 1.5; margin: 0; text-align: center;
     }
     .cust-btn-close {
-      width: 28px; height: 28px; border-radius: 8px;
+      position: absolute; right: 0; top: 0;
+      width: 32px; height: 32px; border-radius: 10px;
       background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #94a3b8; font-size: 13px; cursor: pointer; transition: all 0.15s;
+      color: #94a3b8; font-size: 14px; cursor: pointer; transition: all 0.15s;
       display: flex; align-items: center; justify-content: center;
     }
-    .cust-btn-close:hover { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: #ef4444; }
+    .cust-btn-close:hover { background: rgba(239, 68, 68, 0.25); color: #f87171; border-color: #ef4444; }
 
-    /* 3대 탭 네비게이션 버튼 (모달 높이 압박 완벽 해소) */
+    /* 실시간 아바타 쇼케이스 라이브 프리뷰 카드 */
+    .cust-avatar-showcase {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px; padding: 12px 18px; margin-bottom: 14px;
+    }
+    .cust-preview-bubble-wrap {
+      display: flex; flex-direction: column; align-items: center; position: relative;
+    }
+    .cust-preview-nametag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 12px;
+      background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 11px; font-weight: 700; color: #fde047;
+      margin-bottom: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      white-space: nowrap;
+    }
+    .cust-preview-figure {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 70%);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+    .cust-preview-figure svg { width: 56px; height: 56px; }
+    .cust-preview-info {
+      flex: 1; display: flex; flex-direction: column; gap: 4px;
+    }
+    .cust-preview-info-title {
+      font-size: 13px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 6px;
+    }
+    .cust-preview-chips {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px;
+    }
+    .cust-prev-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 7px; border-radius: 8px; font-size: 10px; font-weight: 700;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+    }
+
+    /* 4대 탭 네비게이션 버튼 (프로필/헤어/모자/보상) */
     .cust-tabs-nav {
-      display: flex; gap: 6px; margin: 12px 0 16px 0;
-      background: rgba(30, 41, 59, 0.7); padding: 4px; border-radius: 12px;
+      display: flex; gap: 6px; margin: 0 0 14px 0;
+      background: rgba(30, 41, 59, 0.7); padding: 4px; border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .cust-tab-btn {
-      flex: 1; padding: 8px 0; font-size: 12px; font-weight: 700;
-      border-radius: 8px; border: none; background: transparent;
+      flex: 1; padding: 9px 0; font-size: 12px; font-weight: 700;
+      border-radius: 10px; border: none; background: transparent;
       color: #94a3b8; cursor: pointer; transition: all 0.15s;
       display: flex; align-items: center; justify-content: center; gap: 5px;
     }
     .cust-tab-btn:hover { color: #f8fafc; background: rgba(255, 255, 255, 0.06); }
     .cust-tab-btn.active {
       background: #ff5800 !important; color: #ffffff !important; font-weight: 800 !important;
-      box-shadow: 0 2px 8px rgba(255, 88, 0, 0.4);
+      box-shadow: 0 2px 10px rgba(255, 88, 0, 0.45);
     }
     .cust-tab-pane { display: none; }
     .cust-tab-pane.active { display: flex; flex-direction: column; gap: 14px; }
 
-    /* 상단 3개 폼 완벽 수평 칼정렬 */
+    /* 상단 3개 폼 완벽 수평 & 가운데 정렬 */
     .cust-form-row {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%;
     }
-    .cust-field { display: flex; flex-direction: column; align-items: center; }
+    .cust-field { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .cust-label {
-      font-size: 11px; font-weight: 700; color: #94a3b8;
-      height: 18px; line-height: 18px; margin-bottom: 6px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      text-align: center; width: 100%;
+      font-size: 12px; font-weight: 700; color: #cbd5e1;
+      height: 20px; line-height: 20px; margin-bottom: 6px; text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
     }
     .cust-input, .cust-select {
-      height: 40px !important; width: 100% !important; border-radius: 10px !important;
-      background: rgba(30, 41, 59, 0.8) !important;
-      border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
-      color: #f8fafc !important; font-size: 12.5px !important; font-weight: 700 !important;
-      padding: 0 10px !important; box-sizing: border-box !important; outline: none;
-      text-align: center !important; text-align-last: center !important;
-      transition: all 0.15s;
+      width: 100%; height: 42px; border-radius: 12px;
+      background: rgba(30, 41, 59, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.18);
+      color: #ffffff; font-size: 13px; font-weight: 700;
+      text-align: center; text-align-last: center;
+      box-sizing: border-box; transition: all 0.15s;
+      padding: 0 8px;
     }
     .cust-input:focus, .cust-select:focus {
-      border-color: #fbbf24 !important;
-      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.25) !important;
+      outline: none; border-color: #ff5800; background: rgba(30, 41, 59, 0.98);
+      box-shadow: 0 0 0 3px rgba(255, 88, 0, 0.25);
     }
-    .cust-select option {
-      background: #0f172a; color: #f8fafc; padding: 6px;
-    }
+    .cust-select option { background: #0f172a; color: #ffffff; text-align: center; }
 
-    /* 후드티 색상 선택 카드 그리드 (버그 완벽 척결 & 카드 전체 선택) */
+    /* 후드티 컬러 6종 그리드 (텍스트 겹침 절대 제로화) */
     .cust-color-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;
     }
     .cust-color-card {
-      display: flex; align-items: center; gap: 8px; padding: 10px 11px;
-      border-radius: 10px; background: rgba(30, 41, 59, 0.7);
-      border: 1.5px solid rgba(255, 255, 255, 0.12); cursor: pointer;
-      transition: all 0.15s ease; width: 100%; box-sizing: border-box; user-select: none;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 8px; border-radius: 12px;
+      background: rgba(30, 41, 59, 0.7); border: 1.5px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap; min-width: 0;
     }
     .cust-color-card:hover {
-      border-color: #fbbf24; background: rgba(251, 191, 36, 0.12);
-      transform: translateY(-1px);
+      background: rgba(51, 65, 85, 0.85); border-color: rgba(255, 255, 255, 0.3);
     }
     .cust-color-card.active {
-      border-color: #fbbf24 !important;
-      background: rgba(251, 191, 36, 0.18) !important;
-      box-shadow: inset 0 0 0 1.5px #fbbf24 !important;
-      font-weight: 800 !important;
+      background: rgba(255, 88, 0, 0.2) !important;
+      border-color: #ff5800 !important;
+      box-shadow: 0 0 0 2px #ff5800, 0 4px 12px rgba(255, 88, 0, 0.3) !important;
+      color: #ffffff !important;
     }
     .cust-color-chip {
-      width: 19px; height: 19px; border-radius: 5px; flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    .cust-color-text {
-      font-size: 11.5px; font-weight: 700; color: #f8fafc; white-space: nowrap;
+    .cust-color-text { font-size: 12px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+
+    /* 헤어 컬러 8종 팔레트 행 */
+    .cust-haircolor-row {
+      display: flex; gap: 10px; justify-content: center; align-items: center;
+      padding: 10px 12px; border-radius: 14px;
+      background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+    }
+    .cust-haircolor-btn {
+      width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer; transition: all 0.15s; position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+    .cust-haircolor-btn:hover { transform: scale(1.15); border-color: #ffffff; }
+    .cust-haircolor-btn.active {
+      transform: scale(1.2); border-color: #f59e0b !important;
+      box-shadow: 0 0 0 3px #f59e0b, 0 4px 12px rgba(245, 158, 11, 0.5) !important;
+    }
+    .cust-haircolor-btn.active::after {
+      content: '✓'; position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center; color: #ffffff;
+      font-size: 14px; font-weight: 900; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
-    /* 3D 헤어스타일 6종 그리드 (남/녀 & 개성) */
+    /* 12종 3D 헤어스타일 그리드 */
     .cust-hair-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; width: 100%;
     }
     .cust-hair-card {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 5px; padding: 10px 6px; border-radius: 10px; min-height: 60px;
-      background: rgba(30, 41, 59, 0.7); border: 1.5px solid rgba(255, 255, 255, 0.12);
-      cursor: pointer; transition: all 0.15s ease; box-sizing: border-box; text-align: center;
-      color: #f8fafc;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 4px 8px 4px; border-radius: 14px;
+      background: rgba(30, 41, 59, 0.75); border: 1.5px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer; transition: all 0.15s; text-align: center;
     }
-    .cust-hair-icon { font-size: 18px; line-height: 1.2; display: block; }
-    .cust-hair-name { font-size: 11px; font-weight: 700; color: #f8fafc; line-height: 1.2; white-space: nowrap; }
     .cust-hair-card:hover {
-      border-color: #fbbf24; background: rgba(251, 191, 36, 0.12); transform: translateY(-1px);
+      background: rgba(51, 65, 85, 0.85); border-color: rgba(255, 255, 255, 0.3); transform: translateY(-2px);
     }
     .cust-hair-card.active {
-      border-color: #fbbf24 !important;
-      background: rgba(251, 191, 36, 0.18) !important;
-      box-shadow: inset 0 0 0 1.5px #fbbf24 !important;
-      font-weight: 800 !important;
+      background: rgba(255, 88, 0, 0.18) !important; border-color: #ff5800 !important;
+      box-shadow: 0 0 0 2px #ff5800, 0 6px 14px rgba(255, 88, 0, 0.35) !important;
     }
-    .cust-hair-icon { font-size: 20px; line-height: 1; }
-    .cust-hair-name { font-size: 11px; font-weight: 700; color: #f8fafc; white-space: nowrap; }
-
-    /* 헤어 컬러 5종 */
-    .cust-haircolor-row { display: flex; gap: 8px; align-items: center; }
-    .cust-haircolor-btn {
-      width: 32px; height: 32px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.2);
-      cursor: pointer; transition: all 0.15s; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    .cust-hair-svg-wrap {
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 6px;
     }
-    .cust-haircolor-btn:hover { transform: scale(1.08); border-color: #fbbf24; }
-    .cust-haircolor-btn.active {
-      border-color: #fbbf24 !important;
-      box-shadow: 0 0 0 2px #fbbf24 !important;
-      transform: scale(1.12);
+    .cust-hair-svg-wrap svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
+    .cust-hair-name { font-size: 12px; font-weight: 800; color: #f8fafc; line-height: 1.2; }
+    .cust-hair-tag {
+      font-size: 10px; font-weight: 700; color: #94a3b8;
+      background: rgba(255, 255, 255, 0.06); padding: 1px 6px; border-radius: 6px;
+      margin-top: 4px;
+    }
+    .cust-hair-card.active .cust-hair-tag {
+      background: rgba(255, 88, 0, 0.3); color: #ffedd5;
     }
 
-    /* 3D 모자 6종 그리드 */
-    .cust-hat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+    /* 6종 3D 모자 및 머리 장식 버튼 */
+    .cust-hat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; width: 100%;
+    }
     .cust-hat-btn {
-      display: flex; align-items: center; justify-content: center; gap: 5px;
-      padding: 10px 8px; border-radius: 10px; border: 1.5px solid rgba(255, 255, 255, 0.12);
-      background: rgba(30, 41, 59, 0.7); font-size: 11.5px; font-weight: 700;
-      color: #f8fafc; cursor: pointer; transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 12px 10px; border-radius: 12px;
+      background: rgba(30, 41, 59, 0.7); border: 1.5px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s;
     }
-    .cust-hat-btn:hover { border-color: #fbbf24; background: rgba(251, 191, 36, 0.12); }
+    .cust-hat-btn:hover { background: rgba(51, 65, 85, 0.85); border-color: rgba(255, 255, 255, 0.3); }
     .cust-hat-btn.active {
-      border-color: #fbbf24 !important; background: rgba(251, 191, 36, 0.18) !important;
-      box-shadow: inset 0 0 0 1.5px #fbbf24 !important; font-weight: 800 !important;
+      background: rgba(255, 88, 0, 0.2) !important; border-color: #ff5800 !important;
+      box-shadow: 0 0 0 2px #ff5800, 0 4px 12px rgba(255, 88, 0, 0.3) !important;
+      color: #ffffff !important;
     }
 
-    /* 미션 보상 코스튬 5종 슬롯 */
+    /* 하단 대형 엔터 액션 버튼 */
+    .cust-btn-submit {
+      width: 100%; padding: 14px 20px; border-radius: 16px; border: none;
+      background: linear-gradient(135deg, #ff5800, #ff8c00);
+      color: #ffffff; font-size: 15px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 88, 0, 0.45);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 10px;
+    }
+    .cust-btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 26px rgba(255, 88, 0, 0.6);
+      background: linear-gradient(135deg, #ff6a1a, #ffa01a);
+    }
+    .cust-btn-submit:active { transform: translateY(0); }
     .cust-reward-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%;
     }
@@ -1208,20 +1296,58 @@
   <div class="modal-overlay" id="modalCustomize">
     <div class="cust-modal-sheet">
       <div class="cust-modal-header">
-        <h3 class="cust-modal-title">✨ 마음 광주리 월드 입장 · 내 캐릭터 꾸미기</h3>
+        <span class="cust-badge-top">🌟 마음 광주리 월드 입장</span>
+        <h3 class="cust-modal-title">나만의 마음 아바타 &amp; 프로필 설정</h3>
+        <p class="cust-modal-desc">친구들과 함께할 닉네임과 칭호를 정하고, 나를 가장 잘 나타내는 헤어와 옷을 골라보세요!</p>
         <button type="button" class="cust-btn-close" onclick="closeModal('modalCustomize')">✕</button>
       </div>
 
-      <!-- 3대 탭 네비게이션 -->
+      <!-- 실시간 아바타 쇼케이스 라이브 프리뷰 카드 -->
+      <div class="cust-avatar-showcase">
+        <div class="cust-preview-bubble-wrap">
+          <div class="cust-preview-nametag" id="custPrevNametag">🌸 기쁨 수호자 · 인찬이</div>
+          <div class="cust-preview-figure" id="custPrevFigure">
+            <svg viewBox="0 0 36 36" fill="none" id="custPrevSvg">
+              <circle cx="18" cy="19" r="10" fill="#fde68a"/>
+              <!-- 후드티 상의 -->
+              <path d="M11 26C11 23 14 22 18 22C22 22 25 23 25 26V32H11V26Z" id="custPrevShirt" fill="#ff5800"/>
+              <!-- 헤어 실루엣 -->
+              <path d="M7 17C7 11 11 7 18 7C25 7 29 11 29 17C29 18 28 19 26 18C23 16.5 21 16 18 16C15 16 13 16.5 10 18C8 19 7 18 7 17Z" id="custPrevHair" class="hair-fill" fill="#1c1917"/>
+              <!-- 눈과 미소 -->
+              <circle cx="15" cy="18" r="1.2" fill="#1e293b"/>
+              <circle cx="21" cy="18" r="1.2" fill="#1e293b"/>
+              <path d="M16 21C17 22 19 22 20 21" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
+              <!-- 모자/액세서리 배지 -->
+              <g id="custPrevHatIcon" transform="translate(14, 2)"><path d="M2 7C4 2 8 2 8 5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/></g>
+            </svg>
+          </div>
+        </div>
+        <div class="cust-preview-info">
+          <div class="cust-preview-info-title">
+            <span style="color:#ff9d66;">● 실시간 라이브 뷰어</span>
+          </div>
+          <div class="cust-preview-chips">
+            <span class="cust-prev-chip" id="chipHairStyle">💇 단정 숏컷</span>
+            <span class="cust-prev-chip" id="chipHairColor">🎨 흑단 블랙</span>
+            <span class="cust-prev-chip" id="chipShirtColor">👕 코랄 오렌지</span>
+            <span class="cust-prev-chip" id="chipHatType">👑 기본 바보털</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4대 탭 네비게이션 -->
       <div class="cust-tabs-nav">
         <button type="button" class="cust-tab-btn active" data-tab="tabProfile" onclick="switchCustTab('tabProfile')">
-          <span>👤</span> <span>기본 프로필</span>
+          <span>👤</span> <span>프로필 &amp; 의상</span>
         </button>
         <button type="button" class="cust-tab-btn" data-tab="tabHair" onclick="switchCustTab('tabHair')">
-          <span>💇</span> <span>3D 헤어 &amp; 모자</span>
+          <span>💇</span> <span>3D 헤어스타일</span>
+        </button>
+        <button type="button" class="cust-tab-btn" data-tab="tabHat" onclick="switchCustTab('tabHat')">
+          <span>👑</span> <span>3D 모자&amp;장식</span>
         </button>
         <button type="button" class="cust-tab-btn" data-tab="tabRewards" onclick="switchCustTab('tabRewards')">
-          <span>🌟</span> <span>미션 달성 보상</span>
+          <span>🌟</span> <span>미션 보상</span>
         </button>
       </div>
 
@@ -1254,7 +1380,7 @@
         </div>
 
         <div>
-          <label class="cust-label" style="margin-bottom: 8px;">상의(후드티) 컬러 선택</label>
+          <label class="cust-label" style="margin-bottom: 8px;">👕 상의(후드티) 컬러 선택</label>
           <div class="cust-color-grid" id="custColorRow">
             <button type="button" class="cust-color-card active" data-color="#ff5800">
               <span class="cust-color-chip" style="background:#ff5800;"></span>
@@ -1284,24 +1410,24 @@
         </div>
       </div>
 
-      <!-- 탭 2: 3D 헤어 & 모자 (12종 비주얼 헤어, 8종 헤어컬러, 6종 모자) -->
+      <!-- 탭 2: 3D 헤어스타일 (12종 다채로운 남/녀/개성 헤어 & 8종 헤어 컬러) -->
       <div class="cust-tab-pane" id="tabHair">
-        <div style="margin-bottom: 12px;">
-          <label class="cust-label" style="margin-bottom: 8px; text-align: center;">🎨 머리 색상 선택 (8종 프리미엄 컬러 팔레트)</label>
+        <div>
+          <label class="cust-label" style="margin-bottom: 8px;">🎨 머리 색상 팔레트 (8종)</label>
           <div class="cust-haircolor-row" id="custHairColorRow">
-            <button type="button" class="cust-haircolor-btn active" data-haircolor="#1c1917" style="background:#1c1917;" title="자연 흑발"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#451a03" style="background:#451a03;" title="다크 초코"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#78350f" style="background:#78350f;" title="밀크 브라운"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#d97706" style="background:#d97706;" title="허니 골드"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#cbd5e1" style="background:#cbd5e1;" title="애쉬 실버"></button>
-            <button type="button" class="cust-haircolor-btn" data-haircolor="#f43f5e" style="background:#f43f5e;" title="로즈 핑크"></button>
+            <button type="button" class="cust-haircolor-btn active" data-haircolor="#1c1917" style="background:#1c1917;" title="흑단 블랙"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#573016" style="background:#573016;" title="다크 브라운"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#854d0e" style="background:#854d0e;" title="밀크 브라운"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#ca8a04" style="background:#ca8a04;" title="허니 골드블론드"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#f43f5e" style="background:#f43f5e;" title="체리 레드"></button>
+            <button type="button" class="cust-haircolor-btn" data-haircolor="#ec4899" style="background:#ec4899;" title="벚꽃 베이비핑크"></button>
             <button type="button" class="cust-haircolor-btn" data-haircolor="#0284c7" style="background:#0284c7;" title="오션 블루"></button>
             <button type="button" class="cust-haircolor-btn" data-haircolor="#10b981" style="background:#10b981;" title="민트 에메랄드"></button>
           </div>
         </div>
 
         <div>
-          <label class="cust-label" style="margin-bottom: 8px; text-align: center;">💇 3D 헤어스타일 선택 (12종 다채로운 남/녀/개성 스타일)</label>
+          <label class="cust-label" style="margin-bottom: 8px;">💇 3D 헤어스타일 선택 (12종 다채로운 남/녀/개성 스타일)</label>
           <div class="cust-hair-grid" id="custHairGrid">
             <button type="button" class="cust-hair-card active" data-style="short" title="단정 숏컷 (남학생/여학생 기본)">
               <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 11 11 7 18 7C25 7 29 11 29 17C29 18 28 19 26 18C23 16.5 21 16 18 16C15 16 13 16.5 10 18C8 19 7 18 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M10 17L13 21M18 16V22M26 17L23 21" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round"/></svg></div>
@@ -1334,96 +1460,102 @@
               <span class="cust-hair-tag">우아 롱헤어</span>
             </button>
             <button type="button" class="cust-hair-card" data-style="wavy" title="풍성 웨이브펌 (컬이 살아있는 로맨틱 파마)">
-              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 9 12 6 18 6C24 6 29 9 29 17C29 18 27 17 25 18C23 16 20 17 18 16C15 17 13 16 11 18C9 17 7 18 7 17Z" class="hair-fill" fill="#1c1917"/><circle cx="6" cy="20" r="2.5" class="hair-fill" fill="#1c1917"/><circle cx="30" cy="20" r="2.5" class="hair-fill" fill="#1c1917"/><circle cx="5" cy="25" r="2.5" class="hair-fill" fill="#1c1917"/><circle cx="31" cy="25" r="2.5" class="hair-fill" fill="#1c1917"/></svg></div>
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 10 12 6 18 6C24 6 29 10 29 17C27 16 22 15 18 15C14 15 9 16 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M7 17C6 20 6 23 8 25C9 26 10 24 10 22C10 20 9 18 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M29 17C30 20 30 23 28 25C27 26 26 24 26 22C26 20 27 18 29 17Z" class="hair-fill" fill="#1c1917"/></svg></div>
               <span class="cust-hair-name">풍성 웨이브</span>
               <span class="cust-hair-tag">로맨틱 컬</span>
             </button>
-            <button type="button" class="cust-hair-card" data-style="bob" title="단발 보브컷 (깔끔하고 세련된 똑단발)">
-              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 10 11 7 18 7C25 7 29 10 29 17V23C27 24 26 22 26 19C23 17 19 17 18 17C17 17 13 17 10 19C10 22 9 24 7 23V17Z" class="hair-fill" fill="#1c1917"/></svg></div>
+            <button type="button" class="cust-hair-card" data-style="bob" title="단발 보브컷 (상큼한 칼단발)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 10 12 7 18 7C24 7 29 10 29 17C27 16 22 15.5 18 15.5C14 15.5 9 16 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M7 17L7 24C8 25 10 24 10 22L10 18" class="hair-fill" fill="#1c1917"/><path d="M29 17L29 24C28 25 26 24 26 22L26 18" class="hair-fill" fill="#1c1917"/></svg></div>
               <span class="cust-hair-name">단발 보브컷</span>
-              <span class="cust-hair-tag">세련 똑단발</span>
+              <span class="cust-hair-tag">상큼 단발</span>
             </button>
-            <button type="button" class="cust-hair-card" data-style="bun" title="양당고 만두머리 (귀여운 더블 번헤어)">
-              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><circle cx="9" cy="8" r="4.5" class="hair-fill" fill="#1c1917"/><circle cx="27" cy="8" r="4.5" class="hair-fill" fill="#1c1917"/><path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><circle cx="10" cy="12" r="1.8" fill="#f43f5e"/><circle cx="26" cy="12" r="1.8" fill="#f43f5e"/></svg></div>
-              <span class="cust-hair-name">양당고 만두</span>
-              <span class="cust-hair-tag">귀요미 번</span>
+            <button type="button" class="cust-hair-card" data-style="twoblock" title="투블럭 리프컷 (트렌디한 남학생 헤어)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M8 16C8 10 12 7 18 7C24 7 28 10 28 16C26 15 22 14.5 18 14.5C14 14.5 10 15 8 16Z" class="hair-fill" fill="#1c1917"/><path d="M12 15L15 20M24 15L21 20" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+              <span class="cust-hair-name">투블럭 리프</span>
+              <span class="cust-hair-tag">트렌디 남</span>
             </button>
-            <button type="button" class="cust-hair-card" data-style="spiky" title="활발 삐죽머리 (에너지 넘치는 스파이키)">
-              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17L10 10L14 13L18 6L22 13L26 10L29 17C26 16 22 15 18 15C14 15 10 16 7 17Z" class="hair-fill" fill="#1c1917"/></svg></div>
-              <span class="cust-hair-name">활발 삐죽이</span>
-              <span class="cust-hair-tag">에너지 만점</span>
+            <button type="button" class="cust-hair-card" data-style="braids" title="키치 땋은머리 (귀엽게 땋아 내린 브레이드)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><circle cx="8" cy="20" r="2" class="hair-fill" fill="#1c1917"/><circle cx="8" cy="24" r="2" class="hair-fill" fill="#1c1917"/><circle cx="28" cy="20" r="2" class="hair-fill" fill="#1c1917"/><circle cx="28" cy="24" r="2" class="hair-fill" fill="#1c1917"/></svg></div>
+              <span class="cust-hair-name">키치 땋은머리</span>
+              <span class="cust-hair-tag">인디 브레이드</span>
             </button>
-            <button type="button" class="cust-hair-card" data-style="leaf" title="내추럴 리프컷 (자연스러운 결감의 감성 리프)">
-              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 17C7 10 11 7 18 7C25 7 29 10 29 17C28 16 24 15 20 17C16 16 12 18 7 17Z" class="hair-fill" fill="#1c1917"/><path d="M20 17C24 19 28 22 29 25" stroke="currentColor" stroke-width="1.8" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/><path d="M12 17C9 20 8 23 7 25" stroke="currentColor" stroke-width="1.8" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/></svg></div>
-              <span class="cust-hair-name">내추럴 리프</span>
-              <span class="cust-hair-tag">감성 스타일</span>
+            <button type="button" class="cust-hair-card" data-style="wolf" title="내추럴 울프컷 (시크한 허쉬 울프 스타일)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M7 16C7 9 12 6 18 6C24 6 29 9 29 16C27 15 22 14 18 14C14 14 9 15 7 16Z" class="hair-fill" fill="#1c1917"/><path d="M6 19L9 22M30 19L27 22M18 14V21" stroke="currentColor" stroke-width="1.5" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/></svg></div>
+              <span class="cust-hair-name">내추럴 울프</span>
+              <span class="cust-hair-tag">개성파 스타일</span>
             </button>
-            <button type="button" class="cust-hair-card" data-style="braids" title="클래식 땋은머리 (양옆으로 정성껏 땋은 브레이드)">
-              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" class="hair-fill" fill="#1c1917"/><path d="M7 18L5 21L7 24L5 27M29 18L31 21L29 24L31 27" stroke="currentColor" stroke-width="2.5" class="hair-stroke" stroke="#1c1917" stroke-linecap="round"/><circle cx="5" cy="28" r="1.5" fill="#f43f5e"/><circle cx="31" cy="28" r="1.5" fill="#f43f5e"/></svg></div>
-              <span class="cust-hair-name">클래식 땋기</span>
-              <span class="cust-hair-tag">청순 브레이드</span>
+            <button type="button" class="cust-hair-card" data-style="spiky" title="모히칸 스포츠 (에너지 넘치는 액티브 숏)">
+              <div class="cust-hair-svg-wrap"><svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="19" r="10" fill="#fde68a"/><path d="M10 17C10 12 13 8 18 5C23 8 26 12 26 17C24 16.5 21 16 18 16C15 16 12 16.5 10 17Z" class="hair-fill" fill="#1c1917"/><path d="M14 13L18 8L22 13" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+              <span class="cust-hair-name">모히칸 스포츠</span>
+              <span class="cust-hair-tag">에너지 액티브</span>
             </button>
           </div>
         </div>
+      </div>
 
-        <div style="margin-top: 12px;">
-          <label class="cust-label" style="margin-bottom: 8px; text-align: center;">👑 3D 모자 &amp; 액세서리 장착</label>
+      <!-- 탭 3: 3D 모자 & 머리 장식 (6종) -->
+      <div class="cust-tab-pane" id="tabHat">
+        <div>
+          <label class="cust-label" style="margin-bottom: 8px;">👑 3D 머리 꾸미기 &amp; 액세서리 장착 (6종)</label>
           <div class="cust-hat-grid" id="custHatGrid">
-            <button type="button" class="cust-hat-btn active" data-hat="ahoge">🌱 기본 바보털</button>
-            <button type="button" class="cust-hat-btn" data-hat="crown">👑 황금 왕관</button>
-            <button type="button" class="cust-hat-btn" data-hat="wizard">🎩 별빛 마법모자</button>
-            <button type="button" class="cust-hat-btn" data-hat="bunny">🐰 토끼 귀 밴드</button>
-            <button type="button" class="cust-hat-btn" data-hat="angel">👼 천사 날개&amp;링</button>
-            <button type="button" class="cust-hat-btn" data-hat="cap">🧢 탐험가 모자</button>
+            <button type="button" class="cust-hat-btn active" data-hat="ahoge"><span>🌱</span> <span>기본 바보털</span></button>
+            <button type="button" class="cust-hat-btn" data-hat="crown"><span>👑</span> <span>황금 왕관</span></button>
+            <button type="button" class="cust-hat-btn" data-hat="wizard"><span>🧙</span> <span>별빛 마법모자</span></button>
+            <button type="button" class="cust-hat-btn" data-hat="rabbit"><span>🐰</span> <span>토끼 귀 밴드</span></button>
+            <button type="button" class="cust-hat-btn" data-hat="angel"><span>👼</span> <span>천사 날개&amp;링</span></button>
+            <button type="button" class="cust-hat-btn" data-hat="explorer"><span>🧭</span> <span>탐험가 모자</span></button>
           </div>
         </div>
       </div>
 
-      <!-- 탭 3: 미션 달성 특별 보상 (감정 퀘스트 클리어 시 착용 가능) -->
+      <!-- 탭 4: 미션 달성 보상 스페셜 언락 아이템 -->
       <div class="cust-tab-pane" id="tabRewards">
-        <p style="font-size: 11.5px; color: #94a3b8; line-height: 1.5; margin: 0 0 10px 0;">
-          섬 곳곳의 5대 감정 미션을 완료하면 특별한 3D 코스튬이 잠금 해제됩니다!
-        </p>
-        <div class="cust-reward-grid" id="custRewardGrid">
-          <button type="button" class="cust-reward-card" data-reward="wings" id="rewardBtn_wings">
-            <span class="cust-reward-icon">🪽</span>
-            <div class="cust-reward-info">
-              <span class="cust-reward-name">황금 천사 날개</span>
-              <span class="cust-reward-desc" id="rewardDesc_wings">제1장 기쁨 클리어</span>
-            </div>
-          </button>
-          <button type="button" class="cust-reward-card" data-reward="tiara" id="rewardBtn_tiara">
-            <span class="cust-reward-icon">👑</span>
-            <div class="cust-reward-info">
-              <span class="cust-reward-name">물방울 티아라</span>
-              <span class="cust-reward-desc" id="rewardDesc_tiara">제2장 슬픔 클리어</span>
-            </div>
-          </button>
-          <button type="button" class="cust-reward-card" data-reward="flameband" id="rewardBtn_flameband">
-            <span class="cust-reward-icon">🔥</span>
-            <div class="cust-reward-info">
-              <span class="cust-reward-name">열정 불꽃밴드</span>
-              <span class="cust-reward-desc" id="rewardDesc_flameband">제3장 화 클리어</span>
-            </div>
-          </button>
-          <button type="button" class="cust-reward-card" data-reward="cape" id="rewardBtn_cape">
-            <span class="cust-reward-icon">🌙</span>
-            <div class="cust-reward-info">
-              <span class="cust-reward-name">별빛 수호 망토</span>
-              <span class="cust-reward-desc" id="rewardDesc_cape">제4장 두려움 클리어</span>
-            </div>
-          </button>
-          <button type="button" class="cust-reward-card" data-reward="scarf" id="rewardBtn_scarf">
-            <span class="cust-reward-icon">🧣</span>
-            <div class="cust-reward-info">
-              <span class="cust-reward-name">평온 포근 목도리</span>
-              <span class="cust-reward-desc" id="rewardDesc_scarf">제5장 걱정 클리어</span>
-            </div>
-          </button>
+        <div>
+          <label class="cust-label" style="margin-bottom: 8px;">🏆 감정 미션 클리어 달성 혜택 (해금 아이템)</label>
+          <div class="cust-reward-grid" id="custRewardGrid">
+            <button type="button" class="cust-reward-card" data-reward="wings" id="rewardBtn_wings">
+              <span class="cust-reward-icon">🪽</span>
+              <div class="cust-reward-info">
+                <span class="cust-reward-name">황금 천사 날개</span>
+                <span class="cust-reward-desc" id="rewardDesc_wings">제1장 기쁨 클리어</span>
+              </div>
+            </button>
+            <button type="button" class="cust-reward-card" data-reward="tiara" id="rewardBtn_tiara">
+              <span class="cust-reward-icon">👑</span>
+              <div class="cust-reward-info">
+                <span class="cust-reward-name">물방울 티아라</span>
+                <span class="cust-reward-desc" id="rewardDesc_tiara">제2장 슬픔 클리어</span>
+              </div>
+            </button>
+            <button type="button" class="cust-reward-card" data-reward="flameband" id="rewardBtn_flameband">
+              <span class="cust-reward-icon">🔥</span>
+              <div class="cust-reward-info">
+                <span class="cust-reward-name">열정 불꽃밴드</span>
+                <span class="cust-reward-desc" id="rewardDesc_flameband">제3장 화 클리어</span>
+              </div>
+            </button>
+            <button type="button" class="cust-reward-card" data-reward="cape" id="rewardBtn_cape">
+              <span class="cust-reward-icon">🌙</span>
+              <div class="cust-reward-info">
+                <span class="cust-reward-name">별빛 수호 망토</span>
+                <span class="cust-reward-desc" id="rewardDesc_cape">제4장 두려움 클리어</span>
+              </div>
+            </button>
+            <button type="button" class="cust-reward-card" data-reward="scarf" id="rewardBtn_scarf">
+              <span class="cust-reward-icon">🧣</span>
+              <div class="cust-reward-info">
+                <span class="cust-reward-name">평온 포근 목도리</span>
+                <span class="cust-reward-desc" id="rewardDesc_scarf">제5장 걱정 클리어</span>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
 
-      <button type="button" class="cust-btn-submit" id="btnApplyCustomize">내 캐릭터에 적용하고 광장에 자랑하기</button>
+      <!-- 하단 대형 엔터 액션 버튼 -->
+      <button type="button" class="cust-btn-submit" id="btnApplyCustomize">
+        <span>🚀</span> <span>내 캐릭터로 마음 광주리 광장 입장하기</span>
+      </button>
     </div>
   </div>
 
@@ -5888,6 +6020,69 @@
 
     // ==========================================
     // 커스터마이징 모달 3대 탭 전환 핸들러
+    // 실시간 아바타 쇼케이스 라이브 프리뷰 업데이트 함수
+    function updateAvatarShowcase() {
+      const name = document.getElementById('custInputName')?.value || state.playerName || '인찬이';
+      const title = document.getElementById('custSelectTitle')?.value || state.playerTitle || '기쁨 수호자';
+      const nametagEl = document.getElementById('custPrevNametag');
+      if (nametagEl) nametagEl.textContent = `🌸 ${title} · ${name}`;
+
+      const shirtEl = document.getElementById('custPrevShirt');
+      if (shirtEl) shirtEl.setAttribute('fill', state.shirtColor || '#ff5800');
+
+      const hairEl = document.getElementById('custPrevHair');
+      if (hairEl) hairEl.setAttribute('fill', state.hairColor || '#1c1917');
+
+      // 칩 텍스트 갱신
+      const hairNames = {
+        short: '단정 숏컷', bowl: '바가지 볼륨', dandy: '댄디 쉼표컷', ponytail: '하이 포니',
+        twintail: '귀여운 양갈래', long: '차분 긴생머리', wavy: '풍성 웨이브', bob: '단발 보브컷',
+        twoblock: '투블럭 리프', braids: '키치 땋은머리', wolf: '내추럴 울프', spiky: '모히칸 스포츠'
+      };
+      const hairColorNames = {
+        '#1c1917': '흑단 블랙', '#573016': '다크 브라운', '#854d0e': '밀크 브라운', '#ca8a04': '허니 골드',
+        '#f43f5e': '체리 레드', '#ec4899': '벚꽃 핑크', '#0284c7': '오션 블루', '#10b981': '민트 그린'
+      };
+      const shirtNames = {
+        '#ff5800': '코랄 오렌지', '#3b82f6': '스카이 블루', '#10b981': '에메랄드 민트',
+        '#a855f7': '로얄 퍼플', '#f59e0b': '선샤인 골드', '#ec4899': '벚꽃 핑크'
+      };
+      const hatNames = {
+        ahoge: '기본 바보털', crown: '황금 왕관', wizard: '별빛 마법모자',
+        rabbit: '토끼 귀 밴드', angel: '천사 날개&링', explorer: '탐험가 모자',
+        bunny: '토끼 귀 밴드', cap: '탐험가 모자'
+      };
+
+      const cHair = document.getElementById('chipHairStyle');
+      if (cHair) cHair.textContent = `💇 ${hairNames[state.hairStyle] || '단정 숏컷'}`;
+      const cColor = document.getElementById('chipHairColor');
+      if (cColor) cColor.textContent = `🎨 ${hairColorNames[state.hairColor] || '흑단 블랙'}`;
+      const cShirt = document.getElementById('chipShirtColor');
+      if (cShirt) cShirt.textContent = `👕 ${shirtNames[state.shirtColor] || '코랄 오렌지'}`;
+      const cHat = document.getElementById('chipHatType');
+      if (cHat) cHat.textContent = `👑 ${hatNames[state.hatType] || '기본 바보털'}`;
+
+      // 모자 아이콘 프리뷰 변경
+      const hatSvgGroup = document.getElementById('custPrevHatIcon');
+      if (hatSvgGroup) {
+        if (state.hatType === 'crown') {
+          hatSvgGroup.innerHTML = '<path d="M0 6L3 2L6 5L9 2L12 6H0Z" fill="#fbbf24" stroke="#d97706" stroke-width="0.8"/>';
+        } else if (state.hatType === 'wizard') {
+          hatSvgGroup.innerHTML = '<path d="M6 0L0 7H12L6 0Z" fill="#6366f1"/><circle cx="6" cy="0" r="1.5" fill="#fbbf24"/>';
+        } else if (state.hatType === 'rabbit' || state.hatType === 'bunny') {
+          hatSvgGroup.innerHTML = '<ellipse cx="3" cy="2" rx="1.5" ry="4" fill="#fbcfe8"/><ellipse cx="9" cy="2" rx="1.5" ry="4" fill="#fbcfe8"/>';
+        } else if (state.hatType === 'angel') {
+          hatSvgGroup.innerHTML = '<ellipse cx="6" cy="1" rx="6" ry="1.5" fill="none" stroke="#fde047" stroke-width="1.2"/>';
+        } else if (state.hatType === 'explorer' || state.hatType === 'cap') {
+          hatSvgGroup.innerHTML = '<ellipse cx="6" cy="6" rx="7" ry="2" fill="#78350f"/><path d="M2 6C2 3 4 2 6 2C8 2 10 3 10 6Z" fill="#92400e"/>';
+        } else {
+          hatSvgGroup.innerHTML = '<path d="M2 7C4 2 8 2 8 5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>';
+        }
+      }
+    }
+    window.updateAvatarShowcase = updateAvatarShowcase;
+
+    // 커스터마이징 모달 4대 탭 전환 핸들러
     window.switchCustTab = function(tabId) {
       initAudio(); soundChime(520);
       document.querySelectorAll('.cust-tab-btn').forEach(b => {
@@ -5896,6 +6091,7 @@
       document.querySelectorAll('.cust-tab-pane').forEach(p => {
         p.classList.toggle('active', p.id === tabId);
       });
+      updateAvatarShowcase();
     };
 
     // 11-B. Playroom Kit 실시간 클라우드 멀티플레이어 & 캐릭터 스튜디오
@@ -6136,10 +6332,24 @@
     })();
 
     function openCustomizeStudio() {
+      setTimeout(updateAvatarShowcase, 50);
+
       document.getElementById('custInputName').value = state.playerName || '인찬이';
       const roomEl = document.getElementById('custInputRoom');
       if (roomEl) roomEl.value = state.roomCode || '5학년1반';
       document.getElementById('custSelectTitle').value = state.playerTitle || '마음 탐험가';
+            // 닉네임, 칭호, 방코드 입력 시 실시간 아바타 쇼케이스 반영
+      document.getElementById('custInputName')?.addEventListener('input', () => {
+        state.playerName = document.getElementById('custInputName').value.trim() || '인찬이';
+        updateAvatarShowcase();
+        updatePlayerAppearance();
+      });
+      document.getElementById('custSelectTitle')?.addEventListener('change', () => {
+        state.playerTitle = document.getElementById('custSelectTitle').value;
+        updateAvatarShowcase();
+        updatePlayerAppearance();
+      });
+
       document.querySelectorAll('#custColorRow .cust-color-card').forEach(sw => {
         sw.classList.toggle('active', sw.dataset.color === (state.shirtColor || '#ff5800'));
       });
@@ -6189,6 +6399,7 @@
         sw.classList.add('active');
         state.shirtColor = sw.dataset.color;
         updatePlayerAppearance();
+        updateAvatarShowcase();
         soundChime(580);
       };
     });
@@ -6199,6 +6410,7 @@
         hb.classList.add('active');
         state.hatType = hb.dataset.hat;
         updatePlayerAppearance();
+        updateAvatarShowcase();
         soundChime(659);
       };
     });
@@ -6210,6 +6422,7 @@
         hc.classList.add('active');
         state.hairStyle = hc.dataset.style;
         updatePlayerAppearance();
+        updateAvatarShowcase();
         soundChime(520);
       };
     });
@@ -6227,6 +6440,7 @@
         state.hairColor = hw.dataset.haircolor;
         updateHairIllustrationColors(state.hairColor);
         updatePlayerAppearance();
+        updateAvatarShowcase();
         soundChime(580);
       };
     });
