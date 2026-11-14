@@ -1885,45 +1885,67 @@
     momRightArmPivot.add(momArmR);
     momGroup.add(momRightArmPivot);
 
-    // 머리 위 3D 텍스트 네임태그: [ 온화한 엄마 ♥ ]
+    // 머리 위 3D 네임태그: 네모 박스 없는 순수 텍스트 [ 온화한 엄마 ♥ ]
     const momTagCanvas = document.createElement('canvas');
-    momTagCanvas.width = 256; momTagCanvas.height = 64;
+    momTagCanvas.width = 512; momTagCanvas.height = 128;
     const tagCtx = momTagCanvas.getContext('2d');
-    tagCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    tagCtx.roundRect ? tagCtx.roundRect(10, 8, 236, 48, 12) : tagCtx.fillRect(10, 8, 236, 48);
-    tagCtx.fill();
-    tagCtx.lineWidth = 2.5; tagCtx.strokeStyle = '#fbbf24'; tagCtx.stroke();
-    tagCtx.font = 'bold 24px "Noto Sans KR", sans-serif';
-    tagCtx.fillStyle = '#fbbf24'; tagCtx.textAlign = 'center';
-    tagCtx.fillText('온화한 엄마 ♥', 128, 41);
+    tagCtx.clearRect(0, 0, 512, 128);
+    tagCtx.font = '900 48px "Noto Sans KR", sans-serif';
+    tagCtx.textAlign = 'center'; tagCtx.textBaseline = 'middle';
+    tagCtx.shadowColor = 'rgba(0,0,0,0.85)'; tagCtx.shadowBlur = 10; tagCtx.shadowOffsetY = 3;
+    tagCtx.strokeStyle = '#090d16'; tagCtx.lineWidth = 8;
+    tagCtx.strokeText('온화한 엄마 💕', 256, 64);
+    tagCtx.shadowBlur = 0; tagCtx.fillStyle = '#fbbf24';
+    tagCtx.fillText('온화한 엄마 💕', 256, 64);
+
     const momTagTex = new THREE.CanvasTexture(momTagCanvas);
     momTagTex.colorSpace = THREE.SRGBColorSpace;
     const momTagMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.0, 0.5),
+      new THREE.PlaneGeometry(2.4, 0.6),
       new THREE.MeshBasicMaterial({ map: momTagTex, transparent: true, side: THREE.DoubleSide })
     );
-    momTagMesh.position.set(0, 3.45, 0);
+    momTagMesh.position.set(0, 3.35, 0);
     momGroup.add(momTagMesh);
 
-    // 머리 위 말풍선 (플레이어가 가까이 오면 나타남 - 블룸 눈부심 없는 다크 슬레이트 배경)
+    // 머리 위 2D 카툰 말풍선 (둥근 모서리 + 꼬리표)
     const bubbleCanvas = document.createElement('canvas');
-    bubbleCanvas.width = 512; bubbleCanvas.height = 128;
+    bubbleCanvas.width = 512; bubbleCanvas.height = 160;
     const bCtx = bubbleCanvas.getContext('2d');
+    bCtx.clearRect(0, 0, 512, 160);
+    
+    // 카툰 말풍선 본체 + 꼬리표
+    const mx = 24, my = 12, mw = 464, mh = 108, mr = 24;
+    bCtx.shadowColor = 'rgba(0, 0, 0, 0.45)'; bCtx.shadowBlur = 12; bCtx.shadowOffsetY = 4;
+    bCtx.beginPath();
+    bCtx.moveTo(mx + mr, my);
+    bCtx.lineTo(mx + mw - mr, my);
+    bCtx.quadraticCurveTo(mx + mw, my, mx + mw, my + mr);
+    bCtx.lineTo(mx + mw, my + mh - mr);
+    bCtx.quadraticCurveTo(mx + mw, my + mh, mx + mw - mr, my + mh);
+    bCtx.lineTo(mx + mw / 2 + 18, my + mh);
+    bCtx.lineTo(mx + mw / 2, my + mh + 22);
+    bCtx.lineTo(mx + mw / 2 - 18, my + mh);
+    bCtx.lineTo(mx + mr, my + mh);
+    bCtx.quadraticCurveTo(mx, my + mh, mx, my + mh - mr);
+    bCtx.lineTo(mx, my + mr);
+    bCtx.quadraticCurveTo(mx, my, mx + mr, my);
+    bCtx.closePath();
     bCtx.fillStyle = 'rgba(15, 23, 42, 0.92)';
-    bCtx.roundRect ? bCtx.roundRect(8, 8, 496, 112, 16) : bCtx.fillRect(8, 8, 496, 112);
     bCtx.fill();
+    bCtx.shadowColor = 'transparent';
     bCtx.lineWidth = 3.5; bCtx.strokeStyle = '#fbbf24'; bCtx.stroke();
+    
     bCtx.font = 'bold 22px "Noto Sans KR", sans-serif';
     bCtx.fillStyle = '#ffffff'; bCtx.textAlign = 'center';
-    bCtx.fillText('“인찬아! 블록으로 쉼터를 짓고,', 256, 50);
-    bCtx.fillText('로블록스 점프맵을 정복해보렴!”', 256, 86);
+    bCtx.fillText('“인찬아! 블록으로 쉼터를 짓고,', 256, 48);
+    bCtx.fillText('로블록스 점프맵을 정복해보렴!”', 256, 84);
     const bubbleTex = new THREE.CanvasTexture(bubbleCanvas);
     bubbleTex.colorSpace = THREE.SRGBColorSpace;
     const momBubbleMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(3.6, 0.9),
+      new THREE.PlaneGeometry(3.6, 1.12),
       new THREE.MeshBasicMaterial({ map: bubbleTex, transparent: true, side: THREE.DoubleSide })
     );
-    momBubbleMesh.position.set(0, 4.3, 0);
+    momBubbleMesh.position.set(0, 4.4, 0);
     momBubbleMesh.visible = false;
     momGroup.add(momBubbleMesh);
 
@@ -2698,47 +2720,47 @@
     // 초고해상도 (1024x256) 3D 네임태그 렌더러 (텍스트 외곽선 스트로크 + 캡슐형 칭호 배지 + 100% 선명도)
     function drawCrispNameTag(nctx, nameText, titleText, badgeColor = '#fbbf24') {
       nctx.clearRect(0, 0, 1024, 256);
-
-      // 1. 다크 글래스모피즘 메인 배경 (반경 32px 둥근 사각형)
       nctx.save();
-      nctx.fillStyle = 'rgba(10, 15, 29, 0.94)';
-      nctx.beginPath();
-      if (nctx.roundRect) nctx.roundRect(32, 24, 960, 208, 32);
-      else nctx.rect(32, 24, 960, 208);
-      nctx.fill();
 
-      // 골드/감정 테마 테두리
+      // 거대하고 시커먼 사각 판때기 완전 제거!
+      // 오직 텍스트 길이에 맞춘 초슬림 미니 칭호 캡슐과 선명한 외곽선 이름 텍스트만 공중에 렌더링
+
+      // 1. 상단 칭호 (슬림 미니 알약 캡슐)
+      nctx.font = 'bold 36px "Noto Sans KR", sans-serif';
+      const titleFull = `[ ${titleText} ]`;
+      const titleMetrics = nctx.measureText(titleFull);
+      const titleW = Math.min(titleMetrics.width + 42, 650);
+      const titleX = 512 - titleW / 2;
+
+      // 칭호 글자 뒤에만 얇게 들어가는 투명 소프트 캡슐
+      nctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+      nctx.beginPath();
+      if (nctx.roundRect) nctx.roundRect(titleX, 22, titleW, 52, 26);
+      else nctx.rect(titleX, 22, titleW, 52);
+      nctx.fill();
       nctx.strokeStyle = badgeColor;
-      nctx.lineWidth = 8;
+      nctx.lineWidth = 2.5;
       nctx.stroke();
 
-      // 2. 상단 칭호 알약형(Capsule) 배지 배경
-      nctx.fillStyle = 'rgba(251, 191, 36, 0.20)';
-      nctx.beginPath();
-      if (nctx.roundRect) nctx.roundRect(240, 44, 544, 60, 30);
-      else nctx.rect(240, 44, 544, 60);
-      nctx.fill();
-      nctx.strokeStyle = badgeColor;
-      nctx.lineWidth = 3.5;
-      nctx.stroke();
-
-      // 3. 상단 칭호 텍스트 (명확한 블랙 스트로크 + 밝은 황금색)
-      nctx.font = '900 36px "Noto Sans KR", sans-serif';
       nctx.textAlign = 'center';
       nctx.textBaseline = 'middle';
-      nctx.strokeStyle = '#020617';
-      nctx.lineWidth = 6;
-      nctx.strokeText(`✨ [ ${titleText} ]`, 512, 74);
       nctx.fillStyle = badgeColor;
-      nctx.fillText(`✨ [ ${titleText} ]`, 512, 74);
+      nctx.fillText(titleFull, 512, 48);
 
-      // 4. 하단 학생 이름 (굵은 900 웨이트 58px + 8px 다크 외곽선으로 어떤 배경에서도 100% 선명!)
-      nctx.font = '900 60px "Noto Sans KR", sans-serif';
-      nctx.strokeStyle = '#020617';
-      nctx.lineWidth = 9;
-      nctx.strokeText(nameText, 512, 165);
+      // 2. 하단 학생 이름 (네모 바탕 박스 100% 완전 제거! 순수 텍스트 + 볼드 외곽선 + 드롭섀도우)
+      nctx.font = '900 70px "Noto Sans KR", sans-serif';
+      nctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      nctx.shadowBlur = 14;
+      nctx.shadowOffsetY = 4;
+      nctx.strokeStyle = '#090d16';
+      nctx.lineWidth = 11;
+      nctx.lineJoin = 'round';
+      nctx.strokeText(nameText, 512, 162);
+
+      nctx.shadowBlur = 0;
+      nctx.shadowOffsetY = 0;
       nctx.fillStyle = '#ffffff';
-      nctx.fillText(nameText, 512, 165);
+      nctx.fillText(nameText, 512, 162);
       nctx.restore();
     }
 
@@ -2755,22 +2777,61 @@
     }
 
     function drawChatBubbleCanvas(cctx, msgText, borderColor = '#38bdf8') {
-      cctx.clearRect(0, 0, 512, 112);
-      cctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
-      cctx.fillRect(12, 10, 488, 86);
-      cctx.strokeStyle = borderColor; cctx.lineWidth = 4;
-      cctx.strokeRect(12, 10, 488, 86);
-      cctx.fillStyle = '#fef08a'; cctx.font = 'bold 23px "Noto Sans KR"'; cctx.textAlign = 'center';
-      cctx.fillText('💬 ' + msgText.slice(0, 21), 256, 62);
+      cctx.clearRect(0, 0, 512, 160);
+      cctx.save();
+
+      // 2D 카툰/만화 스타일 동글동글 말풍선 (둥근 모서리 + 하단 꼬리표 삼각형)
+      const bw = 464, bh = 94, x = 24, y = 14, r = 26;
+
+      cctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      cctx.shadowBlur = 14;
+      cctx.shadowOffsetY = 5;
+
+      cctx.beginPath();
+      cctx.moveTo(x + r, y);
+      cctx.lineTo(x + bw - r, y);
+      cctx.quadraticCurveTo(x + bw, y, x + bw, y + r);
+      cctx.lineTo(x + bw, y + bh - r);
+      cctx.quadraticCurveTo(x + bw, y + bh, x + bw - r, y + bh);
+
+      // 꼬리표 (하단 중심에서 인찬이 머리 쪽으로 뾰족하게 내려오는 삼각형 꼬리)
+      cctx.lineTo(x + bw / 2 + 18, y + bh);
+      cctx.lineTo(x + bw / 2, y + bh + 24);
+      cctx.lineTo(x + bw / 2 - 18, y + bh);
+
+      cctx.lineTo(x + r, y + bh);
+      cctx.quadraticCurveTo(x, y + bh, x, y + bh - r);
+      cctx.lineTo(x, y + r);
+      cctx.quadraticCurveTo(x, y, x + r, y);
+      cctx.closePath();
+
+      // 은은한 다크 슬레이트 글래스모피즘
+      cctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      cctx.fill();
+
+      cctx.shadowColor = 'transparent';
+      cctx.strokeStyle = borderColor;
+      cctx.lineWidth = 3.5;
+      cctx.lineJoin = 'round';
+      cctx.stroke();
+
+      // 말풍선 글자
+      cctx.fillStyle = '#f8fafc';
+      cctx.font = 'bold 23px "Noto Sans KR", sans-serif';
+      cctx.textAlign = 'center';
+      cctx.textBaseline = 'middle';
+      const text = msgText.length > 20 ? msgText.slice(0, 19) + '…' : msgText;
+      cctx.fillText('💬 ' + text, 256, y + bh / 2);
+      cctx.restore();
     }
 
     function makeChatBubbleSprite(msgText) {
-      const cc = document.createElement('canvas'); cc.width = 512; cc.height = 112;
+      const cc = document.createElement('canvas'); cc.width = 512; cc.height = 160;
       const cctx = cc.getContext('2d');
       drawChatBubbleCanvas(cctx, msgText, '#38bdf8');
       const tex = new THREE.CanvasTexture(cc);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-      sp.scale.set(3.6, 0.8, 1);
+      sp.scale.set(3.4, 1.05, 1);
       return { sprite: sp, canvas: cc, ctx: cctx, tex };
     }
 
