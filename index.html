@@ -153,8 +153,10 @@
     .timing-zone::after {
       content: '🌱 성공 구역'; position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 11px; font-weight: 900; color: #ecfdf5; letter-spacing: -0.2px;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.8); pointer-events: none;
+      white-space: nowrap !important;
+      font-size: 11.5px; font-weight: 900; color: #ffffff; letter-spacing: -0.2px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9); pointer-events: none;
+      z-index: 2;
     }
     .timing-cursor {
       position: absolute; top: 3px; bottom: 3px; width: 28px; border-radius: 99px;
@@ -581,24 +583,33 @@
       background: rgba(34, 197, 94, 0.08);
       opacity: 0.8;
     }
+    .story-tracker-title {
+      font-size: 14.5px !important; font-weight: 900 !important; color: #f8fafc;
+    }
+    .story-tracker-sub {
+      font-size: 12.5px !important; line-height: 1.45 !important;
+    }
     .story-q-top {
       display: flex; justify-content: space-between; align-items: center;
-      gap: 6px; font-size: 11px;
+      gap: 6px; font-size: 12.5px;
     }
     .story-q-chapter {
-      font-weight: 800; font-size: 11px; letter-spacing: -0.2px;
+      font-weight: 800; font-size: 13px !important; letter-spacing: -0.2px;
     }
     .story-q-prog {
-      font-weight: 800; color: #fde047; font-size: 11px;
+      font-weight: 800; color: #fde047; font-size: 12.5px !important;
       font-family: 'JetBrains Mono', monospace;
     }
     .story-q-title {
-      font-size: 12px; font-weight: 800; color: #ffffff;
-      line-height: 1.4; word-break: keep-all;
+      font-size: 13.5px !important; font-weight: 800; color: #ffffff;
+      line-height: 1.45; word-break: keep-all;
     }
     .story-q-desc {
-      font-size: 11.5px; color: #cbd5e1; line-height: 1.45;
+      font-size: 12.5px !important; color: #e2e8f0; line-height: 1.5;
       word-break: keep-all;
+    }
+    .story-btn-autowalk {
+      font-size: 12px !important; padding: 5px 10px !important; font-weight: 700;
     }
     .story-q-actions {
       display: flex; justify-content: flex-end; gap: 5px; margin-top: 2px;
@@ -684,11 +695,17 @@
       flex: 1; min-height: 36px;
       overflow-y: auto !important; overflow-x: hidden !important;
       word-break: break-all; word-wrap: break-word;
-      font-size: 11.5px; line-height: 1.45;
-      display: flex; flex-direction: column; gap: 3px; color: #e2e8f0;
+      font-size: 11px !important; line-height: 1.38 !important;
+      display: flex; flex-direction: column; gap: 2.5px; color: #cbd5e1;
       padding-right: 4px;
       scrollbar-width: thin !important;
-      scrollbar-color: rgba(255, 255, 255, 0.22) transparent !important;
+    }
+    .mp-chat-msg {
+      font-size: 11px !important; line-height: 1.38 !important;
+      font-weight: 500 !important; color: #e2e8f0;
+    }
+    .mp-chat-msg b {
+      color: #fbbf24; font-weight: 700 !important; font-size: 11px !important;
     }
     .mp-chat-msg b { color: #fbbf24; }
     .mp-chat-input-row {
@@ -2282,11 +2299,11 @@
     rainbowTopDiamond.position.set(20 + Math.cos(topAng) * 9, 1.4 + 8 * 1.15 + 1.6, 6 + Math.sin(topAng) * 9);
     worldGroup.add(rainbowTopDiamond);
 
-    // 코스 2: [슬픔의 눈물 구름 Obby (Cloud Obby)] (연못 상공 부유 구름 발판)
+    // 코스 2: [슬픔의 눈물 구름 Obby (Cloud Obby)] (서쪽 연못 상공 하늘길)
     for (let i = 0; i < 7; i++) {
-      const cx = -18 - i * 1.8;
-      const cz = 6 + (i % 2 === 0 ? 2.5 : -2.5);
-      const cy = 1.6 + i * 0.95;
+      const cx = -34 - i * 2.2;
+      const cz = -12 + (i % 2 === 0 ? 3.0 : -3.0);
+      const cy = 3.2 + i * 1.1;
       const cMat = new THREE.MeshStandardMaterial({
         color: 0xe0f2fe, roughness: 0.2, transparent: true, opacity: 0.9, emissive: 0x38bdf8, emissiveIntensity: 0.2
       });
@@ -2481,6 +2498,101 @@
     // ==============================================================================
     // [신규 5대 힐링 테마파크 & 어트랙션 시스템] 동물원, 식물원, 야외 독서대, 놀이터, 물놀이장
     // ==============================================================================
+
+    
+    // ==============================================================================
+    // [신규 상호작용] 🌸 닿으면 활짝 피며 빛나고 점수가 올라가는 마음의 꽃밭 시스템!
+    // ==============================================================================
+    const interactiveFlowers = [];
+    const flowerGroup = new THREE.Group();
+    worldGroup.add(flowerGroup);
+
+    // 알록달록 무지개 꽃 컬러 팔레트 (핑크, 노랑, 하늘, 오렌지, 보라)
+    const flowerColors = [0xf43f5e, 0xfbbf24, 0x38bdf8, 0xf97316, 0xa855f7, 0xec4899];
+    
+    // 섬 곳곳 36군데에 감정 꽃송이 식재
+    for (let i = 0; i < 36; i++) {
+      const angle = (i / 36) * Math.PI * 2 + (Math.random() * 0.2);
+      const dist = 16 + (i % 6) * 11 + Math.random() * 5;
+      const fx = Math.cos(angle) * dist;
+      const fz = Math.sin(angle) * dist;
+
+      const fg = new THREE.Group();
+      fg.position.set(fx, 0, fz);
+
+      // 초록 줄기
+      const stemMat = new THREE.MeshStandardMaterial({ color: 0x16a34a, roughness: 0.8 });
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.55, 8), stemMat);
+      stem.position.y = 0.275;
+      stem.castShadow = true;
+
+      // 꽃잎 헤드 그룹 (개화 시 스케일 퐁! 커짐)
+      const headGroup = new THREE.Group();
+      headGroup.position.y = 0.55;
+
+      const col = flowerColors[i % flowerColors.length];
+      const petalMat = new THREE.MeshStandardMaterial({
+        color: col, emissive: col, emissiveIntensity: 0.25, roughness: 0.35
+      });
+      const centerMat = new THREE.MeshStandardMaterial({
+        color: 0xfef08a, emissive: 0xfacc15, emissiveIntensity: 0.8, roughness: 0.2
+      });
+
+      // 꽃술 중심
+      const centerSphere = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), centerMat);
+      headGroup.add(centerSphere);
+
+      // 5장 방사형 꽃잎
+      for (let p = 0; p < 5; p++) {
+        const pAng = (p / 5) * Math.PI * 2;
+        const petal = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8), petalMat);
+        petal.scale.set(1.4, 0.45, 0.9);
+        petal.position.set(Math.cos(pAng) * 0.26, 0, Math.sin(pAng) * 0.26);
+        petal.rotation.y = -pAng;
+        headGroup.add(petal);
+      }
+
+      // 발밑 작은 풀잎 2장
+      const leafMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.7 });
+      const leaf1 = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.04, 0.12), leafMat);
+      leaf1.position.set(0.16, 0.12, 0); leaf1.rotation.z = 0.3;
+      const leaf2 = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.04, 0.12), leafMat);
+      leaf2.position.set(-0.16, 0.12, 0); leaf2.rotation.z = -0.3;
+
+      fg.add(stem, leaf1, leaf2, headGroup);
+      flowerGroup.add(fg);
+
+      interactiveFlowers.push({
+        group: fg, head: headGroup, x: fx, z: fz,
+        color: col, bloomed: false, cooldown: 0,
+        baseScale: 1.0, currentScale: 1.0, targetScale: 1.0
+      });
+    }
+
+    // 꽃 개화 파티클 시스템
+    const flowerParticles = [];
+    function burstFlowerParticles(x, y, z, col) {
+      initAudio();
+      for (let k = 0; k < 14; k++) {
+        const mat = new THREE.MeshBasicMaterial({
+          color: k % 2 === 0 ? col : 0xfef08a,
+          transparent: true, opacity: 1.0
+        });
+        const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.12), mat);
+        m.position.set(x, y, z);
+        scene.add(m);
+        const ang = Math.random() * Math.PI * 2;
+        const spd = 2.0 + Math.random() * 3.5;
+        flowerParticles.push({
+          mesh: m, mat: mat,
+          vx: Math.cos(ang) * spd,
+          vy: 2.5 + Math.random() * 3.0,
+          vz: Math.sin(ang) * spd,
+          life: 1.0, decay: 1.4
+        });
+      }
+    }
+
 
     const themeParkGroup = new THREE.Group();
 
@@ -2807,7 +2919,7 @@
     // 랜드마크 좌표 & 로블록스 스타일 블록 디딤돌 길
     const landmarkCoords = [
       { key: 'joy', x: 50, z: 0, color: 0xf59e0b },
-      { key: 'sad', x: -50, z: 0, color: 0x3b82f6 },
+      { key: 'sad', x: -36, z: 0, color: 0x3b82f6 },
       { key: 'anger', x: 0, z: 52, color: 0xef4444 },
       { key: 'fear', x: -36, z: -40, color: 0xa855f7 },
       { key: 'worry', x: 36, z: -38, color: 0x10b981 }
@@ -2865,21 +2977,52 @@
     joyOrbGroup.add(joyOrbMesh, new THREE.PointLight(0xfbbf24, 1.8, 10));
     worldGroup.add(joyOrbGroup);
 
-    // [퀘스트 2: 서쪽] 슬픔의 치유 연못
-    const lakeGroup = new THREE.Group(); lakeGroup.position.set(-50, 0, 0);
-    const lakeBank = new THREE.Mesh(new THREE.TorusGeometry(6.4, 0.55, 8, 24), new THREE.MeshStandardMaterial({ color: 0x64748b, flatShading: true }));
-    lakeBank.rotation.x = Math.PI / 2; lakeBank.position.y = 0.2;
-    const waterMesh = new THREE.Mesh(
-      new THREE.CircleGeometry(6.3, 24),
-      new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.25, roughness: 0.15, metalness: 0.3, transparent: true, opacity: 0.85 })
+    // [퀘스트 2: 서쪽] 슬픔의 치유 연못 (진짜 맑고 반짝이는 거대 에메랄드 호수)
+    const lakeGroup = new THREE.Group(); lakeGroup.position.set(-36, 0, 0);
+
+    // 1) 연못 외곽 둥근 자연석 제방 링
+    const lakeBank = new THREE.Mesh(
+      new THREE.TorusGeometry(13.2, 0.75, 12, 36),
+      new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.85, flatShading: true })
     );
-    waterMesh.rotation.x = -Math.PI / 2; waterMesh.position.y = 0.22;
-    lakeGroup.add(lakeBank, waterMesh);
+    lakeBank.rotation.x = Math.PI / 2; lakeBank.position.y = 0.25;
+
+    // 2) 찰랑이는 푸른 호수 물 표면 (반경 13m 거대 수면 + 햇살 반사)
+    const waterMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(13.0, 13.0, 0.35, 36),
+      new THREE.MeshStandardMaterial({
+        color: 0x0ea5e9, emissive: 0x0284c7, emissiveIntensity: 0.35,
+        roughness: 0.1, metalness: 0.2, transparent: true, opacity: 0.88
+      })
+    );
+    waterMesh.position.y = 0.18;
+
+    // 3) 호수 안쪽 잔잔한 물결 무늬 링 2겹
+    const waterRing1 = new THREE.Mesh(
+      new THREE.RingGeometry(5.0, 5.4, 32),
+      new THREE.MeshBasicMaterial({ color: 0xbae6fd, transparent: true, opacity: 0.45, side: THREE.DoubleSide })
+    );
+    waterRing1.rotation.x = -Math.PI / 2; waterRing1.position.y = 0.36;
+
+    const waterRing2 = new THREE.Mesh(
+      new THREE.RingGeometry(9.0, 9.45, 32),
+      new THREE.MeshBasicMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
+    );
+    waterRing2.rotation.x = -Math.PI / 2; waterRing2.position.y = 0.36;
+
+    // 4) 연못 한가운데 돋보이는 [치유의 연꽃 단상] (슬픔이 NPC가 위풍당당하게 서 있는 곳)
+    const centerLotusIslet = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.6, 4.0, 0.45, 24),
+      new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0369a1, emissiveIntensity: 0.4, roughness: 0.3 })
+    );
+    centerLotusIslet.position.y = 0.35; centerLotusIslet.receiveShadow = true;
+
+    lakeGroup.add(lakeBank, waterMesh, waterRing1, waterRing2, centerLotusIslet);
     worldGroup.add(lakeGroup);
 
-    const sadOrbGroup = new THREE.Group(); sadOrbGroup.position.set(-50, 1.1, 0);
-    const sadOrbMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.55), new THREE.MeshStandardMaterial({ color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 1.3 }));
-    sadOrbGroup.add(sadOrbMesh, new THREE.PointLight(0x3b82f6, 1.8, 10));
+    const sadOrbGroup = new THREE.Group(); sadOrbGroup.position.set(-36, 1.8, 0);
+    const sadOrbMesh = new THREE.Mesh(new THREE.OctahedronGeometry(0.65), new THREE.MeshStandardMaterial({ color: 0x60a5fa, emissive: 0x2563eb, emissiveIntensity: 1.5 }));
+    sadOrbGroup.add(sadOrbMesh, new THREE.PointLight(0x38bdf8, 2.5, 14));
     worldGroup.add(sadOrbGroup);
 
     // [퀘스트 3: 남쪽] 화의 캠프파이어 화로
@@ -3009,7 +3152,7 @@
     const zoneNpcs = [];
     const npcDefinitions = [
       { key: 'joy', x: 18.5, z: 6.5, color: 0xf59e0b, title: '기쁨이 (별토끼)', dialogue: '“안녕! 나는 네 마음 광주리에 웃음을 가져다주는 별토끼 기쁨이야!<br>노란 트램펄린 위에서 마음껏 높이 점프해 볼래?”', actionLabel: '트램펄린으로 점프하러 가기' },
-      { key: 'sad', x: -18.5, z: 7.5, color: 0x3b82f6, title: '슬픔이 (물방울)', dialogue: '“안녕… 나는 소중한 것을 기억하게 해주는 물방울 슬픔이야.<br>울고 싶을 땐 참지 않아도 괜찮아. 연못에 마음의 눈물을 띄워 보내자.”', actionLabel: '치유의 눈물 띄워 보내기' },
+      { key: 'sad', x: -36.0, z: 0.0, color: 0x3b82f6, title: '슬픔이 (물방울)', dialogue: '“안녕… 나는 소중한 것을 기억하게 해주는 물방울 슬픔이야.<br>울고 싶을 땐 참지 않아도 괜찮아. 연못에 마음의 눈물을 띄워 보내자.”', actionLabel: '치유의 눈물 띄워 보내기' },
       { key: 'anger', x: 3.5, z: 21.5, color: 0xef4444, title: '화 (불도깨비)', dialogue: '“으르렁! 나는 네 소중한 마음을 지키려고 찾아온 불도깨비 화야.<br>너무 뜨거워지면 나도 힘들어… 모닥불 앞에서 깊게 숨을 내쉬어 줄래?”', actionLabel: '불길 달래는 심호흡 시작' },
       { key: 'fear', x: -15.5, z: -13.5, color: 0xa855f7, title: '두려움 (꼬마망토)', dialogue: '“저기… 나는 위험을 알려주는 꼬마망토 두려움이야.<br>등대 주변의 어둠 구름 3개를 별빛 마법(F키)으로 비춰주면 용기가 생길 거야!”', actionLabel: '별빛 마법으로 어둠 비추기' },
       { key: 'worry', x: 17.0, z: -15.5, color: 0x10b981, title: '걱정이 (털실이)', dialogue: '“음… 머릿속이 실타래처럼 엉켜버렸어.<br>벤치에 앉아 네 걱정을 소원 연등에 적어 하늘로 날려 보내자!”', actionLabel: '걱정 털실 풀고 연등 날리기' }
@@ -3051,9 +3194,9 @@
       joyRings.push({ mesh: rg, baseY: ry, cleared: done });
     });
 
-    // [미션 2: 슬픔 연못 위 수련잎 징검다리 5개 & 추억 물방울 3개]
+    // [미션 2: 슬픔 연못 위 수련잎 징검다리 5개 & 추억 물방울 3개] (호수 중앙 단상 -36, 0 주변 물 위 배치)
     const sadLilyPads = [];
-    [[-45.2, 0.32, 0.2], [-47.4, 0.32, 2.4], [-50.0, 0.32, 3.2], [-52.8, 0.32, 1.5], [-51.8, 0.32, -2.8]].forEach(([lx, ly, lz], idx) => {
+    [[-28.5, 0.35, 1.2], [-31.5, 0.35, 4.2], [-36.0, 0.35, 6.0], [-40.5, 0.35, 3.8], [-43.0, 0.35, -1.8]].forEach(([lx, ly, lz], idx) => {
       const lily = new THREE.Mesh(
         new THREE.CylinderGeometry(1.15, 1.05, 0.22, 14),
         new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.65, emissive: 0x15803d, emissiveIntensity: 0.2 })
@@ -4965,7 +5108,7 @@
         key: 'sad', chapter: '제2장 · 슬픔 손님 (서쪽 치유 연못)',
         title: '기억 물방울 3개 모으고 무지개 분수 피우기',
         desc: '“슬픔을 가만히 보듬어주면 맑은 눈물이 흘러.” 서쪽 연못의 물방울 3개를 모아 연못 중앙으로 가면 무지개 분수가 피어납니다.',
-        color: '#38bdf8', x: -50, z: 0, max: 3
+        color: '#38bdf8', x: -36, z: 0, max: 3
       },
       {
         key: 'anger', chapter: '제3장 · 화 손님 (남쪽 모닥불 쉼터)',
@@ -7028,15 +7171,19 @@
           // 플레이어에서 목적지까지 28개의 별빛 도로 스터드 물결 배치!
           const px = playerRig.position.x, pz = playerRig.position.z;
           const tx = guidedMeta.x, tz = guidedMeta.z;
+          // 목적지를 향해 슈우욱 끊임없이 흘러가는(Flowing) 환상적인 황금빛 펄스 웨이브!
+          const flowSpeed = (time * 0.55) % 1.0;
           for (let i = 0; i < NUM_PATHWAY_STUDS; i++) {
             const sm = pathwayStuds[i];
-            const t = (i + 1) / (NUM_PATHWAY_STUDS + 1);
+            const t = ((i / NUM_PATHWAY_STUDS) + flowSpeed) % 1.0;
             const sx = px + (tx - px) * t;
             const sz = pz + (tz - pz) * t;
-            const waveY = Math.sin(time * 6 - i * 0.35) * 0.08;
-            sm.position.set(sx, 0.16 + waveY, sz);
+            // 지면 위에서 유려한 포물선 아치를 그리며 날아가는 높이와 스케일
+            const arcY = Math.sin(t * Math.PI) * 0.42 + Math.sin(time * 8 + i * 0.5) * 0.04;
+            const sc = 0.45 + Math.sin(t * Math.PI) * 0.65;
+            sm.position.set(sx, 0.22 + arcY, sz);
             sm.rotation.y = Math.atan2(tx - px, tz - pz);
-            sm.scale.setScalar(0.75 + Math.sin(time * 5 - i * 0.3) * 0.25);
+            sm.scale.set(sc, sc * 0.7, sc);
             sm.visible = true;
           }
         } else {
@@ -7047,7 +7194,55 @@
         pathwayStuds.forEach(sm => sm.visible = false);
       }
 
-      drawMinimap(time); updateZonePrompt();
+
+      // [꽃 상호작용 실시간 검사] 플레이어가 꽃에 닿으면 활짝 피며 빛나고 점수 +15점!
+      if (typeof interactiveFlowers !== 'undefined') {
+        const px = playerRig.position.x, pz = playerRig.position.z;
+        for (let i = 0; i < interactiveFlowers.length; i++) {
+          const fl = interactiveFlowers[i];
+          if (fl.cooldown > 0) {
+            fl.cooldown -= dt;
+            if (fl.cooldown <= 0) {
+              fl.bloomed = false;
+              fl.targetScale = 1.0;
+            }
+          }
+          const dFlower = Math.hypot(px - fl.x, pz - fl.z);
+          if (dFlower < 1.65 && !fl.bloomed) {
+            fl.bloomed = true;
+            fl.cooldown = 20.0; // 20초 후 다시 꽃봉오리 재생
+            fl.targetScale = 1.85; // 퐁! 1.85배로 활짝 개화
+            burstFlowerParticles(fl.x, 0.8, fl.z, fl.color);
+            soundChime(880);
+            window.addMindScore(15, '🌸 마음의 꽃이 활짝 피었습니다!');
+            showToast(`🌸 <b>마음의 꽃이 활짝 피어났습니다! (+15점)</b><br><small style="color:#fde047;">주변의 꽃들과 교감하며 마음 점수를 모아보세요!</small>`);
+          }
+          fl.currentScale += (fl.targetScale - fl.currentScale) * (dt * 8);
+          fl.head.scale.set(fl.currentScale, fl.currentScale, fl.currentScale);
+          if (fl.bloomed) fl.head.rotation.y += dt * 2.2;
+        }
+      }
+
+      // 꽃가루 파티클 물리 업데이트
+      if (typeof flowerParticles !== 'undefined') {
+        for (let i = flowerParticles.length - 1; i >= 0; i--) {
+          const fp = flowerParticles[i];
+          fp.life -= dt * fp.decay;
+          fp.mesh.position.x += fp.vx * dt;
+          fp.mesh.position.y += fp.vy * dt;
+          fp.mesh.position.z += fp.vz * dt;
+          fp.vy -= 7.5 * dt;
+          fp.mat.opacity = Math.max(0, fp.life);
+          if (fp.life <= 0) {
+            scene.remove(fp.mesh);
+            fp.mesh.geometry.dispose();
+            fp.mesh.material.dispose();
+            flowerParticles.splice(i, 1);
+          }
+        }
+      }
+
+            drawMinimap(time); updateZonePrompt();
       composer.render();
     }
 
@@ -8072,6 +8267,15 @@
       appendChatLog(state.playerName, text);
       soundChime(659);
 
+      // [실제 친구 실시간 브로드캐스트 전송] 같은 PC의 다른 탭/창에 실시간 전송!
+      if (typeof worldChannel !== 'undefined' && worldChannel) {
+        worldChannel.postMessage({
+          type: 'mp_chat',
+          from: state.playerName,
+          text: text
+        });
+      }
+
       if (window.playroomConnected && window.Playroom?.RPC) {
         window.Playroom.RPC.call('mp_chat', {
           from: state.playerName,
@@ -8079,30 +8283,6 @@
           id: window.Playroom.myPlayer()?.id
         }, window.Playroom.RPC.Mode.OTHERS);
       }
-
-      if (worldChannel) {
-        worldChannel.postMessage({ type: 'mp_chat', from: state.playerName, msg: text });
-      }
-
-      // 주변 친구 아바타가 다정하게 화답하여 함께 노는 느낌 극대화
-      setTimeout(() => {
-        if (!friendAgents.length) return;
-        const responder = friendAgents[Math.floor(Math.random() * friendAgents.length)];
-        const replies = [
-          `${state.playerName}야 반가워! 같이 재미있게 놀자!`,
-          `우와, 오늘 네 모자랑 옷 색깔 진짜 멋지다!`,
-          `우리 우클릭으로 감정 블록 계단 쌓아서 하늘섬 가볼까?`,
-          `마음 광주리가 무거울 땐 언제든 나한테 말해줘!`
-        ];
-        const reply = replies[Math.floor(Math.random() * replies.length)];
-        appendChatLog(responder.name.split(' ')[0], reply);
-        if (responder.chatObj) {
-          drawChatBubbleCanvas(responder.chatObj.ctx, reply, '#38bdf8');
-          responder.chatObj.tex.needsUpdate = true;
-          responder.chatObj.sprite.visible = true;
-          responder.chatTimer = 6.0;
-        }
-      }, 950);
     };
 
     document.getElementById('btnMpChatSend').onclick = () => window.sendMpChat();
@@ -8115,6 +8295,12 @@
       worldChannel.onmessage = e => {
         const d = e.data;
         if (!d) return;
+        if (d.type === 'mp_chat') {
+          // 다른 브라우저 탭/창에서 접속한 진짜 친구의 실시간 메시지 표시!
+          appendChatLog(d.from || '친구', d.text);
+          soundChime(784);
+          return;
+        }
         if (d.type === 'board_sync' && d.post && !state.boardPosts.some(p => p.id === d.post.id)) {
           state.boardPosts.unshift(d.post);
           state.stats[d.post.emotion] = (state.stats[d.post.emotion] || 0) + 1;
