@@ -110,9 +110,9 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 상황별 구역 인터랙션 배너 */
+    /* 상황별 구역 인터랙션 배너 (핫바 위로 겹침 없이 배치) */
     .zone-prompt {
-      position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(10px);
+      position: fixed; bottom: 158px; left: 50%; transform: translateX(-50%) translateY(10px);
       z-index: 48; opacity: 0; pointer-events: none; transition: all 0.22s ease;
       background: var(--bg-surface); backdrop-filter: blur(16px);
       border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
@@ -334,7 +334,7 @@
     .board-heart-btn.liked { background: #fff7f2; border-color: var(--accent); color: var(--accent); }
   
     /* ============================================================
-       로블록스 & 마인크래프트 게이미피케이션 고도화 스타일
+       로블록스 & 마인크래프트 게이미피케이션 고도화 스타일 (겹침 완벽 제거)
        ============================================================ */
     .mc-crosshair {
       position: fixed; top: 50%; left: 50%;
@@ -350,19 +350,32 @@
     .mc-crosshair::before { top: 7px; left: 0; width: 16px; height: 2px; }
     .mc-crosshair::after { top: 0; left: 7px; width: 2px; height: 16px; }
 
-    .mc-hotbar-wrap {
-      position: fixed; bottom: 76px; left: 50%;
+    .mc-hotbar-container {
+      position: fixed; bottom: 72px; left: 50%;
       transform: translateX(-50%);
-      display: flex; gap: 7px; z-index: 8600;
-      background: rgba(15, 23, 42, 0.88);
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      z-index: 8600;
+    }
+    .mc-hotbar-guide {
+      font-size: 11px; font-weight: 700; color: #e2e8f0;
+      background: rgba(15, 23, 42, 0.86);
+      backdrop-filter: blur(10px);
+      padding: 3px 12px; border-radius: 99px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      white-space: nowrap; pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    }
+    .mc-hotbar-wrap {
+      display: flex; gap: 6px;
+      background: rgba(15, 23, 42, 0.90);
       backdrop-filter: blur(14px);
-      padding: 6px 10px; border-radius: 14px;
-      border: 1.5px solid rgba(255, 255, 255, 0.16);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+      padding: 6px 9px; border-radius: 14px;
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
     }
     .mc-slot {
-      position: relative; width: 50px; height: 50px;
-      background: rgba(30, 41, 59, 0.85);
+      position: relative; width: 52px; height: 50px;
+      background: rgba(30, 41, 59, 0.88);
       border: 2px solid #475569;
       border-radius: 10px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -372,9 +385,9 @@
     .mc-slot:hover { border-color: #94a3b8; transform: translateY(-2px); }
     .mc-slot.active {
       border-color: #fbbf24;
-      background: rgba(245, 158, 11, 0.22);
+      background: rgba(245, 158, 11, 0.24);
       box-shadow: 0 0 14px rgba(251, 191, 36, 0.65);
-      transform: translateY(-3px) scale(1.05);
+      transform: translateY(-3px) scale(1.04);
     }
     .mc-key {
       position: absolute; top: 2px; left: 4px;
@@ -382,6 +395,11 @@
       font-family: 'JetBrains Mono', monospace;
     }
     .mc-slot.active .mc-key { color: #fbbf24; }
+    .mc-count {
+      position: absolute; top: 2px; right: 4px;
+      font-size: 9px; font-weight: 800; color: #fef08a;
+      font-family: 'JetBrains Mono', monospace;
+    }
     .mc-icon-cube {
       width: 20px; height: 20px; border-radius: 4px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.4);
@@ -393,17 +411,72 @@
       white-space: nowrap;
     }
 
-    .mc-hints-bar {
-      position: fixed; bottom: 48px; left: 50%;
-      transform: translateX(-50%);
-      font-size: 11.5px; font-weight: 600; color: #cbd5e1;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(8px);
-      padding: 3px 14px; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-      z-index: 8550; pointer-events: none;
-      letter-spacing: 0.3px;
+    /* 좌측 하단 실시간 멀티플레이어 광장 채팅 & 이모트 바 */
+    .mp-chat-panel {
+      position: fixed; left: 18px; bottom: 18px; z-index: 50;
+      width: 270px; background: rgba(15, 23, 42, 0.86);
+      backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px; padding: 10px 12px; color: #f8fafc;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+      display: flex; flex-direction: column; gap: 6px;
     }
+    .mp-chat-head {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; font-weight: 700; color: #94a3b8;
+    }
+    .mp-live-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      color: #4ade80; font-weight: 800;
+    }
+    .mp-live-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+    .mp-chat-log {
+      height: 58px; overflow-y: auto; font-size: 11.5px; line-height: 1.45;
+      display: flex; flex-direction: column; gap: 3px; color: #e2e8f0;
+      padding-right: 2px;
+    }
+    .mp-chat-msg b { color: #fbbf24; }
+    .mp-chat-input-row {
+      display: flex; gap: 5px;
+    }
+    .mp-chat-input {
+      flex: 1; height: 28px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(30, 41, 59, 0.9); color: #fff; font-size: 11.5px; padding: 0 8px; outline: none;
+    }
+    .mp-chat-input:focus { border-color: #fbbf24; }
+    .mp-chat-send {
+      height: 28px; padding: 0 10px; border-radius: 7px; border: none;
+      background: #ff5800; color: #fff; font-size: 11px; font-weight: 700; cursor: pointer;
+    }
+    .mp-quick-row {
+      display: flex; gap: 4px; overflow-x: auto;
+    }
+    .mp-quick-btn {
+      padding: 2px 7px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06); color: #cbd5e1; font-size: 10px;
+      white-space: nowrap; cursor: pointer;
+    }
+    .mp-quick-btn:hover { background: rgba(251,191,36,0.2); color: #fbbf24; border-color: #fbbf24; }
+    @media (max-width: 900px) {
+      .mp-chat-panel { display: none; }
+    }
+
+    /* 캐릭터 커스터마이징 선택 그리드 */
+    .cust-swatch-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .cust-swatch {
+      width: 36px; height: 36px; border-radius: 10px; border: 2.5px solid transparent;
+      cursor: pointer; transition: transform 0.15s; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .cust-swatch.active { border-color: #18181b; transform: scale(1.12); box-shadow: 0 0 0 2px #fbbf24; }
+    .cust-hat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 6px; }
+    .cust-hat-btn {
+      padding: 9px 6px; border-radius: 10px; border: 1.5px solid var(--line-hair);
+      background: #fff; font-size: 12px; font-weight: 700; color: var(--ink-main);
+      cursor: pointer; text-align: center; transition: all 0.15s;
+    }
+    .cust-hat-btn.active { border-color: var(--accent); background: #fff7f2; color: var(--accent); }
 
     /* 오비 클리어 & 타이쿤 레벨업 축하 배너 */
     .congrats-banner {
@@ -462,8 +535,11 @@
             <span style="font-size:14px;">★</span><span id="stardustText">0/15</span>
           </div>
         </div>
-        <button class="hw-btn" onclick="openStoryBookModal()" style="border-color:rgba(251,191,36,0.4); color:#fbbf24; font-weight:700;">
-          <span style="font-size:14px;">📖</span> 동화책 앨범
+        <button class="hw-btn" id="btnCustomizeTop" style="border-color:rgba(56,189,248,0.45); color:#0284c7; font-weight:700;">
+          <span>👕</span> 내 캐릭터 꾸미기
+        </button>
+        <button class="hw-btn" onclick="openStoryBookModal()" style="border-color:rgba(251,191,36,0.4); color:#d97706; font-weight:700;">
+          <span>📖</span> 동화책 앨범
         </button>
       </div>
     </div>
@@ -499,6 +575,29 @@
 
   <div class="toast-box" id="toastBox"></div>
 
+  <!-- 좌측 하단 멀티플레이어 실시간 광장 채팅 패널 -->
+  <div class="mp-chat-panel" id="mpChatPanel">
+    <div class="mp-chat-head">
+      <span class="mp-live-badge"><span class="mp-live-dot"></span>광장 함께하기 (<span id="mpOnlineNum">7</span>명)</span>
+      <span style="cursor:pointer; color:#38bdf8;" onclick="openModal('modalCustomize')">내 캐릭터 꾸미기 ↗</span>
+    </div>
+    <div class="mp-chat-log" id="mpChatLog">
+      <div class="mp-chat-msg"><b>[시스템]</b> 마음 광주리 멀티플레이 광장에 입장했습니다!</div>
+      <div class="mp-chat-msg"><b>[지우]</b> 안녕! 같이 무지개 점프맵 꼭대기까지 올라가 볼래?</div>
+      <div class="mp-chat-msg"><b>[도윤]</b> 나는 기쁨 블록으로 계단을 쌓고 있어!</div>
+    </div>
+    <div class="mp-quick-row">
+      <button type="button" class="mp-quick-btn" onclick="sendMpChat('안녕! 반가워 👋')">👋 안녕!</button>
+      <button type="button" class="mp-quick-btn" onclick="sendMpChat('같이 점프맵 가자! 🌈')">🌈 점프맵 가자</button>
+      <button type="button" class="mp-quick-btn" onclick="sendMpChat('내 마음 광주리 같이 들어줘! 🧺')">🧺 광주리 도움</button>
+      <button type="button" class="mp-quick-btn" onclick="sendMpChat('멋진 블록 건축이네! 🧱')">🧱 멋진 블록!</button>
+    </div>
+    <div class="mp-chat-input-row">
+      <input type="text" class="mp-chat-input" id="mpChatInput" maxlength="40" placeholder="머리 위 말풍선 채팅 입력 (Enter)..." />
+      <button type="button" class="mp-chat-send" id="btnMpChatSend">전송</button>
+    </div>
+  </div>
+
   <!-- 실시간 레이더 미니맵 -->
   <div class="minimap-box" title="마음 동산 레이더">
     <canvas id="minimapCanvas" width="126" height="126"></canvas>
@@ -520,42 +619,51 @@
     <div class="zp-btns" id="zpBtns"></div>
   </div>
 
-  <div class="key-hints" id="keyHints">WASD 이동 · SHIFT 질주 · SPACE 2단점프 · F 마법 · C 심호흡 · G 대화 · E 춤 · Q 명상</div>
+  <div id="keyHints" style="display:none;"></div>
   <div class="v-joy-zone" id="joyZone"><div class="v-joy-knob" id="joyKnob"></div></div>
 
-  <!-- 하단 모듈형 액션 바 -->
-  
-  <!-- 마인크래프트 스타일 조준점 & 핫바 -->
+  <!-- 마인크래프트 스타일 조준점 & 6슬롯 핫바 (하단 독과 절대 겹치지 않는 상하 분리 구조) -->
   <div class="mc-crosshair"></div>
-  <div class="mc-hotbar-wrap" id="mcHotbar">
-    <div class="mc-slot active" data-slot="1" title="[1] 기쁨 블록 (슈퍼 점프 복셀)">
-      <span class="mc-key">1</span>
-      <div class="mc-icon-cube" style="background:#fbbf24; box-shadow:0 0 8px #f59e0b;"></div>
-      <span class="mc-label">기쁨 블록</span>
+  <div class="mc-hotbar-container">
+    <div class="mc-hotbar-guide">
+      <span style="color:#fbbf24;">[우클릭 / B]</span> 블록 설치 · <span style="color:#38bdf8;">[좌클릭 / V]</span> 채굴 · <span style="color:#c084fc;">[6번 / F]</span> 별빛 마법 · <span style="color:#4ade80;">[1~6]</span> 도구 선택
     </div>
-    <div class="mc-slot" data-slot="2" title="[2] 슬픔 블록 (치유 아쿠아 크리스탈)">
-      <span class="mc-key">2</span>
-      <div class="mc-icon-cube" style="background:#38bdf8; box-shadow:0 0 8px #0284c7;"></div>
-      <span class="mc-label">슬픔 블록</span>
+    <div class="mc-hotbar-wrap" id="mcHotbar">
+      <div class="mc-slot active" data-slot="1" title="[1] 기쁨 블록 (우클릭/B: 설치 | 좌클릭/V: 회수)">
+        <span class="mc-key">1</span>
+        <span class="mc-count" id="cntSlot1">∞</span>
+        <div class="mc-icon-cube" style="background:#fbbf24; box-shadow:0 0 8px #f59e0b;"></div>
+        <span class="mc-label">기쁨 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="2" title="[2] 슬픔 물블록 (우클릭/B: 설치 | 화로 진정 효과)">
+        <span class="mc-key">2</span>
+        <span class="mc-count" id="cntSlot2">∞</span>
+        <div class="mc-icon-cube" style="background:#38bdf8; box-shadow:0 0 8px #0284c7;"></div>
+        <span class="mc-label">슬픔 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="3" title="[3] 용기 블록 (우클릭/B: 화염 탄성 블록 설치)">
+        <span class="mc-key">3</span>
+        <span class="mc-count" id="cntSlot3">∞</span>
+        <div class="mc-icon-cube" style="background:#ef4444; box-shadow:0 0 8px #b91c1c;"></div>
+        <span class="mc-label">용기 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="4" title="[4] 평온 블록 (우클릭/B: 에메랄드 숲 블록 설치)">
+        <span class="mc-key">4</span>
+        <span class="mc-count" id="cntSlot4">∞</span>
+        <div class="mc-icon-cube" style="background:#22c55e; box-shadow:0 0 8px #15803d;"></div>
+        <span class="mc-label">평온 블록</span>
+      </div>
+      <div class="mc-slot" data-slot="5" title="[5] 마음 곡괭이 (좌클릭/V: 광석 채굴 & 블록 회수 전용)">
+        <span class="mc-key">5</span>
+        <div style="font-size:17px; margin-top:2px;">⛏️</div>
+        <span class="mc-label">마음 곡괭이</span>
+      </div>
+      <div class="mc-slot" data-slot="6" title="[6] 별빛 지팡이 (좌클릭/F: 어둠 정화 별빛 마법 발사)">
+        <span class="mc-key">6</span>
+        <div style="font-size:17px; margin-top:2px;">🪄</div>
+        <span class="mc-label">별빛 지팡이</span>
+      </div>
     </div>
-    <div class="mc-slot" data-slot="3" title="[3] 용기 블록 (화염 루비 복셀)">
-      <span class="mc-key">3</span>
-      <div class="mc-icon-cube" style="background:#ef4444; box-shadow:0 0 8px #b91c1c;"></div>
-      <span class="mc-label">용기 블록</span>
-    </div>
-    <div class="mc-slot" data-slot="4" title="[4] 평온 블록 (에메랄드 숲 잔디)">
-      <span class="mc-key">4</span>
-      <div class="mc-icon-cube" style="background:#22c55e; box-shadow:0 0 8px #15803d;"></div>
-      <span class="mc-label">평온 블록</span>
-    </div>
-    <div class="mc-slot" data-slot="5" title="[5] 마음 지팡이 (블록 채굴 & 광석 정화)">
-      <span class="mc-key">5</span>
-      <div style="font-size:18px; margin-top:2px;">⛏️</div>
-      <span class="mc-label">마음 지팡이</span>
-    </div>
-  </div>
-  <div class="mc-hints-bar">
-    <span style="color:#fbbf24; font-weight:700;">[우클릭 / B]</span> 블록 설치 · <span style="color:#38bdf8; font-weight:700;">[좌클릭 / V]</span> 블록 채굴 · <span style="color:#f43f5e; font-weight:700;">[1~5]</span> 핫바 선택
   </div>
 
   <!-- 축하 팝업 배너 -->
@@ -564,14 +672,67 @@
     <div class="congrats-sub" id="congratsSub">내용</div>
   </div>
 
+  <!-- 하단 액션 독 (겹침 없이 깔끔하게 정렬) -->
   <div class="action-dock">
-    <button class="act-btn primary" id="btnGuestSelect"><span class="kbd">1-6</span><span>정령</span></button>
+    <button class="act-btn primary" id="btnCustomizeDock"><span>👕 캐릭터 꾸미기</span></button>
+    <button class="act-btn" id="btnGuestSelect"><span>✨ 동행 정령</span></button>
     <button class="act-btn" id="btnShootAction"><span class="kbd">F</span><span>별빛 마법</span></button>
     <button class="act-btn" id="btnJumpAction"><span class="kbd">SPACE</span><span>점프</span></button>
     <button class="act-btn" id="btnBreatheWind"><span class="kbd">C</span><span>심호흡</span></button>
     <button class="act-btn" id="btnDanceAction"><span class="kbd">E</span><span>춤</span></button>
     <button class="act-btn" id="btnMeditateAction"><span class="kbd">Q</span><span>명상</span></button>
     <button class="act-btn" id="btnFarewellAction"><span>작별 카드</span></button>
+  </div>
+
+  <!-- 모달 0: 멀티플레이어 캐릭터 이름 & 아바타 꾸미기 스튜디오 -->
+  <div class="modal-overlay" id="modalCustomize">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 class="modal-title">👕 내 캐릭터 이름 &amp; 아바타 꾸미기</h3>
+        <button class="btn-close" onclick="closeModal('modalCustomize')">✕</button>
+      </div>
+      <p style="font-size: 12.5px; color: var(--ink-sub); line-height: 1.5;">
+        광장에 모인 친구들에게 보여질 내 캐릭터 이름과 칭호, 의상 색상, 3D 모자 액세서리를 자유롭게 꾸며보세요!
+      </p>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div>
+          <label class="field-label" for="custInputName">캐릭터 이름 (닉네임)</label>
+          <input class="text-input" id="custInputName" type="text" maxlength="12" placeholder="예: 인찬이" />
+        </div>
+        <div>
+          <label class="field-label" for="custSelectTitle">머리 위 칭호 배지</label>
+          <select class="text-input" id="custSelectTitle">
+            <option value="마음 탐험가">🌟 마음 탐험가</option>
+            <option value="블록 건축왕">🧱 블록 건축왕</option>
+            <option value="점프맵 마스터">🌈 점프맵 마스터</option>
+            <option value="따뜻한 위로자">💧 따뜻한 위로자</option>
+            <option value="용기 수호자">🔥 용기 수호자</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="field-label">상의(후드티) 컬러 선택</label>
+      <div class="cust-swatch-row" id="custColorRow">
+        <div class="cust-swatch active" data-color="#ff5800" style="background:#ff5800;" title="코랄 오렌지"></div>
+        <div class="cust-swatch" data-color="#3b82f6" style="background:#3b82f6;" title="스카이 블루"></div>
+        <div class="cust-swatch" data-color="#10b981" style="background:#10b981;" title="에메랄드 민트"></div>
+        <div class="cust-swatch" data-color="#a855f7" style="background:#a855f7;" title="로얄 퍼플"></div>
+        <div class="cust-swatch" data-color="#f59e0b" style="background:#f59e0b;" title="선샤인 골드"></div>
+        <div class="cust-swatch" data-color="#ec4899" style="background:#ec4899;" title="벚꽃 핑크"></div>
+      </div>
+
+      <label class="field-label">3D 머리 꾸미기 &amp; 액세서리 장착</label>
+      <div class="cust-hat-grid" id="custHatGrid">
+        <button type="button" class="cust-hat-btn active" data-hat="ahoge">🌱 기본 바보털</button>
+        <button type="button" class="cust-hat-btn" data-hat="crown">👑 황금 왕관</button>
+        <button type="button" class="cust-hat-btn" data-hat="wizard">🎩 별빛 마법모자</button>
+        <button type="button" class="cust-hat-btn" data-hat="bunny">🐰 토끼 귀 밴드</button>
+        <button type="button" class="cust-hat-btn" data-hat="angel">👼 천사 날개&amp;링</button>
+        <button type="button" class="cust-hat-btn" data-hat="cap">🧢 탐험가 모자</button>
+      </div>
+
+      <button class="btn-primary-full" id="btnApplyCustomize">내 캐릭터에 적용하고 광장에 자랑하기</button>
+    </div>
   </div>
 
   <!-- 모달 1: 정령 선택 -->
@@ -807,7 +968,12 @@
       stats: { joy: 42, sad: 28, anger: 19, fear: 15, worry: 24, flutter: 36 },
       soundOn: true,
       onlineCount: 48,
+      playerId: 'p_' + Math.random().toString(36).slice(2, 9),
       playerName: '인찬이',
+      playerTitle: '마음 탐험가',
+      shirtColor: '#ff5800',
+      hatType: 'ahoge',
+      stardustCount: 0,
       mindNote: '모든 감정 손님은 나를 도우러 온 소중한 친구예요.',
       worryText: '',
       breathProgress: 0,
@@ -828,8 +994,10 @@
     function saveProgress() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          playerName: state.playerName, mindNote: state.mindNote,
-          worryText: state.worryText, quests: state.quests, curGuest: state.curGuest,
+          playerName: state.playerName, playerTitle: state.playerTitle,
+          shirtColor: state.shirtColor, hatType: state.hatType,
+          mindNote: state.mindNote, worryText: state.worryText,
+          quests: state.quests, curGuest: state.curGuest,
           boardPosts: state.boardPosts, likedIds: state.likedIds
         }));
       } catch (e) {}
@@ -840,6 +1008,9 @@
         if (!raw) return;
         const d = JSON.parse(raw);
         if (d.playerName) state.playerName = d.playerName;
+        if (d.playerTitle) state.playerTitle = d.playerTitle;
+        if (d.shirtColor) state.shirtColor = d.shirtColor;
+        if (d.hatType) state.hatType = d.hatType;
         if (d.mindNote) state.mindNote = d.mindNote;
         if (d.worryText) state.worryText = d.worryText;
         if (d.curGuest && state.spirits[d.curGuest]) state.curGuest = d.curGuest;
@@ -1468,71 +1639,184 @@
       zoneNpcs.push({ ...def, group: g });
     });
 
-    // [미션 1: 기쁨 공중 별빛 링 3개]
+    // [미션 1: 기쁨 공중 별빛 링 3개 (트램펄린 스카이 다이빙 게임)]
     const joyRings = [];
-    [[22, 5.5, 4], [24.2, 8.2, 6.2], [19.8, 10.5, 1.8]].forEach(([rx, ry, rz]) => {
+    [[22, 5.2, 4], [24.2, 8.0, 6.2], [19.8, 10.6, 1.8]].forEach(([rx, ry, rz]) => {
       const rg = new THREE.Mesh(
-        new THREE.TorusGeometry(1.35, 0.16, 10, 24),
-        new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xf59e0b, emissiveIntensity: 1.1 })
+        new THREE.TorusGeometry(1.45, 0.18, 12, 28),
+        new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xf59e0b, emissiveIntensity: 1.3 })
       );
       rg.position.set(rx, ry, rz);
       worldGroup.add(rg);
       const done = state.quests.joy;
       rg.visible = !done;
-      joyRings.push({ mesh: rg, collected: done });
+      joyRings.push({ mesh: rg, baseY: ry, cleared: done });
     });
 
-    // [미션 2: 슬픔 연못가 추억 물방울 3개]
+    // [미션 2: 슬픔 연못 위 수련잎 징검다리 5개 & 추억 물방울 3개]
+    const sadLilyPads = [];
+    [[-18.2, 0.32, 4.2], [-20.4, 0.32, 6.4], [-23.0, 0.32, 7.2], [-25.8, 0.32, 5.5], [-24.8, 0.32, 1.2]].forEach(([lx, ly, lz], idx) => {
+      const lily = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.15, 1.05, 0.22, 14),
+        new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.65, emissive: 0x15803d, emissiveIntensity: 0.2 })
+      );
+      lily.position.set(lx, ly, lz);
+      lily.receiveShadow = true;
+      worldGroup.add(lily);
+      // 수련 꽃송이 장식
+      if (idx % 2 === 0) {
+        const flower = new THREE.Mesh(new THREE.OctahedronGeometry(0.24), new THREE.MeshBasicMaterial({ color: 0xfbcfe8 }));
+        flower.position.set(0.35, 0.18, 0.2);
+        lily.add(flower);
+      }
+      obbyPlatforms.push({ mesh: lily, w: 2.1, h: 0.22, d: 2.1, type: 'lily', id: idx, isTop: false, cleared: false, baseY: ly, phase: idx * 0.8 });
+      sadLilyPads.push({ mesh: lily, baseY: ly, phase: idx * 0.8 });
+    });
+
     const sadDrops = [];
     const sadDropStories = [
       '작년 운동회 때 함께 달렸던 소중한 기억을 건졌어요.',
       '비 오는 날 우산을 나눠 쓰던 따뜻한 마음을 기억해냈어요.',
       '헤어질 때 건넸던 마지막 인사를 소중히 간직할 수 있게 됐어요.'
     ];
-    [[-16.5, 0.9, 4], [-28.5, 0.9, 8.5], [-26.5, 0.9, -2.5]].forEach(([dx, dy, dz], idx) => {
+    [[-16.5, 1.0, 4], [-25.8, 1.1, 5.5], [-24.8, 1.1, 1.2]].forEach(([dx, dy, dz], idx) => {
       const dm = new THREE.Mesh(
-        new THREE.OctahedronGeometry(0.45),
-        new THREE.MeshStandardMaterial({ color: 0x60a5fa, emissive: 0x3b82f6, emissiveIntensity: 1.2 })
+        new THREE.OctahedronGeometry(0.48),
+        new THREE.MeshStandardMaterial({ color: 0x60a5fa, emissive: 0x3b82f6, emissiveIntensity: 1.3 })
       );
       dm.position.set(dx, dy, dz);
       worldGroup.add(dm);
       const done = state.quests.sad;
       dm.visible = !done;
-      sadDrops.push({ mesh: dm, collected: done, story: sadDropStories[idx] });
+      sadDrops.push({ mesh: dm, cleared: done, story: sadDropStories[idx] });
     });
 
-    // [미션 4: 두려움 등대 주변 어둠 그림자 5개 (공전+유인 이동)]
+    // [미션 4: 두려움 등대 주변 어둠 먹구름 몬스터 5마리 (별빛 슈팅 디펜스 게임)]
     const fearShadows = [];
     for (let i = 0; i < 5; i++) {
       const ang = (i / 5) * Math.PI * 2;
       const sg = new THREE.Group();
-      sg.add(new THREE.Mesh(new THREE.BoxGeometry(1.35, 1.35, 1.35), new THREE.MeshStandardMaterial({ color: 0x1f1230, emissive: 0x581c87, emissiveIntensity: 0.45 })));
+      const sBody = new THREE.Mesh(
+        new THREE.BoxGeometry(1.35, 1.35, 1.35),
+        new THREE.MeshStandardMaterial({ color: 0x1f1230, emissive: 0x6b21a8, emissiveIntensity: 0.65 })
+      );
+      // 붉게 빛나는 먹구름 몬스터 눈
+      const sEyeMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
+      const sEyeL = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.14, 0.08), sEyeMat); sEyeL.position.set(-0.28, 0.12, 0.69);
+      const sEyeR = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.14, 0.08), sEyeMat); sEyeR.position.set(0.28, 0.12, 0.69);
+      sg.add(sBody, sEyeL, sEyeR);
       sg.position.set(-20 + Math.cos(ang) * 6.0, 2.0, -18 + Math.sin(ang) * 6.0);
       worldGroup.add(sg);
-      fearShadows.push({ group: sg, ang, rad: 4.5 + (i % 2) * 2.2, cleared: state.quests.fear });
+      fearShadows.push({ group: sg, ang, speed: 0.55 + (i % 3) * 0.2, rad: 4.8 + (i % 2) * 2.2, cleared: state.quests.fear });
       if (state.quests.fear) sg.visible = false;
     }
 
-    // [미션 5: 걱정 숲 엉킨 털실 3개]
+    // [미션 5: 걱정 숲 엉킨 털실 매듭 3개]
     const worryThreads = [];
     [[24, 0.9, -15], [16.5, 0.9, -21], [23, 0.9, -22.5]].forEach(([wx, wy, wz]) => {
       const wm = new THREE.Mesh(
-        new THREE.TorusKnotGeometry(0.38, 0.12, 36, 6),
-        new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x10b981, emissiveIntensity: 1.0 })
+        new THREE.TorusKnotGeometry(0.42, 0.13, 36, 6),
+        new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x10b981, emissiveIntensity: 1.1 })
       );
       wm.position.set(wx, wy, wz);
       worldGroup.add(wm);
       const done = state.quests.worry;
       wm.visible = !done;
-      worryThreads.push({ mesh: wm, collected: done });
+      worryThreads.push({ mesh: wm, cleared: done });
     });
 
-    // [동화 9장 협동: 살아있는 친구 아바타 4명]
+    // 3D 모자 생성 헬퍼 (내 캐릭터 & 멀티플레이 친구 아바타 공용)
+    function createHatMesh(hatType) {
+      const hg = new THREE.Group();
+      if (hatType === 'crown') {
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.32, 0.22, 10), new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xd97706, emissiveIntensity: 0.4, metalness: 0.6, roughness: 0.2 }));
+        base.position.y = 0.52;
+        hg.add(base);
+        for (let i = 0; i < 5; i++) {
+          const a = (i / 5) * Math.PI * 2;
+          const tip = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.22, 4), new THREE.MeshStandardMaterial({ color: 0xfde047, metalness: 0.5 }));
+          tip.position.set(Math.cos(a) * 0.28, 0.68, Math.sin(a) * 0.28);
+          hg.add(tip);
+        }
+      } else if (hatType === 'wizard') {
+        const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 0.06, 16), new THREE.MeshStandardMaterial({ color: 0x6b21a8, roughness: 0.5 }));
+        brim.position.y = 0.44;
+        const cone = new THREE.Mesh(new THREE.ConeGeometry(0.38, 0.85, 12), new THREE.MeshStandardMaterial({ color: 0x7e22ce, roughness: 0.5 }));
+        cone.position.y = 0.85;
+        const band = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.39, 0.1, 12), new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xf59e0b, emissiveIntensity: 0.5 }));
+        band.position.y = 0.50;
+        hg.add(brim, cone, band);
+      } else if (hatType === 'bunny') {
+        const earMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+        const pinkMat = new THREE.MeshBasicMaterial({ color: 0xf472b6 });
+        [-0.2, 0.2].forEach(ex => {
+          const ear = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.58, 0.12), earMat);
+          ear.position.set(ex, 0.72, 0);
+          const inner = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.42, 0.04), pinkMat);
+          inner.position.set(ex, 0.72, 0.05);
+          hg.add(ear, inner);
+        });
+      } else if (hatType === 'angel') {
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.045, 8, 24), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+        halo.rotation.x = Math.PI / 2;
+        halo.position.y = 0.72;
+        hg.add(halo);
+      } else if (hatType === 'cap') {
+        const dome = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.28, 0.86), new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.5 }));
+        dome.position.y = 0.45;
+        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.07, 0.36), new THREE.MeshStandardMaterial({ color: 0x0369a1 }));
+        visor.position.set(0, 0.36, 0.52);
+        hg.add(dome, visor);
+      }
+      return hg;
+    }
+
+    // 캔버스 기반 3D 네임태그 및 말풍선 스프라이트 생성 헬퍼
+    function makeNameSprite(nameText, titleText, badgeColor = '#fbbf24') {
+      const nc = document.createElement('canvas'); nc.width = 384; nc.height = 96;
+      const nctx = nc.getContext('2d');
+      nctx.fillStyle = 'rgba(15, 23, 42, 0.86)';
+      nctx.fillRect(16, 12, 352, 72);
+      nctx.strokeStyle = badgeColor; nctx.lineWidth = 3;
+      nctx.strokeRect(16, 12, 352, 72);
+      nctx.fillStyle = badgeColor; nctx.font = 'bold 18px "Noto Sans KR"'; nctx.textAlign = 'center';
+      nctx.fillText(`[${titleText}]`, 192, 39);
+      nctx.fillStyle = '#ffffff'; nctx.font = 'bold 25px "Noto Sans KR"';
+      nctx.fillText(nameText, 192, 69);
+      const tex = new THREE.CanvasTexture(nc);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+      sp.scale.set(2.8, 0.7, 1);
+      return { sprite: sp, canvas: nc, ctx: nctx, tex };
+    }
+
+    function drawChatBubbleCanvas(cctx, msgText, borderColor = '#38bdf8') {
+      cctx.clearRect(0, 0, 512, 112);
+      cctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+      cctx.fillRect(12, 10, 488, 86);
+      cctx.strokeStyle = borderColor; cctx.lineWidth = 4;
+      cctx.strokeRect(12, 10, 488, 86);
+      cctx.fillStyle = '#fef08a'; cctx.font = 'bold 23px "Noto Sans KR"'; cctx.textAlign = 'center';
+      cctx.fillText('💬 ' + msgText.slice(0, 21), 256, 62);
+    }
+
+    function makeChatBubbleSprite(msgText) {
+      const cc = document.createElement('canvas'); cc.width = 512; cc.height = 112;
+      const cctx = cc.getContext('2d');
+      drawChatBubbleCanvas(cctx, msgText, '#38bdf8');
+      const tex = new THREE.CanvasTexture(cc);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+      sp.scale.set(3.6, 0.8, 1);
+      return { sprite: sp, canvas: cc, ctx: cctx, tex };
+    }
+
+    // [동화 9장 협동 & 멀티플레이 광장: 살아있는 친구 아바타 6명]
     const friendDefs = [
-      { id: 'jiwoo', name: '지우 (5학년)', shirt: 0x3b82f6, x: 7, z: 5, story: '“모둠 활동에서 내 의견이 묵살돼서 화가 났지만, 심호흡하며 차분해지려고 노력 중이야. 내 마음 광주리 같이 들어줄래?”' },
-      { id: 'seojun', name: '서준 (4학년)', shirt: 0x10b981, x: -8, z: 6, story: '“단짝 친구가 전학을 가서 마음이 무겁네… 누군가 내 이야기를 들어주고 함께 걸어주면 힘이 날 것 같아.”' },
-      { id: 'minseo', name: '민서 (6학년)', shirt: 0xa855f7, x: -6, z: -8, story: '“곧 영어 발표 순서인데 너무 떨려! 우리 같이 심호흡하고 신나게 춤춰볼래?”' },
-      { id: 'doyun', name: '도윤 (3학년)', shirt: 0xf59e0b, x: 8, z: -7, story: '“오늘 마음 광주리가 좀 무겁다! 9장 동화처럼 우리가 서로 광주리를 맞들어 주면 훨씬 가벼워진대!”' }
+      { id: 'jiwoo', name: '지우 (5학년)', title: '점프맵 러너', hat: 'crown', shirt: 0x3b82f6, x: 7, z: 5, chats: ['같이 무지개 점프맵 꼭대기 가자!', '심호흡하니까 마음이 한결 편해졌어!'], story: '“모둠 활동에서 내 의견이 묵살돼서 화가 났지만, 심호흡하며 차분해지려고 노력 중이야. 내 마음 광주리 같이 들어줄래?”' },
+      { id: 'seojun', name: '서준 (4학년)', title: '따뜻한 위로자', hat: 'bunny', shirt: 0x10b981, x: -8, z: 6, chats: ['연못 수련잎 징검다리 건너봤어?', '친구야, 오늘 마음은 어때?'], story: '“단짝 친구가 전학을 가서 마음이 무겁네… 누군가 내 이야기를 들어주고 함께 걸어주면 힘이 날 것 같아.”' },
+      { id: 'minseo', name: '민서 (6학년)', title: '별빛 마법사', hat: 'wizard', shirt: 0xa855f7, x: -6, z: -8, chats: ['6번 별빛 지팡이로 어둠을 물리치자!', '등대 불빛이 정말 예쁘지 않니?'], story: '“곧 영어 발표 순서인데 너무 떨려! 우리 같이 심호흡하고 신나게 춤춰볼래?”' },
+      { id: 'doyun', name: '도윤 (3학년)', title: '블록 건축왕', hat: 'cap', shirt: 0xf59e0b, x: 8, z: -7, chats: ['우클릭으로 블록 계단을 쌓아봐!', '광석을 캐면 별가루가 쏟아져!'], story: '“오늘 마음 광주리가 좀 무겁다! 9장 동화처럼 우리가 서로 광주리를 맞들어 주면 훨씬 가벼워진대!”' },
+      { id: 'haeun', name: '하은 (5학년)', title: '기쁨 탐험가', hat: 'angel', shirt: 0xec4899, x: 14, z: 3, chats: ['트램펄린 점프 진짜 신난다!', '엄마 NPC한테 인사해 봤어?'], story: '“트램펄린에서 하늘 높이 솟구쳐 황금 링 3개를 통과해 봐! 기분이 날아갈 것 같아!”' },
+      { id: 'taeo', name: '태오 (4학년)', title: '마그마 도전자', hat: 'crown', shirt: 0xef4444, x: -2, z: 16, chats: ['분노의 화산에 2번 물블록을 놓아봐!', '마그마 파쿠르 정상 정복 성공!'], story: '“화가 날 땐 심호흡(C키)을 하거나 슬픔 물블록을 놓으면 뜨거운 불길이 시원하게 가라앉아!”' }
     ];
     const friendAgents = [];
     friendDefs.forEach((fd, idx) => {
@@ -1547,7 +1831,9 @@
       const fEyeM = new THREE.MeshBasicMaterial({ color: 0x18181b });
       const feL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feL.position.set(-0.16, 0.04, 0.37);
       const feR = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.06), fEyeM); feR.position.set(0.16, 0.04, 0.37);
-      fHead.add(feL, feR); fTorso.add(fHead);
+      fHead.add(feL, feR);
+      if (fd.hat) fHead.add(createHatMesh(fd.hat));
+      fTorso.add(fHead);
 
       // 친구도 등 뒤에 마음 광주리를 메고 다님!
       const fPack = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.24, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
@@ -1562,19 +1848,22 @@
       fRing.rotation.x = -Math.PI / 2; fRing.position.y = 0.13; fg.add(fRing);
 
       // 이름표 캔버스 스프라이트
-      const nc = document.createElement('canvas'); nc.width = 256; nc.height = 64;
-      const nctx = nc.getContext('2d');
-      nctx.fillStyle = 'rgba(24,24,27,0.82)'; nctx.fillRect(16, 10, 224, 44);
-      nctx.fillStyle = '#ffffff'; nctx.font = 'bold 24px "Noto Sans KR"'; nctx.textAlign = 'center';
-      nctx.fillText(fd.name, 128, 40);
-      const nSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(nc), transparent: true }));
-      nSprite.position.y = 2.9; nSprite.scale.set(2.4, 0.6, 1); fg.add(nSprite);
+      const tagObj = makeNameSprite(fd.name, fd.title, '#38bdf8');
+      tagObj.sprite.position.y = 3.1;
+      fg.add(tagObj.sprite);
+
+      // 친구 머리 위 실시간 말풍선 스프라이트
+      const chatObj = makeChatBubbleSprite(fd.chats[0]);
+      chatObj.sprite.position.y = 3.95;
+      chatObj.sprite.visible = (idx % 2 === 0);
+      fg.add(chatObj.sprite);
 
       fg.userData.friendId = fd.id;
       worldGroup.add(fg);
       friendAgents.push({
         ...fd, group: fg, torso: fTorso, legL: fLegL, legR: fLegR,
-        homeX: fd.x, homeZ: fd.z, angle: idx * 1.5, danceTimer: 0, helped: false
+        homeX: fd.x, homeZ: fd.z, phase: idx * 1.15, radius: 3.0 + (idx % 2) * 1.5,
+        danceTimer: 0, helped: false, chatObj, chatIdx: 0, chatTimer: idx * 2.5
       });
     });
 
@@ -1658,14 +1947,14 @@
     worldGroup.add(boardFrame, boardPillarL, boardPillarR);
 
     // ==========================================
-    // 5. 로블록스 스타일 아바타 '인찬이' + 등 뒤 '실시간 마음 광주리'
+    // 5. 로블록스 스타일 아바타 '인찬이' + 커스터마이징 모자/의상/네임태그
     // ==========================================
     const playerRig = new THREE.Group();
     playerRig.position.set(0, 0, 10);
     scene.add(playerRig);
 
     const skinMat = new THREE.MeshStandardMaterial({ color: 0xfde0c6, roughness: 0.5 });
-    const shirtMat = new THREE.MeshStandardMaterial({ color: 0xff5800, roughness: 0.45 });
+    const shirtMat = new THREE.MeshStandardMaterial({ color: state.shirtColor || '#ff5800', roughness: 0.45 });
     const pantsMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.7 });
 
     // 로블록스 스타일 몸통 & 머리
@@ -1698,6 +1987,59 @@
     const ahogeMesh = new THREE.Mesh(ahogeGeo, ahogeMat);
     ahogeGroup.add(ahogeMesh);
     head.add(ahogeGroup);
+
+    // 커스터마이징 3D 모자 그룹들 장착
+    const playerHats = {
+      ahoge: ahogeGroup,
+      crown: createHatMesh('crown'),
+      wizard: createHatMesh('wizard'),
+      bunny: createHatMesh('bunny'),
+      angel: createHatMesh('angel'),
+      cap: createHatMesh('cap')
+    };
+    Object.keys(playerHats).forEach(k => {
+      if (k !== 'ahoge') head.add(playerHats[k]);
+    });
+
+    // 천사 날개 (등 뒤 장착용)
+    const angelWingsGroup = new THREE.Group();
+    const wingMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe0f2fe, emissiveIntensity: 0.4 });
+    const wingL = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.45, 0.08), wingMat); wingL.position.set(-0.55, 0.25, -0.32); wingL.rotation.z = 0.25;
+    const wingR = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.45, 0.08), wingMat); wingR.position.set(0.55, 0.25, -0.32); wingR.rotation.z = -0.25;
+    angelWingsGroup.add(wingL, wingR);
+    angelWingsGroup.visible = false;
+    torso.add(angelWingsGroup);
+
+    // 내 캐릭터 머리 위 3D 네임태그 & 실시간 채팅 말풍선
+    const playerTagObj = makeNameSprite(state.playerName, state.playerTitle, '#fbbf24');
+    playerTagObj.sprite.position.set(0, 3.35, 0);
+    playerRig.add(playerTagObj.sprite);
+
+    const playerChatObj = makeChatBubbleSprite('안녕! 반가워!');
+    playerChatObj.sprite.position.set(0, 4.15, 0);
+    playerChatObj.sprite.visible = false;
+    playerRig.add(playerChatObj.sprite);
+    let playerChatTimer = 0;
+
+    function updatePlayerAppearance() {
+      shirtMat.color.set(state.shirtColor || '#ff5800');
+      Object.keys(playerHats).forEach(k => {
+        playerHats[k].visible = (k === (state.hatType || 'ahoge'));
+      });
+      angelWingsGroup.visible = (state.hatType === 'angel');
+      const nctx = playerTagObj.ctx;
+      nctx.clearRect(0, 0, 384, 96);
+      nctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+      nctx.fillRect(16, 12, 352, 72);
+      nctx.strokeStyle = '#fbbf24'; nctx.lineWidth = 3.5;
+      nctx.strokeRect(16, 12, 352, 72);
+      nctx.fillStyle = '#fbbf24'; nctx.font = 'bold 18px "Noto Sans KR"'; nctx.textAlign = 'center';
+      nctx.fillText(`[${state.playerTitle || '마음 탐험가'}]`, 192, 39);
+      nctx.fillStyle = '#ffffff'; nctx.font = 'bold 26px "Noto Sans KR"';
+      nctx.fillText(state.playerName || '인찬이', 192, 69);
+      playerTagObj.tex.needsUpdate = true;
+    }
+    updatePlayerAppearance();
 
     // 귀여운 점눈
     const eyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
@@ -1751,7 +2093,7 @@
     const leftArm = makeArm(true);
     const rightArm = makeArm(false);
 
-    // 별빛 지팡이
+    // [핫바 6번] 별빛 지팡이
     const wandGroup = new THREE.Group();
     wandGroup.position.set(0, -0.78, 0.25); wandGroup.rotation.x = Math.PI / 2.2;
     const wandStick = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.3, 0.08), new THREE.MeshStandardMaterial({ color: 0xfef3c7 }));
@@ -1759,13 +2101,24 @@
     const wandStar = new THREE.Mesh(new THREE.OctahedronGeometry(0.22), wandStarMat);
     wandStar.position.y = 0.72;
     wandGroup.add(wandStick, wandStar);
+    wandGroup.visible = false;
     rightArm.add(wandGroup);
 
-    // 마인크래프트 손에 든 미니 복셀 블록 (핫바 1~4번 선택 시 노출)
-    const handBlockGeo = new THREE.BoxGeometry(0.36, 0.36, 0.36);
+    // [핫바 5번] 3D 마인크래프트 다이아몬드 곡괭이
+    const pickaxeGroup = new THREE.Group();
+    pickaxeGroup.position.set(0, -0.75, 0.26); pickaxeGroup.rotation.x = Math.PI / 2.2;
+    const pickHandle = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.15, 0.08), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+    const pickHead = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.14, 0.12), new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.5, metalness: 0.4 }));
+    pickHead.position.y = 0.52;
+    pickaxeGroup.add(pickHandle, pickHead);
+    pickaxeGroup.visible = false;
+    rightArm.add(pickaxeGroup);
+
+    // [핫바 1~4번] 마인크래프트 손에 든 미니 복셀 블록 (기본 1번 활성)
+    const handBlockGeo = new THREE.BoxGeometry(0.38, 0.38, 0.38);
     const handBlockMesh = new THREE.Mesh(handBlockGeo, blockMaterials[1]);
-    handBlockMesh.position.set(0, -0.65, 0.28);
-    handBlockMesh.visible = false;
+    handBlockMesh.position.set(0, -0.65, 0.32);
+    handBlockMesh.visible = true;
     rightArm.add(handBlockMesh);
 
     function makeLeg(isLeft) {
@@ -1887,29 +2240,91 @@
       setTimeout(() => banner.classList.remove('show'), 3800);
     }
 
-    // 마인크래프트 핫바 선택
+    let lastBlockSlot = 1;
+    const blockPlaceAnims = [];
+    const placementRings = [];
+
+    function triggerArmSwing(targetX, targetZ) {
+      playerPhysics.armSwingTimer = 0.36;
+      if (typeof targetX === 'number' && typeof targetZ === 'number') {
+        const dx = targetX - playerRig.position.x;
+        const dz = targetZ - playerRig.position.z;
+        if (Math.hypot(dx, dz) > 0.05) {
+          playerRig.rotation.y = Math.atan2(dx, dz);
+        }
+      }
+    }
+
+    // 마인크래프트 6슬롯 핫바 선택
     function selectHotbarSlot(num) {
       currentHotbarSlot = num;
+      if (num >= 1 && num <= 4) lastBlockSlot = num;
       document.querySelectorAll('.mc-slot').forEach(el => {
         el.classList.toggle('active', parseInt(el.dataset.slot) === num);
       });
       if (num >= 1 && num <= 4) {
         handBlockMesh.material = blockMaterials[num];
         handBlockMesh.visible = true;
+        pickaxeGroup.visible = false;
         wandGroup.visible = false;
-        showToast(`[핫바 ${num}번] ${['기쁨','슬픔','용기','평온'][num-1]} 블록 선택! (우클릭/B로 설치)`);
-      } else {
+        showToast(`🧱 <b>[핫바 ${num}번: ${['기쁨','슬픔(물)','용기','평온'][num-1]} 블록]</b> 우클릭(B): 블록 놓기 · 좌클릭(V): 블록 회수`);
+      } else if (num === 5) {
         handBlockMesh.visible = false;
+        pickaxeGroup.visible = true;
+        wandGroup.visible = false;
+        showToast('⛏️ <b>[핫바 5번: 마음 곡괭이]</b> 좌클릭(V)으로 광석 채굴 & 블록 회수 전용!');
+      } else if (num === 6) {
+        handBlockMesh.visible = false;
+        pickaxeGroup.visible = false;
         wandGroup.visible = true;
-        showToast('[핫바 5번] 마음 지팡이(곡괭이) 선택! (좌클릭/V로 채굴 & 광석 정화)');
+        showToast('🪄 <b>[핫바 6번: 별빛 지팡이]</b> 좌클릭(F)으로 별빛 마법 발사 & 어둠 그림자 정화!');
       }
     }
 
-    // 블록 설치 (마인크래프트 방식 & 자동 스택)
+    // 외부(멀티플레이어 탭) 또는 로컬에서 블록 생성 및 비행 착지 애니메이션
+    function spawnBlockWithAnim(bx, by, bz, slotType, fromPos) {
+      const bMat = blockMaterials[slotType] || blockMaterials[1];
+      const bMesh = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.0, 1.0), bMat);
+      // 미세한 엣지 테두리 라인으로 복셀 입체감 강화
+      const edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(new THREE.BoxGeometry(1.005, 1.005, 1.005)),
+        new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 })
+      );
+      bMesh.add(edges);
+
+      const startP = fromPos ? fromPos.clone() : new THREE.Vector3(bx, by + 1.5, bz);
+      bMesh.position.copy(startP);
+      bMesh.scale.setScalar(0.25);
+      bMesh.castShadow = true; bMesh.receiveShadow = true;
+      worldGroup.add(bMesh);
+
+      const blockObj = { mesh: bMesh, x: bx, y: by, z: bz, type: slotType };
+      placedBlocks.push(blockObj);
+
+      blockPlaceAnims.push({
+        mesh: bMesh,
+        startPos: startP,
+        endPos: new THREE.Vector3(bx, by, bz),
+        elapsed: 0,
+        duration: 0.22
+      });
+
+      // 착지 지점 파동 링
+      const pRing = new THREE.Mesh(
+        new THREE.RingGeometry(0.2, 0.65, 20),
+        new THREE.MeshBasicMaterial({ color: bMat.color.getHex(), transparent: true, opacity: 0.9, side: THREE.DoubleSide })
+      );
+      pRing.rotation.x = -Math.PI / 2;
+      pRing.position.set(bx, by - 0.48, bz);
+      worldGroup.add(pRing);
+      placementRings.push({ mesh: pRing, life: 0.45 });
+    }
+
+    // 블록 설치 (캐릭터 회전 + 오른팔 스윙 + 손에서 날아가는 궤적 애니메이션)
     function placeBlockAtPointer() {
-      if (currentHotbarSlot === 5) {
-        showToast('마음 지팡이 상태입니다! 블록을 설치하려면 1~4번을 선택하세요.');
-        return;
+      const buildSlot = (currentHotbarSlot >= 1 && currentHotbarSlot <= 4) ? currentHotbarSlot : lastBlockSlot;
+      if (currentHotbarSlot >= 5) {
+        selectHotbarSlot(buildSlot);
       }
       initAudio();
       
@@ -1919,18 +2334,17 @@
       const targets = [grassMain, plaza, islandRock, ...placedBlocks.map(b => b.mesh), ...obbyPlatforms.map(p => p.mesh)];
       const hits = raycaster.intersectObjects(targets, true);
 
-      if (hits.length > 0 && hits[0].distance < 30) {
+      if (hits.length > 0 && hits[0].distance < 26) {
         const hit = hits[0];
         const normal = hit.face ? hit.face.normal.clone() : new THREE.Vector3(0, 1, 0);
         normal.transformDirection(hit.object.matrixWorld);
         const placePos = hit.point.clone().addScaledVector(normal, 0.5);
         bx = Math.round(placePos.x);
-        by = Math.max(0.5, Math.round(placePos.y));
+        by = Math.max(0.5, Math.round(placePos.y - 0.5) + 0.5);
         bz = Math.round(placePos.z);
       } else {
-        // 시야 전방 3.2m 지면 자동 배치
         const camFwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
-        const forwardPos = playerRig.position.clone().addScaledVector(camFwd, 3.2);
+        const forwardPos = playerRig.position.clone().addScaledVector(camFwd, 3.0);
         bx = Math.round(forwardPos.x);
         bz = Math.round(forwardPos.z);
         by = 0.5;
@@ -1941,24 +2355,53 @@
         by += 1.0;
       }
 
-      const bMat = blockMaterials[currentHotbarSlot];
-      const bMesh = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.0, 1.0), bMat);
-      bMesh.position.set(bx, by, bz);
-      bMesh.castShadow = true; bMesh.receiveShadow = true;
-      worldGroup.add(bMesh);
-      placedBlocks.push({ mesh: bMesh, x: bx, y: by, z: bz, type: currentHotbarSlot });
+      // 캐릭터 몸통 위치와 겹치면 전방으로 1칸 밀어 끼임 방지
+      if (Math.abs(bx - playerRig.position.x) < 0.75 && Math.abs(bz - playerRig.position.z) < 0.75 && by >= playerRig.position.y && by <= playerRig.position.y + 1.8) {
+        const camFwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
+        bx = Math.round(playerRig.position.x + camFwd.x * 2.0);
+        bz = Math.round(playerRig.position.z + camFwd.z * 2.0);
+      }
 
+      // 캐릭터가 블록 놓는 방향을 바라보고 오른팔을 힘차게 스윙!
+      triggerArmSwing(bx, bz);
+      const handWorldPos = new THREE.Vector3();
+      rightArm.getWorldPosition(handWorldPos);
+
+      spawnBlockWithAnim(bx, by, bz, buildSlot, handWorldPos);
       soundBlockPlace();
-      rightArm.rotation.x = -Math.PI / 2.2;
-      createMagicImpact(new THREE.Vector3(bx, by, bz), bMat.color.getHex());
-      const blockNames = ['기쁨 블록', '슬픔 블록', '용기 블록', '평온 블록'];
-      showToast(`🧱 <b>[${blockNames[currentHotbarSlot-1]} 설치!]</b> (좌표: ${bx}, ${by}, ${bz})`);
+      createMagicImpact(new THREE.Vector3(bx, by, bz), blockMaterials[buildSlot].color.getHex());
+
+      // [스토리 미니게임 연동] 화의 캠프파이어 근처에 2번 슬픔(물) 블록을 놓으면 화가 진정됨!
+      if (buildSlot === 2 && Math.hypot(bx - 0, bz - 24) < 6.5 && !state.quests.anger) {
+        state.mission.anger = Math.min(3, state.mission.anger + 1);
+        soundChime(659);
+        if (state.mission.anger >= 3) {
+          campfireLight.color.set(0xfbbf24);
+          checkQuestCollect('anger', '평온의 불꽃 씨앗 획득', '슬픔의 물 블록과 깊은 호흡으로 뜨거운 화를 시원하게 식혔습니다!');
+          lastPromptZone = null;
+        } else {
+          showToast(`💧 <b>물 블록으로 뜨거운 화를 식혔어요! (${state.mission.anger}/3)</b>`);
+        }
+      } else {
+        const blockNames = ['기쁨 블록', '슬픔 블록', '용기 블록', '평온 블록'];
+        showToast(`🧱 <b>[${blockNames[buildSlot-1]} 설치!]</b> 점프(SPACE)해서 블록 위로 올라가 보세요!`);
+      }
+
+      if (typeof worldChannel !== 'undefined' && worldChannel) {
+        worldChannel.postMessage({ type: 'mp_block_place', x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName });
+      }
     }
 
-    // 블록 채굴 / 파괴
-    function mineBlockAtPointer() {
+    // 블록 및 광석 채굴 (좌클릭 또는 V키 — 별빛 마법과 완전 분리!)
+    function mineBlockAtPointer(clientX, clientY) {
       initAudio();
-      raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+      if (typeof clientX === 'number' && typeof clientY === 'number') {
+        pointerNDC.x = (clientX / window.innerWidth) * 2 - 1;
+        pointerNDC.y = -(clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(pointerNDC, camera);
+      } else {
+        raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+      }
       
       // 1. 감정 광석 채굴 확인
       const oreTargets = emotionOres.map(o => o.userData.mesh);
@@ -1967,20 +2410,23 @@
         const hitOreMesh = oreHits[0].object;
         const oreGroup = hitOreMesh.parent;
         const oData = oreGroup.userData.data;
+        triggerArmSwing(oreGroup.position.x, oreGroup.position.z);
         soundBlockMine();
         createMagicImpact(oreGroup.position, oData.color);
         worldGroup.remove(oreGroup);
         const idx = emotionOres.indexOf(oreGroup);
         if (idx !== -1) emotionOres.splice(idx, 1);
-        state.stardustCount += 3;
+        state.stardustCount = (state.stardustCount || 0) + 3;
+        collectedStardust = Math.min(15, collectedStardust + 1);
+        const stEl = document.getElementById('stardustText');
+        if (stEl) stEl.textContent = `${collectedStardust}/15`;
         saveProgress();
-        showToast(`⛏️ <b>[${oData.name} 채굴!]</b> 감정 보석 조각 +3 획득!`);
+        showToast(`⛏️ <b>[${oData.name} 채굴 성공!]</b> 마음 별가루 보너스 획득!`);
         spawnConfetti(oreGroup.position);
-        rightArm.rotation.x = -Math.PI / 1.8;
         return true;
       }
 
-      // 2. 플레이어가 설치한 블록 채굴
+      // 2. 플레이어가 설치한 블록 채굴/회수
       const blockMeshes = placedBlocks.map(b => b.mesh);
       const bHits = raycaster.intersectObjects(blockMeshes, false);
       if (bHits.length > 0 && bHits[0].distance < 25) {
@@ -1988,15 +2434,38 @@
         const bIdx = placedBlocks.findIndex(b => b.mesh === hitBlock);
         if (bIdx !== -1) {
           const bInfo = placedBlocks[bIdx];
+          triggerArmSwing(bInfo.x, bInfo.z);
           soundBlockMine();
           createMagicImpact(hitBlock.position, blockMaterials[bInfo.type].color.getHex());
           worldGroup.remove(hitBlock);
           placedBlocks.splice(bIdx, 1);
-          rightArm.rotation.x = -Math.PI / 1.8;
-          showToast('⛏️ 블록을 채굴하여 마음 인벤토리로 회수했습니다.');
+          showToast('⛏️ 설치한 블록을 채굴하여 인벤토리로 회수했습니다.');
+          if (typeof worldChannel !== 'undefined' && worldChannel) {
+            worldChannel.postMessage({ type: 'mp_block_mine', x: bInfo.x, y: bInfo.y, z: bInfo.z });
+          }
           return true;
         }
       }
+
+      // 3. 걱정 털실 매듭도 곡괭이로 톡 쳐서 풀기 가능!
+      const threadMeshes = worryThreads.filter(w => !w.cleared).map(w => w.mesh);
+      const tHits = raycaster.intersectObjects(threadMeshes, false);
+      if (tHits.length > 0 && tHits[0].distance < 20) {
+        const wt = worryThreads.find(w => w.mesh === tHits[0].object);
+        if (wt && !wt.cleared) {
+          wt.cleared = true; wt.mesh.visible = false;
+          triggerArmSwing(wt.mesh.position.x, wt.mesh.position.z);
+          state.mission.worry = worryThreads.filter(t => t.cleared).length;
+          saveProgress();
+          soundChime(520 + state.mission.worry * 45);
+          createMagicImpact(wt.mesh.position, 0x10b981);
+          showToast(state.mission.worry >= 3 ? '🧶 엉킨 털실 매듭을 모두 풀었어요! 벤치에서 소원 연등을 날려보세요.' : `🧶 곡괭이로 털실 매듭 풀기! (${state.mission.worry}/3)`);
+          return true;
+        }
+      }
+
+      // 허공에 좌클릭 시에도 팔 스윙 모션 재생 (별빛 마법은 절대 발사하지 않음!)
+      triggerArmSwing();
       return false;
     }
 
@@ -2026,7 +2495,6 @@
         bBase.material.color.set(0xd946ef);
         bBase.scale.set(1.65, 1.35, 1.65);
         bRim.scale.set(1.65, 1.65, 1.35);
-        // 거대한 무지개 빛기둥 생성
         const grandBeam = new THREE.Mesh(
           new THREE.CylinderGeometry(2.5, 3.5, 38, 24, 1, true),
           new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.45, side: THREE.DoubleSide })
@@ -2040,25 +2508,67 @@
     // 높이 기반 발판 및 블록 콜라이더 (Multi-level Platform Collision)
     function getGroundHeight(px, pz, py) {
       let highest = 0; // 기본 평면
-      // 1. 설치된 블록 콜라이더
+      // 1. 설치된 블록 상단면 콜라이더
       for (let i = 0; i < placedBlocks.length; i++) {
         const b = placedBlocks[i];
-        if (Math.abs(px - b.x) <= 0.65 && Math.abs(pz - b.z) <= 0.65) {
+        if (Math.abs(px - b.x) <= 0.72 && Math.abs(pz - b.z) <= 0.72) {
           const top = b.y + 0.5;
-          if (top <= py + 0.4 && top > highest) highest = top;
+          if (top <= py + 0.45 && top > highest) highest = top;
         }
       }
-      // 2. 오비 점프맵 발판 콜라이더
+      // 2. 오비 점프맵 발판 & 수련잎 콜라이더
       for (let i = 0; i < obbyPlatforms.length; i++) {
         const p = obbyPlatforms[i];
-        const halfW = p.w / 2 + 0.15;
-        const halfD = p.d / 2 + 0.15;
+        const halfW = p.w / 2 + 0.2;
+        const halfD = p.d / 2 + 0.2;
         if (Math.abs(px - p.mesh.position.x) <= halfW && Math.abs(pz - p.mesh.position.z) <= halfD) {
           const top = p.mesh.position.y + p.h / 2;
-          if (top <= py + 0.4 && top > highest) highest = top;
+          if (top <= py + 0.45 && top > highest) highest = top;
         }
       }
       return highest;
+    }
+
+    // 수평 블록 충돌 판정 (캐릭터가 설치한 블록과 광석을 절대 뚫고 지나가지 못하도록 AABB 밀어내기!)
+    function resolveHorizontalCollisions() {
+      const playerRadius = 0.42;
+      const py = playerRig.position.y;
+      // 1. 설치한 블록과의 수평 벽 충돌
+      for (let i = 0; i < placedBlocks.length; i++) {
+        const b = placedBlocks[i];
+        const blockTop = b.y + 0.5;
+        const blockBottom = b.y - 0.5;
+        // 플레이어 발보다 블록 상단이 높고(이미 밟고 올라선 상태가 아님), 플레이어 머리보다 블록 하단이 낮을 때 충돌
+        if (blockTop > py + 0.38 && blockBottom < py + 1.85) {
+          const dx = playerRig.position.x - b.x;
+          const dz = playerRig.position.z - b.z;
+          const minDist = 0.5 + playerRadius; // 0.92
+          if (Math.abs(dx) < minDist && Math.abs(dz) < minDist) {
+            const overlapX = minDist - Math.abs(dx);
+            const overlapZ = minDist - Math.abs(dz);
+            if (overlapX < overlapZ) {
+              playerRig.position.x += (dx >= 0 ? overlapX : -overlapX);
+            } else {
+              playerRig.position.z += (dz >= 0 ? overlapZ : -overlapZ);
+            }
+          }
+        }
+      }
+      // 2. 감정 광석과의 수평 충돌
+      for (let i = 0; i < emotionOres.length; i++) {
+        const og = emotionOres[i];
+        if (py < 1.2) {
+          const dx = playerRig.position.x - og.position.x;
+          const dz = playerRig.position.z - og.position.z;
+          const minDist = 0.6 + playerRadius;
+          if (Math.abs(dx) < minDist && Math.abs(dz) < minDist) {
+            const overlapX = minDist - Math.abs(dx);
+            const overlapZ = minDist - Math.abs(dz);
+            if (overlapX < overlapZ) playerRig.position.x += (dx >= 0 ? overlapX : -overlapX);
+            else playerRig.position.z += (dz >= 0 ? overlapZ : -overlapZ);
+          }
+        }
+      }
     }
 
     // 8. 마법 투사체, 먼지, 치유 리추얼 & 퀘스트
@@ -2067,13 +2577,13 @@
 
     function shootMagicBullet() {
       initAudio(); soundMagic();
+      triggerArmSwing();
       const s = state.spirits[state.curGuest];
       const fwd = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRig.rotation.y);
       const spawnPos = playerRig.position.clone().add(new THREE.Vector3(0, 1.4, 0)).addScaledVector(fwd, 0.8);
       const pMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.32), new THREE.MeshStandardMaterial({ color: s.color, emissive: s.color, emissiveIntensity: 1.5 }));
       pMesh.position.copy(spawnPos); scene.add(pMesh);
       magicProjectiles.push({ mesh: pMesh, vel: fwd.clone().multiplyScalar(25.0), color: s.color, life: 1.6 });
-      rightArm.rotation.x = -Math.PI / 2;
     }
 
     function createMagicImpact(pos, colorHex) {
@@ -2132,6 +2642,7 @@
       if (state.quests[key]) return;
       state.quests[key] = true;
       saveProgress(); syncQuestHUD(); soundQuestComplete();
+      levelUpMindBasket();
       showToast(`<b>[퀘스트 달성] ${name}</b> · 등 뒤 광주리에 구슬이 담겼습니다!`);
       if (Object.values(state.quests).filter(Boolean).length === 5) {
         setTimeout(() => {
@@ -2145,10 +2656,10 @@
     // 9. 입력 & 물리 & NPC 대화
     // ==========================================
     const input = { w: false, a: false, s: false, d: false, shift: false, joyX: 0, joyY: 0 };
-    const playerPhysics = { velY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true, isDancing: false, danceTimer: 0, isMeditating: false, walkCycle: 0, blinkTimer: 0, dustTimer: 0 };
+    const playerPhysics = { velY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true, isDancing: false, danceTimer: 0, isMeditating: false, walkCycle: 0, blinkTimer: 0, dustTimer: 0, armSwingTimer: 0 };
 
     window.addEventListener('keydown', e => {
-      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
       initAudio();
       const k = e.key.toLowerCase();
       if (k === 'w' || k === 'arrowup') input.w = true;
@@ -2162,12 +2673,11 @@
       if (k === 'e') doDance();
       if (k === 'q') doMeditate();
       if (k === 'g') interactCurrentZone();
-      if (['1','2','3','4','5'].includes(k)) {
+      if (['1','2','3','4','5','6'].includes(k)) {
         selectHotbarSlot(parseInt(k));
       }
       if (k === 'b') placeBlockAtPointer();
       if (k === 'v') mineBlockAtPointer();
-      document.getElementById('keyHints').style.opacity = '0';
     });
 
     window.addEventListener('keyup', e => {
@@ -2185,6 +2695,7 @@
       pointerNDC.y = -(clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(pointerNDC, camera);
       if (raycaster.intersectObject(screenMesh).length > 0) return { type: 'board' };
+      if (typeof momGroup !== 'undefined' && raycaster.intersectObjects(momGroup.children, true).length > 0) return { type: 'mom' };
       const friendMeshes = friendAgents.map(f => f.group);
       const fHits = raycaster.intersectObjects(friendMeshes, true);
       if (fHits.length > 0) {
@@ -2195,31 +2706,44 @@
       return null;
     }
 
+    let pointerDownPos = { x: 0, y: 0 };
     canvas.addEventListener('pointermove', e => {
+      pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
       if (!camState.isRightDragging) {
         canvas.style.cursor = hitTestInteractive(e.clientX, e.clientY) ? 'pointer' : 'default';
       }
     });
 
-    // 마우스 우클릭: 블록 설치
-    canvas.addEventListener('mousedown', e => {
-      if (e.button === 2 && !e.shiftKey) {
-        // 우클릭 단독 클릭 시 블록 설치 시도
+    canvas.addEventListener('pointerdown', e => {
+      pointerDownPos.x = e.clientX;
+      pointerDownPos.y = e.clientY;
+    });
+
+    // 마우스 우클릭(드래그가 아닌 짧은 클릭): 블록 설치!
+    canvas.addEventListener('pointerup', e => {
+      const dragDist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+      if (e.button === 2 && !e.shiftKey && dragDist < 7) {
         placeBlockAtPointer();
       }
     });
 
+    // 마우스 좌클릭: 별빛 마법과 완벽 분리! (1~5번은 채굴/회수 전용, 6번 지팡이일 때만 별빛 마법 발사)
     canvas.addEventListener('click', e => {
-      if (e.button === 0 && !camState.isRightDragging) {
+      const dragDist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+      if (e.button === 0 && dragDist < 7) {
         const hit = hitTestInteractive(e.clientX, e.clientY);
         if (hit?.type === 'board') openBoardModal();
+        else if (hit?.type === 'mom') {
+          soundMomVoice();
+          document.getElementById('momDialog').style.display = 'block';
+        }
         else if (hit?.type === 'friend') openFriendModal(hit.id);
         else {
-          // 마인크래프트 채굴 모드이거나 블록을 조준 중인 경우 채굴 실행
-          if (currentHotbarSlot === 5 || mineBlockAtPointer()) {
-            // 채굴 완료
-          } else {
+          if (currentHotbarSlot === 6) {
             shootMagicBullet();
+          } else {
+            mineBlockAtPointer(e.clientX, e.clientY);
           }
         }
       }
@@ -2563,7 +3087,7 @@
         fs.group.rotation.y += dt * 1.8;
       });
 
-      // 친구 아바타 순찰 및 황금 협력 빔 업데이트
+      // 친구 아바타 순찰, 머리 위 말풍선 순환 및 황금 협력 빔 업데이트
       friendAgents.forEach((fr, idx) => {
         if (fr.danceTimer > 0) {
           fr.danceTimer -= dt;
@@ -2575,8 +3099,63 @@
           const nz = fr.homeZ + Math.sin(ang * 0.8) * fr.radius;
           fr.group.rotation.y = Math.atan2(nx - fr.group.position.x, nz - fr.group.position.z);
           fr.group.position.set(nx, Math.abs(Math.sin(time * 5 + idx)) * 0.08, nz);
+          fr.legL.rotation.x = Math.sin(time * 6 + idx) * 0.5;
+          fr.legR.rotation.x = -Math.sin(time * 6 + idx) * 0.5;
+        }
+        // 친구 머리 위 말풍선 주기적 표시
+        fr.chatTimer -= dt;
+        if (fr.chatTimer <= 0) {
+          fr.chatTimer = 5.5 + Math.random() * 6.5;
+          if (fr.chatObj && fr.chats && fr.chats.length > 0) {
+            fr.chatIdx = (fr.chatIdx + 1) % fr.chats.length;
+            const msg = fr.chats[fr.chatIdx];
+            drawChatBubbleCanvas(fr.chatObj.ctx, msg, '#38bdf8');
+            fr.chatObj.tex.needsUpdate = true;
+            fr.chatObj.sprite.visible = !fr.chatObj.sprite.visible;
+          }
         }
       });
+      if (playerChatTimer > 0) {
+        playerChatTimer -= dt;
+        if (playerChatTimer <= 0 && playerChatObj) {
+          playerChatObj.sprite.visible = false;
+        }
+      }
+      // 슬픔의 연못 수련잎 징검다리 물결 애니메이션
+      sadLilyPads.forEach((lp, idx) => {
+        lp.mesh.position.y = lp.baseY + Math.sin(time * 2.2 + lp.phase) * 0.04;
+      });
+      // 블록 포물선 비행 설치 애니메이션 & 파동 링 업데이트
+      for (let i = blockPlaceAnims.length - 1; i >= 0; i--) {
+        const anim = blockPlaceAnims[i];
+        anim.elapsed += dt;
+        const t = Math.min(1, anim.elapsed / anim.duration);
+        if (t >= 1) {
+          anim.mesh.position.copy(anim.endPos);
+          anim.mesh.scale.set(1, 1, 1);
+          anim.mesh.rotation.set(0, 0, 0);
+          blockPlaceAnims.splice(i, 1);
+        } else {
+          const ease = 1 - Math.pow(1 - t, 3);
+          anim.mesh.position.lerpVectors(anim.startPos, anim.endPos, ease);
+          anim.mesh.position.y += Math.sin(t * Math.PI) * 1.65;
+          const s = t < 0.8 ? (0.35 + t * 0.9) : (1.18 - (t - 0.8) * 0.9);
+          anim.mesh.scale.setScalar(s);
+          anim.mesh.rotation.y = (1 - ease) * Math.PI * 1.5;
+          anim.mesh.rotation.x = Math.sin(t * Math.PI) * 0.45;
+        }
+      }
+      for (let i = placementRings.length - 1; i >= 0; i--) {
+        const pr = placementRings[i];
+        pr.life -= dt;
+        const p = 1 - (pr.life / 0.45);
+        pr.mesh.scale.setScalar(0.6 + p * 1.8);
+        pr.mesh.material.opacity = Math.max(0, (1 - p) * 0.85);
+        if (pr.life <= 0) {
+          worldGroup.remove(pr.mesh);
+          placementRings.splice(i, 1);
+        }
+      }
       if (coopBeamTimer > 0 && coopBeamTarget) {
         coopBeamTimer -= dt;
         const p1 = playerRig.position.clone().setY(1.4);
@@ -2628,10 +3207,14 @@
         const rgt = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
         const dir = new THREE.Vector3().addScaledVector(fwd, -mz).addScaledVector(rgt, mx).normalize();
         playerRig.position.addScaledVector(dir, speed * dt);
+        resolveHorizontalCollisions();
         playerRig.rotation.y = THREE.MathUtils.lerp(playerRig.rotation.y, Math.atan2(dir.x, dir.z), 0.22);
 
         playerPhysics.walkCycle += dt * (input.shift ? 18 : 11);
-        leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8; rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
+        leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8;
+        if (playerPhysics.armSwingTimer <= 0) {
+          rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
+        }
         leftLeg.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.9; rightLeg.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.9;
         torso.position.y = 1.35 + Math.abs(Math.sin(playerPhysics.walkCycle)) * 0.1;
 
@@ -2643,9 +3226,26 @@
           scene.add(dMesh); dustParticles.push({ mesh: dMesh, life: 0.45 });
         }
       } else if (!playerPhysics.isDancing && !playerPhysics.isMeditating) {
-        leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15); rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, 0, 0.15);
+        resolveHorizontalCollisions();
+        leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15);
+        if (playerPhysics.armSwingTimer <= 0) {
+          rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, 0, 0.15);
+        }
         leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, 0, 0.15); rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, 0, 0.15);
         torso.position.y = 1.35 + Math.sin(time * 2.5) * 0.025;
+      }
+
+      // 블록 설치 / 채굴 시 캐릭터 오른팔 스윙 & 상체 숙임 액션 애니메이션
+      if (playerPhysics.armSwingTimer > 0) {
+        playerPhysics.armSwingTimer -= dt;
+        const p = 1 - Math.max(0, playerPhysics.armSwingTimer / 0.36);
+        rightArm.rotation.x = -Math.sin(p * Math.PI) * 2.15;
+        rightArm.rotation.z = -Math.sin(p * Math.PI) * 0.35;
+        torso.rotation.x = Math.sin(p * Math.PI) * 0.24;
+        if (playerPhysics.armSwingTimer <= 0) {
+          rightArm.rotation.z = 0;
+          torso.rotation.x = 0;
+        }
       }
 
       for (let i = dustParticles.length - 1; i >= 0; i--) {
@@ -2884,8 +3484,9 @@
     window.closeModal = id => { document.getElementById(id).classList.remove('open'); };
     function showToast(msg) {
       const box = document.getElementById('toastBox'), el = document.createElement('div');
+      while (box.children.length >= 2) box.removeChild(box.firstChild);
       el.className = 'toast'; el.innerHTML = msg; box.appendChild(el);
-      setTimeout(() => el.remove(), 4000);
+      setTimeout(() => el.remove(), 3200);
     }
 
     document.getElementById('btnGuestSelect').onclick = () => openModal('modalSpirit');
@@ -2991,9 +3592,128 @@
     };
 
     // ==========================================
-    // 11-B. 친구 아바타 협력 & 크로스탭 실시간 연동
+    // 11-B. 캐릭터 꾸미기 스튜디오 & 멀티플레이어 실시간 채팅/동기화
     // ==========================================
     const worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_v1') : null;
+
+    function openCustomizeStudio() {
+      document.getElementById('custInputName').value = state.playerName || '인찬이';
+      document.getElementById('custSelectTitle').value = state.playerTitle || '마음 탐험가';
+      document.querySelectorAll('#custColorRow .cust-swatch').forEach(sw => {
+        sw.classList.toggle('active', sw.dataset.color === (state.shirtColor || '#ff5800'));
+      });
+      document.querySelectorAll('#custHatGrid .cust-hat-btn').forEach(hb => {
+        hb.classList.toggle('active', hb.dataset.hat === (state.hatType || 'ahoge'));
+      });
+      openModal('modalCustomize');
+    }
+    window.openCustomizeStudio = openCustomizeStudio;
+    document.getElementById('btnCustomizeTop').onclick = openCustomizeStudio;
+    document.getElementById('btnCustomizeDock').onclick = openCustomizeStudio;
+
+    document.querySelectorAll('#custColorRow .cust-swatch').forEach(sw => {
+      sw.onclick = () => {
+        document.querySelectorAll('#custColorRow .cust-swatch').forEach(s => s.classList.remove('active'));
+        sw.classList.add('active');
+        state.shirtColor = sw.dataset.color;
+        updatePlayerAppearance();
+        soundChime(580);
+      };
+    });
+
+    document.querySelectorAll('#custHatGrid .cust-hat-btn').forEach(hb => {
+      hb.onclick = () => {
+        document.querySelectorAll('#custHatGrid .cust-hat-btn').forEach(b => b.classList.remove('active'));
+        hb.classList.add('active');
+        state.hatType = hb.dataset.hat;
+        updatePlayerAppearance();
+        soundChime(659);
+      };
+    });
+
+    document.getElementById('btnApplyCustomize').onclick = () => {
+      const nm = document.getElementById('custInputName').value.trim();
+      const tt = document.getElementById('custSelectTitle').value;
+      if (nm) state.playerName = nm;
+      if (tt) state.playerTitle = tt;
+      updatePlayerAppearance();
+      saveProgress();
+      updateScreenCanvas();
+      closeModal('modalCustomize');
+      soundQuestComplete();
+      showToast(`✨ <b>[${state.playerTitle}] ${state.playerName}</b> 캐릭터 꾸미기가 완료되었습니다!`);
+      if (worldChannel) {
+        worldChannel.postMessage({
+          type: 'mp_customize',
+          from: state.playerName,
+          title: state.playerTitle,
+          shirtColor: state.shirtColor,
+          hatType: state.hatType
+        });
+      }
+    };
+
+    function appendChatLog(author, msg, isSystem = false) {
+      const logEl = document.getElementById('mpChatLog');
+      if (!logEl) return;
+      const row = document.createElement('div');
+      row.className = 'mp-chat-msg';
+      row.innerHTML = isSystem ? `<b>[광장]</b> ${msg}` : `<b>[${author}]</b> ${msg}`;
+      logEl.appendChild(row);
+      while (logEl.children.length > 25) logEl.removeChild(logEl.firstChild);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function showPlayerBubble(msgText) {
+      if (!playerChatObj) return;
+      drawChatBubbleCanvas(playerChatObj.ctx, msgText, '#fbbf24');
+      playerChatObj.tex.needsUpdate = true;
+      playerChatObj.sprite.visible = true;
+      playerChatTimer = 5.5;
+    }
+
+    window.sendMpChat = function(presetText) {
+      initAudio();
+      const inputEl = document.getElementById('mpChatInput');
+      const text = (typeof presetText === 'string' ? presetText : inputEl.value).trim();
+      if (!text) return;
+      if (typeof presetText !== 'string') inputEl.value = '';
+
+      showPlayerBubble(text);
+      appendChatLog(state.playerName, text);
+      soundChime(659);
+
+      if (worldChannel) {
+        worldChannel.postMessage({ type: 'mp_chat', from: state.playerName, msg: text });
+      }
+
+      // 주변 친구 아바타가 다정하게 화답하여 함께 노는 느낌 극대화
+      setTimeout(() => {
+        if (!friendAgents.length) return;
+        const responder = friendAgents[Math.floor(Math.random() * friendAgents.length)];
+        const replies = [
+          `${state.playerName}야 반가워! 같이 재미있게 놀자!`,
+          `우와, 오늘 네 모자랑 옷 색깔 진짜 멋지다!`,
+          `우리 우클릭으로 감정 블록 계단 쌓아서 하늘섬 가볼까?`,
+          `마음 광주리가 무거울 땐 언제든 나한테 말해줘!`
+        ];
+        const reply = replies[Math.floor(Math.random() * replies.length)];
+        appendChatLog(responder.name.split(' ')[0], reply);
+        if (responder.chatObj) {
+          drawChatBubbleCanvas(responder.chatObj.ctx, reply, '#38bdf8');
+          responder.chatObj.tex.needsUpdate = true;
+          responder.chatObj.sprite.visible = true;
+          responder.chatTimer = 6.0;
+        }
+      }, 950);
+    };
+
+    document.getElementById('btnMpChatSend').onclick = () => window.sendMpChat();
+    document.getElementById('mpChatInput').addEventListener('keydown', e => {
+      e.stopPropagation();
+      if (e.key === 'Enter') window.sendMpChat();
+    });
+
     if (worldChannel) {
       worldChannel.onmessage = e => {
         const d = e.data;
@@ -3006,6 +3726,17 @@
           showToast(`다른 탭의 친구 <b>${d.post.author}</b>님이 마음 게시판에 새 글을 남겼습니다.`);
         } else if (d.type === 'coop_cheer') {
           showToast(`<b>${d.from}</b>님이 <b>${d.to}</b>님과 마음을 나누었습니다: ${d.msg}`);
+          appendChatLog(d.from, `${d.to}님과 마음 광주리를 함께 들어주었어요!`);
+        } else if (d.type === 'mp_chat') {
+          appendChatLog(d.from, d.msg);
+          showToast(`💬 <b>[${d.from}]</b> ${d.msg}`);
+        } else if (d.type === 'mp_block_place') {
+          if (!placedBlocks.some(b => b.x === d.x && Math.abs(b.y - d.y) < 0.5 && b.z === d.z)) {
+            spawnBlockWithAnim(d.x, d.y, d.z, d.slot || 1);
+            appendChatLog(d.from, `새로운 감정 블록을 설치했습니다! (${d.x}, ${d.z})`, true);
+          }
+        } else if (d.type === 'mp_customize') {
+          appendChatLog(d.from, `[${d.title}] 칭호와 새 아바타 의상으로 갈아입었습니다!`, true);
         }
       };
     }
@@ -3217,57 +3948,11 @@
 
 
 
-  // ==========================================
-  // 동화책 앨범 모달 제어 함수
-  // ==========================================
-  window.albumScenes = window.albumScenes || [];
-  window.currentAlbumIdx = window.currentAlbumIdx || 0;
-
-  window.loadAlbumData = async function() {
-    try {
-      const res = await fetch('assets/inchan/scenes_data.json');
-      albumScenes = await res.json();
-    } catch(e) {
-      console.warn('동화 앨범 데이터 로드 대기', e);
-    }
-  }
-  loadAlbumData();
-
-  window.openStoryBookModal = function() {
-    if (typeof initAudio === 'function') initAudio();
-    const modal = document.getElementById('storyBookModal');
-    if (modal) {
-      modal.style.display = 'flex';
-      updateAlbumView();
-    }
-  };
-
-  window.closeStoryBookModal = function() {
-    const modal = document.getElementById('storyBookModal');
-    if (modal) modal.style.display = 'none';
-  };
-
-  window.prevAlbumScene = function() {
-    if (albumScenes.length === 0) return;
-    currentAlbumIdx = (currentAlbumIdx - 1 + albumScenes.length) % albumScenes.length;
-    updateAlbumView();
-  };
-
-  window.nextAlbumScene = function() {
-    if (albumScenes.length === 0) return;
-    currentAlbumIdx = (currentAlbumIdx + 1) % albumScenes.length;
-    updateAlbumView();
-  };
-
-  window.updateAlbumView = function() {
-    if (albumScenes.length === 0) return;
-    const cur = albumScenes[currentAlbumIdx];
-    document.getElementById('albumImage').src = cur.path;
-    document.getElementById('albumTitle').textContent = `${cur.chapter}: ${cur.title}`;
-    document.getElementById('albumCaption').textContent = `《인찬이의 마음 손님》 원작 마스터 일러스트 (${currentAlbumIdx + 1}/33)`;
-    document.getElementById('albumPageText').textContent = `${currentAlbumIdx + 1} / ${albumScenes.length}`;
-  }
-
+    window.placeBlockAtPointer = placeBlockAtPointer;
+    window.mineBlockAtPointer = mineBlockAtPointer;
+    window.selectHotbarSlot = selectHotbarSlot;
+    window.playerRig = playerRig;
+    window.resolveHorizontalCollisions = resolveHorizontalCollisions;
   </script>
 
   <!-- =========================================
