@@ -2600,7 +2600,7 @@
     // 🐰 1. 숲속 아기 동물원 (Mini Zoo & Animal Haven) - 북서쪽 (-24, 0, -26)
     // --------------------------------------------------------------------------
     const zooGroup = new THREE.Group();
-    zooGroup.position.set(-24, 0, -26);
+    zooGroup.position.set(-18, 0, -22);
 
     const zooPasture = new THREE.Mesh(
       new THREE.CylinderGeometry(8.5, 8.8, 0.22, 24),
@@ -2683,7 +2683,7 @@
       customGroup: true,
       chapter: '🐾 숲속 아기 동물원',
       title: '토끼·아기곰·펭귄 친구들과 교감하며 마음 달래기',
-      color: '#86efac', x: -24, z: -18
+      color: '#86efac', x: -18, z: -16
     });
     zooGroup.add(zooSign);
 
@@ -2921,7 +2921,7 @@
       { key: 'joy', x: 50, z: 0, color: 0xf59e0b },
       { key: 'sad', x: -36, z: 0, color: 0x3b82f6 },
       { key: 'anger', x: 0, z: 52, color: 0xef4444 },
-      { key: 'fear', x: -36, z: -40, color: 0xa855f7 },
+      { key: 'fear', x: -46, z: -46, color: 0xa855f7 },
       { key: 'worry', x: 36, z: -38, color: 0x10b981 }
     ];
     landmarkCoords.forEach(lm => {
@@ -3049,7 +3049,7 @@
 
     // [퀘스트 4: 북서쪽] 두려움의 수호 등대 (완벽하게 고친 양방향 피봇 서치라이트!)
     const lighthouseGroup = new THREE.Group();
-    lighthouseGroup.position.set(-36, 0, -40);
+    lighthouseGroup.position.set(-46, 0, -46);
 
     // 등대 줄무늬 블록 타워 (로블록스 스타일)
     const lhPedestal = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 3.2, 1.0, 12), new THREE.MeshStandardMaterial({ color: 0x3f3f46, flatShading: true }));
@@ -3109,17 +3109,47 @@
     worryOrbGroup.add(worryOrbMesh); worldGroup.add(worryOrbGroup);
 
     // 로블록스 스타일 2단/3단 큐브 나무 48그루 (넓은 섬 전역에 풍성하게 배치)
+    // 5대 랜드마크 및 5대 테마파크와 나무 간 완전 겹침 방지 세이프티 존
+    const safeZones = [
+      { x: 50, z: 0, r: 13.5 },     // 기쁨 (트램펄린 & 축구장)
+      { x: -36, z: 0, r: 15.5 },    // 슬픔 (치유 호수 & 단상)
+      { x: 0, z: 52, r: 13.0 },     // 화 (캠프파이어 & 화로)
+      { x: -46, z: -46, r: 15.0 },  // 두려움 (수호 등대 & 그림자)
+      { x: 36, z: -38, r: 14.0 },   // 걱정 (벤치 & 연등)
+      { x: -18, z: -22, r: 11.5 },  // 아기 동물원
+      { x: -26, z: 26, r: 11.5 },   // 치유 식물원
+      { x: 22, z: -24, r: 11.0 },   // 마음 독서대
+      { x: 28, z: 22, r: 11.0 },    // 모험 놀이터
+      { x: -48, z: -22, r: 11.5 },  // 물놀이 비치
+      { x: 0, z: 0, r: 12.0 },      // 중앙 광장
+      { x: 0, z: -22, r: 6.5 }      // 실시간 게시판
+    ];
+
     const trees = [];
-    for (let i = 0; i < 48; i++) {
-      const ang = (i / 48) * Math.PI * 2 + (Math.random() - 0.5) * 0.25;
-      const rad = 28 + Math.random() * 38;
+    let treeCount = 0;
+    for (let attempt = 0; attempt < 250 && treeCount < 48; attempt++) {
+      const ang = Math.random() * Math.PI * 2;
+      const rad = 22 + Math.random() * 46;
+      const tx = Math.cos(ang) * rad;
+      const tz = Math.sin(ang) * rad;
+
+      // 주요 랜드마크 및 건물과 최소 겹침 검사
+      let isOverlapping = false;
+      for (const sz of safeZones) {
+        if (Math.hypot(tx - sz.x, tz - sz.z) < sz.r) {
+          isOverlapping = true; break;
+        }
+      }
+      if (isOverlapping) continue;
+
       const tg = new THREE.Group();
-      tg.position.set(Math.cos(ang) * rad, 0.1, Math.sin(ang) * rad);
+      tg.position.set(tx, 0.1, tz);
+      treeCount++;
       tg.scale.setScalar(0.85 + Math.random() * 0.45);
       const trunk = new THREE.Mesh(new THREE.BoxGeometry(0.7, 3.0, 0.7), new THREE.MeshStandardMaterial({ color: 0x6b4423 }));
       trunk.position.y = 1.5; trunk.castShadow = true;
       const leafColors = [0x4ade80, 0x22c55e, 0xfbbf24, 0x2dd4bf];
-      const leafMat = new THREE.MeshStandardMaterial({ color: leafColors[i % 4], roughness: 0.65 });
+      const leafMat = new THREE.MeshStandardMaterial({ color: leafColors[treeCount % 4], roughness: 0.65 });
       const c1 = new THREE.Mesh(new THREE.BoxGeometry(2.8, 1.6, 2.8), leafMat); c1.position.y = 3.4; c1.castShadow = true;
       const c2 = new THREE.Mesh(new THREE.BoxGeometry(1.9, 1.3, 1.9), leafMat); c2.position.y = 4.6; c2.castShadow = true;
       tg.add(trunk, c1, c2);
@@ -3151,11 +3181,11 @@
     // 5대 감정 손님 NPC 캐릭터 (로블록스 스타일 블록 조형)
     const zoneNpcs = [];
     const npcDefinitions = [
-      { key: 'joy', x: 18.5, z: 6.5, color: 0xf59e0b, title: '기쁨이 (별토끼)', dialogue: '“안녕! 나는 네 마음 광주리에 웃음을 가져다주는 별토끼 기쁨이야!<br>노란 트램펄린 위에서 마음껏 높이 점프해 볼래?”', actionLabel: '트램펄린으로 점프하러 가기' },
+      { key: 'joy', x: 44.0, z: 4.0, color: 0xf59e0b, title: '기쁨이 (별토끼)', dialogue: '“안녕! 나는 네 마음 광주리에 웃음을 가져다주는 별토끼 기쁨이야!<br>노란 트램펄린 위에서 마음껏 높이 점프해 볼래?”', actionLabel: '트램펄린으로 점프하러 가기' },
       { key: 'sad', x: -36.0, z: 0.0, color: 0x3b82f6, title: '슬픔이 (물방울)', dialogue: '“안녕… 나는 소중한 것을 기억하게 해주는 물방울 슬픔이야.<br>울고 싶을 땐 참지 않아도 괜찮아. 연못에 마음의 눈물을 띄워 보내자.”', actionLabel: '치유의 눈물 띄워 보내기' },
-      { key: 'anger', x: 3.5, z: 21.5, color: 0xef4444, title: '화 (불도깨비)', dialogue: '“으르렁! 나는 네 소중한 마음을 지키려고 찾아온 불도깨비 화야.<br>너무 뜨거워지면 나도 힘들어… 모닥불 앞에서 깊게 숨을 내쉬어 줄래?”', actionLabel: '불길 달래는 심호흡 시작' },
-      { key: 'fear', x: -15.5, z: -13.5, color: 0xa855f7, title: '두려움 (꼬마망토)', dialogue: '“저기… 나는 위험을 알려주는 꼬마망토 두려움이야.<br>등대 주변의 어둠 구름 3개를 별빛 마법(F키)으로 비춰주면 용기가 생길 거야!”', actionLabel: '별빛 마법으로 어둠 비추기' },
-      { key: 'worry', x: 17.0, z: -15.5, color: 0x10b981, title: '걱정이 (털실이)', dialogue: '“음… 머릿속이 실타래처럼 엉켜버렸어.<br>벤치에 앉아 네 걱정을 소원 연등에 적어 하늘로 날려 보내자!”', actionLabel: '걱정 털실 풀고 연등 날리기' }
+      { key: 'anger', x: 4.5, z: 47.5, color: 0xef4444, title: '화 (불도깨비)', dialogue: '“으르렁! 나는 네 소중한 마음을 지키려고 찾아온 불도깨비 화야.<br>너무 뜨거워지면 나도 힘들어… 모닥불 앞에서 깊게 숨을 내쉬어 줄래?”', actionLabel: '불길 달래는 심호흡 시작' },
+      { key: 'fear', x: -42.0, z: -42.0, color: 0xa855f7, title: '두려움 (꼬마망토)', dialogue: '“저기… 나는 위험을 알려주는 꼬마망토 두려움이야.<br>등대 주변의 어둠 구름들을 별빛 마법(F키)으로 비춰주면 용기가 생길 거야!”', actionLabel: '별빛 마법으로 어둠 비추기' },
+      { key: 'worry', x: 32.5, z: -34.5, color: 0x10b981, title: '걱정이 (털실이)', dialogue: '“음… 머릿속이 실타래처럼 엉켜버렸어.<br>벤치에 앉아 네 걱정을 소원 연등에 적어 하늘로 날려 보내자!”', actionLabel: '걱정 털실 풀고 연등 날리기' }
     ];
     npcDefinitions.forEach(def => {
       const g = new THREE.Group(); g.position.set(def.x, 0, def.z);
@@ -3246,7 +3276,7 @@
       const sEyeL = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.14, 0.08), sEyeMat); sEyeL.position.set(-0.28, 0.12, 0.69);
       const sEyeR = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.14, 0.08), sEyeMat); sEyeR.position.set(0.28, 0.12, 0.69);
       sg.add(sBody, sEyeL, sEyeR);
-      sg.position.set(-20 + Math.cos(ang) * 6.0, 2.0, -18 + Math.sin(ang) * 6.0);
+      sg.position.set(-46 + Math.cos(ang) * 7.5, 2.0, -46 + Math.sin(ang) * 7.5);
       worldGroup.add(sg);
       fearShadows.push({ group: sg, ang, speed: 0.55 + (i % 3) * 0.2, rad: 4.8 + (i % 2) * 2.2, cleared: state.quests.fear });
       if (state.quests.fear) sg.visible = false;
@@ -3671,7 +3701,7 @@
     // [동화 9장 협동 & 멀티플레이 광장: 살아있는 친구 아바타 6명]
     const friendDefs = [
       { id: 'jiwoo', name: '지우 (5학년)', title: '점프맵 러너', hat: 'crown', shirt: 0x3b82f6, x: 7, z: 5, chats: ['우리 같이 무지개 점프맵 꼭대기 가보자!', '천천히 숨을 쉬니까 마음이 정말 편안해졌어!'], story: '“친구들과 이야기할 때 내 생각이 잘 전해지지 않아서 속상하고 답답했지만, 천천히 깊게 숨을 쉬며 차분해지려고 노력 중이야. 내 마음 광주리 같이 들어줄래?”' },
-      { id: 'seojun', name: '서준 (4학년)', title: '동물 친구 지킴이', hat: 'bunny', shirt: 0x10b981, x: -21, z: -22, chats: ['연못 징검다리를 퐁당퐁당 건너볼까?', '친구야, 오늘 기분은 어때?'], story: '“친한 친구가 멀리 이사를 가서 조금 쓸쓸하고 보고 싶어… 누군가 내 이야기를 가만히 들어주면 큰 힘이 날 것 같아.”' },
+      { id: 'seojun', name: '서준 (4학년)', title: '동물 친구 지킴이', hat: 'bunny', shirt: 0x10b981, x: -16, z: -18, chats: ['연못 징검다리를 퐁당퐁당 건너볼까?', '친구야, 오늘 기분은 어때?'], story: '“친한 친구가 멀리 이사를 가서 조금 쓸쓸하고 보고 싶어… 누군가 내 이야기를 가만히 들어주면 큰 힘이 날 것 같아.”' },
       { id: 'minseo', name: '민서 (6학년)', title: '감성 독서왕', hat: 'wizard', shirt: 0xa855f7, x: 20, z: -21, chats: ['F키를 눌러 따뜻한 별빛을 보내봐!', '등대 불빛이 온 세상을 따스하게 비춰줘!'], story: '“앞에 나가서 발표하려니 가슴이 콩닥콩닥 떨려! 우리 손잡고 크게 심호흡하고 신나게 춤춰볼래?”' },
       { id: 'doyun', name: '도윤 (3학년)', title: '놀이터 탐험대장', hat: 'cap', shirt: 0xf59e0b, x: 25, z: 20, chats: ['블록으로 예쁜 계단을 만들어보자!', '마음 광주리를 함께 나누면 행복해져!'], story: '“오늘 마음 광주리가 조금 무거웠는데, 친구들이 함께 손을 잡아주니까 솜사탕처럼 가벼워졌어!”' },
       { id: 'haeun', name: '하은 (5학년)', title: '기쁨 탐험가', hat: 'angel', shirt: 0xec4899, x: 14, z: 3, chats: ['트램펄린 위에서 콩콩 뛰니까 최고야!', '엄마한테 가서 사랑한다고 안아드렸어?'], story: '“트램펄린에서 높은 곳에서 떨어질수록 하늘 높이 솟아올라! 기쁨이 퐁퐁 솟아나는 것 같아!”' },
@@ -4757,12 +4787,14 @@
 
       // 1) 중앙 황금 마음 광주리 제단 (반경 4.85m, 높이 2.9m)
       pushOutCircle(0, 0, 4.85, 2.9);
-      // 2) 북서쪽 두려움의 수호 등대 타워 (반경 3.05m, 높이 11.5m)
-      pushOutCircle(-20, -18, 3.05, 11.5);
-      // 3) 남쪽 화의 캠프파이어 불길/장작 중심부 (반경 1.95m, 높이 2.2m)
-      pushOutCircle(0, 24, 1.95, 2.2);
-      // 4) 북동쪽 걱정의 털실 벤치 (가로 3.6m, 세로 1.2m)
-      pushOutBox(20, -18, 1.85, 0.68, 1.65);
+      // 2) 북서쪽 두려움의 수호 등대 타워 (반경 3.2m, 높이 11.5m, 위치: -36, -40)
+      pushOutCircle(-46, -46, 3.5, 12.0);
+      // 3) 남쪽 화의 캠프파이어 불길/장작 중심부 (반경 3.8m, 높이 2.5m, 위치: 0, 52)
+      pushOutCircle(0, 52, 3.8, 2.5);
+      // 4) 북동쪽 걱정의 털실 벤치 (위치: 36, -38)
+      pushOutBox(36, -38, 2.2, 0.85, 1.8);
+      // 4-2) 서쪽 슬픔의 치유 연못 중앙 단상 (위치: -36, 0)
+      pushOutCircle(-36, 0, 3.8, 0.65);
       // 5) 북쪽 실시간 전광판 기둥 2개
       pushOutCircle(-7.5, -26.25, 0.78, 9.5);
       pushOutCircle(7.5, -26.25, 0.78, 9.5);
@@ -5120,7 +5152,7 @@
         key: 'fear', chapter: '제4장 · 두려움 손님 (북서쪽 수호 등대)',
         title: '따뜻한 별빛(F키)으로 밤바다 그림자 비추기',
         desc: '“두려움은 불을 켜면 스르륵 사라진단다.” 북서쪽 등대 주변을 맴도는 그림자에 [F]키로 별빛 응원을 비춰주세요.',
-        color: '#a855f7', x: -36, z: -40, max: 5
+        color: '#a855f7', x: -46, z: -46, max: 5
       },
       {
         key: 'worry', chapter: '제5장 · 걱정 손님 (북동쪽 털실 벤치)',
@@ -5278,7 +5310,7 @@
     // [4. 두려움 동화: 흔들리는 나무 그림자와 꼬마 유령 NPC]
     // ------------------------------------------------------------------------------
     const fearGhostGroup = new THREE.Group();
-    fearGhostGroup.position.set(-36, 1.8, -44);
+    fearGhostGroup.position.set(-46, 1.8, -50);
 
     // 귀여운 보라빛 꼬마 유령 바디
     const ghostBody = new THREE.Mesh(
@@ -5305,7 +5337,7 @@
     const shadowWallGeom = new THREE.PlaneGeometry(14, 9);
     const shadowWallMat = new THREE.MeshBasicMaterial({ color: 0x1e1b4b, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
     const shadowWall = new THREE.Mesh(shadowWallGeom, shadowWallMat);
-    shadowWall.position.set(-42, 4.5, -46);
+    shadowWall.position.set(-52, 4.5, -52);
     shadowWall.rotation.y = Math.PI / 4;
     worldGroup.add(shadowWall);
 
@@ -6439,7 +6471,7 @@
           return;
         }
         const a = fs.ang + time * fs.speed;
-        const tx = -20 + Math.cos(a) * fs.rad, tz = -18 + Math.sin(a) * fs.rad;
+        const tx = -46 + Math.cos(a) * fs.rad, tz = -46 + Math.sin(a) * fs.rad;
         const dx = playerRig.position.x - tx, dz = playerRig.position.z - tz;
         const pDist = Math.hypot(dx, dz);
         const pull = pDist < 12 ? 0.18 : 0;
