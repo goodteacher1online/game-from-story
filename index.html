@@ -1171,7 +1171,7 @@
       <div class="hud-row">
         <button class="hw-btn active-orange" id="btnTOD" title="시간대 전환 (낮 / 노을 / 밤)">
           <span class="led-dot"></span>
-          <span id="todLabel">노을</span>
+          <span id="todLabel">낮</span>
         </button>
         <button class="hw-btn active-green" id="btnAudio" title="사운드 켜기/끄기">
           <span class="led-dot"></span>
@@ -1346,22 +1346,9 @@
       <div class="cust-avatar-showcase">
         <div class="cust-preview-bubble-wrap">
           <div class="cust-preview-nametag" id="custPrevNametag">🌸 기쁨 수호자 · 인찬이</div>
-          <div class="cust-preview-figure" id="custPrevFigure">
-            <svg viewBox="0 0 36 36" fill="none" id="custPrevSvg">
-              <circle cx="18" cy="19" r="10" fill="#fde68a"/>
-              <!-- 후드티 상의 -->
-              <path d="M11 26C11 23 14 22 18 22C22 22 25 23 25 26V32H11V26Z" id="custPrevShirt" fill="#ff5800"/>
-              <!-- 12종 동적 3D 헤어스타일 실시간 렌더 그룹 -->
-              <g id="custPrevHairGroup">
-                <path d="M7 17C7 11 11 7 18 7C25 7 29 11 29 17C29 18 28 19 26 18C23 16.5 21 16 18 16C15 16 13 16.5 10 18C8 19 7 18 7 17Z" fill="#1c1917"/>
-              </g>
-              <!-- 눈과 미소 -->
-              <circle cx="15" cy="18" r="1.2" fill="#1e293b"/>
-              <circle cx="21" cy="18" r="1.2" fill="#1e293b"/>
-              <path d="M16 21C17 22 19 22 20 21" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
-              <!-- 모자/액세서리 배지 -->
-              <g id="custPrevHatIcon" transform="translate(14, 2)"><path d="M2 7C4 2 8 2 8 5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/></g>
-            </svg>
+          <div class="cust-preview-figure" id="custPrevFigure" style="position:relative; width:96px; height:96px; border-radius:50%; overflow:hidden; background:radial-gradient(circle, #1e293b 0%, #090d16 100%); border:2.5px solid #ff9d66; box-shadow:0 0 16px rgba(255,157,102,0.4);">
+            <canvas id="robloxStudioPreviewCanvas" width="192" height="192" style="width:100%; height:100%; display:block;"></canvas>
+            <div style="position:absolute; bottom:3px; left:0; right:0; text-align:center; font-size:9px; font-weight:800; color:#fbbf24; text-shadow:0 1px 2px #000; letter-spacing:0.5px;">ROBLOX 3D</div>
           </div>
         </div>
         <div class="cust-preview-info">
@@ -1426,27 +1413,45 @@
           <div class="cust-color-grid" id="custColorRow">
             <button type="button" class="cust-color-card active" data-color="#ff5800">
               <span class="cust-color-chip" style="background:#ff5800;"></span>
-              <span class="cust-color-text">코랄 오렌지</span>
+              <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                <span class="cust-color-text">코랄 오렌지</span>
+                <span style="font-size:9.5px; color:#fed7aa; font-weight:700;">✨ 신나고 활기찬 기쁨</span>
+              </div>
             </button>
             <button type="button" class="cust-color-card" data-color="#3b82f6">
               <span class="cust-color-chip" style="background:#3b82f6;"></span>
-              <span class="cust-color-text">스카이 블루</span>
+              <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                <span class="cust-color-text">스카이 블루</span>
+                <span style="font-size:9.5px; color:#bae6fd; font-weight:700;">💧 마음이 찌릿한 슬픔</span>
+              </div>
             </button>
             <button type="button" class="cust-color-card" data-color="#10b981">
               <span class="cust-color-chip" style="background:#10b981;"></span>
-              <span class="cust-color-text">에메랄드 민트</span>
+              <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                <span class="cust-color-text">에메랄드 민트</span>
+                <span style="font-size:9.5px; color:#a7f3d0; font-weight:700;">🌿 차분하고 평온한 쉼</span>
+              </div>
             </button>
             <button type="button" class="cust-color-card" data-color="#a855f7">
               <span class="cust-color-chip" style="background:#a855f7;"></span>
-              <span class="cust-color-text">로얄 퍼플</span>
+              <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                <span class="cust-color-text">로얄 퍼플</span>
+                <span style="font-size:9.5px; color:#e9d5ff; font-weight:700;">🌙 조심스럽고 긴장됨</span>
+              </div>
             </button>
             <button type="button" class="cust-color-card" data-color="#f59e0b">
               <span class="cust-color-chip" style="background:#f59e0b;"></span>
-              <span class="cust-color-text">선샤인 골드</span>
+              <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                <span class="cust-color-text">선샤인 골드</span>
+                <span style="font-size:9.5px; color:#fde68a; font-weight:700;">☀️ 희망차고 설레는 마음</span>
+              </div>
             </button>
             <button type="button" class="cust-color-card" data-color="#ec4899">
               <span class="cust-color-chip" style="background:#ec4899;"></span>
-              <span class="cust-color-text">벚꽃 핑크</span>
+              <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                <span class="cust-color-text">벚꽃 핑크</span>
+                <span style="font-size:9.5px; color:#fbcfe8; font-weight:700;">🌸 사랑스럽고 포근함</span>
+              </div>
             </button>
           </div>
         </div>
@@ -1824,9 +1829,9 @@
         worry: { name: '걱정이 (털실이)', emoji: '🟢', color: 0x10b981, hex: '#10b981', desc: '미래를 차근차근 준비하는 생각' },
         flutter: { name: '설렘이 (나비요정)', emoji: '🌸', color: 0xec4899, hex: '#ec4899', desc: '새로운 모험을 반기는 두근거림' }
       },
-      timeOfDay: 'sunset',
+      timeOfDay: 'day',
       todConfigs: {
-        day: { bg: 0x8bc9f0, fog: 0x9cd3f5, sun: 0xfff8e7, sunInt: 1.55, hemiSky: 0xffffff, hemiGround: 0x4d6b3c, label: '낮' },
+        day: { bg: 0x7ec8f8, fog: 0xa8dcfa, sun: 0xfffaed, sunInt: 1.85, hemiSky: 0xffffff, hemiGround: 0x6bb840, label: '낮' },
         sunset: { bg: 0x2b1d3d, fog: 0x38244a, sun: 0xff9a5a, sunInt: 1.35, hemiSky: 0xffd1a8, hemiGround: 0x22172b, label: '노을' },
         night: { bg: 0x0b0d17, fog: 0x111424, sun: 0x818cf8, sunInt: 0.65, hemiSky: 0x1e293b, hemiGround: 0x090b12, label: '밤' }
       },
@@ -1980,8 +1985,8 @@
     const scene = new THREE.Scene();
     const raycaster = new THREE.Raycaster();
     const pointerNDC = new THREE.Vector2();
-    scene.background = new THREE.Color(state.todConfigs.sunset.bg);
-    scene.fog = new THREE.FogExp2(state.todConfigs.sunset.fog, 0.0095);
+    scene.background = new THREE.Color(state.todConfigs.day.bg);
+    scene.fog = new THREE.FogExp2(state.todConfigs.day.fog, 0.0035);
 
     const camera = window.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 450);
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -1992,10 +1997,10 @@
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
 
-    const hemiLight = new THREE.HemisphereLight(state.todConfigs.sunset.hemiSky, state.todConfigs.sunset.hemiGround, 0.95);
+    const hemiLight = new THREE.HemisphereLight(state.todConfigs.day.hemiSky, state.todConfigs.day.hemiGround, 1.25);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(state.todConfigs.sunset.sun, state.todConfigs.sunset.sunInt);
+    const sunLight = new THREE.DirectionalLight(state.todConfigs.day.sun, state.todConfigs.day.sunInt);
     sunLight.position.set(35, 52, 30);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.set(2048, 2048);
@@ -2028,27 +2033,28 @@
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    // 계단식 블록 플로팅 아일랜드 (반경 72m, 지름 144m의 웅장한 대형 감정 월드!)
+    // 계단식 블록 플로팅 아일랜드 절벽 바위 (상단면이 y=-0.5 로 잔디 밑에 완벽 안착)
     const islandRock = new THREE.Mesh(
-      new THREE.CylinderGeometry(98, 76, 14, 28),
-      new THREE.MeshStandardMaterial({ color: 0x4b423b, roughness: 0.9, flatShading: true })
+      new THREE.CylinderGeometry(99, 74, 16, 32),
+      new THREE.MeshStandardMaterial({ color: 0x473c33, roughness: 0.9, flatShading: true })
     );
-    islandRock.position.y = -5.5; islandRock.receiveShadow = true;
+    islandRock.position.y = -8.5; islandRock.receiveShadow = true;
     worldGroup.add(islandRock);
 
+    // 섬 전체를 덮는 눈부신 로블록스 에메랄드 잔디 대지 (높이 2m, 상단면이 y=0.0에 완벽 노출!)
     const grassMain = new THREE.Mesh(
-      new THREE.CylinderGeometry(100.5, 98.5, 1.0, 32),
-      new THREE.MeshStandardMaterial({ color: 0x5c8d45, roughness: 0.72, flatShading: true })
+      new THREE.CylinderGeometry(101.5, 99.5, 2.0, 48),
+      new THREE.MeshStandardMaterial({ color: 0x5cb834, roughness: 0.45, flatShading: true })
     );
-    grassMain.position.y = -0.2; grassMain.receiveShadow = true;
+    grassMain.position.y = -1.0; grassMain.receiveShadow = true;
     worldGroup.add(grassMain);
 
-    // 중앙 단차 광장 (로블록스 스터드 광장 느낌, 반경 18m)
+    // 중앙 분수대 바닥 아이보리 대리석 원형 테라스 (반경 7.5m로 정돈하여 잔디 시야 극대화)
     const plaza = new THREE.Mesh(
-      new THREE.CylinderGeometry(22, 23.0, 0.35, 32),
-      new THREE.MeshStandardMaterial({ color: 0xe6e1d8, roughness: 0.85, flatShading: true })
+      new THREE.CylinderGeometry(7.5, 8.0, 0.22, 32),
+      new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.35, flatShading: true })
     );
-    plaza.position.y = 0.05; plaza.receiveShadow = true;
+    plaza.position.y = 0.02; plaza.receiveShadow = true;
     worldGroup.add(plaza);
 
     // 서브 플로팅 미니 아일랜드 (배경 입체감 극대화)
@@ -3710,8 +3716,10 @@
       crown: createHatMesh('crown'),
       wizard: createHatMesh('wizard'),
       bunny: createHatMesh('bunny'),
+      rabbit: createHatMesh('bunny'),
       angel: createHatMesh('angel'),
-      cap: createHatMesh('cap')
+      cap: createHatMesh('cap'),
+      explorer: createHatMesh('cap')
     };
     Object.keys(playerHats).forEach(k => {
       if (k !== 'ahoge') head.add(playerHats[k]);
@@ -3739,8 +3747,9 @@
 
     function updatePlayerAppearance() {
       shirtMat.color.set(state.shirtColor || '#ff5800');
+      const curHat = (state.hatType === 'rabbit' ? 'bunny' : (state.hatType || 'ahoge'));
       Object.keys(playerHats).forEach(k => {
-        playerHats[k].visible = (k === (state.hatType || 'ahoge'));
+        playerHats[k].visible = (k === curHat || (k === 'rabbit' && curHat === 'bunny') || (k === 'bunny' && curHat === 'rabbit'));
       });
       angelWingsGroup.visible = (state.hatType === 'angel' || !!state.equippedRewards?.wings);
 
@@ -4472,6 +4481,11 @@
         const hTop = 1.2;
         if (hTop <= py + 0.55 && hTop > highest) highest = hTop;
       }
+      // 9. 로블록스 덕분에 블록 조형물 꼭대기 (x: 36, z: -32, 높이 2.7m)
+      if (Math.abs(px - 36) <= 5.5 && Math.abs(pz - (-32)) <= 2.2) {
+        const dTop = 2.7;
+        if (dTop <= py + 0.65 && dTop > highest) highest = dTop;
+      }
 
       return highest;
     }
@@ -4817,7 +4831,7 @@
       window.addMindScore(300, '치유의 무지개 분수 축제 완성! 🌈');
 
       if (!state.quests.sad) {
-        checkQuestCollect('sad', '치유의 눈물 보석 획득', '“슬픔을 밀어내지 않고 가만히 안아주었더니, 하늘에 가장 아름다운 무지개가 피어났어요!”');
+        if (typeof triggerSadnessTearsToBlueStarsEvent === 'function') triggerSadnessTearsToBlueStarsEvent(); checkQuestCollect('sad', '치유의 눈물 보석 획득', '“슬픔을 밀어내지 않고 가만히 안아주었더니, 하늘에 가장 아름다운 무지개가 피어났어요!”');
       } else {
         showToast('🌈 <b>[치유의 무지개 분수 축제]</b><br>슬픔의 눈물이 맑게 씻기며 연못에 찬란한 무지개가 피어났습니다! (+300점 · 별빛가루 +10 ✨)');
       }
@@ -4955,6 +4969,264 @@
         color: '#10b981', x: 36, z: -38, max: 3
       }
     ];
+
+    // ==============================================================================
+    // [동화 원작 100% 반영 5대 신규 인터랙션 & 어트랙션 시스템]
+    // ==============================================================================
+
+    // ------------------------------------------------------------------------------
+    // [1. 기쁨 동화: 축구 게임] "오늘 축구하기로 했잖아! 그래서 내가 찾아왔지."
+    // ------------------------------------------------------------------------------
+    const soccerGoalGroup = new THREE.Group();
+    soccerGoalGroup.position.set(52, 0, 14);
+
+    // 골대 흰색 기둥 프레임 (좌, 우, 상단 바)
+    const goalMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+    const postL = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 12), goalMat);
+    postL.position.set(-2.2, 1.1, 0);
+    const postR = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 12), goalMat);
+    postR.position.set(2.2, 1.1, 0);
+    const crossBar = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4.48, 12), goalMat);
+    crossBar.rotation.z = Math.PI / 2; crossBar.position.set(0, 2.2, 0);
+
+    // 그물망 (반투명 체크)
+    const netMat = new THREE.MeshBasicMaterial({ color: 0xe2e8f0, wireframe: true, transparent: true, opacity: 0.65 });
+    const netMesh = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.2, 1.4), netMat);
+    netMesh.position.set(0, 1.1, 0.7);
+
+    // 골대 안내 깃발
+    const goalSign = makeChatBubbleSprite('⚽ 기쁨 축구 골대');
+    goalSign.sprite.position.set(0, 3.2, 0);
+
+    soccerGoalGroup.add(postL, postR, crossBar, netMesh, goalSign.sprite);
+    worldGroup.add(soccerGoalGroup);
+
+    // 굴러가는 3D 축구공 (물리 연산)
+    const soccerBall = {
+      mesh: new THREE.Mesh(
+        new THREE.SphereGeometry(0.42, 16, 16),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, emissive: 0xfef08a, emissiveIntensity: 0.25 })
+      ),
+      pos: new THREE.Vector3(52, 0.42, 6),
+      vel: new THREE.Vector3(0, 0, 0),
+      rotX: 0, rotZ: 0,
+      respawnTimer: 0
+    };
+    soccerBall.mesh.castShadow = true;
+    soccerBall.mesh.position.copy(soccerBall.pos);
+
+    // 축구공 오각형 무늬 장식
+    for (let pi = 0; pi < 6; pi++) {
+      const pDot = new THREE.Mesh(new THREE.CircleGeometry(0.12, 5), new THREE.MeshBasicMaterial({ color: 0x18181b }));
+      const pa = (pi / 6) * Math.PI * 2;
+      pDot.position.set(Math.cos(pa) * 0.38, Math.sin(pa) * 0.38, 0.16);
+      pDot.lookAt(0, 0, 0);
+      soccerBall.mesh.add(pDot);
+    }
+    worldGroup.add(soccerBall.mesh);
+
+    // ------------------------------------------------------------------------------
+    // [2. 슬픔 동화: 눈물방울 파란 별 & 구름 사이 햇살 빔]
+    // ------------------------------------------------------------------------------
+    const sunbeamGroup = new THREE.Group();
+    sunbeamGroup.position.set(-50, 0, 0);
+
+    // 찬란한 황금빛 햇살 원뿔 빔 (God-rays)
+    const sunbeamMat = new THREE.MeshBasicMaterial({
+      color: 0xfef08a,
+      transparent: true,
+      opacity: 0.0,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    });
+    const sunbeamCone = new THREE.Mesh(new THREE.ConeGeometry(8.5, 26, 32, 1, true), sunbeamMat);
+    sunbeamCone.position.y = 13;
+    sunbeamCone.rotation.x = Math.PI; // 아래로 넓어지는 햇살 빔
+
+    // 하늘로 퐁퐁 날아오르는 파란 별 파티클 24개
+    const blueStarParticles = [];
+    const starGeom = new THREE.OctahedronGeometry(0.24, 0);
+    const starMat = new THREE.MeshBasicMaterial({ color: 0x60a5fa });
+    for (let si = 0; si < 24; si++) {
+      const sm = new THREE.Mesh(starGeom, starMat);
+      sm.visible = false;
+      sunbeamGroup.add(sm);
+      blueStarParticles.push({
+        mesh: sm,
+        basePos: new THREE.Vector3((Math.random() - 0.5) * 8, 0.3, (Math.random() - 0.5) * 8),
+        speed: 1.8 + Math.random() * 2.2,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    sunbeamGroup.add(sunbeamCone);
+    worldGroup.add(sunbeamGroup);
+
+    let sunbeamAnimTimer = 0;
+    window.triggerSadnessTearsToBlueStarsEvent = function() {
+      sunbeamAnimTimer = 8.0; // 8초간 감동 시네마틱 햇살 & 파란 별 연출
+      soundChime(523); setTimeout(() => soundChime(659), 150); setTimeout(() => soundChime(784), 300); setTimeout(() => soundChime(1046), 450);
+      showToast('💧 <b>《슬픔이의 선물》</b> 눈물방울이 작은 파란 별이 되고, 구름 사이로 따스한 햇살이 비쳐 내립니다. ✨');
+      window.addMindScore(70, '슬픔을 보듬은 파란 별빛');
+    };
+
+    // ------------------------------------------------------------------------------
+    // [3. 화 동화: [C]키 심호흡 바람으로 맹렬한 불길 가라앉히기]
+    // ------------------------------------------------------------------------------
+    let fireAngerStage = 3; // 3: 거대한 맹렬 불길 -> 2: 중간 -> 1: 작은 포근한 불씨
+    const breathParticles = [];
+    for (let bi = 0; bi < 16; bi++) {
+      const bp = new THREE.Mesh(
+        new THREE.SphereGeometry(0.18, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 })
+      );
+      worldGroup.add(bp);
+      breathParticles.push({ mesh: bp, active: false, life: 0, vel: new THREE.Vector3() });
+    }
+
+    window.triggerDeepBreathCoolFire = function() {
+      // 플레이어 입에서 "후우—" 하얀 숨결 파티클 분사
+      const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(playerRig.quaternion);
+      const mouthPos = playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)).add(forward.clone().multiplyScalar(0.6));
+
+      breathParticles.forEach((bp, idx) => {
+        bp.mesh.position.copy(mouthPos);
+        bp.mesh.material.opacity = 0.85;
+        bp.active = true;
+        bp.life = 1.0;
+        bp.vel.copy(forward).multiplyScalar(4.5 + Math.random() * 2.5).add(new THREE.Vector3((Math.random() - 0.5) * 1.2, 0.4, (Math.random() - 0.5) * 1.2));
+      });
+
+      // 남쪽 모닥불(0, 52) 앞일 경우 불길 단계적 진정
+      const distToFire = Math.hypot(playerRig.position.x - 0, playerRig.position.z - 52);
+      if (distToFire < 7.5) {
+        if (fireAngerStage > 1) {
+          fireAngerStage -= 1;
+          soundChime(440 + fireAngerStage * 80);
+          showToast(`💨 <b>후우— 깊은 심호흡!</b> 화나는 불길이 차분하게 가라앉습니다. (남은 단계: ${fireAngerStage - 1}회)`);
+          window.addMindScore(30, '심호흡으로 불길 가라앉히기');
+          createMagicImpact(new THREE.Vector3(0, 1.5, 52), '#38bdf8');
+        } else {
+          fireAngerStage = 3; // 다시 순환 연습 가능
+          showToast('🌸 <b>마음의 평온:</b> 거센 화가 바람 빠진 풍선처럼 작아지고 따뜻하고 포근한 온기만 남았습니다! (+60점)');
+          window.addMindScore(60, '화 다스리기 마스터');
+          createMagicImpact(new THREE.Vector3(0, 1.5, 52), '#fbbf24');
+        }
+      }
+    };
+
+    // ------------------------------------------------------------------------------
+    // [4. 두려움 동화: 흔들리는 나무 그림자와 꼬마 유령 NPC]
+    // ------------------------------------------------------------------------------
+    const fearGhostGroup = new THREE.Group();
+    fearGhostGroup.position.set(-36, 1.8, -44);
+
+    // 귀여운 보라빛 꼬마 유령 바디
+    const ghostBody = new THREE.Mesh(
+      new THREE.SphereGeometry(0.65, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0xc084fc, roughness: 0.3, transparent: true, opacity: 0.85, emissive: 0x9333ea, emissiveIntensity: 0.4 })
+    );
+    const ghostSkirt = new THREE.Mesh(
+      new THREE.ConeGeometry(0.65, 0.9, 16, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0xa855f7, transparent: true, opacity: 0.75 })
+    );
+    ghostSkirt.position.y = -0.45;
+    const gEyeL = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshBasicMaterial({ color: 0x18181b }));
+    gEyeL.position.set(-0.2, 0.12, 0.58);
+    const gEyeR = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshBasicMaterial({ color: 0x18181b }));
+    gEyeR.position.set(0.2, 0.12, 0.58);
+
+    const ghostTag = makeChatBubbleSprite('👻 꼬마 두려움 (따뜻한 별빛을 비춰줘!)');
+    ghostTag.sprite.position.set(0, 1.6, 0);
+
+    fearGhostGroup.add(ghostBody, ghostSkirt, gEyeL, gEyeR, ghostTag.sprite);
+    worldGroup.add(fearGhostGroup);
+
+    // 바람에 흔들리는 거대 나무 그림자 실루엣 벽면
+    const shadowWallGeom = new THREE.PlaneGeometry(14, 9);
+    const shadowWallMat = new THREE.MeshBasicMaterial({ color: 0x1e1b4b, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+    const shadowWall = new THREE.Mesh(shadowWallGeom, shadowWallMat);
+    shadowWall.position.set(-42, 4.5, -46);
+    shadowWall.rotation.y = Math.PI / 4;
+    worldGroup.add(shadowWall);
+
+    // ------------------------------------------------------------------------------
+    // [5. 걱정 동화: 로블록스 3D "덕분에" 복셀 글자 조형물]
+    // ------------------------------------------------------------------------------
+    const deokbuneGroup = new THREE.Group();
+    deokbuneGroup.position.set(36, 0, -32); // 소원 언덕 앞쪽
+
+    const voxMat = new THREE.MeshStandardMaterial({
+      color: 0x10b981, // 걱정의 싱그러운 에메랄드 민트
+      emissive: 0x059669,
+      emissiveIntensity: 0.35,
+      roughness: 0.4
+    });
+    const voxStudMat = new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.3 });
+
+    function createVoxelStudBlock(bx, by, bz, sw = 0.9, sh = 0.9, sd = 0.9) {
+      const bMesh = new THREE.Mesh(new THREE.BoxGeometry(sw, sh, sd), voxMat);
+      bMesh.position.set(bx, by + sh / 2, bz);
+      bMesh.castShadow = true; bMesh.receiveShadow = true;
+      // 상단 스터드 돌기
+      const stud = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.14, 12), voxStudMat);
+      stud.position.set(0, sh / 2 + 0.07, 0);
+      bMesh.add(stud);
+      return bMesh;
+    }
+
+    // "덕" 글자 형상화 블록
+    [
+      [-3.0, 0, 0], [-3.0, 0.9, 0], [-3.0, 1.8, 0], // ㄷ 좌측
+      [-2.1, 1.8, 0], [-1.2, 1.8, 0],              // ㄷ 상단
+      [-2.1, 0.9, 0], [-1.2, 0.9, 0],              // ㄷ 하단
+      [-0.4, 0, 0], [-0.4, 0.9, 0], [-0.4, 1.8, 0], [-0.4, 2.7, 0], // ㅓ 기둥
+      [-1.2, 1.35, 0],                              // ㅓ 가지
+      [-2.1, 0, 0], [-1.2, 0, 0]                   // 받침 ㄱ
+    ].forEach(([bx, by, bz]) => {
+      deokbuneGroup.add(createVoxelStudBlock(bx, by, bz, 0.85, 0.85, 0.85));
+    });
+
+    // "분" 글자 형상화 블록
+    [
+      [1.0, 1.8, 0], [1.0, 2.7, 0], [2.2, 1.8, 0], [2.2, 2.7, 0], // ㅂ 기둥
+      [1.6, 2.7, 0], [1.6, 1.8, 0],                // ㅂ 가로바
+      [1.0, 0.9, 0], [1.6, 0.9, 0], [2.2, 0.9, 0], // ㅜ 가로바
+      [1.6, 0.45, 0],                              // ㅜ 기둥
+      [1.0, 0, 0], [1.6, 0, 0], [2.2, 0, 0]       // ㄴ 받침
+    ].forEach(([bx, by, bz]) => {
+      deokbuneGroup.add(createVoxelStudBlock(bx, by, bz, 0.85, 0.85, 0.85));
+    });
+
+    // "에" 글자 형상화 블록
+    [
+      [4.0, 1.8, 0], [4.0, 2.7, 0], [4.8, 1.8, 0], [4.8, 2.7, 0], // ㅇ
+      [4.4, 2.9, 0], [4.4, 1.6, 0],
+      [5.5, 0.9, 0], [5.5, 1.8, 0], [5.5, 2.7, 0], // ㅓ 기둥
+      [5.0, 1.8, 0],                                // ㅓ 가지
+      [6.3, 0.9, 0], [6.3, 1.8, 0], [6.3, 2.7, 0]  // ㅣ 기둥
+    ].forEach(([bx, by, bz]) => {
+      deokbuneGroup.add(createVoxelStudBlock(bx, by, bz, 0.85, 0.85, 0.85));
+    });
+
+    // 꼭대기까지 올라갈 수 있는 무지개 계단 발판 블록 4단
+    [
+      [-4.0, 0, -0.8], [-4.0, 0.8, -1.6], [-4.0, 1.6, -2.4], [-4.0, 2.4, -3.2]
+    ].forEach(([sx, sy, sz], sidx) => {
+      const stepMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 0.8, 1.2),
+        new THREE.MeshStandardMaterial({ color: 0x34d399, roughness: 0.3 })
+      );
+      stepMesh.position.set(sx, sy + 0.4, sz);
+      deokbuneGroup.add(stepMesh);
+    });
+
+    // 안내 표지판
+    const deokSign = makeChatBubbleSprite('💚 “덕분에 준비했어!” 로블록스 덕분에 블록 조형물');
+    deokSign.sprite.position.set(1.5, 4.2, 0);
+    deokbuneGroup.add(deokSign.sprite);
+
+    worldGroup.add(deokbuneGroup);
+
     // 5대 랜드마크 상공 3D 미션 안내판 등록
     storyQuestMeta.forEach(makeLandmarkStorySign);
 
@@ -5162,7 +5434,7 @@
       if (e.key === 'Shift') input.shift = true;
       if (e.code === 'Space') { e.preventDefault(); doJump(); }
       if (k === 'f') shootMagicBullet();
-      if (k === 'c') doBreatheWind();
+      if (k === 'c') { doBreatheWind(); if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(); }
       if (k === 'e') doDance();
       if (k === 'q') doMeditate();
       if (k === 'g') interactCurrentZone();
@@ -5896,6 +6168,97 @@
       lhBeamPivot.rotation.y += dt * 0.65; // 등대 유리방 중심 완벽한 수평 회전!
       skyStarMat.opacity = state.timeOfDay === 'night' ? 0.9 : (state.timeOfDay === 'sunset' ? 0.45 : 0.05);
       waterMesh.position.y = 0.22 + Math.sin(time * 2.2) * 0.035;
+
+      // [신규 1. 축구공 물리 이동 & 골인 판정]
+      if (typeof soccerBall !== 'undefined' && soccerBall.mesh) {
+        // 플레이어 발과 공 충돌 (킥)
+        const dPlayerToBall = playerRig.position.distanceTo(soccerBall.pos);
+        if (dPlayerToBall < 1.35) {
+          const kickDir = soccerBall.pos.clone().sub(playerRig.position).normalize();
+          kickDir.y = 0.25;
+          soccerBall.vel.add(kickDir.multiplyScalar(9.5));
+          soundJump(true);
+          createMagicImpact(soccerBall.pos, '#f59e0b');
+        }
+
+        // 공 속도 및 마찰 감쇄
+        soccerBall.pos.add(soccerBall.vel.clone().multiplyScalar(dt));
+        soccerBall.vel.x *= 0.94;
+        soccerBall.vel.z *= 0.94;
+        if (soccerBall.pos.y > 0.42) {
+          soccerBall.vel.y -= 25 * dt; // 중력
+        } else {
+          soccerBall.pos.y = 0.42;
+          soccerBall.vel.y = 0;
+        }
+        soccerBall.mesh.position.copy(soccerBall.pos);
+        soccerBall.mesh.rotation.x += soccerBall.vel.z * dt * 2.5;
+        soccerBall.mesh.rotation.z -= soccerBall.vel.x * dt * 2.5;
+
+        // 골대(52, 14) 골인 판정 (가로 +-2.0, 세로 z: 13.5~15.0)
+        if (Math.abs(soccerBall.pos.x - 52) < 2.0 && soccerBall.pos.z > 13.2 && soccerBall.pos.z < 15.2 && soccerBall.pos.y < 2.2) {
+          if (!soccerBall.justScored) {
+            soccerBall.justScored = true;
+            soundChime(523); setTimeout(() => soundChime(659), 100); setTimeout(() => soundChime(784), 200); setTimeout(() => soundChime(1046), 300);
+            createMagicImpact(soccerBall.pos, '#22c55e');
+            showToast('⚽ <b>GOOOOAL! 기쁨의 골인!</b> 축구공을 차서 멋지게 득점했습니다! (+50점)');
+            window.addMindScore(50, '기쁨 축구 골인');
+            setTimeout(() => {
+              soccerBall.pos.set(52, 0.42, 6);
+              soccerBall.vel.set(0, 0, 0);
+              soccerBall.justScored = false;
+            }, 3000);
+          }
+        }
+      }
+
+      // [신규 2. 슬픔 눈물 파란 별 & 햇살 빔 애니메이션]
+      if (typeof sunbeamAnimTimer !== 'undefined' && sunbeamAnimTimer > 0) {
+        sunbeamAnimTimer -= dt;
+        sunbeamCone.material.opacity = Math.min(0.55, sunbeamAnimTimer * 0.15);
+        sunbeamCone.rotation.y += dt * 0.4;
+        blueStarParticles.forEach(sp => {
+          sp.mesh.visible = true;
+          sp.mesh.position.y += sp.speed * dt;
+          sp.mesh.rotation.x += dt * 3;
+          sp.mesh.rotation.y += dt * 2;
+          if (sp.mesh.position.y > 16) {
+            sp.mesh.position.copy(sp.basePos);
+          }
+        });
+      } else if (typeof sunbeamCone !== 'undefined') {
+        sunbeamCone.material.opacity = 0;
+        blueStarParticles.forEach(sp => { sp.mesh.visible = false; });
+      }
+
+      // [신규 3. 화 모닥불 단계적 크기 변화]
+      if (typeof fireGroup !== 'undefined' && typeof fireAngerStage !== 'undefined') {
+        const targetScale = fireAngerStage === 3 ? 1.45 : (fireAngerStage === 2 ? 0.85 : 0.35);
+        fireGroup.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), dt * 3.5);
+      }
+
+      // [신규 4. 두려움 꼬마 유령 살금살금 둥둥 애니메이션]
+      if (typeof fearGhostGroup !== 'undefined') {
+        fearGhostGroup.position.y = 1.8 + Math.sin(time * 3.0) * 0.35;
+        const dGhostToPlayer = fearGhostGroup.position.distanceTo(playerRig.position);
+        if (dGhostToPlayer < 9.0 && dGhostToPlayer > 1.8) {
+          fearGhostGroup.lookAt(playerRig.position.x, fearGhostGroup.position.y, playerRig.position.z);
+          fearGhostGroup.translateZ(dt * 1.2); // 살금살금 다가오기
+        }
+      }
+
+      // [신규 5. 하얀 숨결 파티클]
+      if (typeof breathParticles !== 'undefined') {
+        breathParticles.forEach(bp => {
+          if (bp.active) {
+            bp.mesh.position.add(bp.vel.clone().multiplyScalar(dt));
+            bp.life -= dt * 1.5;
+            bp.mesh.material.opacity = Math.max(0, bp.life);
+            if (bp.life <= 0) { bp.active = false; bp.mesh.material.opacity = 0; }
+          }
+        });
+      }
+
 
       skyLanterns.forEach(l => { l.group.position.y = l.baseY + Math.sin(time * l.speed + l.ang) * 0.8; });
       zoneNpcs.forEach((npc, idx) => {
@@ -7031,6 +7394,7 @@
     // 커스터마이징 모달 3대 탭 전환 핸들러
     // 실시간 아바타 쇼케이스 라이브 프리뷰 업데이트 함수 (12종 헤어 실루엣 & 컬러 완전 동적 연동)
     function updateAvatarShowcase() {
+      if (typeof renderRobloxStudio3DAvatar === 'function') renderRobloxStudio3DAvatar();
       const name = document.getElementById('custInputName')?.value || state.playerName || '인찬이';
       const title = document.getElementById('custSelectTitle')?.value || state.playerTitle || '기쁨 수호자';
       const nametagEl = document.getElementById('custPrevNametag');
@@ -7109,6 +7473,117 @@
       const cHat = document.getElementById('chipHatType');
       if (cHat) cHat.textContent = `👑 ${hatNames[state.hatType] || '기본 바보털'}`;
     }
+    
+    // ==============================================================================
+    // [로블록스 스타일 3D 실시간 아바타 스튜디오 렌더러]
+    // ==============================================================================
+    let robloxPreviewScene = null, robloxPreviewCam = null, robloxPreviewRenderer = null;
+    let robloxPreviewAvatarGroup = null;
+
+    function initRobloxStudioPreview() {
+      const pCanvas = document.getElementById('robloxStudioPreviewCanvas');
+      if (!pCanvas || robloxPreviewRenderer) return;
+
+      robloxPreviewScene = new THREE.Scene();
+      robloxPreviewCam = new THREE.PerspectiveCamera(46, 1, 0.1, 50);
+      robloxPreviewCam.position.set(0, 1.95, 4.5);
+      robloxPreviewCam.lookAt(0, 1.75, 0);
+
+      robloxPreviewRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, alpha: true, antialias: true });
+      robloxPreviewRenderer.setSize(192, 192);
+      robloxPreviewRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const ambLight = new THREE.AmbientLight(0xffffff, 1.4);
+      const dirLight = new THREE.DirectionalLight(0xfff5e6, 1.6);
+      dirLight.position.set(2, 4, 3);
+      robloxPreviewScene.add(ambLight, dirLight);
+
+      robloxPreviewAvatarGroup = new THREE.Group();
+      robloxPreviewScene.add(robloxPreviewAvatarGroup);
+
+      // 렌더 애니메이션 루프
+      function animateRobloxPreview() {
+        requestAnimationFrame(animateRobloxPreview);
+        const modal = document.getElementById('modalCustomize');
+        if (modal && modal.classList.contains('open') && robloxPreviewAvatarGroup) {
+          robloxPreviewAvatarGroup.rotation.y += 0.022; // 은은하고 세련된 360도 회전
+          robloxPreviewRenderer.render(robloxPreviewScene, robloxPreviewCam);
+        }
+      }
+      animateRobloxPreview();
+    }
+
+    function renderRobloxStudio3DAvatar() {
+      initRobloxStudioPreview();
+      if (!robloxPreviewAvatarGroup) return;
+
+      // 이전 메시 정리
+      while (robloxPreviewAvatarGroup.children.length > 0) {
+        robloxPreviewAvatarGroup.remove(robloxPreviewAvatarGroup.children[0]);
+      }
+
+      // 로블록스 시그니처 3D 블록 아바타 생성
+      const shirtCol = state.shirtColor || '#ff5800';
+      const hairCol = state.hairColor || '#1c1917';
+      const curHat = (state.hatType === 'rabbit' ? 'bunny' : (state.hatType || 'ahoge'));
+
+      const rMatSkin = new THREE.MeshStandardMaterial({ color: 0xfde0c6, roughness: 0.5 });
+      const rMatShirt = new THREE.MeshStandardMaterial({ color: shirtCol, roughness: 0.45 });
+      const rMatPants = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
+
+      // 몸통
+      const rTorso = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.95, 0.5), rMatShirt);
+      rTorso.position.y = 1.05;
+      robloxPreviewAvatarGroup.add(rTorso);
+
+      // 머리
+      const rHead = new THREE.Mesh(new THREE.BoxGeometry(0.74, 0.72, 0.74), rMatSkin);
+      rHead.position.y = 1.95;
+
+      // 눈 & 입
+      const rEyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
+      const reL = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.13, 0.05), rEyeMat); reL.position.set(-0.16, 0.03, 0.38);
+      const reR = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.13, 0.05), rEyeMat); reR.position.set(0.16, 0.03, 0.38);
+      rHead.add(reL, reR);
+
+      // 12종 3D 헤어스타일 정확 렌더
+      const rHairMesh = createHairMesh(state.hairStyle || 'short', hairCol);
+      rHead.add(rHairMesh);
+
+      // 모자/토끼 귀 렌더
+      if (curHat && curHat !== 'ahoge') {
+        const rHatMesh = createHatMesh(curHat);
+        rHead.add(rHatMesh);
+      } else {
+        const ahoge = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.35, 6), new THREE.MeshStandardMaterial({ color: 0x27272a }));
+        ahoge.position.set(0.08, 0.55, 0.05); ahoge.rotation.z = -0.35;
+        rHead.add(ahoge);
+      }
+      robloxPreviewAvatarGroup.add(rHead);
+
+      // 양팔
+      const rArmL = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.82, 0.34), rMatShirt);
+      rArmL.position.set(-0.64, 1.05, 0);
+      const rArmR = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.82, 0.34), rMatShirt);
+      rArmR.position.set(0.64, 1.05, 0);
+      robloxPreviewAvatarGroup.add(rArmL, rArmR);
+
+      // 양다리
+      const rLegL = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.82, 0.42), rMatPants);
+      rLegL.position.set(-0.25, 0.28, 0);
+      const rLegR = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.82, 0.42), rMatPants);
+      rLegR.position.set(0.25, 0.28, 0);
+      robloxPreviewAvatarGroup.add(rLegL, rLegR);
+
+      // 천사 날개 등 미션 보상 반영
+      if (state.hatType === 'angel' || !!state.equippedRewards?.wings) {
+        const wingMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe0f2fe, emissiveIntensity: 0.4 });
+        const wL = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.45, 0.08), wingMat); wL.position.set(-0.55, 1.25, -0.32); wL.rotation.z = 0.25;
+        const wR = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.45, 0.08), wingMat); wR.position.set(0.55, 1.25, -0.32), wR.rotation.z = -0.25;
+        robloxPreviewAvatarGroup.add(wL, wR);
+      }
+    }
+
     window.updateAvatarShowcase = updateAvatarShowcase;
 
     // 커스터마이징 모달 4대 탭 전환 핸들러
@@ -7416,7 +7891,7 @@
         }
       });
 
-      openModal('modalCustomize');
+      openModal('modalCustomize'); setTimeout(() => { if (typeof renderRobloxStudio3DAvatar === 'function') renderRobloxStudio3DAvatar(); }, 50);
     }
     window.openCustomizeStudio = openCustomizeStudio;
     document.getElementById('btnCustomizeTop').onclick = openCustomizeStudio;
