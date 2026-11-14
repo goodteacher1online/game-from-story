@@ -1275,11 +1275,11 @@
         <div style="font-size:16px; margin-top:2px;">⛏️</div>
         <span class="mc-label">마음 곡괭이</span>
       </div>
-      <div class="mc-slot" data-slot="6" title="[6] 별빛 지팡이 — 선택 후 클릭(터치) 시 별빛 마법 발사!">
+      <div class="mc-slot" data-slot="6" title="[6] 별빛 응원 — 클릭 또는 언제든 [F]키로 친구에게 따뜻한 별빛을 보내세요!">
         <span class="mc-key">6</span>
         <span class="mc-count" style="color:#c084fc;">마법</span>
-        <div style="font-size:16px; margin-top:2px;">🪄</div>
-        <span class="mc-label">별빛 지팡이</span>
+        <div style="font-size:16px; margin-top:2px;">✨</div>
+        <span class="mc-label">별빛 응원</span>
       </div>
     </div>
     <div class="dock-sep"></div>
@@ -1311,8 +1311,10 @@
               <circle cx="18" cy="19" r="10" fill="#fde68a"/>
               <!-- 후드티 상의 -->
               <path d="M11 26C11 23 14 22 18 22C22 22 25 23 25 26V32H11V26Z" id="custPrevShirt" fill="#ff5800"/>
-              <!-- 헤어 실루엣 -->
-              <path d="M7 17C7 11 11 7 18 7C25 7 29 11 29 17C29 18 28 19 26 18C23 16.5 21 16 18 16C15 16 13 16.5 10 18C8 19 7 18 7 17Z" id="custPrevHair" class="hair-fill" fill="#1c1917"/>
+              <!-- 12종 동적 3D 헤어스타일 실시간 렌더 그룹 -->
+              <g id="custPrevHairGroup">
+                <path d="M7 17C7 11 11 7 18 7C25 7 29 11 29 17C29 18 28 19 26 18C23 16.5 21 16 18 16C15 16 13 16.5 10 18C8 19 7 18 7 17Z" fill="#1c1917"/>
+              </g>
               <!-- 눈과 미소 -->
               <circle cx="15" cy="18" r="1.2" fill="#1e293b"/>
               <circle cx="21" cy="18" r="1.2" fill="#1e293b"/>
@@ -3069,12 +3071,12 @@
 
     // [동화 9장 협동 & 멀티플레이 광장: 살아있는 친구 아바타 6명]
     const friendDefs = [
-      { id: 'jiwoo', name: '지우 (5학년)', title: '점프맵 러너', hat: 'crown', shirt: 0x3b82f6, x: 7, z: 5, chats: ['같이 무지개 점프맵 꼭대기 가자!', '심호흡하니까 마음이 한결 편해졌어!'], story: '“모둠 활동에서 내 의견이 묵살돼서 화가 났지만, 심호흡하며 차분해지려고 노력 중이야. 내 마음 광주리 같이 들어줄래?”' },
-      { id: 'seojun', name: '서준 (4학년)', title: '따뜻한 위로자', hat: 'bunny', shirt: 0x10b981, x: -8, z: 6, chats: ['연못 수련잎 징검다리 건너봤어?', '친구야, 오늘 마음은 어때?'], story: '“단짝 친구가 전학을 가서 마음이 무겁네… 누군가 내 이야기를 들어주고 함께 걸어주면 힘이 날 것 같아.”' },
-      { id: 'minseo', name: '민서 (6학년)', title: '별빛 마법사', hat: 'wizard', shirt: 0xa855f7, x: -6, z: -8, chats: ['6번 별빛 지팡이로 어둠을 물리치자!', '등대 불빛이 정말 예쁘지 않니?'], story: '“곧 영어 발표 순서인데 너무 떨려! 우리 같이 심호흡하고 신나게 춤춰볼래?”' },
-      { id: 'doyun', name: '도윤 (3학년)', title: '블록 건축왕', hat: 'cap', shirt: 0xf59e0b, x: 8, z: -7, chats: ['우클릭으로 블록 계단을 쌓아봐!', '광석을 캐면 별가루가 쏟아져!'], story: '“오늘 마음 광주리가 좀 무겁다! 9장 동화처럼 우리가 서로 광주리를 맞들어 주면 훨씬 가벼워진대!”' },
-      { id: 'haeun', name: '하은 (5학년)', title: '기쁨 탐험가', hat: 'angel', shirt: 0xec4899, x: 14, z: 3, chats: ['트램펄린 점프 진짜 신난다!', '엄마 NPC한테 인사해 봤어?'], story: '“트램펄린에서 하늘 높이 솟구쳐 황금 링 3개를 통과해 봐! 기분이 날아갈 것 같아!”' },
-      { id: 'taeo', name: '태오 (4학년)', title: '마그마 도전자', hat: 'crown', shirt: 0xef4444, x: -2, z: 16, chats: ['분노의 화산에 2번 물블록을 놓아봐!', '마그마 파쿠르 정상 정복 성공!'], story: '“화가 날 땐 심호흡(C키)을 하거나 슬픔 물블록을 놓으면 뜨거운 불길이 시원하게 가라앉아!”' }
+      { id: 'jiwoo', name: '지우 (5학년)', title: '점프맵 러너', hat: 'crown', shirt: 0x3b82f6, x: 7, z: 5, chats: ['우리 같이 무지개 점프맵 꼭대기 가보자!', '천천히 숨을 쉬니까 마음이 정말 편안해졌어!'], story: '“친구들과 이야기할 때 내 생각이 잘 전해지지 않아서 속상하고 답답했지만, 천천히 깊게 숨을 쉬며 차분해지려고 노력 중이야. 내 마음 광주리 같이 들어줄래?”' },
+      { id: 'seojun', name: '서준 (4학년)', title: '따뜻한 위로자', hat: 'bunny', shirt: 0x10b981, x: -8, z: 6, chats: ['연못 징검다리를 퐁당퐁당 건너볼까?', '친구야, 오늘 기분은 어때?'], story: '“친한 친구가 멀리 이사를 가서 조금 쓸쓸하고 보고 싶어… 누군가 내 이야기를 가만히 들어주면 큰 힘이 날 것 같아.”' },
+      { id: 'minseo', name: '민서 (6학년)', title: '별빛 마법사', hat: 'wizard', shirt: 0xa855f7, x: -6, z: -8, chats: ['F키를 눌러 따뜻한 별빛을 보내봐!', '등대 불빛이 온 세상을 따스하게 비춰줘!'], story: '“앞에 나가서 발표하려니 가슴이 콩닥콩닥 떨려! 우리 손잡고 크게 심호흡하고 신나게 춤춰볼래?”' },
+      { id: 'doyun', name: '도윤 (3학년)', title: '블록 건축왕', hat: 'cap', shirt: 0xf59e0b, x: 8, z: -7, chats: ['블록으로 예쁜 계단을 만들어보자!', '마음 광주리를 함께 나누면 행복해져!'], story: '“오늘 마음 광주리가 조금 무거웠는데, 친구들이 함께 손을 잡아주니까 솜사탕처럼 가벼워졌어!”' },
+      { id: 'haeun', name: '하은 (5학년)', title: '기쁨 탐험가', hat: 'angel', shirt: 0xec4899, x: 14, z: 3, chats: ['트램펄린 위에서 콩콩 뛰니까 최고야!', '엄마한테 가서 사랑한다고 안아드렸어?'], story: '“트램펄린에서 높은 곳에서 떨어질수록 하늘 높이 솟아올라! 기쁨이 퐁퐁 솟아나는 것 같아!”' },
+      { id: 'taeo', name: '태오 (4학년)', title: '평온 지킴이', hat: 'crown', shirt: 0xef4444, x: -2, z: 16, chats: ['모닥불 앞에서 C키로 깊게 숨을 쉬어봐!', '마음이 따스해지는 마법이야!'], story: '“마음속에 불꽃처럼 화가 날 땐 [C]키로 후~ 하고 길게 숨을 내쉬어봐. 따뜻하고 포근한 온기로 바뀐단다!”' }
     ];
     const friendAgents = [];
     friendDefs.forEach((fd, idx) => {
@@ -3603,9 +3605,9 @@
       } else if (num === 6) {
         handBlockMesh.visible = false;
         pickaxeGroup.visible = false;
-        wandGroup.visible = true;
+        wandGroup.visible = false; // 지팡이 제거: 맨손 별빛 응원 발사
         ghostBlockMesh.visible = false;
-        showToast('🪄 <b>[6번: 별빛 지팡이]</b> 화면을 클릭(터치)하면 별빛 마법이 발사됩니다!');
+        showToast('✨ <b>[6번: 별빛 응원]</b> 화면을 클릭하거나 [F]키를 누르면 친구에게 따스한 별빛이 발사됩니다!');
       }
     }
 
@@ -4189,7 +4191,7 @@
     // ==========================================
     const magicProjectiles = [], magicImpacts = [], dustParticles = [];
 
-    function shootMagicBullet() {
+    window.shootMagicBullet = function shootMagicBullet() {
       initAudio(); soundMagic();
       triggerArmSwing();
       const s = state.spirits[state.curGuest];
@@ -4217,12 +4219,103 @@
       worldGroup.add(rMesh); sadRipples.push({ mesh: rMesh, scale: 1.0, life: 1.0 });
     }
 
-    function triggerSadRitual() {
+    // [슬픔의 치유 연못] 환상적인 3D 무지개 분수 & 눈물 정화 축제 시스템
+    let sadRainbowMesh = null;
+    let sadFountainPillars = [];
+
+    window.triggerSadRitual = function triggerSadRitual() {
       initAudio();
-      createSadRipple(-23, 4); setTimeout(() => createSadRipple(-23, 4), 250); setTimeout(() => createSadRipple(-23, 4), 500);
       soundChime(432);
-      if (!state.quests.sad) checkQuestCollect('sad', '치유의 눈물 보석 획득', '소중함을 기억하며 눈물을 연못에 띄워 마음을 다독였습니다.');
-      else showToast('연못에 잔잔한 마음의 물결이 퍼집니다.');
+      setTimeout(() => soundChime(540), 120);
+      setTimeout(() => soundChime(648), 240);
+      setTimeout(() => soundChime(864), 360);
+
+      // 1. 연못 중심 파동 5중주
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => createSadRipple(-23, 4), i * 180);
+      }
+
+      // 2. 하늘로 22m 치솟는 초대형 무지개 물기둥 분수 생성!
+      const fountainGroup = new THREE.Group();
+      fountainGroup.position.set(-23, 0.2, 4);
+
+      // 중심 에메랄드/하늘빛 물기둥
+      const colGeo = new THREE.CylinderGeometry(0.7, 1.2, 22, 16);
+      const colMat = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 2.2,
+        roughness: 0.1, transparent: true, opacity: 0.8
+      });
+      const colMesh = new THREE.Mesh(colGeo, colMat);
+      colMesh.position.y = 11;
+      fountainGroup.add(colMesh);
+
+      // 정상에서 뿜어져 나오는 30개 영롱한 눈물 보석 물방울 파티클
+      for (let p = 0; p < 28; p++) {
+        const drop = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.35 + Math.random() * 0.2, 1),
+          new THREE.MeshStandardMaterial({
+            color: [0x38bdf8, 0x818cf8, 0xc084fc, 0x34d399, 0xfde047][p % 5],
+            emissive: 0x38bdf8, emissiveIntensity: 1.8,
+            roughness: 0.2
+          })
+        );
+        const ang = (p / 28) * Math.PI * 2;
+        const rad = 2.0 + Math.random() * 3.5;
+        drop.position.set(Math.cos(ang) * rad, 16 + Math.random() * 8, Math.sin(ang) * rad);
+        fountainGroup.add(drop);
+      }
+
+      // 3. 연못 상공에 찬란하게 걸리는 일곱 빛깔 3D 무지개 아치!
+      if (!sadRainbowMesh) {
+        const rbGroup = new THREE.Group();
+        const rainbowColors = [0xef4444, 0xf97316, 0xfacc15, 0x22c55e, 0x06b6d4, 0x3b82f6, 0xa855f7];
+        rainbowColors.forEach((col, cIdx) => {
+          const rGeo = new THREE.TorusGeometry(8.5 + cIdx * 0.45, 0.22, 8, 32, Math.PI);
+          const rMat = new THREE.MeshStandardMaterial({
+            color: col, emissive: col, emissiveIntensity: 1.6,
+            transparent: true, opacity: 0.9, roughness: 0.3
+          });
+          const rMesh = new THREE.Mesh(rGeo, rMat);
+          rMesh.position.set(-23, 1.2, 4);
+          rMesh.rotation.y = Math.PI / 4;
+          rbGroup.add(rMesh);
+        });
+        sadRainbowMesh = rbGroup;
+        worldGroup.add(sadRainbowMesh);
+      }
+      sadRainbowMesh.visible = true;
+
+      worldGroup.add(fountainGroup);
+      sadFountainPillars.push(fountainGroup);
+
+      // 6.5초 동안 서서히 물기둥이 은은한 치유의 비로 흩뿌려짐
+      let elapsed = 0;
+      const animTimer = setInterval(() => {
+        elapsed += 0.05;
+        colMesh.rotation.y += 0.08;
+        colMesh.scale.x = 1.0 + Math.sin(elapsed * 5) * 0.15;
+        colMesh.scale.z = colMesh.scale.x;
+        if (elapsed > 6.0) {
+          clearInterval(animTimer);
+          colMat.opacity -= 0.05;
+          if (colMat.opacity <= 0) {
+            worldGroup.remove(fountainGroup);
+            const idx = sadFountainPillars.indexOf(fountainGroup);
+            if (idx !== -1) sadFountainPillars.splice(idx, 1);
+          }
+        }
+      }, 50);
+
+      // 별빛가루 +10 지급 및 마음 점수 보너스
+      state.stardust = (state.stardust || 0) + 10;
+      saveProgress();
+      window.addMindScore(300, '치유의 무지개 분수 축제 완성! 🌈');
+
+      if (!state.quests.sad) {
+        checkQuestCollect('sad', '치유의 눈물 보석 획득', '“슬픔을 밀어내지 않고 가만히 안아주었더니, 하늘에 가장 아름다운 무지개가 피어났어요!”');
+      } else {
+        showToast('🌈 <b>[치유의 무지개 분수 축제]</b><br>슬픔의 눈물이 맑게 씻기며 연못에 찬란한 무지개가 피어났습니다! (+300점 · 별빛가루 +10 ✨)');
+      }
     }
 
     function spawnReleasedLantern(text) {
@@ -4328,32 +4421,32 @@
     const storyQuestMeta = [
       {
         key: 'joy', chapter: '제1장 · 기쁨 손님 (동쪽 트램펄린)',
-        title: '별토끼와 하늘 링 3개 점프 통과하기',
-        desc: '“기쁠 땐 마음껏 웃고 뛰어올라도 돼!” 노란 트램펄린과 무지개 계단을 밟아 공중 황금 링 3개를 통과하세요.',
+        title: '트램펄린 슈퍼 점프로 황금 링 3개 통과하기',
+        desc: '“하늘 높이 뛰어오르면 기쁨이 퐁퐁 솟아나!” 트램펄린을 밟고 뛰어올라 공중의 황금 링 3개를 통과하세요.',
         color: '#f59e0b', x: 22, z: 4, max: 3
       },
       {
         key: 'sad', chapter: '제2장 · 슬픔 손님 (서쪽 치유 연못)',
-        title: '수련잎 징검다리 건너 기억 물방울 3개 모으기',
-        desc: '“소중한 걸 잃었을 때 눈물이 나는 건 당연해.” 연못 수련잎을 건너 물방울 3개를 모으고 연못 중앙으로 가세요.',
-        color: '#3b82f6', x: -23, z: 4, max: 3
+        title: '기억 물방울 3개 모으고 무지개 분수 피우기',
+        desc: '“슬픔을 가만히 보듬어주면 맑은 눈물이 흘러.” 물방울 3개를 모아 연못 중앙으로 가면 무지개 분수가 피어납니다.',
+        color: '#38bdf8', x: -23, z: 4, max: 3
       },
       {
-        key: 'anger', chapter: '제3장 · 화 손님 (남쪽 화산 모닥불)',
-        title: '불도깨비 모닥불 앞 타이밍 심호흡(C) 또는 물블록(2번) 놓기',
-        desc: '“내 마음을 지키려다 불길이 너무 커졌어!” 화로 앞에서 초록 타이밍에 C키 심호흡 3번 또는 2번 슬픔 물블록을 놓아주세요.',
+        key: 'anger', chapter: '제3장 · 화 손님 (남쪽 모닥불 쉼터)',
+        title: '모닥불 앞에서 깊은 심호흡(C키) 3번 하기',
+        desc: '“마음이 활활 탈 때는 천천히 숨을 쉬어봐.” 초록빛 타이밍에 맞춰 [C]키로 심호흡을 3번 나누어보세요.',
         color: '#ef4444', x: 0, z: 24, max: 3
       },
       {
         key: 'fear', chapter: '제4장 · 두려움 손님 (북서쪽 수호 등대)',
-        title: '6번 별빛 지팡이로 등대 먹구름 그림자 5개 비추기',
-        desc: '“어두운 밤바다가 무서워…” 핫바 [6번 별빛 지팡이]를 들고 클릭(또는 F키)하여 등대 주변 먹구름 5개를 정화하세요.',
+        title: '따뜻한 별빛(F키)으로 밤바다 그림자 비추기',
+        desc: '“두려움은 불을 켜면 스르륵 사라진단다.” 등대 주변을 맴도는 그림자에 [F]키로 별빛 응원을 비춰주세요.',
         color: '#a855f7', x: -20, z: -18, max: 5
       },
       {
         key: 'worry', chapter: '제5장 · 걱정 손님 (북동쪽 털실 벤치)',
-        title: '엉킨 초록 털실 매듭 3개 풀고 소원 연등 날리기(G)',
-        desc: '“내일 일이 자꾸 걱정돼서 실타래가 엉켰어.” 벤치 주변 초록 털실 3개를 건드려 풀고 벤치에서 G키로 연등을 날려보세요.',
+        title: '초록 털실 3개 풀고 환상 소원 연등 띄우기(G)',
+        desc: '“복잡한 생각은 실타래처럼 스르륵 풀려.” 잔디밭 털실 3개를 밟아 풀고 벤치에서 소원 연등을 날려보세요.',
         color: '#10b981', x: 20, z: -18, max: 3
       }
     ];
@@ -4363,21 +4456,35 @@
     // 5대 랜드마크 상공에 멀리서도 한눈에 보이는 3D 대형 스토리 미션 입간판 생성!
     const landmarkStorySigns = [];
     function makeLandmarkStorySign(meta) {
-      const sc = document.createElement('canvas'); sc.width = 640; sc.height = 200;
+      // 880x220 고해상도 캔버스 + 테두리 라운딩 + 텍스트 자동 축소(Fit)로 글자 넘침 100% 원천 차단
+      const sc = document.createElement('canvas'); sc.width = 880; sc.height = 220;
       const ctx = sc.getContext('2d');
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
-      ctx.fillRect(10, 10, 620, 180);
-      ctx.strokeStyle = meta.color; ctx.lineWidth = 8;
-      ctx.strokeRect(10, 10, 620, 180);
-      ctx.fillStyle = meta.color; ctx.font = 'bold 24px "Noto Sans KR"'; ctx.textAlign = 'center';
-      ctx.fillText(`📖 ${meta.chapter}`, 320, 58);
-      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 28px "Noto Sans KR"';
-      ctx.fillText(`🎯 ${meta.title}`, 320, 110);
-      ctx.fillStyle = '#fef08a'; ctx.font = 'bold 20px "Noto Sans KR"';
-      ctx.fillText('▼ 이 구역에서 인찬이 스토리 미션을 수행하세요! ▼', 320, 158);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      ctx.roundRect(14, 14, 852, 192, 28); ctx.fill();
+      ctx.strokeStyle = meta.color; ctx.lineWidth = 5;
+      ctx.roundRect(14, 14, 852, 192, 28); ctx.stroke();
+
+      // 1. 챕터 안내
+      ctx.fillStyle = meta.color; ctx.font = 'bold 24px "Noto Sans KR", sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(`📖 ${meta.chapter}`, 440, 56);
+
+      // 2. 미션 제목 (가로 780px 이내로 자동 축소)
+      let titleFont = 26;
+      ctx.font = `bold ${titleFont}px "Noto Sans KR", sans-serif`;
+      while (ctx.measureText(`✨ ${meta.title}`).width > 780 && titleFont > 15) {
+        titleFont -= 1;
+        ctx.font = `bold ${titleFont}px "Noto Sans KR", sans-serif`;
+      }
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`✨ ${meta.title}`, 440, 114);
+
+      // 3. 하단 안내문
+      ctx.fillStyle = '#fef08a'; ctx.font = 'bold 20px "Noto Sans KR", sans-serif';
+      ctx.fillText('▼ 이 구역에서 인찬이 마음 미션을 함께해요! ▼', 440, 170);
+
       const tex = new THREE.CanvasTexture(sc);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-      sp.scale.set(7.2, 2.25, 1);
+      sp.scale.set(8.2, 2.05, 1);
       sp.position.set(meta.x, meta.key === 'fear' ? 13.2 : 5.2, meta.z);
       worldGroup.add(sp);
       landmarkStorySigns.push({ key: meta.key, sprite: sp, baseY: sp.position.y });
@@ -4520,7 +4627,7 @@
     // 9. 입력 & 물리 & NPC 대화
     // ==========================================
     const input = { w: false, a: false, s: false, d: false, shift: false, joyX: 0, joyY: 0 };
-    const playerPhysics = { velY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true, isDancing: false, danceTimer: 0, isMeditating: false, walkCycle: 0, blinkTimer: 0, dustTimer: 0, armSwingTimer: 0 };
+    const playerPhysics = window.playerPhysics = { velY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true, isDancing: false, danceTimer: 0, isMeditating: false, walkCycle: 0, blinkTimer: 0, dustTimer: 0, armSwingTimer: 0 };
 
     window.addEventListener('keydown', e => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
@@ -4685,7 +4792,7 @@
       }
     }
 
-    function openFriendModal(friendId) {
+    window.openFriendModal = function openFriendModal(friendId) {
       const fr = friendAgents.find(f => f.id === friendId);
       if (!fr) return;
       state.activeFriendId = friendId;
@@ -5485,9 +5592,33 @@
 
       // 랜드마크 & 스토리 기반 퀘스트 검사
       const distTrampoline = Math.hypot(playerRig.position.x - 22, playerRig.position.z - 4);
-      if (distTrampoline < 3.1 && playerRig.position.y <= 0.5) {
-        playerPhysics.velY = 18.5; playerPhysics.jumpCount = 1; playerPhysics.isGrounded = false;
-        soundJump(true); showToast('기쁨의 트램펄린에서 하늘 높이 솟구쳤습니다!');
+      if (distTrampoline < 3.2 && playerRig.position.y <= 0.6) {
+        // 높은 곳에서 떨어질수록 반발력이 기하급수적으로 커지는 탄성 물리 트램폴린!
+        const fallSpeed = Math.abs(playerPhysics.prevVelY || 0);
+        const superBounce = Math.min(38.0, 19.5 + fallSpeed * 1.35);
+        playerPhysics.velY = superBounce;
+        playerPhysics.jumpCount = 1;
+        playerPhysics.isGrounded = false;
+
+        // 경쾌한 3단 기쁨 아르페지오 (도-미-솔-도)
+        soundJump(true);
+        soundChime(523); setTimeout(() => soundChime(659), 90); setTimeout(() => soundChime(784), 180); setTimeout(() => soundChime(1046), 270);
+
+        // 트램폴린 탄성 스쿼시 애니메이션
+        if (typeof trampoline !== 'undefined' && trampoline) {
+          trampoline.scale.set(1.25, 0.35, 1.25);
+          setTimeout(() => { if (trampoline) trampoline.scale.set(1, 1, 1); }, 220);
+        }
+        createMagicImpact(new THREE.Vector3(22, 0.6, 4), '#f59e0b');
+
+        // 점수 플로팅 표출 & 기쁨 강조 메시지
+        const bonusScore = Math.round(superBounce * 4.5);
+        window.addMindScore(bonusScore, fallSpeed > 8 ? '🚀 메가 기쁨 슈퍼 바운스!' : '기쁨 트램펄린 점프');
+        if (fallSpeed > 8) {
+          showToast(`🚀 <b>[메가 기쁨 슈퍼 바운스!]</b> 높은 곳에서 뛰어내려 구름 위로 솟구쳤습니다! (+${bonusScore}점)`);
+        } else {
+          showToast(`🌟 <b>기쁨의 트램펄린!</b> 더 높은 곳에서 뛰어내리면 우주 높이 날아올라요! (+${bonusScore}점)`);
+        }
       }
       // 기쁨의 황금 링 (개별 4.0초 자동 리젠)
       joyRings.forEach((jr, idx) => {
@@ -5670,10 +5801,43 @@
         }
       }
 
-      // 마법 투사체 & 두려움 그림자 정화
+      // 마법 투사체 & 두려움 그림자 정화 & 친구 별빛 응원 나눔
       for (let i = magicProjectiles.length - 1; i >= 0; i--) {
         const mp = magicProjectiles[i]; mp.mesh.position.addScaledVector(mp.vel, dt); mp.life -= dt;
         let hit = false;
+
+        // 친구 NPC(6명)에게 별빛 응원이 닿았을 때: 친구 기쁨 리액션 + 마음 충전 + 점수 대량 획득!
+        if (typeof friendList !== 'undefined') {
+          for (const fr of friendList) {
+            if (fr.mesh && mp.mesh.position.distanceTo(fr.mesh.position) < 2.2) {
+              hit = true;
+              createMagicImpact(fr.mesh.position, '#ec4899');
+              createMagicImpact(fr.mesh.position, '#fde047');
+              soundQuestComplete();
+              fr.mesh.position.y = 0.9;
+              setTimeout(() => { if (fr.mesh) fr.mesh.position.y = 0; }, 550);
+
+              if (fr.chatSprite) {
+                const thankChats = [
+                  '인찬아 별빛 응원 고마워! 힘이 펄펄 나! 💖',
+                  '마음이 따뜻해졌어! 우리 함께 힘내자! ✨',
+                  '와아, 반짝이는 별빛 선물 고마워! 🌟',
+                  '너의 따스한 응원 덕분에 기분이 정말 좋아! 🌸'
+                ];
+                const tMsg = thankChats[Math.floor(Math.random() * thankChats.length)];
+                drawChatBubbleCanvas(fr.chatCtx, tMsg, '#f43f5e');
+                fr.chatTex.needsUpdate = true;
+                fr.chatSprite.visible = true;
+                fr.chatTimer = 4.5;
+              }
+
+              window.addMindScore(200, `${fr.name}에게 별빛 응원 선물 💖`);
+              showToast(`💖 <b>[마음 나눔]</b> <b>${fr.name}</b>에게 별빛 응원을 선물했습니다! (+200점)`);
+              break;
+            }
+          }
+        }
+
         for (const fs of fearShadows) {
           if (!fs.cleared && mp.mesh.position.distanceTo(fs.group.position) < 2.3) {
             fs.cleared = true; fs.group.visible = false; fs.respawnTimer = 0; hit = true;
@@ -6020,18 +6184,56 @@
 
     // ==========================================
     // 커스터마이징 모달 3대 탭 전환 핸들러
-    // 실시간 아바타 쇼케이스 라이브 프리뷰 업데이트 함수
+    // 실시간 아바타 쇼케이스 라이브 프리뷰 업데이트 함수 (12종 헤어 실루엣 & 컬러 완전 동적 연동)
     function updateAvatarShowcase() {
       const name = document.getElementById('custInputName')?.value || state.playerName || '인찬이';
       const title = document.getElementById('custSelectTitle')?.value || state.playerTitle || '기쁨 수호자';
       const nametagEl = document.getElementById('custPrevNametag');
       if (nametagEl) nametagEl.textContent = `🌸 ${title} · ${name}`;
 
+      // 후드티 상의 색상 실시간 반영
       const shirtEl = document.getElementById('custPrevShirt');
       if (shirtEl) shirtEl.setAttribute('fill', state.shirtColor || '#ff5800');
 
-      const hairEl = document.getElementById('custPrevHair');
-      if (hairEl) hairEl.setAttribute('fill', state.hairColor || '#1c1917');
+      // 12종 헤어스타일 전용 SVG 실루엣 맵
+      const curColor = state.hairColor || '#1c1917';
+      const hairSvgMap = {
+        short: `<path d="M7 17C7 11 11 7 18 7C25 7 29 11 29 17C29 18 28 19 26 18C23 16.5 21 16 18 16C15 16 13 16.5 10 18C8 19 7 18 7 17Z" fill="${curColor}"/><path d="M10 17L13 21M18 16V22M26 17L23 21" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round"/>`,
+        bowl: `<path d="M6 18C6 10 11 6 18 6C25 6 30 10 30 18C30 20 28 20 26 19.5C22 18.5 14 18.5 10 19.5C8 20 6 20 6 18Z" fill="${curColor}"/>`,
+        dandy: `<path d="M7 17C7 10 12 7 18 7C25 7 29 11 29 17C28 17 25 15 20 16C17 16.5 14 19 12 21C10 20 7 19 7 17Z" fill="${curColor}"/><path d="M20 16C23 16 26 18 28 21" stroke="${curColor}" stroke-width="2" stroke-linecap="round"/>`,
+        ponytail: `<path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" fill="${curColor}"/><circle cx="27" cy="10" r="3.5" fill="#f43f5e"/><path d="M28 11C31 12 34 16 33 22C32 21 30 18 29 14" fill="${curColor}" stroke-width="2"/>`,
+        twintail: `<path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" fill="${curColor}"/><circle cx="7" cy="14" r="2.5" fill="#f43f5e"/><circle cx="29" cy="14" r="2.5" fill="#f43f5e"/><path d="M6 15C3 18 3 24 5 26C5 23 6 20 8 18" fill="${curColor}"/><path d="M30 15C33 18 33 24 31 26C31 23 30 20 28 18" fill="${curColor}"/>`,
+        long: `<path d="M8 17C8 10 12 7 18 7C24 7 28 10 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" fill="${curColor}"/><path d="M7 16V29C8 29 10 27 10 25V18" fill="${curColor}"/><path d="M29 16V29C28 29 26 27 26 25V18" fill="${curColor}"/>`,
+        wavy: `<path d="M7 17C7 10 12 6 18 6C24 6 29 10 29 17C27 16 22 15 18 15C14 15 9 16 7 17Z" fill="${curColor}"/><path d="M7 17C6 20 6 23 8 25C9 26 10 24 10 22C10 20 9 18 7 17Z" fill="${curColor}"/><path d="M29 17C30 20 30 23 28 25C27 26 26 24 26 22C26 20 27 18 29 17Z" fill="${curColor}"/>`,
+        bob: `<path d="M7 17C7 10 12 7 18 7C24 7 29 10 29 17C27 16 22 15.5 18 15.5C14 15.5 9 16 7 17Z" fill="${curColor}"/><path d="M7 17L7 24C8 25 10 24 10 22L10 18" fill="${curColor}"/><path d="M29 17L29 24C28 25 26 24 26 22L26 18" fill="${curColor}"/>`,
+        twoblock: `<path d="M8 16C8 10 12 7 18 7C24 7 28 10 28 16C26 15 22 14.5 18 14.5C14 14.5 10 15 8 16Z" fill="${curColor}"/><path d="M12 15L15 20M24 15L21 20" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round"/>`,
+        braids: `<path d="M8 17C8 11 12 8 18 8C24 8 28 11 28 17C26 16 22 15 18 15C14 15 10 16 8 17Z" fill="${curColor}"/><circle cx="8" cy="20" r="2" fill="${curColor}"/><circle cx="8" cy="24" r="2" fill="${curColor}"/><circle cx="28" cy="20" r="2" fill="${curColor}"/><circle cx="28" cy="24" r="2" fill="${curColor}"/>`,
+        wolf: `<path d="M7 16C7 9 12 6 18 6C24 6 29 9 29 16C27 15 22 14 18 14C14 14 9 15 7 16Z" fill="${curColor}"/><path d="M6 19L9 22M30 19L27 22M18 14V21" stroke="${curColor}" stroke-width="2" stroke-linecap="round"/>`,
+        spiky: `<path d="M10 17C10 12 13 8 18 5C23 8 26 12 26 17C24 16.5 21 16 18 16C15 16 12 16.5 10 17Z" fill="${curColor}"/><path d="M14 13L18 8L22 13" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round"/>`
+      };
+
+      const hairGroup = document.getElementById('custPrevHairGroup');
+      if (hairGroup) {
+        hairGroup.innerHTML = hairSvgMap[state.hairStyle || 'short'] || hairSvgMap.short;
+      }
+
+      // 모자 아이콘 프리뷰 (헤어를 가리지 않고 머리 위에 귀엽게 얹어짐)
+      const hatSvgGroup = document.getElementById('custPrevHatIcon');
+      if (hatSvgGroup) {
+        if (state.hatType === 'crown') {
+          hatSvgGroup.innerHTML = '<path d="M0 6L3 2L6 5L9 2L12 6H0Z" fill="#fbbf24" stroke="#d97706" stroke-width="0.8"/>';
+        } else if (state.hatType === 'wizard') {
+          hatSvgGroup.innerHTML = '<path d="M6 0L0 7H12L6 0Z" fill="#6366f1"/><circle cx="6" cy="0" r="1.5" fill="#fbbf24"/>';
+        } else if (state.hatType === 'rabbit' || state.hatType === 'bunny') {
+          hatSvgGroup.innerHTML = '<ellipse cx="3" cy="2" rx="1.5" ry="4" fill="#fbcfe8"/><ellipse cx="9" cy="2" rx="1.5" ry="4" fill="#fbcfe8"/>';
+        } else if (state.hatType === 'angel') {
+          hatSvgGroup.innerHTML = '<ellipse cx="6" cy="1" rx="6" ry="1.5" fill="none" stroke="#fde047" stroke-width="1.2"/>';
+        } else if (state.hatType === 'explorer' || state.hatType === 'cap') {
+          hatSvgGroup.innerHTML = '<ellipse cx="6" cy="6" rx="7" ry="2" fill="#78350f"/><path d="M2 6C2 3 4 2 6 2C8 2 10 3 10 6Z" fill="#92400e"/>';
+        } else {
+          hatSvgGroup.innerHTML = '<path d="M2 7C4 2 8 2 8 5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>';
+        }
+      }
 
       // 칩 텍스트 갱신
       const hairNames = {
@@ -6061,24 +6263,6 @@
       if (cShirt) cShirt.textContent = `👕 ${shirtNames[state.shirtColor] || '코랄 오렌지'}`;
       const cHat = document.getElementById('chipHatType');
       if (cHat) cHat.textContent = `👑 ${hatNames[state.hatType] || '기본 바보털'}`;
-
-      // 모자 아이콘 프리뷰 변경
-      const hatSvgGroup = document.getElementById('custPrevHatIcon');
-      if (hatSvgGroup) {
-        if (state.hatType === 'crown') {
-          hatSvgGroup.innerHTML = '<path d="M0 6L3 2L6 5L9 2L12 6H0Z" fill="#fbbf24" stroke="#d97706" stroke-width="0.8"/>';
-        } else if (state.hatType === 'wizard') {
-          hatSvgGroup.innerHTML = '<path d="M6 0L0 7H12L6 0Z" fill="#6366f1"/><circle cx="6" cy="0" r="1.5" fill="#fbbf24"/>';
-        } else if (state.hatType === 'rabbit' || state.hatType === 'bunny') {
-          hatSvgGroup.innerHTML = '<ellipse cx="3" cy="2" rx="1.5" ry="4" fill="#fbcfe8"/><ellipse cx="9" cy="2" rx="1.5" ry="4" fill="#fbcfe8"/>';
-        } else if (state.hatType === 'angel') {
-          hatSvgGroup.innerHTML = '<ellipse cx="6" cy="1" rx="6" ry="1.5" fill="none" stroke="#fde047" stroke-width="1.2"/>';
-        } else if (state.hatType === 'explorer' || state.hatType === 'cap') {
-          hatSvgGroup.innerHTML = '<ellipse cx="6" cy="6" rx="7" ry="2" fill="#78350f"/><path d="M2 6C2 3 4 2 6 2C8 2 10 3 10 6Z" fill="#92400e"/>';
-        } else {
-          hatSvgGroup.innerHTML = '<path d="M2 7C4 2 8 2 8 5" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>';
-        }
-      }
     }
     window.updateAvatarShowcase = updateAvatarShowcase;
 
