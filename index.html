@@ -136,38 +136,39 @@
     .zp-btn.secondary { background: rgba(24, 24, 27, 0.08); color: var(--ink-main); }
 
     .breath-bar-wrap {
-      width: 380px; max-width: 90vw; height: 36px; border-radius: 20px;
+      width: 380px; max-width: 90vw; height: 42px; border-radius: 24px;
       background: linear-gradient(180deg, #1e293b, #0f172a);
       position: relative; overflow: hidden; display: none;
       border: 2.5px solid #f59e0b;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.6), inset 0 2px 6px rgba(255,255,255,0.1);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.65), inset 0 2px 8px rgba(255,255,255,0.12);
       margin: 8px 0;
     }
     .breath-bar-wrap.active { display: flex; align-items: center; }
     .timing-zone {
       position: absolute; left: 35%; width: 30%; top: 0; bottom: 0;
-      background: linear-gradient(180deg, rgba(34, 197, 94, 0.45), rgba(16, 185, 129, 0.65));
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.55), rgba(16, 185, 129, 0.75));
       border-left: 3px solid #22c55e; border-right: 3px solid #22c55e;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.7);
+      box-shadow: 0 0 24px rgba(34, 197, 94, 0.85);
     }
     .timing-zone::after {
       content: '🌱 성공 구역'; position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       white-space: nowrap !important;
-      font-size: 11.5px; font-weight: 900; color: #ffffff; letter-spacing: -0.2px;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.9); pointer-events: none;
-      z-index: 2;
+      font-size: 12.5px; font-weight: 900; color: #ffffff; letter-spacing: -0.2px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.95), 0 0 8px rgba(34,197,94,0.9);
+      pointer-events: none;
+      z-index: 3;
     }
     .timing-cursor {
-      position: absolute; top: 3px; bottom: 3px; width: 28px; border-radius: 99px;
+      position: absolute; top: 4px; bottom: 4px; width: 32px; border-radius: 99px;
       background: radial-gradient(circle, #fde047 30%, #f59e0b 80%, #d97706 100%);
       left: 0%; transform: translateX(-50%);
-      box-shadow: 0 0 16px #fbbf24, 0 0 6px #ffffff;
-      border: 2px solid #ffffff; z-index: 2;
+      box-shadow: 0 0 18px #fbbf24, 0 0 8px #ffffff;
+      border: 2.5px solid #ffffff; z-index: 2;
     }
     .breath-guide-label {
-      font-size: 11.5px; font-weight: 800; color: #fbbf24;
-      text-align: center; margin-bottom: 2px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      font-size: 12px; font-weight: 800; color: #fbbf24;
+      text-align: center; margin-bottom: 3px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
     .zp-progress {
       font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
@@ -594,11 +595,15 @@
       gap: 6px; font-size: 12.5px;
     }
     .story-q-chapter {
-      font-weight: 800; font-size: 13px !important; letter-spacing: -0.2px;
+      font-weight: 800; font-size: 12px !important; letter-spacing: -0.2px;
+      min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .story-q-prog {
-      font-weight: 800; color: #fde047; font-size: 12.5px !important;
+      font-weight: 800; color: #fde047; font-size: 12px !important;
       font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap !important; flex-shrink: 0 !important;
+      background: rgba(251, 191, 36, 0.15); padding: 1px 6px; border-radius: 4px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
     }
     .story-q-title {
       font-size: 13.5px !important; font-weight: 800; color: #ffffff;
@@ -1223,6 +1228,20 @@
     </div>
   </div>
 
+  <!-- 초등 저학년 맞춤 상단 온보딩 조작 팁 바 -->
+  <div id="quickGuideBar" style="position:fixed; top:56px; left:50%; transform:translateX(-50%); z-index:42; background:rgba(15,23,42,0.88); backdrop-filter:blur(12px); border:1px solid rgba(251,191,36,0.35); border-radius:20px; padding:4px 14px; font-size:11.5px; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:8px; box-shadow:0 4px 16px rgba(0,0,0,0.3); pointer-events:none; white-space:nowrap;">
+    <span style="color:#fbbf24;">🎮 조작 안내:</span>
+    <span>이동 <b style="color:#67e8f9;">WASD/방향키</b></span>
+    <span style="color:rgba(255,255,255,0.25);">•</span>
+    <span>슈퍼점프 <b style="color:#fde047;">SPACE</b></span>
+    <span style="color:rgba(255,255,255,0.25);">•</span>
+    <span>손님대화 <b style="color:#4ade80;">[G]</b></span>
+    <span style="color:rgba(255,255,255,0.25);">•</span>
+    <span>별빛마법 <b style="color:#c084fc;">[F]</b></span>
+    <span style="color:rgba(255,255,255,0.25);">•</span>
+    <span style="color:#f472b6;">🌸 꽃에 닿으면 점수 팡팡!</span>
+  </div>
+
   <div class="toast-box" id="toastBox"></div>
 
   <!-- 좌측 상단: 《인찬이의 마음 손님》 5장 스토리 미션 네비게이터 -->
@@ -1373,7 +1392,7 @@
       <div class="cust-avatar-showcase">
         <div class="cust-preview-bubble-wrap">
           <div class="cust-preview-nametag" id="custPrevNametag">🌸 기쁨 수호자 · 인찬이</div>
-          <div class="cust-preview-figure" id="custPrevFigure" style="position:relative; width:120px; height:120px; border-radius:50%; overflow:hidden; background:radial-gradient(circle, #1e293b 0%, #090d16 100%); border:3px solid #ff9d66; box-shadow:0 0 20px rgba(255,157,102,0.45); flex-shrink:0;">
+          <div class="cust-preview-figure" id="custPrevFigure" style="position:relative; width:132px; height:132px; border-radius:50%; overflow:hidden; background:radial-gradient(circle, #1e293b 0%, #090d16 100%); border:3.5px solid #ff9d66; box-shadow:0 0 24px rgba(255,157,102,0.45); flex-shrink:0;">
             <canvas id="robloxStudioPreviewCanvas" width="240" height="240" style="width:100%; height:100%; display:block;"></canvas>
           </div>
         </div>
@@ -2457,35 +2476,42 @@
 
     const landmarkStorySigns = [];
     function makeLandmarkStorySign(meta) {
-      // 880x220 고해상도 캔버스 + 테두리 라운딩 + 텍스트 자동 축소(Fit)로 글자 넘침 100% 원천 차단
-      const sc = document.createElement('canvas'); sc.width = 880; sc.height = 220;
+      // 960x240 초고해상도 캔버스 + 테두리 라운딩 + 텍스트 자동 축소(Fit)로 글자 넘침 100% 원천 차단
+      const sc = document.createElement('canvas'); sc.width = 960; sc.height = 240;
       const ctx = sc.getContext('2d');
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
-      ctx.roundRect(14, 14, 852, 192, 28); ctx.fill();
-      ctx.strokeStyle = meta.color; ctx.lineWidth = 5;
-      ctx.roundRect(14, 14, 852, 192, 28); ctx.stroke();
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+      ctx.roundRect(16, 16, 928, 208, 32); ctx.fill();
+      ctx.strokeStyle = meta.color; ctx.lineWidth = 6;
+      ctx.roundRect(16, 16, 928, 208, 32); ctx.stroke();
 
-      // 1. 챕터 안내
-      ctx.fillStyle = meta.color; ctx.font = 'bold 24px "Noto Sans KR", sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText(`📖 ${meta.chapter}`, 440, 56);
+      // 1. 챕터 안내 (자동 축소)
+      let chapterFont = 26;
+      ctx.font = `bold ${chapterFont}px "Noto Sans KR", sans-serif`;
+      ctx.textAlign = 'center';
+      while (ctx.measureText(`📖 ${meta.chapter}`).width > 860 && chapterFont > 14) {
+        chapterFont -= 1;
+        ctx.font = `bold ${chapterFont}px "Noto Sans KR", sans-serif`;
+      }
+      ctx.fillStyle = meta.color;
+      ctx.fillText(`📖 ${meta.chapter}`, 480, 64);
 
-      // 2. 미션 제목 (가로 780px 이내로 자동 축소)
-      let titleFont = 26;
+      // 2. 미션 제목 (가로 860px 이내로 자동 축소)
+      let titleFont = 28;
       ctx.font = `bold ${titleFont}px "Noto Sans KR", sans-serif`;
-      while (ctx.measureText(`✨ ${meta.title}`).width > 780 && titleFont > 15) {
+      while (ctx.measureText(`✨ ${meta.title}`).width > 860 && titleFont > 15) {
         titleFont -= 1;
         ctx.font = `bold ${titleFont}px "Noto Sans KR", sans-serif`;
       }
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(`✨ ${meta.title}`, 440, 114);
+      ctx.fillText(`✨ ${meta.title}`, 480, 126);
 
-      // 3. 하단 안내문 (어색한 화살표 제거 및 따뜻한 미션 안내)
-      ctx.fillStyle = '#fef08a'; ctx.font = 'bold 20px "Noto Sans KR", sans-serif';
-      ctx.fillText('인찬이 마음 미션 장소에 도착했습니다! ✨', 440, 170);
+      // 3. 하단 안내문
+      ctx.fillStyle = '#fef08a'; ctx.font = 'bold 21px "Noto Sans KR", sans-serif';
+      ctx.fillText('인찬이 마음 미션 장소에 도착했습니다! ✨', 480, 185);
 
       const tex = new THREE.CanvasTexture(sc);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-      sp.scale.set(8.2, 2.05, 1);
+      sp.scale.set(8.6, 2.15, 1);
       sp.position.set(meta.x, meta.key === 'fear' ? 13.2 : 5.2, meta.z);
       if (!meta.customGroup) {
         worldGroup.add(sp);
@@ -3555,14 +3581,27 @@
         band.position.y = 0.50;
         hg.add(brim, cone, band);
       } else if (hatType === 'bunny') {
-        const earMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
-        const pinkMat = new THREE.MeshBasicMaterial({ color: 0xf472b6 });
-        [-0.2, 0.2].forEach(ex => {
-          const ear = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.58, 0.12), earMat);
-          ear.position.set(ex, 0.72, 0);
-          const inner = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.42, 0.04), pinkMat);
-          inner.position.set(ex, 0.72, 0.05);
-          hg.add(ear, inner);
+        // 귀여운 파스텔 핑크 헤어밴드 베이스
+        const bandMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.3 });
+        const band = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.08, 16), bandMat);
+        band.position.y = 0.52;
+        hg.add(band);
+
+        // 머리 위로 길고 쫑긋 솟아오른 3D 입체 토끼 귀 (어떤 헤어스타일 위에도 선명히 노출)
+        const earMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35 });
+        const pinkMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.3, emissive: 0xf472b6, emissiveIntensity: 0.25 });
+        [-0.22, 0.22].forEach(ex => {
+          const earGroup = new THREE.Group();
+          earGroup.position.set(ex, 0.88, 0.02);
+          earGroup.rotation.z = (ex > 0 ? -0.12 : 0.12);
+          earGroup.rotation.x = -0.06;
+
+          const ear = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.78, 0.14), earMat);
+          const inner = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.56, 0.06), pinkMat);
+          inner.position.set(0, -0.02, 0.06);
+
+          earGroup.add(ear, inner);
+          hg.add(earGroup);
         });
       } else if (hatType === 'angel') {
         const halo = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.045, 8, 24), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
@@ -5484,7 +5523,7 @@
           return `
             <div class="story-q-item ${isActive ? 'active' : ''} ${isNextFirst ? 'highlight-next' : ''}" onclick="window.guideToStoryQuest('${m.key}')">
               <div class="story-q-top">
-                <span class="story-q-chapter" style="color:${m.color};">${m.chapter} ${isNextFirst ? '⭐ [지금 도전]' : ''}</span>
+                <span class="story-q-chapter" style="color:${m.color};">${m.chapter} ${isNextFirst ? '⭐' : ''}</span>
                 <span class="story-q-prog" style="color:#fbbf24; font-weight:800;">${curVal} / ${m.max}</span>
               </div>
               <div class="story-q-title">${m.title}</div>
@@ -5843,10 +5882,24 @@
       if (!def) return;
       document.getElementById('npcModalTitle').textContent = def.title;
       document.getElementById('npcModalBody').innerHTML = def.dialogue;
+
+      // 감정 손님과의 깊은 대화 보상 (마음 점수 +30점 및 정령의 축복 이동속도 버프 12초!)
+      if (typeof playerPhysics !== 'undefined') {
+        playerPhysics.speedBuffTimer = 12.0;
+      }
+      if (typeof window.addMindScore === 'function') {
+        window.addMindScore(30, `${def.title}와의 교감`);
+      }
+      if (typeof soundChime === 'function') soundChime(784);
+      if (typeof createMagicImpact === 'function' && typeof playerRig !== 'undefined') {
+        createMagicImpact(playerRig.position, def.color || '#fbbf24');
+      }
+
       const btn = document.getElementById('btnNpcAction');
       btn.textContent = def.actionLabel;
       btn.onclick = () => {
         closeModal('modalNpc');
+        showToast(`✨ <b>[${def.title}]</b> 정령의 축복을 받아 12초간 발걸음이 가벼워집니다! 💨 (+30점)`);
         if (key === 'sad') triggerSadRitual();
         else if (key === 'anger') doBreatheWind();
         else if (key === 'fear') shootMagicBullet();
@@ -5920,22 +5973,74 @@
     // ==========================================
     const mmCtx = document.getElementById('minimapCanvas').getContext('2d');
     function drawMinimap(time) {
-      const w = 126, h = 126, cx = 63, cy = 63, sc = 1.1;
+      const w = 126, h = 126, cx = 63, cy = 63, sc = 0.52;
       mmCtx.clearRect(0, 0, w, h);
-      mmCtx.strokeStyle = 'rgba(24,24,27,0.12)'; mmCtx.lineWidth = 1;
-      [22, 44].forEach(r => { mmCtx.beginPath(); mmCtx.arc(cx, cy, r, 0, Math.PI * 2); mmCtx.stroke(); });
 
-      mmCtx.fillStyle = '#d97706'; mmCtx.beginPath(); mmCtx.arc(cx, cy, 3.5, 0, Math.PI * 2); mmCtx.fill();
+      // 레이더 동심원 그리드
+      mmCtx.strokeStyle = 'rgba(255,255,255,0.14)'; mmCtx.lineWidth = 1;
+      [18, 36, 54].forEach(r => { mmCtx.beginPath(); mmCtx.arc(cx, cy, r, 0, Math.PI * 2); mmCtx.stroke(); });
 
-      landmarkCoords.forEach(lm => {
-        const lx = cx + lm.x * sc, ly = cy + lm.z * sc, done = state.quests[lm.key];
-        mmCtx.fillStyle = done ? 'rgba(24,24,27,0.22)' : state.spirits[lm.key].hex;
-        mmCtx.beginPath(); mmCtx.arc(lx, ly, done ? 3 : 4.5 + Math.sin(time * 5), 0, Math.PI * 2); mmCtx.fill();
+      // 섬 중앙 마음 광주리
+      mmCtx.fillStyle = '#f59e0b'; mmCtx.beginPath(); mmCtx.arc(cx, cy, 3, 0, Math.PI * 2); mmCtx.fill();
+
+      // 5대 힐링 테마파크 아이콘 렌더링 (동물원, 식물원, 독서대, 놀이터, 물놀이장)
+      const themeParks = [
+        { emoji: '🐾', x: -16, z: -20 },
+        { emoji: '🌺', x: 26, z: 26 },
+        { emoji: '📚', x: -28, z: 22 },
+        { emoji: '🎡', x: 30, z: -22 },
+        { emoji: '🏖️', x: -26, z: -2 }
+      ];
+      mmCtx.font = '9px sans-serif'; mmCtx.textAlign = 'center'; mmCtx.textBaseline = 'middle';
+      themeParks.forEach(tp => {
+        const tx = cx + tp.x * sc, ty = cy + tp.z * sc;
+        mmCtx.fillText(tp.emoji, tx, ty);
       });
 
+      // 5대 감정 손님 랜드마크 렌더링 (고유 이모지 & 펄스 애니메이션)
+      const guestEmojis = { joy: '🌟', sad: '💧', anger: '🔥', fear: '🕯️', worry: '🧶' };
+      landmarkCoords.forEach(lm => {
+        const lx = cx + lm.x * sc, ly = cy + lm.z * sc, done = state.quests[lm.key];
+        if (done) {
+          mmCtx.fillStyle = '#22c55e';
+          mmCtx.font = 'bold 9px sans-serif';
+          mmCtx.fillText('✅', lx, ly);
+        } else {
+          if (activeGuidedQuestKey === lm.key) {
+            mmCtx.strokeStyle = '#fde047'; mmCtx.lineWidth = 1.5;
+            mmCtx.beginPath(); mmCtx.arc(lx, ly, 8 + Math.sin(time * 6) * 2, 0, Math.PI * 2); mmCtx.stroke();
+          }
+          mmCtx.font = '11px sans-serif';
+          mmCtx.fillText(guestEmojis[lm.key] || '⭐', lx, ly);
+        }
+      });
+
+      // 플레이어 위치 & 시선 방향 황금 화살표
       const px = cx + playerRig.position.x * sc, pz = cy + playerRig.position.z * sc;
-      mmCtx.fillStyle = '#ff5800'; mmCtx.beginPath(); mmCtx.arc(px, pz, 4.5, 0, Math.PI * 2); mmCtx.fill();
-      mmCtx.strokeStyle = '#ffffff'; mmCtx.lineWidth = 1.5; mmCtx.stroke();
+      const rotY = playerRig.rotation.y;
+      mmCtx.save();
+      mmCtx.translate(px, pz);
+      mmCtx.rotate(-rotY);
+
+      mmCtx.fillStyle = 'rgba(251, 191, 36, 0.25)';
+      mmCtx.beginPath();
+      mmCtx.moveTo(0, 0);
+      mmCtx.arc(0, 0, 14, -Math.PI / 2 - 0.45, -Math.PI / 2 + 0.45);
+      mmCtx.closePath();
+      mmCtx.fill();
+
+      mmCtx.fillStyle = '#ff5800';
+      mmCtx.strokeStyle = '#ffffff';
+      mmCtx.lineWidth = 1.5;
+      mmCtx.beginPath();
+      mmCtx.moveTo(0, -6);
+      mmCtx.lineTo(4.5, 5);
+      mmCtx.lineTo(0, 3);
+      mmCtx.lineTo(-4.5, 5);
+      mmCtx.closePath();
+      mmCtx.fill();
+      mmCtx.stroke();
+      mmCtx.restore();
     }
 
     let lastPromptZone = null;
@@ -6711,7 +6816,9 @@
         }
       }
 
-      const isMoving = (mx !== 0 || mz !== 0), speed = (input.shift ? 12.5 : 7.5);
+      if (playerPhysics.speedBuffTimer > 0) playerPhysics.speedBuffTimer -= dt;
+      const buffMultiplier = (playerPhysics.speedBuffTimer > 0 ? 1.25 : 1.0);
+      const isMoving = (mx !== 0 || mz !== 0), speed = (input.shift ? 12.5 : 7.5) * buffMultiplier;
 
       if (isMoving && !playerPhysics.isDancing && !playerPhysics.isMeditating && !isAutoWalking) {
         const fwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
@@ -7740,9 +7847,9 @@
       if (!pCanvas || robloxPreviewRenderer) return;
 
       robloxPreviewScene = new THREE.Scene();
-      robloxPreviewCam = new THREE.PerspectiveCamera(46, 1, 0.1, 50);
-      robloxPreviewCam.position.set(0, 1.15, 4.4);
-      robloxPreviewCam.lookAt(0, 1.15, 0);
+      robloxPreviewCam = new THREE.PerspectiveCamera(44, 1, 0.1, 50);
+      robloxPreviewCam.position.set(0, 1.10, 4.3);
+      robloxPreviewCam.lookAt(0, 1.10, 0);
 
       robloxPreviewRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, alpha: true, antialias: true });
       robloxPreviewRenderer.setSize(240, 240);
@@ -7771,7 +7878,7 @@
     function renderRobloxStudio3DAvatar() {
       initRobloxStudioPreview();
       if (!robloxPreviewAvatarGroup) return;
-      robloxPreviewAvatarGroup.scale.set(0.66, 0.66, 0.66);
+      robloxPreviewAvatarGroup.scale.set(0.57, 0.57, 0.57);
       initRobloxStudioPreview();
       if (!robloxPreviewAvatarGroup) return;
 
@@ -8383,6 +8490,8 @@
       const fr = friendAgents.find(f => f.id === state.activeFriendId);
       const msg = document.getElementById('inputFriendCheer').value.trim();
       if (!fr || !msg) { showToast('응원 메시지를 입력해 주세요.'); return; }
+
+      // 1. 마음 게시판에 기록
       const newPost = {
         id: Date.now(), author: state.playerName, emotion: 'joy', time: '방금 전',
         title: `[응원] ${fr.name}에게: ${msg.slice(0, 18)}`,
@@ -8393,8 +8502,32 @@
       state.boardPosts.unshift(newPost);
       document.getElementById('inputFriendCheer').value = '';
       saveProgress(); updateScreenCanvas(); closeModal('modalFriend'); soundChime(659);
-      showToast(`<b>${fr.name}</b>에게 응원 메시지를 보내고 마음 게시판에 기록했습니다!`);
-      if (worldChannel) worldChannel.postMessage({ type: 'board_sync', post: newPost });
+
+      // 2. 채팅창에 즉시 전송 & 인찬이 머리 위 3D 말풍선 표출
+      appendChatLog(state.playerName, `💖 [응원] ${fr.name}에게: "${msg}"`);
+      if (typeof showPlayerBubble === 'function') {
+        showPlayerBubble(`💖 ${fr.name}에게: "${msg}"`);
+      }
+
+      // 3. 친구의 감동 답장 말풍선 & 하트 축제
+      if (fr && fr.chatSprite) {
+        const reply = `“고마워 ${state.playerName}아! 네 따뜻한 응원 덕분에 마음이 정말 든든해졌어! 💖”`;
+        drawChatBubbleCanvas(fr.chatCtx, reply, '#ec4899');
+        fr.chatTex.needsUpdate = true;
+        fr.chatSprite.visible = true;
+        fr.chatTimer = 5.5;
+        setTimeout(() => { appendChatLog(fr.name, reply); soundChime(784); }, 800);
+      }
+      createMagicImpact(fr.group.position, '#ec4899');
+      createMagicImpact(playerRig.position, '#fbbf24');
+      window.addMindScore(50, `${fr.name}에게 마음 응원 보내기`);
+
+      showToast(`💖 <b>${fr.name}</b>에게 응원 메시지를 전달하고 마음 게시판에 기록했습니다! (+50점)`);
+      if (worldChannel) {
+        worldChannel.postMessage({ type: 'board_sync', post: newPost });
+        worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: msg });
+        worldChannel.postMessage({ type: 'mp_chat', from: state.playerName, text: `💖 [응원] ${fr.name}에게: "${msg}"` });
+      }
     };
 
     // ==========================================
