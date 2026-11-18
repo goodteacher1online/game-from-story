@@ -1,4 +1,4 @@
-Set-Location 'C:\Users\goodt\island-avatar-scene'
+Set-Location 'C:\Users\goodt\game-from-story'
 
 # Ensure asset directories exist
 New-Item -ItemType Directory -Force -Path 'assets\models' | Out-Null
@@ -32,7 +32,7 @@ if (-not (Test-Path '.git')) {
     Write-Host "Initializing git repository..." -ForegroundColor Cyan
     git init
     git branch -M main
-    git remote add origin https://github.com/goodteacher1online/island-avatar-scene.git
+    git remote add origin https://github.com/goodteacher1online/game-from-story.git
 }
 
 Write-Host "Staging files..." -ForegroundColor Cyan
