@@ -569,10 +569,13 @@
        에디토리얼 라이트 모드 캐릭터 & 동행 정령 스튜디오 전용 CSS
        ============================================================ */
     .cust-modal-sheet {
-      width: 100% !important; max-width: 600px !important;
+      width: 800px !important;
+      min-width: min(800px, 94vw) !important;
+      max-width: 94vw !important;
+      flex: 0 0 auto !important;
       background: #faf9f5 !important;
       border: 1px solid #e4e4e7 !important;
-      border-radius: 20px !important; padding: 24px 26px !important;
+      border-radius: 20px !important; padding: 26px 32px !important;
       color: #18181b !important;
       box-shadow: 0 24px 60px rgba(15, 15, 20, 0.14) !important;
       max-height: 92vh; overflow-y: auto !important;
@@ -583,19 +586,22 @@
       margin-bottom: 16px; padding-bottom: 14px;
       border-bottom: 1px solid #e4e4e7;
     }
-    .cust-header-left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+    .cust-header-left { display: flex; flex-direction: column; gap: 4px; text-align: left; min-width: 0; }
     .cust-badge-top {
       display: inline-flex; align-items: center; gap: 5px; width: fit-content;
       padding: 3px 9px; border-radius: 6px;
       background: #f4f4f5; border: 1px solid #e4e4e7;
       color: #52525b; font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px;
+      white-space: nowrap;
     }
     .cust-modal-title {
       font-size: 19px; font-weight: 800; color: #18181b;
       margin: 0; letter-spacing: -0.4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-modal-desc {
-      font-size: 12.5px; color: #71717a; line-height: 1.45; margin: 0;
+      font-size: 13px; color: #71717a; line-height: 1.45; margin: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-btn-close {
       width: 32px; height: 32px; border-radius: 8px;
@@ -607,12 +613,12 @@
 
     /* 세련된 라이트 쇼룸 아바타 & 정령 프리뷰 스테이지 (우측 박스 테두리 완전 제거 & 에디토리얼 타이포그래피) */
     .cust-avatar-showcase {
-      display: grid; grid-template-columns: 168px 1fr; gap: 22px; align-items: center;
+      display: grid; grid-template-columns: 168px 1fr; gap: 24px; align-items: center;
       background: #ffffff;
       border: 1px solid #e4e4e7;
-      border-radius: 16px; padding: 16px 20px; margin-bottom: 16px;
+      border-radius: 16px; padding: 16px 22px; margin-bottom: 16px;
     }
-    @media (max-width: 540px) {
+    @media (max-width: 580px) {
       .cust-avatar-showcase { grid-template-columns: 1fr; justify-items: center; text-align: center; }
     }
     .cust-preview-stage {
@@ -621,7 +627,7 @@
       background: radial-gradient(circle at 50% 38%, #ffffff 0%, #f5f3ef 72%, #ebe7df 100%);
       border: 1px solid #e4e4e7;
       display: flex; align-items: center; justify-content: center;
-      cursor: grab;
+      cursor: grab; flex-shrink: 0;
     }
     .cust-preview-stage:active { cursor: grabbing; }
     .cust-stage-hint {
@@ -632,30 +638,34 @@
     }
     .cust-preview-info {
       display: flex; flex-direction: column; gap: 6px; min-width: 0;
-      padding: 2px 0;
+      padding: 2px 0; overflow: hidden;
     }
     .cust-preview-nametag {
       font-size: 16.5px; font-weight: 800; color: #18181b;
       letter-spacing: -0.3px; margin: 0; padding: 0;
       background: transparent; border: none;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-spirit-summary-box {
       padding: 4px 0 6px 0;
       background: transparent; border: none;
       border-bottom: 1px solid #f4f4f5;
-      display: flex; flex-direction: column; gap: 3px;
+      display: flex; flex-direction: column; gap: 3px; min-width: 0;
     }
     .cust-spirit-summary-title {
       font-size: 13px; font-weight: 800; color: #18181b;
       display: flex; align-items: center; gap: 6px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-spirit-summary-desc {
       font-size: 11.5px; color: #52525b; line-height: 1.5;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-preview-meta-line {
       font-size: 11.5px; font-weight: 600; color: #71717a;
-      display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+      display: flex; flex-wrap: nowrap; align-items: center; gap: 6px;
       padding-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-preview-meta-line b { color: #18181b; font-weight: 700; }
     .cust-meta-sep { color: #d4d4d8; }
@@ -671,6 +681,7 @@
       border-radius: 8px; border: none; background: transparent;
       color: #71717a; cursor: pointer; transition: all 0.15s;
       display: flex; align-items: center; justify-content: center; gap: 5px;
+      white-space: nowrap;
     }
     .cust-tab-btn:hover { color: #18181b; }
     .cust-tab-btn.active {
@@ -687,10 +698,11 @@
     @media (max-width: 520px) {
       .cust-form-row { grid-template-columns: 1fr; }
     }
-    .cust-field { display: flex; flex-direction: column; align-items: center; }
+    .cust-field { display: flex; flex-direction: column; align-items: center; min-width: 0; }
     .cust-label {
       font-size: 11.5px; font-weight: 700; color: #52525b;
       margin-bottom: 5px; display: flex; align-items: center; gap: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     }
     .cust-input, .cust-select {
       width: 100%; height: 40px; border-radius: 10px;
@@ -704,16 +716,17 @@
     }
     .cust-select option { background: #ffffff; color: #18181b; text-align: center; }
 
-    /* 동행 정령 & 테마 의상 6종 선택 그리드 (라이트 벤토 카드 & 순수 컬러 스와치) */
+    /* 동행 정령 & 테마 의상 6종 선택 그리드 (라이트 벤토 카드 & 순수 컬러 스와치 & 1줄 설명문 보장) */
     .cust-color-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; width: 100%;
     }
     .cust-color-card {
-      display: flex; align-items: center; justify-content: flex-start; gap: 10px;
-      padding: 10px 12px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: flex-start; gap: 11px;
+      padding: 10px 14px; border-radius: 11px;
       background: #ffffff; border: 1px solid #e4e4e7;
       color: #18181b; font-size: 12px; font-weight: 700;
       cursor: pointer; transition: all 0.15s; text-align: left;
+      min-width: 0; box-sizing: border-box;
     }
     .cust-color-card:hover {
       background: #fafafa; border-color: #a1a1aa;
@@ -728,8 +741,14 @@
       display: inline-block; flex-shrink: 0;
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
     }
-    .cust-color-text { font-size: 12.5px; font-weight: 800; color: #18181b; }
-    .cust-color-sub { font-size: 10.5px; color: #71717a; font-weight: 500; margin-top: 1px; }
+    .cust-color-text {
+      font-size: 12.5px; font-weight: 800; color: #18181b;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cust-color-sub {
+      font-size: 10.5px; color: #71717a; font-weight: 500; margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 
     /* 헤어 컬러 8종 팔레트 */
     .cust-haircolor-row {
@@ -762,6 +781,7 @@
       padding: 10px 6px 8px 6px; border-radius: 11px;
       background: #ffffff; border: 1px solid #e4e4e7;
       cursor: pointer; transition: all 0.15s; text-align: center;
+      min-width: 0; box-sizing: border-box;
     }
     .cust-hair-card:hover { border-color: #a1a1aa; background: #fafafa; }
     .cust-hair-card.active {
@@ -773,16 +793,20 @@
       margin-bottom: 4px;
     }
     .cust-hair-svg-wrap svg { width: 100%; height: 100%; }
-    .cust-hair-name { font-size: 11.5px; font-weight: 800; color: #18181b; line-height: 1.2; }
+    .cust-hair-name {
+      font-size: 11.5px; font-weight: 800; color: #18181b; line-height: 1.2;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+    }
     .cust-hair-tag {
       font-size: 9.5px; font-weight: 600; color: #71717a;
       background: #f4f4f5; padding: 2px 6px; border-radius: 5px; margin-top: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     }
     .cust-hair-card.active .cust-hair-tag {
       background: #18181b; color: #ffffff;
     }
 
-    /* 6종 3D 모자 및 머리 장식 카드 (정확한 SVG 일러스트 + 설명) */
+    /* 6종 3D 모자 및 머리 장식 카드 (정확한 SVG 일러스트 + 1줄 설명문 보장) */
     .cust-hat-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;
     }
@@ -791,6 +815,7 @@
       padding: 12px 8px; border-radius: 11px;
       background: #ffffff; border: 1px solid #e4e4e7;
       color: #18181b; cursor: pointer; transition: all 0.15s; text-align: center;
+      min-width: 0; box-sizing: border-box;
     }
     .cust-hat-btn:hover { background: #fafafa; border-color: #a1a1aa; }
     .cust-hat-btn.active {
@@ -799,18 +824,24 @@
     }
     .cust-hat-svg { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
     .cust-hat-svg svg { width: 100%; height: 100%; }
-    .cust-hat-title { font-size: 12px; font-weight: 800; color: #18181b; }
-    .cust-hat-sub { font-size: 10px; color: #71717a; font-weight: 500; line-height: 1.3; }
+    .cust-hat-title {
+      font-size: 12px; font-weight: 800; color: #18181b;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+    }
+    .cust-hat-sub {
+      font-size: 10px; color: #71717a; font-weight: 500; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+    }
 
-    /* 미션 보상 그리드 (정확한 SVG 일러스트 + 스토리 연계 설명) */
+    /* 미션 보상 그리드 (정확한 SVG 일러스트 + 스토리 연계 1줄 설명 보장) */
     .cust-reward-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%;
     }
     .cust-reward-card {
-      display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-radius: 11px;
+      display: flex; align-items: center; gap: 11px; padding: 11px 14px; border-radius: 11px;
       border: 1px solid #e4e4e7; background: #ffffff;
       cursor: pointer; transition: all 0.15s ease; box-sizing: border-box; text-align: left;
-      color: #18181b;
+      color: #18181b; min-width: 0;
     }
     .cust-reward-card:hover:not(.locked) { border-color: #18181b; background: #fafafa; }
     .cust-reward-card.active {
@@ -826,10 +857,19 @@
       flex-shrink: 0;
     }
     .cust-reward-svg svg { width: 28px; height: 28px; }
-    .cust-reward-info { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
-    .cust-reward-name { font-size: 12px; font-weight: 800; color: #18181b; }
-    .cust-reward-story { font-size: 10px; color: #52525b; line-height: 1.35; }
-    .cust-reward-desc { font-size: 10px; font-weight: 700; color: #d97706; }
+    .cust-reward-info { display: flex; flex-direction: column; min-width: 0; gap: 2px; flex: 1; }
+    .cust-reward-name {
+      font-size: 12.5px; font-weight: 800; color: #18181b;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cust-reward-story {
+      font-size: 10.5px; color: #52525b; line-height: 1.35;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cust-reward-desc {
+      font-size: 10px; font-weight: 700; color: #d97706;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 
     /* 하단 입장 완료 액션 버튼 (플랫 차콜 CTA) */
     .cust-btn-submit {
@@ -1119,7 +1159,7 @@
               <span id="custPrevSpiritName">동행 정령: 기쁨이 (별토끼)</span>
             </div>
             <div class="cust-spirit-summary-desc" id="custPrevSpiritDesc">
-              좋아하는 일이 생길 때 찾아와 발걸음을 가볍게 하고 웃음을 선물합니다. (선샤인 앰버 의상 조화)
+              좋아하는 일이 생길 때 찾아와 발걸음을 가볍게 하고 웃음을 선물합니다.
             </div>
           </div>
           <div class="cust-preview-meta-line">
@@ -1183,42 +1223,42 @@
           <div class="cust-color-grid" id="custColorRow">
             <button type="button" class="cust-color-card active" data-spirit="joy" data-color="#f59e0b">
               <span class="cust-color-chip" style="background:#f59e0b;"></span>
-              <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">기쁨이 · 별토끼 정령</span>
                 <span class="cust-color-sub">웃음과 가벼운 발걸음 (선샤인 앰버)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="sad" data-color="#3b82f6">
               <span class="cust-color-chip" style="background:#3b82f6;"></span>
-              <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">슬픔이 · 물방울 정령</span>
                 <span class="cust-color-sub">소중함을 달래는 위로 (세룰리안 블루)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="anger" data-color="#ef4444">
               <span class="cust-color-chip" style="background:#ef4444;"></span>
-              <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">화 · 불도깨비 정령</span>
                 <span class="cust-color-sub">나를 지키는 단단한 에너지 (코랄 레드)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="fear" data-color="#a855f7">
               <span class="cust-color-chip" style="background:#a855f7;"></span>
-              <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">두려움이 · 꼬마망토 정령</span>
                 <span class="cust-color-sub">안전을 살피는 지혜 등대 (라벤더 퍼플)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="worry" data-color="#10b981">
               <span class="cust-color-chip" style="background:#10b981;"></span>
-              <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">걱정이 · 털실이 정령</span>
                 <span class="cust-color-sub">내일을 차근차근 준비하는 힘 (세이지 민트)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="flutter" data-color="#ec4899">
               <span class="cust-color-chip" style="background:#ec4899;"></span>
-              <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">설렘이 · 나비요정 정령</span>
                 <span class="cust-color-sub">새로운 시작의 두근거림 (코랄 핑크)</span>
               </div>
@@ -8465,12 +8505,12 @@
         bunny: '토끼 귀 밴드', cap: '탐험가 캡'
       };
       const spiritSummaryMeta = {
-        joy: { name: '동행 정령: 기쁨이 (별토끼)', desc: '좋아하는 일이 생길 때 찾아와 발걸음을 가볍게 하고 웃음을 선물합니다. (선샤인 앰버 의상 조화)' },
-        sad: { name: '동행 정령: 슬픔이 (물방울)', desc: '소중한 것을 잃었을 때 마음을 촉촉히 적셔 위로하고 치유 무지개를 피워냅니다. (세룰리안 블루 의상 조화)' },
-        anger: { name: '동행 정령: 화 (불도깨비)', desc: '소중한 가치를 지키도록 에너지를 주며 심호흡으로 따뜻한 온기로 변합니다. (코랄 레드 의상 조화)' },
-        fear: { name: '동행 정령: 두려움이 (꼬마망토)', desc: '위험 앞에서 조심하라고 등대 불빛으로 알려주는 지혜로운 안전 수호자입니다. (라벤더 퍼플 의상 조화)' },
-        worry: { name: '동행 정령: 걱정이 (털실이)', desc: '내일 일어날 일을 미리 차근차근 준비할 수 있도록 도와주는 고마운 친구입니다. (세이지 민트 의상 조화)' },
-        flutter: { name: '동행 정령: 설렘이 (나비요정)', desc: '감정 손님이 다녀간 광주리에 찾아와 가슴 두근거리는 새 출발을 응원합니다. (코랄 핑크 의상 조화)' }
+        joy: { name: '동행 정령: 기쁨이 (별토끼)', desc: '좋아하는 일이 생길 때 찾아와 발걸음을 가볍게 하고 웃음을 선물합니다.' },
+        sad: { name: '동행 정령: 슬픔이 (물방울)', desc: '소중한 것을 잃었을 때 마음을 촉촉이 적셔 위로하고 치유 무지개를 피웁니다.' },
+        anger: { name: '동행 정령: 화 (불도깨비)', desc: '소중한 가치를 지키는 에너지를 주며 심호흡으로 따뜻한 온기로 변합니다.' },
+        fear: { name: '동행 정령: 두려움이 (꼬마망토)', desc: '위험 앞에서 조심하도록 등대 불빛을 비춰주는 지혜로운 안전 수호자입니다.' },
+        worry: { name: '동행 정령: 걱정이 (털실이)', desc: '내일 일어날 일을 미리 차근차근 준비할 수 있도록 도와주는 친구입니다.' },
+        flutter: { name: '동행 정령: 설렘이 (나비요정)', desc: '마음 광주리를 활짝 비추며 가슴 두근거리는 새 출발을 힘차게 응원합니다.' }
       };
       const curKey = state.curGuest || 'joy';
       const curSp = state.spirits[curKey] || state.spirits.joy;
