@@ -1193,8 +1193,11 @@
         <button class="hw-btn" id="btnCustomizeTop" style="border-color:rgba(56,189,248,0.45); color:#0284c7; font-weight:700;">
           <span>👕</span> 내 캐릭터 꾸미기
         </button>
+        <button class="hw-btn" onclick="openThreeFingerModal()" style="border-color:rgba(168,85,247,0.55); color:#7e22ce; font-weight:800; background:linear-gradient(135deg, #faf5ff, #f3e8ff);">
+          <span>🤟</span> 3손가락 마음탐정 <span id="detectiveBadgeTop" style="background:#9333ea; color:#fff; font-size:10px; font-weight:800; padding:1px 6px; border-radius:8px;">0/6</span>
+        </button>
         <button class="hw-btn" onclick="openStoryBookModal()" style="border-color:rgba(251,191,36,0.4); color:#d97706; font-weight:700;">
-          <span>📖</span> 동화책 앨범
+          <span>📖</span> 동화책·오디오북
         </button>
       </div>
     </div>
@@ -1239,7 +1242,9 @@
     <span style="color:rgba(255,255,255,0.25);">•</span>
     <span>별빛마법 <b style="color:#c084fc;">[F]</b></span>
     <span style="color:rgba(255,255,255,0.25);">•</span>
-    <span style="color:#f472b6;">🌸 꽃에 닿으면 점수 팡팡!</span>
+    <span>3손가락탐정 <b style="color:#f472b6;">[M]</b></span>
+    <span style="color:rgba(255,255,255,0.25);">•</span>
+    <span style="color:#fbbf24;">🌸 꽃·로봇·발표무대·설렘이 교감 시 보너스!</span>
   </div>
 
   <div class="toast-box" id="toastBox"></div>
@@ -1370,6 +1375,7 @@
     </div>
     <div class="dock-sep"></div>
     <button class="act-btn primary" id="btnCustomizeDock"><span>👕 캐릭터 선택</span></button>
+    <button class="act-btn" onclick="openThreeFingerModal()" style="border-color:rgba(192,132,252,0.5); background:rgba(147,51,234,0.25); color:#f3e8ff;"><span class="kbd">M</span><span>🤟 3손가락탐정</span></button>
     <button class="act-btn" id="btnGuestSelect"><span>✨ 정령</span></button>
     <button class="act-btn" id="btnJumpAction"><span class="kbd">SPACE</span><span>점프</span></button>
     <button class="act-btn" id="btnBreatheWind"><span class="kbd">C</span><span>심호흡</span></button>
@@ -3069,7 +3075,7 @@
     }
     worldGroup.add(fireGroup);
 
-    const angerOrbGroup = new THREE.Group(); angerOrbGroup.position.set(0, 2.3, 24);
+    const angerOrbGroup = new THREE.Group(); angerOrbGroup.position.set(0, 2.3, 52);
     const angerOrbMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5), new THREE.MeshStandardMaterial({ color: 0xf87171, emissive: 0xdc2626, emissiveIntensity: 1.3 }));
     angerOrbGroup.add(angerOrbMesh); worldGroup.add(angerOrbGroup);
 
@@ -3130,7 +3136,7 @@
     worryGroup.add(worryPad, benchSeat, benchBack);
     worldGroup.add(worryGroup);
 
-    const worryOrbGroup = new THREE.Group(); worryOrbGroup.position.set(20, 1.45, -18);
+    const worryOrbGroup = new THREE.Group(); worryOrbGroup.position.set(36, 1.8, -38);
     const worryOrbMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(0.35, 0.11, 40, 8), new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x059669, emissiveIntensity: 1.3 }));
     worryOrbGroup.add(worryOrbMesh); worldGroup.add(worryOrbGroup);
 
@@ -3276,7 +3282,7 @@
       '비 오는 날 우산을 나눠 쓰던 따뜻한 마음을 기억해냈어요.',
       '헤어질 때 건넸던 마지막 인사를 소중히 간직할 수 있게 됐어요.'
     ];
-    [[-16.5, 1.0, 4], [-25.8, 1.1, 5.5], [-24.8, 1.1, 1.2]].forEach(([dx, dy, dz], idx) => {
+    [[-29.5, 1.1, 2.5], [-36.0, 1.1, 5.5], [-42.0, 1.1, -1.0]].forEach(([dx, dy, dz], idx) => {
       const dm = new THREE.Mesh(
         new THREE.OctahedronGeometry(0.48),
         new THREE.MeshStandardMaterial({ color: 0x60a5fa, emissive: 0x3b82f6, emissiveIntensity: 1.3 })
@@ -4457,7 +4463,7 @@
       createMagicImpact(new THREE.Vector3(bx, by, bz), blockMaterials[buildSlot].color.getHex());
 
       // [스토리 미니게임 연동] 화의 캠프파이어 근처에 2번 슬픔(물) 블록을 놓으면 화가 진정됨!
-      if (buildSlot === 2 && Math.hypot(bx - 0, bz - 24) < 6.5 && !state.quests.anger) {
+      if (buildSlot === 2 && Math.hypot(bx - 0, bz - 52) < 7.5 && !state.quests.anger) {
         state.mission.anger = Math.min(3, state.mission.anger + 1);
         soundChime(659);
         if (state.mission.anger >= 3) {
@@ -4844,8 +4850,8 @@
           pushOutCircle(tg.position.x, tg.position.z, 0.72 * tg.scale.x, 5.0 * tg.scale.y);
         }
       }
-      // 7) 엄마 NPC (6.5, 6.5)
-      pushOutCircle(6.5, 6.5, 0.62, 2.6);
+      // 7) 엄마 NPC (14, 12)
+      pushOutCircle(14, 12, 0.62, 2.6);
       // 8) 5대 감정 손님 NPC
       if (typeof zoneNpcs !== 'undefined') {
         for (let i = 0; i < zoneNpcs.length; i++) {
@@ -4982,12 +4988,12 @@
 
       // 1. 연못 중심 파동 5중주
       for (let i = 0; i < 5; i++) {
-        setTimeout(() => createSadRipple(-23, 4), i * 180);
+        setTimeout(() => createSadRipple(-36, 0), i * 180);
       }
 
       // 2. 하늘로 22m 치솟는 초대형 무지개 물기둥 분수 생성!
       const fountainGroup = new THREE.Group();
-      fountainGroup.position.set(-50, 0.2, 0);
+      fountainGroup.position.set(-36, 0.2, 0);
 
       // 중심 에메랄드/하늘빛 물기둥
       const colGeo = new THREE.CylinderGeometry(0.7, 1.2, 22, 16);
@@ -5026,7 +5032,7 @@
             transparent: true, opacity: 0.9, roughness: 0.3
           });
           const rMesh = new THREE.Mesh(rGeo, rMat);
-          rMesh.position.set(-23, 1.2, 4);
+          rMesh.position.set(-36, 1.2, 0);
           rMesh.rotation.y = Math.PI / 4;
           rbGroup.add(rMesh);
         });
@@ -5101,7 +5107,7 @@
         mainLg.add(sp);
       } catch(e) {}
 
-      mainLg.position.set(20, 1.6, -18);
+      mainLg.position.set(36, 1.6, -38);
       worldGroup.add(mainLg);
       releasedLanterns.push({ group: mainLg, speedY: 3.2, swaySpeed: 1.2, swayAmp: 0.6, life: 35.0, seed: 0 });
 
@@ -5118,7 +5124,7 @@
         const ang = Math.random() * Math.PI * 2;
         const rad = 2.0 + Math.random() * 28.0;
         const startY = 0.5 + Math.random() * 3.5;
-        subLg.position.set(20 + Math.cos(ang) * rad, startY, -18 + Math.sin(ang) * rad);
+        subLg.position.set(36 + Math.cos(ang) * rad, startY, -38 + Math.sin(ang) * rad);
         worldGroup.add(subLg);
         releasedLanterns.push({
           group: subLg,
@@ -5138,7 +5144,7 @@
       soundChime(587);
       setTimeout(() => soundChime(659), 180);
       setTimeout(() => soundChime(784), 360);
-      createMagicImpact(new THREE.Vector3(20, 2.0, -18), '#fbbf24');
+      createMagicImpact(new THREE.Vector3(36, 2.0, -38), '#fbbf24');
 
       // 보상: 별빛가루 +10 및 털실 모으기 미션 리셋
       state.stardustCount = (state.stardustCount || 0) + 10;
@@ -5260,7 +5266,7 @@
     // [2. 슬픔 동화: 눈물방울 파란 별 & 구름 사이 햇살 빔]
     // ------------------------------------------------------------------------------
     const sunbeamGroup = new THREE.Group();
-    sunbeamGroup.position.set(-50, 0, 0);
+    sunbeamGroup.position.set(-36, 0, 0);
 
     // 찬란한 황금빛 햇살 원뿔 빔 (God-rays)
     const sunbeamMat = new THREE.MeshBasicMaterial({
@@ -5457,6 +5463,251 @@
     deokbuneGroup.add(deokSign.sprite);
 
     worldGroup.add(deokbuneGroup);
+
+    // ------------------------------------------------------------------------------
+    // [6. 동화 제4장 원작 심화: 동생이 망가뜨린 3D 장난감 로봇 & '나-전달법(I-Message)' 수리]
+    // ------------------------------------------------------------------------------
+    const toyRobotGroup = new THREE.Group();
+    toyRobotGroup.position.set(-5.8, 0, 49.5); // 남쪽 화의 캠프파이어(0, 52) 바로 옆
+
+    const robPedestal = new THREE.Mesh(
+      new THREE.CylinderGeometry(1.6, 1.85, 0.25, 16),
+      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 })
+    );
+    robPedestal.position.y = 0.125;
+    toyRobotGroup.add(robPedestal);
+
+    const robBodyGroup = new THREE.Group();
+    robBodyGroup.position.y = 0.25;
+    const robBlueMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.35, metalness: 0.3 });
+    const robGoldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.25, metalness: 0.5, emissive: 0xd97706, emissiveIntensity: 0.3 });
+    const robRedMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3, emissive: 0xdc2626, emissiveIntensity: 0.4 });
+
+    const robLegL = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.7, 0.38), robBlueMat); robLegL.position.set(-0.28, 0.35, 0);
+    const robLegR = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.7, 0.38), robBlueMat); robLegR.position.set(0.28, 0.35, 0);
+    const robTorso = new THREE.Mesh(new THREE.BoxGeometry(1.05, 1.1, 0.65), robBlueMat); robTorso.position.set(0, 1.2, 0);
+    const robChestCore = new THREE.Mesh(new THREE.OctahedronGeometry(0.24, 0), robGoldMat); robChestCore.position.set(0, 1.25, 0.35);
+
+    const robHeadGroup = new THREE.Group();
+    robHeadGroup.position.set(0, 2.05, 0);
+    robHeadGroup.rotation.z = 0.42; // 처음엔 동생이 망가뜨려서 고개가 삐뚤어져 있음!
+    const robHeadBox = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.68, 0.68), robBlueMat);
+    const robEyeMat = new THREE.MeshBasicMaterial({ color: 0xef4444 }); // 수리 전 경고 적색 눈
+    const robEyeL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.06), robEyeMat); robEyeL.position.set(-0.18, 0.05, 0.35);
+    const robEyeR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.06), robEyeMat); robEyeR.position.set(0.18, 0.05, 0.35);
+    const robAntenna = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.45, 8), robGoldMat); robAntenna.position.set(0, 0.5, 0);
+    const robAntennaTip = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), robRedMat); robAntennaTip.position.set(0, 0.75, 0);
+    robHeadGroup.add(robHeadBox, robEyeL, robEyeR, robAntenna, robAntennaTip);
+
+    const robArmL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.85, 0.3), robGoldMat);
+    robArmL.position.set(-0.72, 1.1, 0); robArmL.rotation.z = 0.55; // 삐뚤어진 왼팔
+    const robArmR = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.85, 0.3), robGoldMat);
+    robArmR.position.set(0.72, 1.1, 0); robArmR.rotation.x = -0.65; // 삐뚤어진 오른팔
+
+    robBodyGroup.add(robLegL, robLegR, robTorso, robChestCore, robHeadGroup, robArmL, robArmR);
+    toyRobotGroup.add(robBodyGroup);
+
+    const robSign = makeChatBubbleSprite('🤖 동생이 망가뜨린 로봇 (나-전달법 [R]키로 수리!)');
+    robSign.sprite.position.set(0, 3.6, 0);
+    toyRobotGroup.add(robSign.sprite);
+    worldGroup.add(toyRobotGroup);
+
+    let isRobotRepaired = false;
+    let robotJumpTimer = 0;
+
+    window.openRobotIMessageModal = function() {
+      initAudio();
+      soundChime(523);
+      openModal('modalRobotIMessage');
+    };
+
+    window.chooseRobotIMessage = function(choiceIdx) {
+      initAudio();
+      const feedbackEl = document.getElementById('robotIMessageFeedback');
+      if (choiceIdx === 1) {
+        soundChime(220);
+        if (feedbackEl) {
+          feedbackEl.style.display = 'block';
+          feedbackEl.style.background = 'rgba(239, 68, 68, 0.18)';
+          feedbackEl.style.borderColor = '#ef4444';
+          feedbackEl.innerHTML = '💥 <b>잠깐! (동화 제4장):</b> 화가 깜짝 놀라며 말했어요. <i>“아니! 동생을 밀거나 소리 지르는 건 내가 원하는 방법이 아니야. 감정은 저절로 생기지만 행동은 네가 선택할 수 있잖아!”</i> 다시 골라볼까요?';
+        }
+        return;
+      }
+      if (choiceIdx === 2) {
+        soundChime(330);
+        if (feedbackEl) {
+          feedbackEl.style.display = 'block';
+          feedbackEl.style.background = 'rgba(245, 158, 11, 0.18)';
+          feedbackEl.style.borderColor = '#f59e0b';
+          feedbackEl.innerHTML = '💭 <b>아쉬워요:</b> 아무 말도 안 하고 속으로만 꾹 참으면 마음 광주리가 더 답답해져요. 깊게 숨을 쉬고 내 마음을 다정하지만 분명하게 말로 표현해 볼까요?';
+        }
+        return;
+      }
+      // choiceIdx === 3: 정답 (동화 4장 인찬이의 나-전달법)
+      isRobotRepaired = true;
+      robotJumpTimer = 6.0;
+      robHeadGroup.rotation.z = 0;
+      robArmL.rotation.z = -0.15;
+      robArmR.rotation.x = -2.4; // 멋지게 만세 경례!
+      robEyeMat.color.setHex(0x4ade80); // 평화의 초록 눈빛!
+      drawChatBubbleCanvas(robSign.ctx, '🤖 수리 완료! "나-전달법으로 평화를 찾았어!" ✨', '#22c55e');
+      robSign.tex.needsUpdate = true;
+
+      closeModal('modalRobotIMessage');
+      soundQuestComplete();
+      spawnConfetti(toyRobotGroup.position.clone().add(new THREE.Vector3(0, 2, 0)));
+      createMagicImpact(toyRobotGroup.position.clone().add(new THREE.Vector3(0, 1.5, 0)), '#fbbf24');
+      window.addMindScore(250, '🤖 제4장 나-전달법 & 장난감 로봇 수리 완성!');
+      state.stardustCount = (state.stardustCount || 0) + 6;
+      saveProgress();
+      showCongratsBanner('🤖 제4장 평화의 나-전달법 성공!', '“네가 장난감을 망가뜨려서 속상했어. 조심해서 놀면 좋겠어!” 로봇이 멋지게 수리되었습니다! (+250점)');
+    };
+
+    // ------------------------------------------------------------------------------
+    // [7. 동화 제6장 원작 심화: 학예 발표회 미니 무대 & "지금 할 수 있는 일" 발표 연습]
+    // ------------------------------------------------------------------------------
+    const talentStageGroup = new THREE.Group();
+    talentStageGroup.position.set(43.0, 0, -33.0); // 북동쪽 걱정 벤치(36,-38) & 덕분에 조형물 옆
+
+    const stageBase = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.2, 3.5, 0.36, 24),
+      new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.5 }) // 레드카펫 무대
+    );
+    stageBase.position.y = 0.18; stageBase.receiveShadow = true;
+    const stageRim = new THREE.Mesh(
+      new THREE.TorusGeometry(3.25, 0.12, 8, 32),
+      new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xd97706, emissiveIntensity: 0.6, metalness: 0.6 })
+    );
+    stageRim.rotation.x = Math.PI / 2; stageRim.position.y = 0.36;
+
+    // 황금 마이크 스탠드
+    const micStand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.45, 8), new THREE.MeshStandardMaterial({ color: 0xfef08a, metalness: 0.7 }));
+    micStand.position.set(0, 1.05, 0.8);
+    const micHead = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 12), new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.8 }));
+    micHead.position.set(0, 1.82, 0.8);
+
+    // 무대 스포트라이트 빔 (발표 연습 시 환하게 켜짐)
+    const stageSpotlightMat = new THREE.MeshBasicMaterial({
+      color: 0xfef08a, transparent: true, opacity: 0.0, side: THREE.DoubleSide, depthWrite: false
+    });
+    const stageSpotlightCone = new THREE.Mesh(new THREE.ConeGeometry(3.4, 11, 24, 1, true), stageSpotlightMat);
+    stageSpotlightCone.position.y = 5.8;
+
+    const stageSign = makeChatBubbleSprite('🎤 제6장 학예 발표회 무대 (발표 연습으로 걱정 덜기!)');
+    stageSign.sprite.position.set(0, 3.5, 0);
+
+    talentStageGroup.add(stageBase, stageRim, micStand, micHead, stageSpotlightCone, stageSign.sprite);
+    worldGroup.add(talentStageGroup);
+
+    let stagePracticeStep = 0;
+    let stageSpotlightTimer = 0;
+
+    window.triggerStagePractice = function() {
+      initAudio();
+      stagePracticeStep = (stagePracticeStep % 3) + 1;
+      stageSpotlightTimer = 6.0;
+      stageSpotlightMat.opacity = 0.35;
+      doDance();
+      createMagicImpact(talentStageGroup.position.clone().add(new THREE.Vector3(0, 1.6, 0)), '#34d399');
+
+      if (stagePracticeStep === 1) {
+        soundChime(523);
+        showPlayerBubble('🎤 “안녕 친구들! 발표 연습 1단계: 심호흡 후 목소리 가다듬기!”');
+        showToast('🎤 <b>[발표 연습 1/3]</b> 걱정이의 조언대로 지금 할 수 있는 발표 연습을 시작했어요! (+50점)');
+        window.addMindScore(50, '학예회 발표 연습 1단계');
+      } else if (stagePracticeStep === 2) {
+        soundChime(659);
+        showPlayerBubble('🎤 “발표 연습 2단계: 실수해도 괜찮아, 미소 지으며 또박또박!”');
+        showToast('🎤 <b>[발표 연습 2/3]</b> 연습할수록 가슴 두근거림이 자신감으로 바뀌고 있어요! (+70점)');
+        window.addMindScore(70, '학예회 발표 연습 2단계');
+      } else {
+        soundQuestComplete();
+        spawnConfetti(talentStageGroup.position.clone().add(new THREE.Vector3(0, 2.2, 0)));
+        showPlayerBubble('🌟 “고마워 걱정아! 네 덕분에 미리 준비해서 발표를 멋지게 마쳤어!”');
+        drawChatBubbleCanvas(stageSign.ctx, '🎤 발표 대성공! "고마워 걱정아, 네 덕분에 준비했어!"', '#10b981');
+        stageSign.tex.needsUpdate = true;
+        window.addMindScore(200, '🎤 제6장 학예 발표회 연습 마스터!');
+        state.stardustCount = (state.stardustCount || 0) + 5;
+        saveProgress();
+        showCongratsBanner('🎤 제6장 학예 발표회 연습 완성!', '걱정이 덕분에 지금 할 수 있는 일을 찾아 멋지게 준비했습니다! (+200점)');
+      }
+    };
+
+    // ------------------------------------------------------------------------------
+    // [8. 동화 제10장 피날레: 6번째 새로운 손님 코랄핑크 『설렘이(나비요정)』 & 3단 하늘날개 포털]
+    // ------------------------------------------------------------------------------
+    const flutterNpcGroup = new THREE.Group();
+    flutterNpcGroup.position.set(0, 0, -10.5); // 중앙 분수대(0,0)와 북쪽 전광판(0,-26) 사이 황금 명당
+
+    const flPedestal = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.2, 2.5, 0.28, 24),
+      new THREE.MeshStandardMaterial({ color: 0xfce7f3, roughness: 0.4, emissive: 0xf472b6, emissiveIntensity: 0.25 })
+    );
+    flPedestal.position.y = 0.14;
+    flutterNpcGroup.add(flPedestal);
+
+    // 설렘의 코랄핑크 아치 포털 링
+    const flPortalRing = new THREE.Mesh(
+      new THREE.TorusGeometry(1.85, 0.12, 12, 32),
+      new THREE.MeshStandardMaterial({ color: 0xf472b6, emissive: 0xec4899, emissiveIntensity: 1.4, roughness: 0.2 })
+    );
+    flPortalRing.position.set(0, 2.1, -0.4);
+    flutterNpcGroup.add(flPortalRing);
+
+    // 코랄핑크 설렘이 3D 캐릭터 본체 + 나비 날개
+    const flCharGroup = new THREE.Group();
+    flCharGroup.position.set(0, 0.3, 0);
+    const flMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, emissive: 0xec4899, emissiveIntensity: 0.45, roughness: 0.35 });
+    const flBody = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.95, 0.75), flMat); flBody.position.y = 0.72;
+    const flHead = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.82, 0.82), flMat); flHead.position.y = 1.62;
+    const flEyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
+    const flEyeL = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.17, 0.08), flEyeMat); flEyeL.position.set(-0.2, 1.66, 0.42);
+    const flEyeR = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.17, 0.08), flEyeMat); flEyeR.position.set(0.2, 1.66, 0.42);
+
+    // 설렘이 나비 날개 좌/우
+    const flWingMat = new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xf472b6, emissiveIntensity: 0.9, transparent: true, opacity: 0.92 });
+    const flWingL = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.72, 0.08), flWingMat); flWingL.position.set(-0.72, 0.95, -0.4);
+    const flWingR = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.72, 0.08), flWingMat); flWingR.position.set(0.72, 0.95, -0.4);
+    flCharGroup.add(flBody, flHead, flEyeL, flEyeR, flWingL, flWingR);
+    flutterNpcGroup.add(flCharGroup);
+
+    const flSign = makeChatBubbleSprite('🌸 제10장 새로운 손님: 코랄핑크 설렘이 (3단 하늘날개 축복!)');
+    flSign.sprite.position.set(0, 3.9, 0);
+    flutterNpcGroup.add(flSign.sprite);
+    worldGroup.add(flutterNpcGroup);
+
+    window.activateFlutterBlessing = function() {
+      initAudio();
+      soundQuestComplete();
+      playerPhysics.maxJumps = 3; // 3단 하늘 활공 점프 해금!
+      playerPhysics.speedBuffTimer = 25.0;
+      selectGuestSpirit('flutter');
+      addPetCompanion('flutter', 0xec4899, '설렘이 나비요정');
+      spawnConfetti(flutterNpcGroup.position.clone().add(new THREE.Vector3(0, 2.2, 0)));
+      createMagicImpact(playerRig.position, '#ec4899');
+      window.addMindScore(300, '🌸 제10장 새로운 손님 설렘이와 만남!');
+      showPlayerBubble('🌸 “야호! 새로운 손님 설렘이가 찾아왔어! 3단 하늘 점프 가능!”');
+      showCongratsBanner('🌸 제10장: 코랄핑크 설렘이의 축복!', '“감정 손님이 떠난 광주리에는 새로운 설렘이 찾아와!” [SPACE 3단 하늘 점프]와 설렘이 펫이 해금되었습니다! (+300점)');
+    };
+
+    // ------------------------------------------------------------------------------
+    // [9. 동화 제9장 협동: 친구들의 '무거워진 마음 광주리' 도움 요청 링 초기화]
+    // ------------------------------------------------------------------------------
+    let heavyBasketCycleTimer = 4.0;
+    let currentHeavyFriendIdx = 0;
+    friendAgents.forEach((fr, idx) => {
+      const hRing = new THREE.Mesh(
+        new THREE.RingGeometry(1.05, 1.35, 24),
+        new THREE.MeshBasicMaterial({ color: 0xf43f5e, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
+      );
+      hRing.rotation.x = -Math.PI / 2;
+      hRing.position.y = 0.16;
+      hRing.visible = (idx === 0);
+      fr.group.add(hRing);
+      fr.heavyBasketRing = hRing;
+      fr.needsCoopHelp = (idx === 0);
+    });
 
     // 5대 랜드마크 상공 3D 미션 안내판 등록
     storyQuestMeta.forEach(makeLandmarkStorySign);
@@ -5669,6 +5920,8 @@
       if (k === 'e') doDance();
       if (k === 'q') doMeditate();
       if (k === 'g') interactCurrentZone();
+      if (k === 'm') { if (typeof window.openThreeFingerModal === 'function') window.openThreeFingerModal(); }
+      if (k === 'r') { if (typeof window.openRobotIMessageModal === 'function') window.openRobotIMessageModal(); }
       if (['1','2','3','4','5','6'].includes(k)) {
         selectHotbarSlot(parseInt(k));
       }
@@ -5695,6 +5948,9 @@
       raycaster.setFromCamera(pointerNDC, camera);
       if (raycaster.intersectObject(screenMesh).length > 0) return { type: 'board' };
       if (typeof momGroup !== 'undefined' && raycaster.intersectObjects(momGroup.children, true).length > 0) return { type: 'mom' };
+      if (typeof toyRobotGroup !== 'undefined' && raycaster.intersectObjects(toyRobotGroup.children, true).length > 0) return { type: 'robot' };
+      if (typeof talentStageGroup !== 'undefined' && raycaster.intersectObjects(talentStageGroup.children, true).length > 0) return { type: 'stage' };
+      if (typeof flutterNpcGroup !== 'undefined' && raycaster.intersectObjects(flutterNpcGroup.children, true).length > 0) return { type: 'flutter' };
       const friendMeshes = friendAgents.map(f => f.group);
       const fHits = raycaster.intersectObjects(friendMeshes, true);
       if (fHits.length > 0 && fHits[0].distance < 24) {
@@ -5739,6 +5995,15 @@
         if (hit?.type === 'board') openBoardModal();
         else if (hit?.type === 'mom') {
           window.openMomModal();
+        }
+        else if (hit?.type === 'robot') {
+          window.openRobotIMessageModal();
+        }
+        else if (hit?.type === 'stage') {
+          window.triggerStagePractice();
+        }
+        else if (hit?.type === 'flutter') {
+          window.activateFlutterBlessing();
         }
         else if (hit?.type === 'worryThread') {
           // 마우스 클릭 또는 화면 터치로 털실 매듭 풀기!
@@ -5913,9 +6178,10 @@
     }
 
     function interactCurrentZone() {
-      if (!state.activeZone) { showToast('5개 구역 감정 손님, 친구 아바타, 또는 마음 게시판 근처에서 [G]를 눌러보세요.'); return; }
+      if (!state.activeZone) { showToast('5개 구역 감정 손님, 설렘이, 친구 아바타, 또는 마음 게시판 근처에서 [G]를 눌러보세요.'); return; }
       if (state.activeZone === 'board') { openBoardModal(); return; }
       if (state.activeZone === 'mom') { window.openMomModal(); return; }
+      if (state.activeZone === 'flutter') { window.activateFlutterBlessing(); return; }
       if (state.activeZone === 'worry') {
         if ((state.mission.worry || 0) >= 3) {
           openModal('modalWorry');
@@ -5983,13 +6249,15 @@
       // 섬 중앙 마음 광주리
       mmCtx.fillStyle = '#f59e0b'; mmCtx.beginPath(); mmCtx.arc(cx, cy, 3, 0, Math.PI * 2); mmCtx.fill();
 
-      // 5대 힐링 테마파크 아이콘 렌더링 (동물원, 식물원, 독서대, 놀이터, 물놀이장)
+      // 5대 힐링 테마파크 + 설렘이 & 엄마 아이콘 렌더링
       const themeParks = [
-        { emoji: '🐾', x: -16, z: -20 },
-        { emoji: '🌺', x: 26, z: 26 },
-        { emoji: '📚', x: -28, z: 22 },
-        { emoji: '🎡', x: 30, z: -22 },
-        { emoji: '🏖️', x: -26, z: -2 }
+        { emoji: '🐾', x: -18, z: -22 },
+        { emoji: '🌺', x: -26, z: 26 },
+        { emoji: '📚', x: 22, z: -24 },
+        { emoji: '🎡', x: 28, z: 22 },
+        { emoji: '🏖️', x: -48, z: -22 },
+        { emoji: '🌸', x: 0, z: -10.5 },
+        { emoji: '💕', x: 14, z: 12 }
       ];
       mmCtx.font = '9px sans-serif'; mmCtx.textAlign = 'center'; mmCtx.textBaseline = 'middle';
       themeParks.forEach(tp => {
@@ -6056,12 +6324,14 @@
     function updateZonePrompt() {
       let foundZone = null;
       const px = playerRig.position.x, pz = playerRig.position.z;
-      const zoneRadius = { joy: 7.5, sad: 8.5, anger: 7.0, fear: 8.5, worry: 7.5 };
+      const zoneRadius = { joy: 7.5, sad: 9.5, anger: 9.0, fear: 8.5, worry: 9.5 };
       for (const lm of landmarkCoords) {
         if (Math.hypot(px - lm.x, pz - lm.z) < zoneRadius[lm.key]) { foundZone = lm.key; break; }
       }
-      if (!foundZone && Math.hypot(px, pz - (-22)) < 8.5) foundZone = 'board';
-      // 온화한 엄마 NPC 근접 감지 (중앙 광주리 인근 6.5, 6.5)
+      if (!foundZone && Math.hypot(px, pz - (-22)) < 7.0) foundZone = 'board';
+      // 제10장 코랄핑크 설렘이 NPC 근접 감지 (0, -10.5)
+      if (!foundZone && Math.hypot(px - 0, pz - (-10.5)) < 4.6) foundZone = 'flutter';
+      // 온화한 엄마 NPC 근접 감지 (14, 12)
       const distToMom = Math.hypot(px - 14, pz - 12);
       if (!foundZone && distToMom < 5.2) foundZone = 'mom';
       let nearFriend = null, bestFriendDist = 4.5;
@@ -6076,7 +6346,7 @@
       if (!foundZone) { if (lastPromptZone !== null) { box.classList.remove('visible'); lastPromptZone = null; } return; }
 
       const progEl = document.getElementById('zpProgress');
-      if (!foundZone.startsWith('friend:') && foundZone !== 'board') {
+      if (!foundZone.startsWith('friend:') && foundZone !== 'board' && foundZone !== 'flutter' && foundZone !== 'mom') {
         progEl.textContent = getZoneProgressText(foundZone);
       } else {
         progEl.textContent = '';
@@ -6084,6 +6354,20 @@
 
       if (lastPromptZone === foundZone) return;
       lastPromptZone = foundZone;
+
+      if (foundZone === 'flutter') {
+        document.getElementById('zpChip').style.background = '#ec4899';
+        document.getElementById('zpTitle').textContent = '🌸 제10장 새로운 손님 · 코랄핑크 설렘이 (나비요정)';
+        document.getElementById('zpDesc').textContent = '“야호! 나는 설렘이야! 감정 손님들이 다녀간 광주리에는 언제든 새로운 설렘이 찾아온단다!”';
+        document.getElementById('breathBarWrap').classList.remove('active');
+        const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
+        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.style.background = '#ec4899'; b1.textContent = '🦋 설렘 날개 3단점프 축복받기 (G)'; b1.onclick = () => window.activateFlutterBlessing();
+        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '🤟 3손가락 마음탐정 (M)'; b2.onclick = () => window.openThreeFingerModal();
+        btnsEl.appendChild(b1);
+        btnsEl.appendChild(b2);
+        box.classList.add('visible');
+        return;
+      }
 
       if (foundZone === 'mom') {
         const pName = state.playerName || '인찬이';
@@ -6108,27 +6392,33 @@
 
       if (foundZone.startsWith('friend:')) {
         const fr = friendAgents.find(f => f.id === foundZone.split(':')[1]);
-        document.getElementById('zpChip').style.background = '#ff5800';
-        document.getElementById('zpTitle').textContent = `${fr.name} (동행 친구)`;
-        document.getElementById('zpDesc').textContent = `${fr.name}와(과) 이야기를 나누거나 광주리를 같이 들어줄 수 있어요.`;
+        document.getElementById('zpChip').style.background = fr.needsCoopHelp ? '#f43f5e' : '#ff5800';
+        document.getElementById('zpTitle').textContent = fr.needsCoopHelp
+          ? `🧺 [제9장 협동] ${fr.name}의 마음 광주리가 무거워요!`
+          : `${fr.name} (동행 친구)`;
+        document.getElementById('zpDesc').textContent = fr.needsCoopHelp
+          ? `“오늘 한꺼번에 많은 감정 손님이 찾아와서 광주리가 무거워… 같이 들어줄래?”`
+          : `${fr.name}와(과) 이야기를 나누거나 마음 광주리를 같이 들어줄 수 있어요.`;
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '친구와 함께하기 (G)'; b1.onclick = () => openFriendModal(fr.id);
+        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '🧺 즉시 광주리 같이 들기 (+250점)'; b2.onclick = () => window.quickRescueFriendBasket(fr.id);
         btnsEl.appendChild(b1);
+        btnsEl.appendChild(b2);
         box.classList.add('visible');
         return;
       }
 
       const guides = {
         board: { t: '실시간 마음 게시판', d: '친구들이 남긴 마음 이야기를 읽고 내 감정도 공유해 보세요!', actText: '게시판 열기 (G)', actFn: openBoardModal },
-        joy: { t: '기쁨의 트램펄린 광장', d: state.quests.joy ? '기쁨 구슬을 이미 획득했어요!' : '트램펄린과 더블 점프로 공중의 황금 링 3개를 통과하세요!' },
-        sad: { t: '슬픔의 치유 연못', d: state.quests.sad ? '연못의 물결이 마음을 달래줍니다.' : '연못 가장자리 물방울 3개를 모은 뒤 연못 중심으로 걸어가세요.', actText: '물결 일으키기', actFn: () => {
+        joy: { t: '기쁨의 트램펄린 & 축구 광장', d: state.quests.joy ? '기쁨 구슬 획득 완료! 축구공도 골대에 차 넣어보세요!' : '트램펄린과 더블 점프로 공중의 황금 링 3개를 통과하세요!' },
+        sad: { t: '슬픔의 치유 연못', d: state.quests.sad ? '연못의 물결과 무지개가 마음을 달래줍니다.' : '연못 수련잎 주변 기억의 물방울 3개를 모은 뒤 연못 중심으로 걸어가세요.', actText: '무지개 물결 일으키기', actFn: () => {
           if (state.mission.sad < 3) showToast(`연못 주변 기억의 물방울을 먼저 모아주세요! (${state.mission.sad}/3)`);
           else triggerSadRitual();
         } },
-        anger: { t: '화의 캠프파이어', d: state.quests.anger ? '불길이 따뜻한 온기로 진정되었어요.' : '초록색 중앙 타이밍 구역에 커서가 왔을 때 [C] 키를 3번 누르세요!', actText: '타이밍 심호흡 (C)', actFn: doBreatheWind },
+        anger: { t: '화의 캠프파이어 & 부서진 로봇', d: '초록색 중앙 타이밍 구역에 커서가 왔을 때 [C]키 심호흡을 하고, 동생에게 나-전달법[R]으로 로봇을 고쳐보세요!', actText: '타이밍 심호흡 (C)', actFn: doBreatheWind },
         fear: { t: '두려움의 수호 등대', d: state.quests.fear ? '등대 빛이 용기를 비추고 있어요!' : '움직이는 어둠 그림자 5개에 [F] 키로 별빛 마법을 쏘세요.', actText: '별빛 마법 (F)', actFn: shootMagicBullet },
-        worry: { t: '🏮 소원 연등 벤치 (걱정 손님)', d: (state.mission.worry >= 3) ? '✨ 털실 3개를 모두 풀었습니다! 지금 바로 소원 연등을 띄워보세요!' : `주변 잔디밭의 엉킨 털실을 3개 밟아 풀면 환상적인 소원 연등을 날릴 수 있어요! (현재: ${state.mission.worry || 0}/3)`, actText: '🏮 소원 연등 날리기 (G)', actFn: () => {
+        worry: { t: '🏮 소원 연등 벤치 & 학예회 발표 무대', d: (state.mission.worry >= 3) ? '✨ 털실 3개를 모두 풀었습니다! 소원 연등을 띄우거나 옆 무대에서 발표 연습을 해보세요!' : `주변 잔디밭의 엉킨 털실 3개를 밟아 풀고 소원 연등과 학예회 무대 발표 연습에 도전하세요! (현재: ${state.mission.worry || 0}/3)`, actText: '🏮 소원 연등 날리기 (G)', actFn: () => {
           if ((state.mission.worry || 0) < 3) {
             soundChime(440);
             showToast(`🌱 <b>먼저 주변 잔디밭의 엉킨 털실 3개를 풀어주세요!</b> (현재: ${state.mission.worry || 0}/3)`);
@@ -6146,6 +6436,14 @@
       const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
       if (g.actText && (foundZone === 'board' || foundZone === 'worry' || !state.quests[foundZone])) {
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = g.actText; b1.onclick = g.actFn; btnsEl.appendChild(b1);
+      }
+      if (foundZone === 'anger') {
+        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = '#2563eb'; bRob.textContent = '🤖 로봇 수리 & 나-전달법 (R)'; bRob.onclick = () => window.openRobotIMessageModal();
+        btnsEl.appendChild(bRob);
+      }
+      if (foundZone === 'worry') {
+        const bStg = document.createElement('button'); bStg.className = 'zp-btn'; bStg.style.background = '#e11d48'; bStg.textContent = '🎤 학예회 발표 연습하기'; bStg.onclick = () => window.triggerStagePractice();
+        btnsEl.appendChild(bStg);
       }
       if (foundZone !== 'board') {
         const bNpc = document.createElement('button'); bNpc.className = 'zp-btn secondary'; bNpc.textContent = '손님 대화 (G)'; bNpc.onclick = () => openNpcDialogue(foundZone);
@@ -6345,7 +6643,7 @@
     }
 
     function spawnHugHeartBurst() {
-      const originX = 6.5, originY = 1.6, originZ = 6.5;
+      const originX = 14, originY = 1.6, originZ = 12;
       momBurstHearts.forEach((h, idx) => {
         h.mesh.position.set(
           originX + (Math.random() - 0.5) * 0.8,
@@ -6532,6 +6830,62 @@
       if (typeof fireGroup !== 'undefined' && typeof fireAngerStage !== 'undefined') {
         const targetScale = fireAngerStage === 3 ? 1.45 : (fireAngerStage === 2 ? 0.85 : 0.35);
         fireGroup.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), dt * 3.5);
+      }
+
+      // [신규 6. 제4장 장난감 로봇 애니메이션]
+      if (typeof robBodyGroup !== 'undefined') {
+        if (isRobotRepaired) {
+          robChestCore.rotation.y += dt * 3.5;
+          if (robotJumpTimer > 0) {
+            robotJumpTimer -= dt;
+            robBodyGroup.position.y = 0.25 + Math.abs(Math.sin(time * 9.0)) * 0.45;
+          } else {
+            robBodyGroup.position.y = 0.25 + Math.sin(time * 3.0) * 0.08;
+          }
+        } else {
+          robHeadGroup.rotation.z = 0.42 + Math.sin(time * 5.0) * 0.06;
+        }
+      }
+
+      // [신규 7. 제6장 학예회 무대 스포트라이트 애니메이션]
+      if (typeof stageSpotlightTimer !== 'undefined' && stageSpotlightTimer > 0) {
+        stageSpotlightTimer -= dt;
+        stageSpotlightCone.rotation.y += dt * 1.5;
+        stageSpotlightMat.opacity = Math.min(0.38, stageSpotlightTimer * 0.12);
+      } else if (typeof stageSpotlightMat !== 'undefined') {
+        stageSpotlightMat.opacity = 0;
+      }
+
+      // [신규 8. 제10장 코랄핑크 설렘이 나비 날개 파닥임 & 포털 회전]
+      if (typeof flCharGroup !== 'undefined') {
+        flCharGroup.position.y = 0.3 + Math.sin(time * 3.8) * 0.22;
+        flWingL.rotation.y = Math.sin(time * 12.0) * 0.45 + 0.25;
+        flWingR.rotation.y = -Math.sin(time * 12.0) * 0.45 - 0.25;
+        flPortalRing.rotation.z += dt * 1.2;
+      }
+
+      // [신규 9. 제9장 무거워진 마음 광주리 협동 요청 주기적 순환]
+      if (typeof heavyBasketCycleTimer !== 'undefined') {
+        heavyBasketCycleTimer -= dt;
+        friendAgents.forEach(fr => {
+          if (fr.heavyBasketRing && fr.needsCoopHelp) {
+            fr.heavyBasketRing.scale.setScalar(1.0 + Math.sin(time * 6.0) * 0.16);
+          }
+        });
+        if (heavyBasketCycleTimer <= 0) {
+          heavyBasketCycleTimer = 26.0;
+          currentHeavyFriendIdx = (currentHeavyFriendIdx + 1) % friendAgents.length;
+          friendAgents.forEach((fr, idx) => {
+            fr.needsCoopHelp = (idx === currentHeavyFriendIdx);
+            if (fr.heavyBasketRing) fr.heavyBasketRing.visible = fr.needsCoopHelp;
+            if (fr.needsCoopHelp && fr.chatObj) {
+              drawChatBubbleCanvas(fr.chatObj.ctx, '🧺 광주리가 무거워요! 같이 들어줄래? [G]', '#f43f5e');
+              fr.chatObj.tex.needsUpdate = true;
+              fr.chatObj.sprite.visible = true;
+              fr.chatTimer = 8.0;
+            }
+          });
+        }
       }
 
       // [신규 4. 두려움 꼬마 유령 살금살금 둥둥 애니메이션]
@@ -6966,7 +7320,7 @@
         }
       });
       // 연못 중심 도달 시 퀘스트 완료 후에도 무한 치유 파동 및 즉각 리젠 지원!
-      if (Math.hypot(playerRig.position.x - (-23), playerRig.position.z - 4) < 2.5 && state.mission.sad >= 3) {
+      if (Math.hypot(playerRig.position.x - (-36), playerRig.position.z - 0) < 4.5 && state.mission.sad >= 3) {
         triggerSadRitual();
         window.addMindScore(250, '치유의 연못 물결 완성!');
         state.mission.sad = 0;
@@ -7089,32 +7443,35 @@
         let hit = false;
 
         // 친구 NPC(6명)에게 별빛 응원이 닿았을 때: 친구 기쁨 리액션 + 마음 충전 + 점수 대량 획득!
-        if (typeof friendList !== 'undefined') {
-          for (const fr of friendList) {
-            if (fr.mesh && mp.mesh.position.distanceTo(fr.mesh.position) < 2.2) {
+        if (typeof friendAgents !== 'undefined') {
+          for (const fr of friendAgents) {
+            if (fr.group && mp.mesh.position.distanceTo(fr.group.position) < 2.3) {
               hit = true;
-              createMagicImpact(fr.mesh.position, '#ec4899');
-              createMagicImpact(fr.mesh.position, '#fde047');
+              createMagicImpact(fr.group.position, '#ec4899');
+              createMagicImpact(fr.group.position, '#fde047');
               soundQuestComplete();
-              fr.mesh.position.y = 0.9;
-              setTimeout(() => { if (fr.mesh) fr.mesh.position.y = 0; }, 550);
+              fr.danceTimer = 3.5;
 
-              if (fr.chatSprite) {
+              if (fr.chatObj) {
                 const thankChats = [
                   '인찬아 별빛 응원 고마워! 힘이 펄펄 나! 💖',
                   '마음이 따뜻해졌어! 우리 함께 힘내자! ✨',
                   '와아, 반짝이는 별빛 선물 고마워! 🌟',
-                  '너의 따스한 응원 덕분에 기분이 정말 좋아! 🌸'
+                  '너의 따스한 응원 덕분에 광주리가 가벼워졌어! 🌸'
                 ];
                 const tMsg = thankChats[Math.floor(Math.random() * thankChats.length)];
-                drawChatBubbleCanvas(fr.chatCtx, tMsg, '#f43f5e');
-                fr.chatTex.needsUpdate = true;
-                fr.chatSprite.visible = true;
+                drawChatBubbleCanvas(fr.chatObj.ctx, tMsg, '#f43f5e');
+                fr.chatObj.tex.needsUpdate = true;
+                fr.chatObj.sprite.visible = true;
                 fr.chatTimer = 4.5;
+              }
+              if (fr.heavyBasketRing) {
+                fr.heavyBasketRing.visible = false;
+                fr.needsCoopHelp = false;
               }
 
               window.addMindScore(200, `${fr.name}에게 별빛 응원 선물 💖`);
-              showToast(`💖 <b>[마음 나눔]</b> <b>${fr.name}</b>에게 별빛 응원을 선물했습니다! (+200점)`);
+              showToast(`💖 <b>[마음 나눔]</b> <b>${fr.name}</b>에게 별빛 응원을 선물해 마음 광주리가 가벼워졌습니다! (+200점)`);
               break;
             }
           }
@@ -7174,11 +7531,11 @@
       
       // [엄마 3D NPC 생동감 인터랙티브 애니메이션 & 포옹 모션]
       if (typeof momRightArmPivot !== 'undefined' && typeof momGroup !== 'undefined') {
-        const distToMom = Math.hypot(playerRig.position.x - 6.5, playerRig.position.z - 6.5);
+        const distToMom = Math.hypot(playerRig.position.x - 14, playerRig.position.z - 12);
         
         // 인찬이가 가까이 오면 부드럽게 인찬이를 향해 몸체와 머리 회전
         if (distToMom < 6.8) {
-          const targetAngle = Math.atan2(playerRig.position.x - 6.5, playerRig.position.z - 6.5);
+          const targetAngle = Math.atan2(playerRig.position.x - 14, playerRig.position.z - 12);
           momGroup.rotation.y += (targetAngle - momGroup.rotation.y) * 0.08;
           momHead.rotation.x = Math.sin(time * 2.0) * 0.05 + 0.08; // 따뜻하게 고개 끄덕임
         } else {
@@ -7434,8 +7791,8 @@
     if (btnTouchMagic) btnTouchMagic.onclick = () => { selectHotbarSlot(6); shootMagicBullet(); };
     document.getElementById('btnTrophy').onclick = () => { openModal('modalTrophy'); renderTrophyCard(); };
     document.getElementById('btnTOD').onclick = cycleTimeOfDay;
-    document.getElementById('btnStory').onclick = () => openModal('modalStory');
-    document.getElementById('btnHelp').onclick = () => showToast('WASD 이동 · SPACE 2단점프 · F 마법 · C 심호흡 · G 손님 대화 · 우측 하단 레이더를 따라 5대 구슬을 모아보세요!');
+    document.getElementById('btnStory').onclick = () => { openStoryBookModal(); switchStoryBookTab('text'); };
+    document.getElementById('btnHelp').onclick = () => showToast('WASD 이동 · SPACE 점프 · F 별빛응원 · C 심호흡 · G 대화 · M 3손가락탐정 · R 로봇수리 · 우측 하단 레이더를 참고하세요!');
 
     function updateAudioUI() {
       const btn = document.getElementById('btnAudio');
@@ -8471,14 +8828,37 @@
       };
     }
 
-    document.getElementById('btnHelpBasket').onclick = () => {
-      const fr = friendAgents.find(f => f.id === state.activeFriendId);
+    window.quickRescueFriendBasket = function(friendId) {
+      initAudio();
+      const fr = friendAgents.find(f => f.id === friendId) || friendAgents.find(f => f. id === state.activeFriendId);
       if (!fr) return;
-      coopBeamTarget = fr.group; coopBeamTimer = 3.5;
-      state.coopHelped += 1; saveProgress();
-      soundQuestComplete(); closeModal('modalFriend');
-      showToast(`<b>${fr.name}</b>의 마음 광주리를 함께 들어주었습니다! (총 협력 ${state.coopHelped}회)`);
+      coopBeamTarget = fr.group; coopBeamTimer = 4.0;
+      state.coopHelped += 1;
+      const wasHeavy = !!fr.needsCoopHelp;
+      fr.needsCoopHelp = false;
+      if (fr.heavyBasketRing) fr.heavyBasketRing.visible = false;
+      fr.danceTimer = 3.5;
+      if (fr.chatObj) {
+        drawChatBubbleCanvas(fr.chatObj.ctx, `“그랬구나, 고마워 ${state.playerName}아! 광주리가 가벼워졌어! 💖”`, '#fbbf24');
+        fr.chatObj.tex.needsUpdate = true;
+        fr.chatObj.sprite.visible = true;
+        fr.chatTimer = 6.0;
+      }
+      const pts = wasHeavy ? 300 : 250;
+      window.addMindScore(pts, `🧺 제9장 ${fr.name}의 마음 광주리 함께 들기!`);
+      state.stardustCount = (state.stardustCount || 0) + 5;
+      saveProgress();
+      soundQuestComplete();
+      spawnConfetti(fr.group.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
+      createMagicImpact(fr.group.position, '#fbbf24');
+      closeModal('modalFriend');
+      lastPromptZone = null;
+      showToast(`🧺 <b>[제9장 협동 성공!] ${fr.name}</b>의 무거운 마음 광주리를 함께 들어주었습니다! (+${pts}점 · 총 협력 ${state.coopHelped}회)`);
       if (worldChannel) worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: '광주리를 함께 들어주었어요!' });
+    };
+
+    document.getElementById('btnHelpBasket').onclick = () => {
+      window.quickRescueFriendBasket(state.activeFriendId);
     };
     document.getElementById('btnDanceTogether').onclick = () => {
       const fr = friendAgents.find(f => f.id === state.activeFriendId);
@@ -8510,11 +8890,11 @@
       }
 
       // 3. 친구의 감동 답장 말풍선 & 하트 축제
-      if (fr && fr.chatSprite) {
+      if (fr && fr.chatObj) {
         const reply = `“고마워 ${state.playerName}아! 네 따뜻한 응원 덕분에 마음이 정말 든든해졌어! 💖”`;
-        drawChatBubbleCanvas(fr.chatCtx, reply, '#ec4899');
-        fr.chatTex.needsUpdate = true;
-        fr.chatSprite.visible = true;
+        drawChatBubbleCanvas(fr.chatObj.ctx, reply, '#ec4899');
+        fr.chatObj.tex.needsUpdate = true;
+        fr.chatObj.sprite.visible = true;
         fr.chatTimer = 5.5;
         setTimeout(() => { appendChatLog(fr.name, reply); soundChime(784); }, 800);
       }
@@ -8657,55 +9037,528 @@
     }, 1000);
   
   // ==========================================
-  // 동화책 앨범 모달 제어 함수
+  // 동화책 앨범 & 1~10장 원문 스토리북 & 성우 오디오북 제어 함수
   // ==========================================
   window.albumScenes = window.albumScenes || [];
-  window.currentAlbumIdx = window.currentAlbumIdx || 0;
+  window.filteredAlbumScenes = [];
+  window.currentAlbumIdx = 0;
+  window.storyChapters = [];
+  window.currentStoryChapterIdx = 0;
+  window.stampedChapters = JSON.parse(localStorage.getItem('inchan_stamped_chapters_v1') || '[]');
+
+  const AUDIOBOOK_SEGMENTS = [
+    { file: 'assets/inchan/audio/seg_001_해설.wav', speaker: '해설', text: '어느 토요일 아침이었어요. 인찬이는 식탁에 앉아 있었지만 평소처럼 맛있게 밥을 먹을 수가 없었어요.' },
+    { file: 'assets/inchan/audio/seg_002_해설.wav', speaker: '엄마 & 인찬', text: '“인찬아, 무슨 일 있어?” “몰라. 그냥 기분이 이상해.”' },
+    { file: 'assets/inchan/audio/seg_003_해설.wav', speaker: '엄마', text: '“그럴 때 있지. 엄마가 비밀을 하나 알려줄까? 사실 사람에게는 누구나 이상한 광주리가 있어. 마음 광주리라고 하지.”' },
+    { file: 'assets/inchan/audio/seg_004_해설.wav', speaker: '엄마', text: '“응. 그 안에는 여러 가지 감정들이 손님으로 찾아와서 잠시 머물다 가곤 하지.”' },
+    { file: 'assets/inchan/audio/seg_005_해설.wav', speaker: '해설', text: '인찬이가 눈을 동그랗게 떴어요.' },
+    { file: 'assets/inchan/audio/seg_006_엄마.wav', speaker: '엄마', text: '“그럼, 당연하지. 어쩌면 지금도 인찬이 마음 광주리에 새로운 손님이 찾아왔을지도 모르는걸?”' },
+    { file: 'assets/inchan/audio/seg_007_인찬이.wav', speaker: '인찬이', text: '“내 마음 광주리에 손님이 온 걸 어떻게 알아?”' },
+    { file: 'assets/inchan/audio/seg_008_해설.wav', speaker: '해설', text: '인찬이는 자못 궁금한 듯 물었어요.' },
+    { file: 'assets/inchan/audio/seg_009_엄마.wav', speaker: '엄마', text: '“정답은 없어. 지금 무엇을 느끼는지 차분하게 마음을 살펴주다 보면 어떤 손님이 왔는지 알게 되더라.”' },
+    { file: 'assets/inchan/audio/seg_010_인찬이.wav', speaker: '인찬이', text: '“나한테는 어떤 손님이 온 거지?”' }
+  ];
+  let currentAudioObj = null;
+  let isAudiobookPlaying = false;
+  let currentAudioSegIdx = 0;
+
+  window.toggleAudiobookPlay = function() {
+    if (isAudiobookPlaying) {
+      window.stopAudiobook();
+    } else {
+      isAudiobookPlaying = true;
+      currentAudioSegIdx = 0;
+      const btn = document.getElementById('btnAudiobookToggle');
+      if (btn) { btn.innerHTML = '⏹ 성우 오디오북 정지'; btn.style.background = '#ef4444'; }
+      playNextAudioSegment();
+    }
+  };
+
+  window.stopAudiobook = function() {
+    isAudiobookPlaying = false;
+    if (currentAudioObj) {
+      currentAudioObj.pause();
+      currentAudioObj = null;
+    }
+    const btn = document.getElementById('btnAudiobookToggle');
+    if (btn) { btn.innerHTML = '🔊 1장 원작 성우 오디오북 연속 듣기'; btn.style.background = '#d97706'; }
+    const sub = document.getElementById('audiobookSubtitleBox');
+    if (sub) sub.textContent = '💡 버튼을 누르면 실제 성우(해설·엄마·인찬이) 목소리로 동화 1장을 들려줍니다!';
+  };
+
+  function playNextAudioSegment() {
+    if (!isAudiobookPlaying) return;
+    if (currentAudioSegIdx >= AUDIOBOOK_SEGMENTS.length) {
+      window.stopAudiobook();
+      window.addMindScore(120, '🔊 제1장 성우 오디오북 감상 완료!');
+      showToast('🔊 <b>제1장 성우 오디오북 감상 완료! (+120점)</b>');
+      return;
+    }
+    const seg = AUDIOBOOK_SEGMENTS[currentAudioSegIdx];
+    const sub = document.getElementById('audiobookSubtitleBox');
+    if (sub) {
+      sub.innerHTML = `<span style="color:#fbbf24; font-weight:800;">🎙️ [${seg.speaker} (${currentAudioSegIdx + 1}/${AUDIOBOOK_SEGMENTS.length})]</span> ${seg.text}`;
+    }
+    currentAudioObj = new Audio(seg.file);
+    currentAudioObj.onended = () => {
+      currentAudioSegIdx++;
+      playNextAudioSegment();
+    };
+    currentAudioObj.onerror = () => {
+      currentAudioSegIdx++;
+      playNextAudioSegment();
+    };
+    currentAudioObj.play().catch(() => {
+      window.stopAudiobook();
+    });
+  }
 
   window.loadAlbumData = async function() {
     try {
       const res = await fetch('assets/inchan/scenes_data.json');
-      albumScenes = await res.json();
+      const raw = await res.json();
+      // 1장~10장 자연 정렬
+      window.albumScenes = raw.slice().sort((a, b) => {
+        const na = parseInt(a.chapter) || 1, nb = parseInt(b.chapter) || 1;
+        if (na !== nb) return na - nb;
+        return a.chapter.localeCompare(b.chapter);
+      });
+      window.filteredAlbumScenes = window.albumScenes;
     } catch(e) {
       console.warn('동화 앨범 데이터 로드 대기', e);
     }
-  }
+    try {
+      const resStory = await fetch('assets/inchan/story_data.json');
+      window.storyChapters = await resStory.json();
+    } catch(e) {
+      console.warn('동화 원문 데이터 로드 대기', e);
+    }
+  };
   loadAlbumData();
+
+  window.switchStoryBookTab = function(tabName) {
+    initAudio(); soundChime(587);
+    const tAlbum = document.getElementById('sbTabAlbum');
+    const tText = document.getElementById('sbTabFullText');
+    const bAlbum = document.getElementById('btnSbTabAlbum');
+    const bText = document.getElementById('btnSbTabText');
+    if (tabName === 'album') {
+      if (tAlbum) tAlbum.style.display = 'flex';
+      if (tText) tText.style.display = 'none';
+      if (bAlbum) { bAlbum.style.background = '#fbbf24'; bAlbum.style.color = '#0f172a'; }
+      if (bText) { bText.style.background = 'rgba(255,255,255,0.08)'; bText.style.color = '#cbd5e1'; }
+      updateAlbumView();
+    } else {
+      if (tAlbum) tAlbum.style.display = 'none';
+      if (tText) tText.style.display = 'flex';
+      if (bText) { bText.style.background = '#fbbf24'; bText.style.color = '#0f172a'; }
+      if (bAlbum) { bAlbum.style.background = 'rgba(255,255,255,0.08)'; bAlbum.style.color = '#cbd5e1'; }
+      renderStoryFullTextChapter(window.currentStoryChapterIdx || 0);
+    }
+  };
+
+  window.filterAlbumByChapter = function(chPrefix) {
+    initAudio(); soundChime(523);
+    if (!chPrefix || chPrefix === 'all') {
+      window.filteredAlbumScenes = window.albumScenes;
+    } else {
+      window.filteredAlbumScenes = window.albumScenes.filter(s => s.chapter.startsWith(chPrefix + '장'));
+    }
+    window.currentAlbumIdx = 0;
+    document.querySelectorAll('.album-ch-chip').forEach(btn => {
+      btn.style.background = (btn.dataset.ch === chPrefix) ? '#fbbf24' : 'rgba(255,255,255,0.08)';
+      btn.style.color = (btn.dataset.ch === chPrefix) ? '#0f172a' : '#cbd5e1';
+    });
+    updateAlbumView();
+  };
+
+  const CHAPTER_SEL_INSIGHTS = [
+    '💡 1장 핵심 지혜: 누구나 마음속에 감정 손님이 찾아오는 『마음 광주리』를 가지고 있어요. 지금 내 마음을 차분히 살펴보세요.',
+    '💡 2장 핵심 지혜: 『기쁨이』는 좋아하는 일이 생겼을 때 몸을 가볍게 하고 웃게 만들어요. 마음껏 기뻐하고 떠나보내도 다시 찾아와요!',
+    '💡 3장 핵심 지혜: 『슬픔이』는 소중한 것을 잃었을 때 찾아오는 손님이에요. 슬픈 건 나쁜 게 아니니 눈물이 나면 울어도 괜찮아요.',
+    '💡 4장 핵심 지혜: 『화』는 중요한 것을 지키려는 신호예요. “감정은 내가 선택하지 않아도 생기지만, 행동은 내가 선택할 수 있어요!”',
+    '💡 5장 핵심 지혜: 『두려움』은 “조심해! 안전한지 확인해 봐!”라고 알려주는 고마운 안전 선물이에요. 무서울 땐 도움을 요청해요.',
+    '💡 6장 핵심 지혜: 『걱정이』는 앞으로 일어날 일을 미리 준비하게 도와줘요. “지금 내가 할 수 있는 일(발표 연습)”을 찾아 실행해 보세요!',
+    '💡 7장 핵심 지혜: 나쁜 감정 손님은 하나도 없어요! 모든 감정 손님은 나를 도와주고 무언가를 알려주러 온 소중한 친구예요.',
+    '💡 8장 핵심 지혜: 『세 손가락 마음 질문 비법』 — ☝️내 감정 손님은 누구지? ✌️내 몸은 무엇을 말하지? 🤟어떻게 행동하면 좋지?',
+    '💡 9장 핵심 지혜: 한꺼번에 많은 손님이 와서 마음 광주리가 무거울 땐 혼자 들지 말고 가족이나 친구와 이야기를 나누며 함께 들어요.',
+    '💡 10장 핵심 지혜: 감정 손님에게 고마움을 전하며 따뜻하게 작별 인사를 건네면, 빈 광주리에 코랄핑크 『설렘이』 같은 새 손님이 찾아와요!'
+  ];
+
+  window.renderStoryFullTextChapter = function(idx) {
+    if (!window.storyChapters || window.storyChapters.length === 0) return;
+    window.currentStoryChapterIdx = idx;
+    const ch = window.storyChapters[idx];
+    document.getElementById('fullStoryChapterTitle').textContent = `📖 ${ch.title}`;
+    document.getElementById('fullStoryChapterBody').innerHTML = ch.content
+      .split('\n')
+      .map(p => `<p style="margin:0 0 10px 0;">${p}</p>`)
+      .join('');
+    document.getElementById('fullStoryInsightBox').textContent = CHAPTER_SEL_INSIGHTS[idx] || '';
+
+    // 챕터 탭 버튼 하이라이트
+    const navEl = document.getElementById('fullStoryChapterNav');
+    if (navEl) {
+      navEl.innerHTML = window.storyChapters.map((c, i) => {
+        const isStamped = window.stampedChapters.includes(i);
+        const active = (i === idx);
+        return `<button type="button" onclick="renderStoryFullTextChapter(${i})" style="padding:5px 10px; border-radius:8px; border:1px solid ${active ? '#fbbf24' : 'rgba(255,255,255,0.15)'}; background:${active ? '#fbbf24' : (isStamped ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.06)')}; color:${active ? '#0f172a' : (isStamped ? '#86efac' : '#e2e8f0')}; font-size:11.5px; font-weight:800; cursor:pointer;">${i + 1}장 ${isStamped ? '💮' : ''}</button>`;
+      }).join('');
+    }
+
+    const stampBtn = document.getElementById('btnStampStoryChapter');
+    const isStamped = window.stampedChapters.includes(idx);
+    if (stampBtn) {
+      stampBtn.innerHTML = isStamped
+        ? `💮 제${idx + 1}장 완독 지혜 스탬프 획득 완료! (${window.stampedChapters.length}/10장)`
+        : `💮 제${idx + 1}장 읽고 마음 지혜 스탬프 찍기 (+100점)`;
+      stampBtn.style.background = isStamped ? '#16a34a' : 'linear-gradient(135deg, #f59e0b, #ea580c)';
+    }
+  };
+
+  window.stampCurrentStoryChapter = function() {
+    initAudio();
+    const idx = window.currentStoryChapterIdx || 0;
+    if (!window.stampedChapters.includes(idx)) {
+      window.stampedChapters.push(idx);
+      localStorage.setItem('inchan_stamped_chapters_v1', JSON.stringify(window.stampedChapters));
+      soundQuestComplete();
+      window.addMindScore(100, `📘 동화 제${idx + 1}장 완독 스탬프!`);
+      showToast(`💮 <b>[동화 제${idx + 1}장 완독 스탬프 획득!]</b> (${window.stampedChapters.length}/10장) 마음 점수 +100점!`);
+      if (window.stampedChapters.length === 10) {
+        window.addMindScore(500, '👑 인찬이의 마음 손님 1~10장 전편 완독 마스터!');
+        showCongratsBanner('👑 《인찬이의 마음 손님》 1~10장 전편 완독!', '10장의 모든 마음 지혜 스탬프를 모았습니다! 보너스 +500점!');
+      }
+    } else {
+      soundChime(659);
+      showToast(`💮 이미 스탬프를 획득한 장입니다! 다음 장도 읽어보세요.`);
+    }
+    renderStoryFullTextChapter(idx);
+  };
 
   window.openStoryBookModal = function() {
     initAudio();
     const modal = document.getElementById('storyBookModal');
     if (modal) {
       modal.style.display = 'flex';
+      if (!window.filteredAlbumScenes || window.filteredAlbumScenes.length === 0) {
+        window.filteredAlbumScenes = window.albumScenes;
+      }
       updateAlbumView();
+      renderStoryFullTextChapter(window.currentStoryChapterIdx || 0);
     }
   };
 
   window.closeStoryBookModal = function() {
+    window.stopAudiobook();
     const modal = document.getElementById('storyBookModal');
     if (modal) modal.style.display = 'none';
   };
 
   window.prevAlbumScene = function() {
-    if (albumScenes.length === 0) return;
-    currentAlbumIdx = (currentAlbumIdx - 1 + albumScenes.length) % albumScenes.length;
+    const list = window.filteredAlbumScenes.length ? window.filteredAlbumScenes : window.albumScenes;
+    if (list.length === 0) return;
+    currentAlbumIdx = (currentAlbumIdx - 1 + list.length) % list.length;
     updateAlbumView();
   };
 
   window.nextAlbumScene = function() {
-    if (albumScenes.length === 0) return;
-    currentAlbumIdx = (currentAlbumIdx + 1) % albumScenes.length;
+    const list = window.filteredAlbumScenes.length ? window.filteredAlbumScenes : window.albumScenes;
+    if (list.length === 0) return;
+    currentAlbumIdx = (currentAlbumIdx + 1) % list.length;
     updateAlbumView();
   };
 
   window.updateAlbumView = function() {
-    if (albumScenes.length === 0) return;
-    const cur = albumScenes[currentAlbumIdx];
+    const list = (window.filteredAlbumScenes && window.filteredAlbumScenes.length) ? window.filteredAlbumScenes : window.albumScenes;
+    if (!list || list.length === 0) return;
+    if (currentAlbumIdx >= list.length) currentAlbumIdx = 0;
+    const cur = list[currentAlbumIdx];
     document.getElementById('albumImage').src = cur.path;
     document.getElementById('albumTitle').textContent = `${cur.chapter}: ${cur.title}`;
-    document.getElementById('albumCaption').textContent = `《인찬이의 마음 손님》 원작 마스터 일러스트 (${currentAlbumIdx + 1}/33)`;
-    document.getElementById('albumPageText').textContent = `${currentAlbumIdx + 1} / ${albumScenes.length}`;
+    const chNum = parseInt(cur.chapter) || 1;
+    document.getElementById('albumCaption').textContent = CHAPTER_SEL_INSIGHTS[chNum - 1] || `《인찬이의 마음 손님》 원작 마스터 일러스트`;
+    document.getElementById('albumPageText').textContent = `${currentAlbumIdx + 1} / ${list.length}`;
+  };
+
+  // ==========================================
+  // [제8장 완벽 게임화] ☝️✌️🤟 세 손가락 마음 탐정 스캐너 (3-Step SEL Detective)
+  // ==========================================
+  const THREE_FINGER_CASES = [
+    {
+      id: 1,
+      badge: '사건 1 · 동화 제4장 에피소드',
+      title: '🤖 동생이 내가 아끼는 장난감 로봇을 망가뜨렸어요!',
+      situation: '동생과 놀고 있는데 동생이 실수로 내 장난감 로봇의 팔을 부러뜨렸어요. 인찬이의 얼굴이 빨갛게 달아오르고 주먹에 힘이 꽉 들어갔어요!',
+      step1Options: ['🔴 화 (불도깨비)', '🟡 기쁨이 (별토끼)', '🌸 설렘이 (나비요정)'],
+      step1Ans: 0,
+      step2Options: ['얼굴과 머리에 열이 나고 가슴이 답답하며 손에 힘이 들어가요', '몸이 깃털처럼 가볍고 함박웃음이 나요', '졸리고 하품이 계속 나와요'],
+      step2Ans: 0,
+      step3Options: [
+        '동생을 밀치거나 “너 때문에 망가졌잖아!” 하고 큰 소리로 화를 낸다',
+        '“후우—” 깊게 숨을 쉰 뒤, “장난감이 망가져서 속상했어. 다음엔 조심해서 놀면 좋겠어”라고 말한다',
+        '동생의 장난감도 똑같이 부숴버린다'
+      ],
+      step3Ans: 1,
+      lesson: '✨ 동화 4장 & 8장 지혜: “감정은 내가 선택하지 않아도 생기지만, 행동은 내가 선택할 수 있어요!” 심호흡 후 나-전달법으로 말하면 아무도 다치지 않고 평화를 지킬 수 있답니다.'
+    },
+    {
+      id: 2,
+      badge: '사건 2 · 동화 제3장 에피소드',
+      title: '💧 가장 친한 단짝 친구가 멀리 전학을 가게 되었어요!',
+      situation: '교문 앞에서 단짝 친구와 마지막 인사를 나누었어요. 집에 돌아와 소파에 앉으니 자꾸만 눈물이 맺히고 가슴이 뭉클해요.',
+      step1Options: ['🔴 화 (불도깨비)', '🔵 슬픔이 (물방울)', '🟡 기쁨이 (별토끼)'],
+      step1Ans: 1,
+      step2Options: ['눈에 눈물이 맺히고 가슴이 먹먹하며 어깨가 축 처져요', '심장이 신나게 뛰고 춤을 추고 싶어요', '얼굴이 화끈거리고 소리를 지르고 싶어요'],
+      step2Ans: 0,
+      step3Options: [
+        '“슬픈 건 나쁜 거니까 절대 울면 안 돼!”라며 억지로 마음을 숨긴다',
+        '눈물이 나면 충분히 울고, 엄마나 가족의 따뜻한 품에 기대어 친구 이야기를 나눈다',
+        '슬픔이를 쫓아내려고 아무에게도 말을 하지 않는다'
+      ],
+      step3Ans: 1,
+      lesson: '✨ 동화 3장 & 8장 지혜: 슬픔이는 내가 그 친구를 정말 소중하게 생각했다는 걸 알려주는 고마운 감정이에요. 충분히 느끼고 토닥여주면 비가 그친 뒤 무지개가 찾아와요!'
+    },
+    {
+      id: 3,
+      badge: '사건 3 · 동화 제6장 에피소드',
+      title: '🎤 내일 학교 학예 발표회인데 실수할까 봐 자꾸 신경 쓰여요!',
+      situation: '무대 뒤에서 내 차례를 기다리는데 “가사를 까먹으면 어떡하지? 친구들이 웃으면 어떡하지?” 하고 생각이 꼬리에 꼬리를 물어요.',
+      step1Options: ['🟢 걱정이 (털실이)', '🟡 기쁨이 (별토끼)', '🔴 화 (불도깨비)'],
+      step1Ans: 0,
+      step2Options: ['머릿속이 실타래처럼 복잡하고 배가 살살 긴장돼요', '발걸음이 날아갈 듯 가벼워요', '아무 생각도 나지 않고 편안해요'],
+      step2Ans: 0,
+      step3Options: [
+        '걱정이가 미워서 발표회를 포기하고 도망간다',
+        '“지금 내가 할 수 있는 일”을 찾아 발표 연습을 한 번 더 해보고, 준비하게 도와준 걱정이에게 “덕분에!”라고 인사한다',
+        '밤새도록 걱정만 계속 끌어안고 잠을 자지 않는다'
+      ],
+      step3Ans: 1,
+      lesson: '✨ 동화 6장 & 8장 지혜: 걱정이는 앞으로 일어날 일을 미리 준비하도록 도와주는 손님이에요. “지금 내가 할 수 있는 일”을 하나 찾아 행동하면 걱정이 스르륵 풀린답니다!'
+    },
+    {
+      id: 4,
+      badge: '사건 4 · 동화 제5장 에피소드',
+      title: '⚡ 깜깜한 밤, 창밖에서 갑자기 “쾅!” 큰 천둥소리가 났어요!',
+      situation: '방에 혼자 있는데 번쩍 번개가 치더니 큰 천둥소리가 울렸어요. 인찬이는 깜짝 놀라 몸이 움츠러들었어요.',
+      step1Options: ['🟡 기쁨이 (별토끼)', '🟣 두려움이 (꼬마망토)', '🔴 화 (불도깨비)'],
+      step1Ans: 1,
+      step2Options: ['심장이 쿵쾅쿵쾅 빠르게 뛰고 몸이 잔뜩 움츠러들어요', '입이 함지박만하게 벌어지며 웃음이 나요', '얼굴이 빨갛게 달아올라 주먹에 힘이 들어가요'],
+      step2Ans: 0,
+      step3Options: [
+        '무서운 걸 들키면 부끄러우니까 이불 속에서 혼자 덜덜 떨며 참는다',
+        '두려움이 알려준 “안전한지 확인해 봐!” 신호를 듣고, 엄마(어른)에게 달려가 도움을 요청하고 안전한 곳으로 간다',
+        '창문을 활짝 열고 위험한 밖으로 무작정 나간다'
+      ],
+      step3Ans: 1,
+      lesson: '✨ 동화 5장 & 8장 지혜: 두려움은 나쁜 손님이 아니라 나를 위험으로부터 지켜주는 『안전 선물』이에요. 무서울 땐 혼자 참지 말고 도움을 요청해도 돼요!'
+    },
+    {
+      id: 5,
+      badge: '사건 5 · 동화 제2장 에피소드',
+      title: '⚽ 오늘 오후에 친구들과 좋아하는 축구를 하기로 했어요!',
+      situation: '마음 광주리를 살펴보는데 누군가 똑똑 두드리더니 노란 꼬마가 폴짝 뛰어나왔어요! 오후에 친구와 축구를 한다는 게 떠올랐거든요.',
+      step1Options: ['🟡 기쁨이 (별토끼)', '🔵 슬픔이 (물방울)', '🟢 걱정이 (털실이)'],
+      step1Ans: 0,
+      step2Options: ['가슴이 기분 좋게 두근두근하고 몸이 가벼워지며 웃음이 나요', '눈물이 앞을 가리고 한숨이 나와요', '머리가 지끈거리고 화가 나요'],
+      step2Ans: 0,
+      step3Options: [
+        '기쁨이가 떠나지 못하게 광주리 문을 잠가버린다',
+        '마음껏 기뻐하며 친구에게 “나 오늘 정말 기뻐!”라고 나누고, 기쁨이가 갈 시간이 되면 “또 만나!” 하고 인사한다',
+        '기쁜 티를 내면 안 된다며 무표정으로 있는다'
+      ],
+      step3Ans: 1,
+      lesson: '✨ 동화 2장 & 10장 지혜: 기쁠 때는 마음껏 웃고 친구와 나누세요! 감정은 계속 머무는 게 아니지만, 따뜻하게 인사하고 보내주면 언제든 다시 찾아온답니다.'
+    },
+    {
+      id: 6,
+      badge: '사건 6 · 동화 제9장 & 제10장 에피소드',
+      title: '🧺 걱정·슬픔·화가 한꺼번에 찾아와 마음 광주리가 너무 무거워요!',
+      situation: '시험 걱정도 되고, 친구와 서운한 일도 있고, 동생 때문에 화도 조금 나서 오늘따라 내 마음 광주리가 돌덩이처럼 무거워요.',
+      step1Options: ['🧺 여러 감정 손님이 한꺼번에 찾아온 무거운 광주리', '🟡 기쁨이 한 명만 찾아온 가벼운 광주리', '텅 비어 있는 광주리'],
+      step1Ans: 0,
+      step2Options: ['어깨가 무겁고 한숨이 나며 혼자 감당하기 버거워요', '하늘을 날 것처럼 상쾌해요', '아무 느낌도 없어요'],
+      step2Ans: 0,
+      step3Options: [
+        '내 마음 광주리는 무조건 나 혼자만 들어야 하니까 끝까지 아무에게도 말하지 않는다',
+        '엄마나 믿을 수 있는 친구에게 “오늘 내 광주리가 너무 무거워. 내 이야기 좀 들어줄래?”라고 감정을 나누며 함께 든다',
+        '광주리를 바닥에 던져버리고 주변 사람들에게 짜증을 낸다'
+      ],
+      step3Ans: 1,
+      lesson: '✨ 동화 9장 & 10장 지혜: “마음 광주리는 혼자 들지 않아도 돼요!” 누군가에게 내 마음을 이야기하고 공감받으면 광주리가 솜사탕처럼 가벼워지고 새로운 『설렘이』가 찾아올 자리가 생긴답니다!'
+    }
+  ];
+
+  window.solvedDetectiveCases = JSON.parse(localStorage.getItem('inchan_detective_cases_v1') || '[]');
+  window.curDetectiveCaseIdx = 0;
+  window.curDetectiveStep = 1; // 1: 첫째 손가락, 2: 둘째 손가락, 3: 셋째 손가락
+
+  function updateDetectiveBadgeUI() {
+    const bTop = document.getElementById('detectiveBadgeTop');
+    if (bTop) bTop.textContent = `${window.solvedDetectiveCases.length}/6`;
   }
+  setTimeout(updateDetectiveBadgeUI, 300);
+
+  window.openThreeFingerModal = function(caseIdx) {
+    initAudio(); soundChime(659);
+    if (typeof caseIdx === 'number') {
+      window.curDetectiveCaseIdx = caseIdx;
+    } else {
+      const nextUnsolved = THREE_FINGER_CASES.findIndex(c => !window.solvedDetectiveCases.includes(c.id));
+      window.curDetectiveCaseIdx = nextUnsolved !== -1 ? nextUnsolved : 0;
+    }
+    window.curDetectiveStep = 1;
+    renderThreeFingerModal();
+    openModal('modalThreeFinger');
+  };
+
+  window.selectDetectiveCase = function(idx) {
+    initAudio(); soundChime(523);
+    window.curDetectiveCaseIdx = idx;
+    window.curDetectiveStep = 1;
+    renderThreeFingerModal();
+  };
+
+  window.renderThreeFingerModal = function() {
+    const c = THREE_FINGER_CASES[window.curDetectiveCaseIdx];
+    if (!c) return;
+
+    // 상단 사건 탭 렌더링
+    const tabsEl = document.getElementById('tfCaseTabs');
+    if (tabsEl) {
+      tabsEl.innerHTML = THREE_FINGER_CASES.map((item, idx) => {
+        const solved = window.solvedDetectiveCases.includes(item.id);
+        const active = (idx === window.curDetectiveCaseIdx);
+        return `<button type="button" onclick="selectDetectiveCase(${idx})" style="padding:6px 10px; border-radius:10px; border:1.5px solid ${active ? '#fbbf24' : (solved ? '#22c55e' : 'rgba(255,255,255,0.15)')}; background:${active ? 'rgba(251,191,36,0.22)' : (solved ? 'rgba(34,197,94,0.16)' : 'rgba(255,255,255,0.06)')}; color:${active ? '#fde047' : (solved ? '#86efac' : '#cbd5e1')}; font-size:11.5px; font-weight:800; cursor:pointer;">사건 ${idx + 1} ${solved ? '✅' : ''}</button>`;
+      }).join('');
+    }
+
+    document.getElementById('tfCaseBadge').textContent = c.badge;
+    document.getElementById('tfCaseTitle').textContent = c.title;
+    document.getElementById('tfCaseSituation').textContent = c.situation;
+
+    // 세 손가락 스텝 인디케이터 업데이트
+    const s1 = document.getElementById('tfStep1Pill');
+    const s2 = document.getElementById('tfStep2Pill');
+    const s3 = document.getElementById('tfStep3Pill');
+    [s1, s2, s3].forEach((el, i) => {
+      if (!el) return;
+      const stepNum = i + 1;
+      if (window.curDetectiveStep > stepNum) {
+        el.style.background = 'rgba(34,197,94,0.25)';
+        el.style.borderColor = '#22c55e';
+        el.style.color = '#86efac';
+      } else if (window.curDetectiveStep === stepNum) {
+        el.style.background = 'rgba(251,191,36,0.25)';
+        el.style.borderColor = '#fbbf24';
+        el.style.color = '#fde047';
+      } else {
+        el.style.background = 'rgba(255,255,255,0.05)';
+        el.style.borderColor = 'rgba(255,255,255,0.12)';
+        el.style.color = '#94a3b8';
+      }
+    });
+
+    const qTitleEl = document.getElementById('tfQuestionTitle');
+    const optsEl = document.getElementById('tfOptionsList');
+    const fbEl = document.getElementById('tfFeedbackBox');
+    if (fbEl) fbEl.style.display = 'none';
+
+    if (window.curDetectiveStep === 1) {
+      qTitleEl.innerHTML = '☝️ <b>첫 번째 손가락 질문:</b> “지금 찾아온 내 감정 손님은 누구지?”';
+      optsEl.innerHTML = c.step1Options.map((opt, idx) => `
+        <button type="button" class="mom-choice-btn" onclick="answerThreeFingerStep(1, ${idx})">
+          <span>☝️</span> <span>${opt}</span>
+        </button>
+      `).join('');
+    } else if (window.curDetectiveStep === 2) {
+      qTitleEl.innerHTML = '✌️ <b>두 번째 손가락 질문:</b> “지금 내 몸은 무엇을 말하고 있지? (몸의 신호)”';
+      optsEl.innerHTML = c.step2Options.map((opt, idx) => `
+        <button type="button" class="mom-choice-btn" onclick="answerThreeFingerStep(2, ${idx})">
+          <span>✌️</span> <span>${opt}</span>
+        </button>
+      `).join('');
+    } else if (window.curDetectiveStep === 3) {
+      qTitleEl.innerHTML = '🤟 <b>세 번째 손가락 질문:</b> “나는 어떻게 행동하면 좋지? (내 행동 선택)”';
+      optsEl.innerHTML = c.step3Options.map((opt, idx) => `
+        <button type="button" class="mom-choice-btn" onclick="answerThreeFingerStep(3, ${idx})">
+          <span>🤟</span> <span>${opt}</span>
+        </button>
+      `).join('');
+    } else {
+      // 사건 해결 완료 화면!
+      qTitleEl.innerHTML = '🎉 <b>세 손가락 마음 질문 비법으로 사건을 완벽히 해결했어요!</b>';
+      optsEl.innerHTML = `
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.16); border:1.5px solid #22c55e; color:#f0fdf4; font-size:13px; line-height:1.65;">
+          ${c.lesson}
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button type="button" class="cust-btn-submit" style="margin-top:0; height:42px;" onclick="nextThreeFingerCase()">
+            <span>🚀 다음 마음 사건 해결하러 가기</span>
+          </button>
+        </div>
+      `;
+    }
+  };
+
+  window.answerThreeFingerStep = function(step, choiceIdx) {
+    initAudio();
+    const c = THREE_FINGER_CASES[window.curDetectiveCaseIdx];
+    if (!c) return;
+    const correctIdx = step === 1 ? c.step1Ans : (step === 2 ? c.step2Ans : c.step3Ans);
+    const fbEl = document.getElementById('tfFeedbackBox');
+
+    if (choiceIdx !== correctIdx) {
+      soundChime(220);
+      if (fbEl) {
+        fbEl.style.display = 'block';
+        fbEl.style.background = 'rgba(239,68,68,0.18)';
+        fbEl.style.borderColor = '#ef4444';
+        fbEl.innerHTML = '💭 <b>다시 한번 마음을 들여다볼까요?</b> 동화 제8장에서 엄마가 알려주신 것처럼 내 감정 손님과 몸의 신호, 그리고 서로를 다치지 않게 돌보는 행동을 골라보세요!';
+      }
+      return;
+    }
+
+    // 정답!
+    soundChime(step === 1 ? 523 : (step === 2 ? 659 : 880));
+    if (step < 3) {
+      window.curDetectiveStep = step + 1;
+      renderThreeFingerModal();
+    } else {
+      window.curDetectiveStep = 4;
+      const isFirstSolve = !window.solvedDetectiveCases.includes(c.id);
+      if (isFirstSolve) {
+        window.solvedDetectiveCases.push(c.id);
+        localStorage.setItem('inchan_detective_cases_v1', JSON.stringify(window.solvedDetectiveCases));
+        updateDetectiveBadgeUI();
+      }
+      soundQuestComplete();
+      if (typeof playerRig !== 'undefined') {
+        spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2, 0)));
+        createMagicImpact(playerRig.position, '#a855f7');
+      }
+      window.addMindScore(isFirstSolve ? 250 : 100, `🤟 세 손가락 마음 탐정 사건 ${c.id} 해결!`);
+      state.stardustCount = (state.stardustCount || 0) + 5;
+      saveProgress();
+      renderThreeFingerModal();
+
+      if (window.solvedDetectiveCases.length === THREE_FINGER_CASES.length && isFirstSolve) {
+        window.addMindScore(500, '👑 세 손가락 마음 탐정 6대 사건 올 클리어!');
+        showCongratsBanner('👑 세 손가락 마음 탐정 마스터 등극!', '동화 제8장의 세 손가락 마음 질문 비법 6대 사건을 모두 해결했습니다! (+500점)');
+      }
+    }
+  };
+
+  window.nextThreeFingerCase = function() {
+    const nextUnsolved = THREE_FINGER_CASES.findIndex(c => !window.solvedDetectiveCases.includes(c.id));
+    if (nextUnsolved !== -1) {
+      window.curDetectiveCaseIdx = nextUnsolved;
+    } else {
+      window.curDetectiveCaseIdx = (window.curDetectiveCaseIdx + 1) % THREE_FINGER_CASES.length;
+    }
+    window.curDetectiveStep = 1;
+    renderThreeFingerModal();
+  };
 
 
 
@@ -8733,28 +9586,171 @@
   </script>
 
   <!-- =========================================
-       원작 《인찬이의 마음 손님》 33컷 동화책 앨범 모달
+       원작 《인찬이의 마음 손님》 33컷 일러스트 & 1~10장 전문 스토리북 & 성우 오디오북 모달
        ========================================= -->
-  <div id="storyBookModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.88); backdrop-filter:blur(16px); align-items:center; justify-content:center;">
-    <div style="background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:20px; width:90%; max-width:680px; max-height:85vh; padding:24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); display:flex; flex-direction:column; color:#f8fafc;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="background:#fbbf24; color:#0f172a; font-weight:800; font-size:12px; padding:3px 8px; border-radius:6px;">원작 동화 컬렉션</span>
-          <h3 id="albumTitle" style="font-size:18px; font-weight:700; color:#fff;">인찬이의 마음 손님 (33컷)</h3>
+  <div id="storyBookModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.88); backdrop-filter:blur(16px); align-items:center; justify-content:center; padding:14px;">
+    <div style="background:#1e293b; border:1.5px solid rgba(251,191,36,0.35); border-radius:22px; width:95%; max-width:740px; max-height:90vh; padding:22px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.75); display:flex; flex-direction:column; color:#f8fafc;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="background:#fbbf24; color:#0f172a; font-weight:800; font-size:11.5px; padding:3px 8px; border-radius:6px;">원작 동화 마스터북</span>
+          <h3 style="font-size:17px; font-weight:800; color:#fff; margin:0;">《인찬이의 마음 손님》 33컷 화보 &amp; 1~10장 동화 전문</h3>
         </div>
         <button onclick="closeStoryBookModal()" style="background:rgba(255,255,255,0.1); border:none; color:#cbd5e1; font-size:16px; width:32px; height:32px; border-radius:50%; cursor:pointer;">✕</button>
       </div>
 
-      <div style="flex:1; overflow-y:auto; text-align:center; padding:4px;">
-        <img id="albumImage" src="assets/inchan/부엌_3D입체공간_마스터시트.jpg" style="max-width:100%; max-height:48vh; border-radius:12px; object-fit:contain; background:#000; box-shadow:0 8px 24px rgba(0,0,0,0.5);" />
-        <p id="albumCaption" style="margin-top:14px; font-size:14.5px; line-height:1.6; color:#e2e8f0; font-weight:500;">인찬이의 마음 광주리 세계에 오신 것을 환영합니다.</p>
+      <!-- 상단 2대 탭 전환 (33컷 일러스트+오디오북 vs 1~10장 원문 읽기+스탬프) -->
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button type="button" id="btnSbTabAlbum" onclick="switchStoryBookTab('album')" style="flex:1; padding:9px 12px; border-radius:10px; border:none; background:#fbbf24; color:#0f172a; font-size:12.5px; font-weight:800; cursor:pointer;">
+          🖼️ 33컷 장면 앨범 &amp; 🔊 성우 오디오북
+        </button>
+        <button type="button" id="btnSbTabText" onclick="switchStoryBookTab('text')" style="flex:1; padding:9px 12px; border-radius:10px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:12.5px; font-weight:800; cursor:pointer;">
+          📘 제1장~제10장 동화 원문 읽기 &amp; 완독 스탬프
+        </button>
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
-        <button onclick="prevAlbumScene()" class="hw-btn" style="background:#334155; color:#fff;">◀ 이전 장면</button>
-        <span id="albumPageText" style="font-size:13px; font-weight:700; color:#fbbf24;">1 / 33</span>
-        <button onclick="nextAlbumScene()" class="hw-btn" style="background:#334155; color:#fff;">다음 장면 ▶</button>
+      <!-- 탭 1: 33컷 일러스트 앨범 & 성우 오디오북 -->
+      <div id="sbTabAlbum" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+        <!-- 장별 빠른 필터 -->
+        <div style="display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px;">
+          <button type="button" class="album-ch-chip" data-ch="all" onclick="filterAlbumByChapter('all')" style="padding:3px 8px; border-radius:6px; border:none; background:#fbbf24; color:#0f172a; font-size:11px; font-weight:800; cursor:pointer;">전체(33)</button>
+          <button type="button" class="album-ch-chip" data-ch="1" onclick="filterAlbumByChapter('1')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">1장 광주리</button>
+          <button type="button" class="album-ch-chip" data-ch="2" onclick="filterAlbumByChapter('2')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">2장 기쁨</button>
+          <button type="button" class="album-ch-chip" data-ch="3" onclick="filterAlbumByChapter('3')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">3장 슬픔</button>
+          <button type="button" class="album-ch-chip" data-ch="4" onclick="filterAlbumByChapter('4')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">4장 화</button>
+          <button type="button" class="album-ch-chip" data-ch="5" onclick="filterAlbumByChapter('5')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">5장 두려움</button>
+          <button type="button" class="album-ch-chip" data-ch="6" onclick="filterAlbumByChapter('6')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">6장 걱정</button>
+          <button type="button" class="album-ch-chip" data-ch="7" onclick="filterAlbumByChapter('7')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">7장</button>
+          <button type="button" class="album-ch-chip" data-ch="8" onclick="filterAlbumByChapter('8')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">8장 3손가락</button>
+          <button type="button" class="album-ch-chip" data-ch="9" onclick="filterAlbumByChapter('9')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">9장 함께들기</button>
+          <button type="button" class="album-ch-chip" data-ch="10" onclick="filterAlbumByChapter('10')" style="padding:3px 7px; border-radius:6px; border:none; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:11px; font-weight:700; cursor:pointer;">10장 설렘이</button>
+        </div>
+
+        <!-- 성우 오디오북 플레이어 바 -->
+        <div style="display:flex; align-items:center; gap:10px; background:rgba(15,23,42,0.75); border:1px solid rgba(251,191,36,0.35); border-radius:12px; padding:8px 12px; margin-bottom:10px;">
+          <button type="button" id="btnAudiobookToggle" onclick="toggleAudiobookPlay()" style="padding:6px 12px; border-radius:8px; border:none; background:#d97706; color:#fff; font-size:11.5px; font-weight:800; cursor:pointer; white-space:nowrap; flex-shrink:0;">
+            🔊 1장 원작 성우 오디오북 연속 듣기
+          </button>
+          <div id="audiobookSubtitleBox" style="font-size:12px; color:#fef08a; line-height:1.4; overflow:hidden; text-overflow:ellipsis;">
+            💡 버튼을 누르면 실제 성우(해설·엄마·인찬이) 목소리로 동화 1장을 들려줍니다!
+          </div>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; text-align:center; padding:4px;">
+          <div id="albumTitle" style="font-size:15.5px; font-weight:800; color:#fbbf24; margin-bottom:8px;">1장-1: 아침 식탁에서 턱을 괴고</div>
+          <img id="albumImage" src="assets/inchan/부엌_3D입체공간_마스터시트.jpg" style="max-width:100%; max-height:42vh; border-radius:12px; object-fit:contain; background:#000; box-shadow:0 8px 24px rgba(0,0,0,0.5);" />
+          <p id="albumCaption" style="margin-top:10px; font-size:13px; line-height:1.55; color:#e2e8f0; font-weight:600; background:rgba(255,255,255,0.05); padding:8px 12px; border-radius:10px;">인찬이의 마음 광주리 세계에 오신 것을 환영합니다.</p>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
+          <button onclick="prevAlbumScene()" class="hw-btn" style="background:#334155; color:#fff;">◀ 이전 장면</button>
+          <span id="albumPageText" style="font-size:13px; font-weight:800; color:#fbbf24;">1 / 33</span>
+          <button onclick="nextAlbumScene()" class="hw-btn" style="background:#334155; color:#fff;">다음 장면 ▶</button>
+        </div>
       </div>
+
+      <!-- 탭 2: 제1장~제10장 원작 동화 전문 읽기 & 지혜 스탬프 도감 -->
+      <div id="sbTabFullText" style="display:none; flex-direction:column; flex:1; min-height:0;">
+        <div id="fullStoryChapterNav" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;"></div>
+        <div style="flex:1; overflow-y:auto; background:rgba(15,23,42,0.75); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:16px 18px;">
+          <h4 id="fullStoryChapterTitle" style="font-size:17px; font-weight:800; color:#fbbf24; margin:0 0 12px 0;">📖 1. 이상한 광주리</h4>
+          <div id="fullStoryChapterBody" style="font-size:14px; line-height:1.8; color:#f1f5f9;"></div>
+          <div id="fullStoryInsightBox" style="margin-top:14px; padding:11px 14px; border-radius:10px; background:rgba(251,191,36,0.14); border-left:4px solid #fbbf24; color:#fef08a; font-size:12.5px; font-weight:700; line-height:1.55;"></div>
+        </div>
+        <button type="button" id="btnStampStoryChapter" onclick="stampCurrentStoryChapter()" style="margin-top:12px; width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(135deg, #f59e0b, #ea580c); color:#fff; font-size:13.5px; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(245,158,11,0.35);">
+          💮 이 장을 읽고 마음 지혜 스탬프 찍기 (+100점)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================
+       [신규 모달] 동화 제8장: ☝️✌️🤟 세 손가락 마음 탐정 스캐너 (3-Step SEL Detective)
+       ========================================= -->
+  <div class="modal-overlay" id="modalThreeFinger">
+    <div class="modal-sheet" style="max-width: 600px; background: rgba(15, 23, 42, 0.96) !important; color: #f8fafc !important; border: 2px solid #a855f7 !important; border-radius: 22px !important; box-shadow: 0 24px 64px rgba(0,0,0,0.85), 0 0 40px rgba(168,85,247,0.35) !important;">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 12px; margin-bottom: 12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, #9333ea, #ec4899); display:flex; align-items:center; justify-content:center; font-size:21px; box-shadow:0 4px 12px rgba(168,85,247,0.4);">
+            🤟
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="background:rgba(168,85,247,0.25); color:#e9d5ff; font-weight:800; font-size:10.5px; padding:2px 8px; border-radius:6px; border:1px solid rgba(168,85,247,0.45);">동화 제8장 핵심 비법</span>
+              <h3 class="modal-title" style="margin:0; font-size:16.5px; color:#fff;">세 손가락 마음 질문 비법 · 마음 탐정 스캐너</h3>
+            </div>
+            <div style="font-size:11.5px; color:#cbd5e1; margin-top:2px;">엄마가 알려준 세 손가락 질문으로 내 감정 손님과 몸의 신호, 지혜로운 행동을 찾아보세요!</div>
+          </div>
+        </div>
+        <button type="button" class="btn-close" onclick="closeModal('modalThreeFinger')">✕</button>
+      </div>
+
+      <!-- 사건 선택 탭 (1~6) -->
+      <div id="tfCaseTabs" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;"></div>
+
+      <!-- 현재 사건 상황 카드 -->
+      <div style="background:rgba(30,41,59,0.85); border:1.5px solid rgba(251,191,36,0.35); border-radius:14px; padding:12px 15px; margin-bottom:12px;">
+        <div id="tfCaseBadge" style="font-size:11px; font-weight:800; color:#fbbf24; margin-bottom:3px;">사건 1</div>
+        <div id="tfCaseTitle" style="font-size:15px; font-weight:800; color:#ffffff; margin-bottom:6px;">사건 제목</div>
+        <div id="tfCaseSituation" style="font-size:13px; line-height:1.6; color:#e2e8f0;">상황 설명</div>
+      </div>
+
+      <!-- 세 손가락 3단계 진행 표시줄 -->
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:12px;">
+        <div id="tfStep1Pill" style="padding:7px 8px; border-radius:10px; border:1.5px solid #fbbf24; background:rgba(251,191,36,0.22); text-align:center; font-size:11.5px; font-weight:800;">
+          ☝️ 1. 감정 손님 누구?
+        </div>
+        <div id="tfStep2Pill" style="padding:7px 8px; border-radius:10px; border:1.5px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.05); text-align:center; font-size:11.5px; font-weight:800;">
+          ✌️ 2. 내 몸의 신호는?
+        </div>
+        <div id="tfStep3Pill" style="padding:7px 8px; border-radius:10px; border:1.5px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.05); text-align:center; font-size:11.5px; font-weight:800;">
+          🤟 3. 어떻게 행동할까?
+        </div>
+      </div>
+
+      <!-- 현재 단계 질문 및 선택지 -->
+      <div id="tfQuestionTitle" style="font-size:14px; color:#fde047; margin-bottom:9px;">질문</div>
+      <div id="tfOptionsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+      <div id="tfFeedbackBox" style="display:none; margin-top:10px; padding:10px 13px; border-radius:10px; border:1.5px solid #ef4444; font-size:12.5px; line-height:1.55; color:#fff;"></div>
+    </div>
+  </div>
+
+  <!-- =========================================
+       [신규 모달] 동화 제4장: 🤖 부서진 장난감 로봇 & 평화의 나-전달법(I-Message) 수리
+       ========================================= -->
+  <div class="modal-overlay" id="modalRobotIMessage">
+    <div class="modal-sheet" style="max-width: 540px; background: rgba(15, 23, 42, 0.96) !important; color: #f8fafc !important; border: 2px solid #3b82f6 !important; border-radius: 20px !important; box-shadow: 0 24px 60px rgba(0,0,0,0.85) !important;">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 12px; margin-bottom: 12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #2563eb, #f59e0b); display:flex; align-items:center; justify-content:center; font-size:20px;">
+            🤖
+          </div>
+          <div>
+            <span style="background:rgba(239,68,68,0.22); color:#fca5a5; font-weight:800; font-size:10.5px; padding:2px 7px; border-radius:6px;">동화 제4장 · 세 번째 손님, 화</span>
+            <h3 class="modal-title" style="margin:2px 0 0 0; font-size:16px; color:#fff;">부서진 장난감 로봇 &amp; 평화의 나-전달법</h3>
+          </div>
+        </div>
+        <button type="button" class="btn-close" onclick="closeModal('modalRobotIMessage')">✕</button>
+      </div>
+
+      <div style="background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.14); border-radius:12px; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.65; color:#e2e8f0;">
+        동생이 인찬이의 아끼는 장난감 로봇을 망가뜨렸어요! 빨간 털뭉치 <b>‘화’</b>가 쿵! 튀어나와 말했어요.<br>
+        <span style="color:#fde047; font-weight:700;">“인찬아, 화가 나는 건 당연해. 감정은 내가 선택하지 않아도 생기지만, 행동은 네가 선택할 수 있잖아!”</span><br>
+        깊게 <b>“후우—”</b> 숨을 쉰 인찬이는 동생에게 어떻게 말해야 장난감 로봇과 평화를 되찾을 수 있을까요?
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button type="button" class="mom-choice-btn" onclick="chooseRobotIMessage(1)">
+          <span>💢</span> <span>“너 때문에 내 로봇 망가졌잖아! 저리 가!” 하고 소리치며 동생을 민다.</span>
+        </button>
+        <button type="button" class="mom-choice-btn" onclick="chooseRobotIMessage(2)">
+          <span>😣</span> <span>아무 말도 안 하고 혼자 방 구석에서 씩씩거리며 속으로만 꾹 참는다.</span>
+        </button>
+        <button type="button" class="mom-choice-btn" onclick="chooseRobotIMessage(3)">
+          <span>🕊️</span> <span>“후우… 네가 장난감을 망가뜨려서 무척 화나고 속상했어. 다음엔 형아 장난감을 조심해서 가지고 놀면 좋겠어.”</span>
+        </button>
+      </div>
+
+      <div id="robotIMessageFeedback" style="display:none; margin-top:10px; padding:10px 13px; border-radius:10px; border:1.5px solid #ef4444; font-size:12.5px; line-height:1.55; color:#fff;"></div>
     </div>
   </div>
 
