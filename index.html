@@ -6,16 +6,18 @@
   <title>인찬이의 마음 광주리 — SEL 3D 오픈월드</title>
   <link rel="icon" href="data:," />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+    @import url('https://cdn.jsdelivr.net/gh/fonts-archive/GangwonEduModu/GangwonEduModu.css');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
     :root {
-      --bg-surface: rgba(246, 245, 240, 0.90);
+      --bg-surface: rgba(246, 245, 240, 0.92);
       --bg-solid: #f6f5f0;
       --bg-card: #ffffff;
       --ink-main: #18181b;
       --ink-sub: #6b6b73;
-      --line-hair: rgba(24, 24, 27, 0.12);
+      --line-hair: rgba(24, 24, 27, 0.14);
       --accent: #ff5800; /* Dieter Rams / Braun Signature Orange */
+      --nothing-red: #D71921; /* Nothing Signature Red */
       --radius-md: 10px;
       --radius-lg: 14px;
       --shadow-clean: 0 8px 28px rgba(15, 15, 20, 0.12);
@@ -24,7 +26,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
     body, html {
       width: 100%; height: 100%; overflow: hidden;
-      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'GangwonEdu Modu', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #141418; color: var(--ink-main);
     }
     canvas#webgl { display: block; width: 100vw; height: 100vh; outline: none; }
@@ -189,45 +191,50 @@
       color: #18181b; background: #f4f4f5; padding: 2px 8px; border-radius: 6px;
     }
 
-    /* 하단 슬림 컨트롤 독 (라이트 모드 & 상단 중복 메뉴 완전 제거) */
+    /* 하단 슬림 컨트롤 독 (Dieter Rams / Nothing Design 단축키 키캡 통일) */
     .action-dock {
       position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
       display: flex; align-items: center; gap: 5px; padding: 6px 10px;
-      background: rgba(250, 249, 245, 0.94); backdrop-filter: blur(16px);
-      border: 1px solid rgba(24, 24, 27, 0.12); border-radius: 14px;
-      box-shadow: 0 8px 24px rgba(15, 15, 20, 0.08); z-index: 45; max-width: 94vw; overflow-x: auto;
+      background: rgba(250, 249, 245, 0.94); backdrop-filter: blur(18px);
+      border: 1px solid rgba(24, 24, 27, 0.14); border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(15, 15, 20, 0.08); z-index: 45; max-width: 96vw; overflow-x: auto;
     }
     .dock-sep {
-      width: 1px; height: 28px; background: rgba(24, 24, 27, 0.12); margin: 0 4px; flex-shrink: 0;
+      width: 1px; height: 28px; background: rgba(24, 24, 27, 0.14); margin: 0 4px; flex-shrink: 0;
     }
     .act-btn {
-      display: flex; align-items: center; gap: 5px; height: 40px; padding: 0 11px;
-      border-radius: 9px; border: 1px solid #e4e4e7; background: #ffffff;
+      display: flex; align-items: center; gap: 4px; height: 40px; padding: 0 9px;
+      border-radius: 9px; border: 1px solid rgba(24, 24, 27, 0.14); background: #ffffff;
       color: #18181b; font-size: 12px; font-weight: 700; cursor: pointer;
       white-space: nowrap; transition: all 0.15s ease; flex-shrink: 0;
     }
-    .act-btn:hover { background: #f4f4f5; border-color: #a1a1aa; }
+    .act-btn:hover { background: #18181b; color: #ffffff; border-color: #18181b; }
+    .act-btn:hover .kbd { color: #ffffff; border-color: rgba(255, 255, 255, 0.4); }
     .act-btn.primary { background: #18181b; color: #fff; border-color: #18181b; }
     .act-btn.primary:hover { background: #3f3f46; }
+    .act-btn.shoot-btn { border-color: rgba(215, 25, 33, 0.35); }
+    .act-btn.shoot-btn .kbd { color: var(--nothing-red); border-color: rgba(215, 25, 33, 0.35); }
+    .act-btn.shoot-btn:hover { background: var(--nothing-red); border-color: var(--nothing-red); color: #ffffff; }
+    .act-btn.shoot-btn:hover .kbd { color: #ffffff; border-color: rgba(255, 255, 255, 0.5); }
     .act-btn .kbd {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-      padding: 2px 5px; border-radius: 4px; background: #f4f4f5; color: #52525b;
-      border: 1px solid #e4e4e7;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 800;
+      padding: 1px 5px; border-radius: 4px; background: transparent; color: #52525b;
+      border: 1px solid #d4d4d8; transition: all 0.15s ease;
     }
 
-    /* 우측 하단 원형 레이더 미니맵 */
+    /* 우측 상단(설정 아래) 원형 레이더 미니맵 (우측 하단 시점 조이스틱과 공간 완전 분리) */
     .minimap-box {
-      position: fixed; right: 18px; bottom: 18px; z-index: 42;
+      position: fixed; right: 16px; top: 68px; z-index: 42;
       width: 118px; height: 118px; border-radius: 50%;
-      background: rgba(250, 249, 245, 0.94); backdrop-filter: blur(14px);
-      border: 1px solid rgba(24, 24, 27, 0.14); box-shadow: 0 6px 20px rgba(15, 15, 20, 0.08);
+      background: rgba(250, 249, 245, 0.94); backdrop-filter: blur(16px);
+      border: 1px solid rgba(24, 24, 27, 0.16); box-shadow: 0 8px 24px rgba(15, 15, 20, 0.08);
       display: flex; align-items: center; justify-content: center;
     }
-    .minimap-box canvas { border-radius: 50%; display: block; }
+    .minimap-box canvas { border-radius: 50%; display: block; width: 100%; height: 100%; }
     .minimap-tag {
-      position: absolute; bottom: -7px; background: #18181b; color: #fff;
-      font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
-      padding: 2px 8px; border-radius: 99px; letter-spacing: 0.6px;
+      position: absolute; bottom: -8px; background: #18181b; color: #ffffff;
+      font-size: 10px; font-weight: 700;
+      padding: 1px 8px; border-radius: 99px; letter-spacing: 0.4px;
     }
 
     /* 우측 상단 설정 드롭다운 팝오버 (소리 제외 나머지 메뉴 깔끔 통합) */
@@ -236,7 +243,7 @@
     }
     .top-settings-menu {
       position: absolute; top: calc(100% + 8px); right: 0;
-      width: 210px; background: rgba(255, 255, 255, 0.98);
+      width: 220px; background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(16px); border: 1px solid rgba(24, 24, 27, 0.14);
       border-radius: 13px; padding: 6px;
       box-shadow: 0 12px 32px rgba(15, 15, 20, 0.12);
@@ -247,55 +254,85 @@
       display: flex; align-items: center; justify-content: space-between;
       width: 100%; padding: 8px 11px; border-radius: 8px;
       border: none; background: transparent; color: #18181b;
-      font-size: 12px; font-weight: 700; cursor: pointer;
+      font-size: 12.5px; font-weight: 700; cursor: pointer;
       text-align: left; transition: background 0.14s;
     }
     .settings-menu-item:hover { background: #f4f4f5; }
     .settings-menu-badge {
       font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-      padding: 1px 6px; border-radius: 6px; background: #f4f4f5; color: #18181b;
-      border: 1px solid #e4e4e7;
+      padding: 1px 6px; border-radius: 4px; background: transparent; color: #18181b;
+      border: 1px solid #d4d4d8;
     }
 
-    /* 패드(태블릿) & 스마트폰 전용 가상 조이스틱 + 우측 세로 1열 미니멀 아이콘 바 */
-    .v-joy-zone {
-      position: fixed; bottom: 80px; left: 18px; width: 104px; height: 104px;
-      border-radius: 50%; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+    /* 패드(태블릿) & 스마트폰 겸용 듀얼 조이스틱 (좌: 이동 / 우: 시점) + 우측 액션 패드 */
+    .v-joy-zone, .v-look-zone {
+      position: fixed; bottom: 84px; width: 104px; height: 104px;
+      border-radius: 50%; background: rgba(250, 249, 245, 0.88);
+      background-image: radial-gradient(rgba(24, 24, 27, 0.08) 1px, transparent 1px);
+      background-size: 8px 8px;
+      backdrop-filter: blur(12px);
       border: 1.5px solid rgba(24, 24, 27, 0.18);
-      display: none; align-items: center; justify-content: center; z-index: 46; touch-action: none;
-      box-shadow: 0 6px 18px rgba(15, 15, 20, 0.1);
+      display: flex; align-items: center; justify-content: center; z-index: 46; touch-action: none;
+      box-shadow: 0 8px 22px rgba(15, 15, 20, 0.10);
+      user-select: none;
     }
-    .v-joy-knob {
+    .v-joy-zone { left: 18px; }
+    .v-look-zone { right: 18px; }
+    .v-joy-zone::before, .v-look-zone::before {
+      content: ''; position: absolute; inset: 12px; border-radius: 50%;
+      border: 1px dashed rgba(24, 24, 27, 0.16); pointer-events: none;
+    }
+    .v-joy-knob, .v-look-knob {
       width: 42px; height: 42px; border-radius: 50%;
-      background: #18181b;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      background: #18181b; position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24);
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .v-joy-knob::after {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; background: #ffffff;
+    }
+    .v-look-knob::after {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--nothing-red);
+      box-shadow: 0 0 8px rgba(215, 25, 33, 0.65);
+    }
+    .v-joy-label {
+      position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+      font-size: 9.5px; font-weight: 700; color: #52525b; opacity: 0.85;
+      background: transparent; pointer-events: none; white-space: nowrap;
     }
     .touch-action-pad {
-      position: fixed; right: 16px; bottom: 148px; z-index: 46;
-      display: flex; flex-direction: column; gap: 7px; align-items: center;
+      position: fixed; right: 20px; bottom: 204px; z-index: 46;
+      display: flex; flex-direction: column; gap: 6px; align-items: center;
       background: rgba(250, 249, 245, 0.92); backdrop-filter: blur(14px);
-      border: 1px solid rgba(24, 24, 27, 0.12); border-radius: 999px;
-      padding: 7px 6px; box-shadow: 0 6px 20px rgba(15, 15, 20, 0.08);
+      border: 1px solid rgba(24, 24, 27, 0.14); border-radius: 999px;
+      padding: 6px; box-shadow: 0 6px 20px rgba(15, 15, 20, 0.08);
     }
     .touch-pad-btn {
       width: 38px; height: 38px; padding: 0; border-radius: 50%;
-      background: #ffffff;
-      border: 1px solid #e4e4e7; color: #18181b;
+      background: #ffffff; position: relative;
+      border: 1px solid #d4d4d8; color: #18181b;
       cursor: pointer;
       display: inline-flex; align-items: center; justify-content: center;
       transition: all 0.15s ease; user-select: none; touch-action: manipulation;
     }
     .touch-pad-btn svg { width: 17px; height: 17px; stroke: currentColor; }
     .touch-pad-btn:hover { background: #18181b; color: #ffffff; border-color: #18181b; transform: translateY(-1px); }
-    .touch-pad-btn:active { transform: scale(0.93); }
-
-    /* 모바일 및 태블릿(터치 환경)에서만 좌측 가상 조이스틱 표시 */
-    @media (hover: none) and (pointer: coarse), (max-width: 1024px) {
-      .v-joy-zone { display: flex; }
+    .touch-pad-btn:active { transform: scale(0.92); }
+    .touch-pad-btn.accent-shoot { border-color: rgba(215, 25, 33, 0.4); color: var(--nothing-red); }
+    .touch-pad-btn.accent-shoot:hover { background: var(--nothing-red); color: #ffffff; border-color: var(--nothing-red); }
+    .touch-pad-kbd {
+      position: absolute; bottom: -2px; right: -3px;
+      font-family: 'JetBrains Mono', monospace; font-size: 8px; font-weight: 800;
+      background: #18181b; color: #ffffff; padding: 0 3px; border-radius: 4px;
+      line-height: 1.3; pointer-events: none;
     }
-    @media (max-width: 900px) {
-      .minimap-box { width: 92px; height: 92px; right: 12px; bottom: 76px; }
-      .touch-action-pad { right: 12px; bottom: 178px; }
+
+    body.touch-hidden .v-joy-zone,
+    body.touch-hidden .v-look-zone,
+    body.touch-hidden .touch-action-pad { display: none !important; }
+
+    @media (max-width: 1180px) {
       .top-single-mission-bar { display: none; }
     }
 
@@ -445,39 +482,47 @@
       display: flex; align-items: center; gap: 5px; flex-shrink: 0;
     }
     .mc-slot {
-      position: relative; width: 52px; height: 42px;
+      position: relative; width: 50px; height: 42px;
       background: #ffffff;
-      border: 1px solid #e4e4e7;
+      border: 1px solid rgba(24, 24, 27, 0.14);
       border-radius: 9px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.14s ease;
       user-select: none; flex-shrink: 0;
     }
-    .mc-slot:hover { border-color: #a1a1aa; background: #fafafa; }
+    .mc-slot:hover { border-color: #18181b; background: #fafafa; }
     .mc-slot.active {
       border: 1.5px solid #18181b;
-      background: #fef3c7;
+      background: #18181b;
+      color: #ffffff;
       transform: translateY(-1px);
     }
     .mc-key {
       position: absolute; top: 2px; left: 5px;
-      font-size: 9px; font-weight: 700; color: #71717a;
-      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; font-weight: 800; color: #71717a;
+      font-family: 'JetBrains Mono', monospace; line-height: 1;
     }
-    .mc-slot.active .mc-key { color: #18181b; }
+    .mc-slot.active .mc-key { color: rgba(255, 255, 255, 0.78); }
     .mc-count {
       position: absolute; top: 2px; right: 4px;
       font-size: 8px; font-weight: 700; color: #71717a;
       font-family: 'JetBrains Mono', monospace;
     }
     .mc-icon-cube {
-      width: 15px; height: 15px; border-radius: 4px;
-      margin-top: 3px; border: 1px solid rgba(0,0,0,0.12);
+      width: 14px; height: 14px; border-radius: 4px;
+      margin-top: 4px; border: 1px solid rgba(0, 0, 0, 0.14);
     }
+    .mc-slot.active .mc-icon-cube { border-color: rgba(255, 255, 255, 0.35); }
+    .mc-icon-svg {
+      width: 15px; height: 15px; margin-top: 4px; stroke: #18181b;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .mc-slot.active .mc-icon-svg { stroke: #ffffff; }
     .mc-label {
-      font-size: 8.5px; font-weight: 700; color: #18181b;
+      font-size: 9.5px; font-weight: 700; color: #18181b;
       margin-top: 2px; text-align: center; white-space: nowrap;
     }
+    .mc-slot.active .mc-label { color: #ffffff; }
 
     /* 초미니멀 스크롤바 */
     * {
@@ -491,76 +536,156 @@
     }
 
     /* ============================================================
-       좌측 상단 《마음 손님》 클릭형 컴팩트 미션 네비게이터 (작고 균형 잡힌 타이포그래피)
+       [Dieter Rams / Nothing Design] 좌측 상단 정밀 계측기 미션 HUD
        ============================================================ */
     .story-tracker {
-      position: fixed; top: 66px; left: 16px; z-index: 43;
-      width: 248px; max-width: calc(100vw - 32px);
+      position: fixed; top: 68px; left: 16px; z-index: 43;
+      width: 292px; max-width: calc(100vw - 32px);
       background: rgba(250, 249, 245, 0.94);
-      backdrop-filter: blur(16px); border: 1px solid rgba(24, 24, 27, 0.12);
-      border-radius: 12px; padding: 8px 10px; color: #18181b;
-      box-shadow: 0 6px 20px rgba(15, 15, 20, 0.07);
-      display: flex; flex-direction: column; gap: 6px;
+      background-image: radial-gradient(rgba(24, 24, 27, 0.06) 1px, transparent 1px);
+      background-size: 10px 10px;
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(24, 24, 27, 0.16);
+      border-radius: 14px; padding: 11px 13px; color: #18181b;
+      box-shadow: 0 10px 28px rgba(15, 15, 20, 0.08);
+      display: flex; flex-direction: column; gap: 9px;
       box-sizing: border-box; transition: all 0.2s ease;
     }
     .story-tracker.collapsed .story-tracker-body { display: none; }
+    .story-tracker.collapsed { padding-bottom: 10px; gap: 0; }
+    .story-tracker.collapsed .story-tracker-head { padding-bottom: 0; border-bottom: none; }
     .story-tracker-head {
       display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; gap: 6px; white-space: nowrap; flex-shrink: 0;
+      cursor: pointer; gap: 8px; white-space: nowrap; flex-shrink: 0;
+      padding-bottom: 7px; border-bottom: 1px dashed rgba(24, 24, 27, 0.14);
+    }
+    .story-tracker-brand {
+      display: flex; align-items: center; gap: 7px; min-width: 0;
+    }
+    .nothing-red-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--nothing-red);
+      box-shadow: 0 0 8px rgba(215, 25, 33, 0.55); flex-shrink: 0;
     }
     .story-tracker-title {
-      font-size: 11px; font-weight: 800; color: #18181b;
-      display: flex; align-items: center; gap: 4px; white-space: nowrap;
+      font-size: 13.5px; font-weight: 700; color: #18181b;
+      display: flex; align-items: center; gap: 6px; white-space: nowrap;
+      letter-spacing: -0.2px;
+    }
+    .story-done-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 800;
+      color: #52525b; background: transparent;
+      border: 1px solid #d4d4d8; border-radius: 4px; padding: 0 5px;
     }
     .story-tracker-toggle {
-      background: #ffffff; border: 1px solid #e4e4e7;
-      color: #52525b; font-size: 9.5px; font-weight: 700; padding: 1px 7px;
-      border-radius: 5px; cursor: pointer; white-space: nowrap;
+      background: transparent; border: 1px solid #d4d4d8;
+      color: #52525b; font-size: 11px; font-weight: 700; padding: 2px 8px;
+      border-radius: 6px; cursor: pointer; white-space: nowrap; transition: all 0.15s;
     }
-    .story-tracker-toggle:hover { background: #f4f4f5; color: #18181b; }
+    .story-tracker-toggle:hover { background: #18181b; color: #ffffff; border-color: #18181b; }
     .story-tabs-row {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
+      margin-bottom: 7px;
     }
     .story-tab-pill {
-      padding: 4px 1px; border-radius: 7px; border: 1px solid #e4e4e7;
-      background: #ffffff; color: #52525b; font-size: 10px; font-weight: 700;
+      position: relative;
+      padding: 4px 2px; border-radius: 7px; border: 1px solid rgba(24, 24, 27, 0.14);
+      background: rgba(255, 255, 255, 0.85); color: #52525b; font-size: 10.5px; font-weight: 700;
       text-align: center; cursor: pointer; transition: all 0.15s;
-      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      display: flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.15;
     }
-    .story-tab-pill:hover { border-color: #a1a1aa; color: #18181b; }
+    .story-tab-num {
+      font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 800; opacity: 0.72;
+    }
+    .story-tab-pill:hover { border-color: #18181b; color: #18181b; }
     .story-tab-pill.active {
       border-color: #18181b; background: #18181b; color: #ffffff;
     }
-    .story-tab-pill.done {
-      background: #f0fdf4; border-color: #86efac; color: #166534;
+    .story-tab-pill.active .story-tab-num { opacity: 0.88; }
+    .story-tab-pill.done { border-color: #16a34a; color: #15803d; }
+    .story-tab-pill.done::after {
+      content: ''; position: absolute; top: 3px; right: 3px;
+      width: 5px; height: 5px; border-radius: 50%; background: #16a34a;
     }
     .story-tab-pill.done.active {
-      background: #166534; color: #ffffff; border-color: #166534;
+      background: #18181b; color: #ffffff; border-color: #18181b;
     }
+    .story-tab-pill.done.active::after { background: #4ade80; }
     .story-detail-card {
-      padding: 8px 10px; border-radius: 9px;
-      background: #ffffff; border: 1px solid #e4e4e7;
-      display: flex; flex-direction: column; gap: 5px;
+      padding: 10px 12px; border-radius: 10px;
+      background: #ffffff; border: 1px solid rgba(24, 24, 27, 0.12);
+      display: flex; flex-direction: column; gap: 6px;
     }
     .story-q-top {
       display: flex; justify-content: space-between; align-items: center; gap: 6px;
     }
-    .story-q-chapter { font-weight: 800; font-size: 10.5px; color: #52525b; }
-    .story-q-prog {
-      font-weight: 700; color: #18181b; font-size: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      background: #f4f4f5; padding: 1px 6px; border-radius: 5px;
-      border: 1px solid #e4e4e7;
+    .story-q-chapter {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-weight: 700; font-size: 11px; color: #52525b; background: transparent;
     }
-    .story-q-title { font-size: 11.5px; font-weight: 800; color: #18181b; line-height: 1.35; }
-    .story-q-desc { font-size: 10.5px; color: #52525b; line-height: 1.45; word-break: keep-all; }
-    .story-q-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 2px; }
+    .story-q-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .story-q-prog {
+      font-weight: 800; color: #18181b; font-size: 10.5px;
+      font-family: 'JetBrains Mono', monospace;
+      background: transparent; padding: 1px 6px; border-radius: 4px;
+      border: 1px solid #d4d4d8; white-space: nowrap;
+    }
+    .story-q-prog.done { border-color: #16a34a; color: #15803d; }
+    .story-q-title { font-size: 13.5px; font-weight: 700; color: #0f172a; line-height: 1.35; }
+    .story-q-desc { font-size: 11.5px; color: #475569; line-height: 1.48; word-break: keep-all; }
+    .story-q-meta-bar {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      padding-top: 6px; margin-top: 2px; border-top: 1px dashed rgba(24, 24, 27, 0.12);
+    }
+    .story-q-reward {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10.5px; font-weight: 700; color: #52525b; background: transparent;
+      min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .story-dot-gauge {
+      display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
+    }
+    .story-dot-gauge i {
+      display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+      background: #e4e4e7;
+    }
+    .story-dot-gauge i.filled { background: #18181b; }
     .story-btn-autowalk {
       background: #18181b; border: 1px solid #18181b;
-      color: #ffffff; font-size: 10px; font-weight: 700; padding: 4px 8px;
-      border-radius: 6px; cursor: pointer; transition: all 0.15s;
+      color: #ffffff; font-size: 11px; font-weight: 700; padding: 5px 10px;
+      border-radius: 7px; cursor: pointer; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0;
     }
-    .story-btn-autowalk:hover { background: #3f3f46; }
+    .story-btn-autowalk:hover { background: var(--nothing-red); border-color: var(--nothing-red); }
+    .story-btn-autowalk svg { width: 12px; height: 12px; stroke: currentColor; }
+
+    /* 태블릿·스마트폰 반응형 HUD 정렬 (.story-tracker 선언 이후 배치하여 우선순위 보장) */
+    @media (max-width: 900px) {
+      .minimap-box { width: 86px; height: 86px; right: 12px; top: 64px; }
+      .v-joy-zone, .v-look-zone { width: 88px; height: 88px; bottom: 76px; }
+      .v-joy-zone { left: 12px; }
+      .v-look-zone { right: 12px; }
+      .v-joy-knob, .v-look-knob { width: 36px; height: 36px; }
+      .touch-action-pad { right: 12px; bottom: 178px; gap: 5px; padding: 5px; }
+      .touch-pad-btn { width: 34px; height: 34px; }
+      .touch-pad-btn svg { width: 15px; height: 15px; }
+      .story-tracker { width: calc(100vw - 118px); max-width: 266px; left: 12px; top: 64px; padding: 9px 10px; }
+    }
+    @media (max-width: 600px) {
+      .hud-top { top: 10px; left: 10px; right: 10px; gap: 6px; }
+      .hud-row { flex-wrap: nowrap; gap: 4px; }
+      .module-bar { max-width: calc(100vw - 156px); overflow-x: auto; padding: 5px 8px; gap: 6px; }
+      .brand-sub { display: none; }
+      .hw-btn { height: 34px; padding: 0 8px; font-size: 11px; gap: 4px; }
+      .minimap-box { width: 80px; height: 80px; right: 10px; top: 56px; }
+      .story-tracker { width: calc(100vw - 112px); max-width: 262px; left: 10px; top: 56px; padding: 8px 9px; }
+      .v-joy-zone, .v-look-zone { width: 84px; height: 84px; bottom: 74px; }
+      .v-joy-zone { left: 10px; }
+      .v-look-zone { right: 10px; }
+      .touch-action-pad { right: 10px; bottom: 170px; }
+      .zone-prompt { max-width: calc(100vw - 196px); padding: 8px 10px; bottom: 76px; font-size: 11px; }
+    }
 
     /* 채팅 패널 영구 비활성화 (교실 바른말 보호 & 화면 개방) */
     .mp-chat-panel { display: none !important; }
@@ -947,7 +1072,7 @@
         </div>
         <div class="brand-text">
           <span class="brand-title">인찬이의 마음 광주리</span>
-          <span class="brand-sub">SEL 3D WORLD</span>
+          <span class="brand-sub">마음 동산</span>
         </div>
         <div class="divider-v"></div>
         <div class="quest-leds" title="만난 감정 손님 구슬">
@@ -958,14 +1083,14 @@
           <div class="quest-led" id="dotWorry" style="color: #10b981;" title="걱정"></div>
           <span class="quest-count" id="questCountText">0/5</span>
           <div class="divider-v" style="margin: 0 4px;"></div>
-          <!-- 마음 조각 수집 배지 (기존 별 표시를 직관적인 라이트 캡슐로 개선) -->
-          <div style="display:inline-flex; align-items:center; gap:5px; background:#fef3c7; border:1px solid #fde68a; padding:3px 9px; border-radius:99px; font-size:11.5px; font-weight:700; color:#92400e;" title="월드에서 모은 마음 조각">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#d97706"><polygon points="12 2 19 12 12 22 5 12"/></svg>
+          <!-- 마음 조각 수집 계측기 (투명 배경 + 1px 헤어라인) -->
+          <div style="display:inline-flex; align-items:center; gap:5px; background:transparent; border:1px solid rgba(24,24,27,0.16); padding:2px 9px; border-radius:99px; font-size:11.5px; font-weight:700; color:#18181b;" title="월드에서 모은 마음 조각">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2"><polygon points="12 2 19 12 12 22 5 12"/></svg>
             <span>마음 조각</span>
             <span id="stardustText" style="font-family:'JetBrains Mono',monospace; font-weight:800;">0/15</span>
           </div>
-          <!-- 누적 마음 점수 & 레벨 배지 (클린 라이트 스타일) -->
-          <div id="mindScoreBadge" style="display:inline-flex; align-items:center; gap:6px; background:#f4f4f5; padding:3px 10px; border-radius:99px; border:1px solid #e4e4e7; font-weight:700;" title="누적 마음 점수 & 성장 단계">
+          <!-- 누적 마음 점수 & 성장 단계 -->
+          <div id="mindScoreBadge" style="display:inline-flex; align-items:center; gap:6px; background:transparent; padding:2px 9px 2px 3px; border-radius:99px; border:1px solid rgba(24,24,27,0.16); font-weight:700;" title="누적 마음 점수 & 성장 단계">
             <span id="mindLevelBadge" style="background:#18181b; color:#ffffff; font-size:10px; font-weight:700; padding:1px 7px; border-radius:99px;">Lv.1 새싹</span>
             <span id="mindScoreText" style="color:#18181b; font-size:12px; font-weight:800;">0점</span>
           </div>
@@ -973,7 +1098,7 @@
       </div>
     </div>
 
-    <!-- 상단 중앙: 한 줄 미션 안내바 (가독성 높은 1줄 요약) -->
+    <!-- 상단 중앙: 한 줄 미션 안내바 -->
     <div class="top-single-mission-bar" id="topSingleMissionBar" onclick="toggleStoryTracker()" title="클릭하여 미션 상세 보기">
       <span class="tsm-dot" id="tsmDot"></span>
       <span class="tsm-label">현재 미션</span>
@@ -981,7 +1106,7 @@
       <span class="tsm-prog" id="tsmProg">0/3</span>
     </div>
 
-    <!-- 우측 상단 미니멀 메뉴바: [소리]만 노출하고 나머지는 [설정] 드롭다운 메뉴 안으로 통합 -->
+    <!-- 우측 상단 미니멀 메뉴바: [소리] + [설정] 드롭다운 메뉴 -->
     <div class="hud-group" style="align-items: flex-end;">
       <div class="hud-row">
         <button class="hw-btn active-green" id="btnAudio" title="사운드 켜기/끄기">
@@ -1014,6 +1139,10 @@
               <span>하늘 시간대 전환</span>
               <span class="settings-menu-badge" id="todLabel">낮</span>
             </button>
+            <button type="button" class="settings-menu-item" id="btnToggleTouchUI" onclick="toggleTouchControlsUI()">
+              <span>터치 조이스틱</span>
+              <span class="settings-menu-badge" id="touchUIBadge">켜짐</span>
+            </button>
           </div>
         </div>
         <!-- 동화책 및 중복 버튼은 우선 가려두고 추후 연결 가능하도록 보존 -->
@@ -1026,10 +1155,13 @@
 
   <div class="toast-box" id="toastBox"></div>
 
-  <!-- 좌측 상단: 작고 균형 잡힌 클릭형 미션 네비게이터 -->
+  <!-- 좌측 상단: Dieter Rams / Nothing Design 클릭형 미션 계측기 -->
   <div class="story-tracker" id="storyTracker">
     <div class="story-tracker-head" onclick="toggleStoryTracker()">
-      <span class="story-tracker-title">마음 손님 미션 <span id="storyDoneBadge" style="color:#71717a; font-family:'JetBrains Mono',monospace; font-size:10px;">(0/5)</span></span>
+      <div class="story-tracker-brand">
+        <span class="nothing-red-dot"></span>
+        <span class="story-tracker-title">마음 미션 <span class="story-done-badge" id="storyDoneBadge">0/10</span></span>
+      </div>
       <button type="button" class="story-tracker-toggle" id="btnStoryTrackerToggle">접기</button>
     </div>
     <div class="story-tracker-body">
@@ -1044,10 +1176,10 @@
     <button type="button" id="btnMpChatSend"></button>
   </div>
 
-  <!-- 실시간 레이더 미니맵 -->
+  <!-- 실시간 레이더 미니맵 (우측 상단 설정 아래 배치) -->
   <div class="minimap-box" title="마음 동산 레이더">
     <canvas id="minimapCanvas" width="126" height="126"></canvas>
-    <span class="minimap-tag">RADAR</span>
+    <span class="minimap-tag">레이더</span>
   </div>
 
   <!-- 구역 진입 인터랙션 배너 -->
@@ -1066,24 +1198,42 @@
   </div>
 
   <div id="keyHints" style="display:none;"></div>
-  <div class="v-joy-zone" id="joyZone"><div class="v-joy-knob" id="joyKnob"></div></div>
 
-  <!-- 우측 하단 세로 1열 미니멀 아이콘 액션 바 (점프 · 상호작용 · 블록 놓기 · 지우개 · 별빛 응원) -->
+  <!-- 패드/스마트폰 겸용 좌측 이동 조이스틱 & 우측 시점 조이스틱 -->
+  <div class="v-joy-zone" id="joyZone" title="드래그하여 캐릭터 이동">
+    <div class="v-joy-knob" id="joyKnob"></div>
+    <span class="v-joy-label">이동</span>
+  </div>
+  <div class="v-look-zone" id="lookJoyZone" title="드래그하여 카메라 시점 회전">
+    <div class="v-look-knob" id="lookJoyKnob"></div>
+    <span class="v-joy-label">시점</span>
+  </div>
+
+  <!-- 우측 액션 패드: 하단 컨트롤 독의 핵심 동작(발사·점프·대화·놓기·지우개·심호흡)과 1:1 일치 -->
   <div class="touch-action-pad" id="touchActionPad">
-    <button type="button" class="touch-pad-btn" id="btnTouchJump" title="점프 (SPACE)">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
-    </button>
-    <button type="button" class="touch-pad-btn" id="btnTouchInteract" onclick="interactCurrentZone()" title="손님 대화 및 상호작용 (G)">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    </button>
-    <button type="button" class="touch-pad-btn" id="btnTouchBuild" title="선택한 블록 놓기">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-    </button>
-    <button type="button" class="touch-pad-btn" id="btnTouchMine" title="블록 지우개">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
-    </button>
-    <button type="button" class="touch-pad-btn" id="btnTouchMagic" title="별빛 응원 (F)">
+    <button type="button" class="touch-pad-btn accent-shoot" id="btnTouchMagic" title="마음별 발사 (F)">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span class="touch-pad-kbd">F</span>
+    </button>
+    <button type="button" class="touch-pad-btn" id="btnTouchJump" title="점프 (Space)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+      <span class="touch-pad-kbd">Sp</span>
+    </button>
+    <button type="button" class="touch-pad-btn" id="btnTouchInteract" title="손님 대화 및 체험 (G)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span class="touch-pad-kbd">G</span>
+    </button>
+    <button type="button" class="touch-pad-btn" id="btnTouchBuild" title="선택한 블록 놓기 (B)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <span class="touch-pad-kbd">B</span>
+    </button>
+    <button type="button" class="touch-pad-btn" id="btnTouchMine" title="블록 지우개 (5)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
+      <span class="touch-pad-kbd">5</span>
+    </button>
+    <button type="button" class="touch-pad-btn" id="btnTouchBreath" title="깊은 심호흡 (C)">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>
+      <span class="touch-pad-kbd">C</span>
     </button>
   </div>
 
@@ -1093,39 +1243,49 @@
     <div class="congrats-sub" id="congratsSub">내용</div>
   </div>
 
-  <!-- 하단 슬림 도구 독: 작은 숫자(1~6)와 서브 글자(블록, 도구, 응원)를 제거하여 깔끔한 아이콘+이름만 표시 -->
+  <!-- 하단 슬림 컨트롤 독: 1~6 슬롯 키캡 + F 발사 / G 대화 / B 놓기 / Space 점프 / C 심호흡 / E 춤 / Q 명상 단축키 통일 -->
   <div class="mc-crosshair"></div>
   <div class="action-dock">
     <div class="mc-hotbar-wrap" id="mcHotbar">
-      <div class="mc-slot active" data-slot="1" title="기쁨 블록 쌓기">
+      <div class="mc-slot active" data-slot="1" title="기쁨 블록 선택 (단축키 1)">
+        <span class="mc-key">1</span>
         <div class="mc-icon-cube" style="background:#f59e0b;"></div>
-        <span class="mc-label">기쁨 블록</span>
+        <span class="mc-label">기쁨</span>
       </div>
-      <div class="mc-slot" data-slot="2" title="슬픔 물블록 쌓기">
+      <div class="mc-slot" data-slot="2" title="슬픔 블록 선택 (단축키 2)">
+        <span class="mc-key">2</span>
         <div class="mc-icon-cube" style="background:#38bdf8;"></div>
-        <span class="mc-label">슬픔 블록</span>
+        <span class="mc-label">슬픔</span>
       </div>
-      <div class="mc-slot" data-slot="3" title="용기 블록 쌓기">
+      <div class="mc-slot" data-slot="3" title="용기 블록 선택 (단축키 3)">
+        <span class="mc-key">3</span>
         <div class="mc-icon-cube" style="background:#ef4444;"></div>
-        <span class="mc-label">용기 블록</span>
+        <span class="mc-label">용기</span>
       </div>
-      <div class="mc-slot" data-slot="4" title="평온 블록 쌓기">
+      <div class="mc-slot" data-slot="4" title="평온 블록 선택 (단축키 4)">
+        <span class="mc-key">4</span>
         <div class="mc-icon-cube" style="background:#10b981;"></div>
-        <span class="mc-label">평온 블록</span>
+        <span class="mc-label">평온</span>
       </div>
-      <div class="mc-slot" data-slot="5" title="블록 지우개">
-        <div class="mc-icon-cube" style="background:#71717a;"></div>
-        <span class="mc-label">블록 지우개</span>
+      <div class="mc-slot" data-slot="5" title="블록 지우개 선택 (단축키 5)">
+        <span class="mc-key">5</span>
+        <div class="mc-icon-svg"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/></svg></div>
+        <span class="mc-label">지우개</span>
       </div>
-      <div class="mc-slot" data-slot="6" title="별빛 응원 보내기">
-        <div class="mc-icon-cube" style="background:#a855f7;"></div>
-        <span class="mc-label">별빛 응원</span>
+      <div class="mc-slot" data-slot="6" title="별빛 응원 모드 (단축키 6)">
+        <span class="mc-key">6</span>
+        <div class="mc-icon-svg"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="mc-label">별빛</span>
       </div>
     </div>
     <div class="dock-sep"></div>
-    <button class="act-btn" id="btnBreatheWind"><span class="kbd">C</span><span>심호흡</span></button>
-    <button class="act-btn" id="btnDanceAction"><span class="kbd">E</span><span>춤추기</span></button>
-    <button class="act-btn" id="btnMeditateAction"><span class="kbd">Q</span><span>명상</span></button>
+    <button type="button" class="act-btn shoot-btn" id="btnShootAction" title="마음별 응원 발사 (F)"><span class="kbd">F</span><span>발사</span></button>
+    <button type="button" class="act-btn" id="btnInteractAction" title="감정 손님 대화 및 체험 (G)"><span class="kbd">G</span><span>대화·체험</span></button>
+    <button type="button" class="act-btn" id="btnPlaceAction" title="선택한 블록 놓기 (B)"><span class="kbd">B</span><span>놓기</span></button>
+    <button type="button" class="act-btn" id="btnJumpDock" title="점프 / 2~3단 점프 (Space)"><span class="kbd">Space</span><span>점프</span></button>
+    <button type="button" class="act-btn" id="btnBreatheWind" title="깊은 심호흡 (C)"><span class="kbd">C</span><span>심호흡</span></button>
+    <button type="button" class="act-btn" id="btnDanceAction" title="신바람 춤추기 (E)"><span class="kbd">E</span><span>춤</span></button>
+    <button type="button" class="act-btn" id="btnMeditateAction" title="공중 명상 (Q)"><span class="kbd">Q</span><span>명상</span></button>
     <!-- 기존 하단 중복 버튼들은 DOM 참조 호환을 위해 숨김 유지 -->
     <button id="btnCustomizeDock" style="display:none;"></button>
     <button id="btnGuestSelect" style="display:none;"></button>
@@ -1738,8 +1898,8 @@
         sunset: { bg: 0x2b1d3d, fog: 0x38244a, sun: 0xff9a5a, sunInt: 1.35, hemiSky: 0xffd1a8, hemiGround: 0x22172b, label: '노을' },
         night: { bg: 0x0b0d17, fog: 0x111424, sun: 0x818cf8, sunInt: 0.65, hemiSky: 0x1e293b, hemiGround: 0x090b12, label: '밤' }
       },
-      quests: { joy: false, sad: false, anger: false, fear: false, worry: false },
-      mission: { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0 },
+      quests: { joy: false, sad: false, anger: false, fear: false, worry: false, robot: false, stage: false, flutter: false, coop: false, track: false },
+      mission: { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0, robot: 0, stage: 0, flutter: 0, coop: 0, track: 0 },
       coopHelped: 0,
       activeFriendId: null,
       stats: { joy: 42, sad: 28, anger: 19, fear: 15, worry: 24, flutter: 36 },
@@ -1782,7 +1942,7 @@
           playerName: state.playerName, playerTitle: state.playerTitle,
           shirtColor: state.shirtColor, hatType: state.hatType,
           mindNote: state.mindNote, worryText: state.worryText,
-          quests: state.quests, curGuest: state.curGuest, mindScore: state.mindScore, mindLevel: state.mindLevel,
+          quests: state.quests, mission: state.mission, curGuest: state.curGuest, mindScore: state.mindScore, mindLevel: state.mindLevel,
           boardPosts: state.boardPosts, likedIds: state.likedIds
         }));
       } catch (e) {}
@@ -1800,6 +1960,7 @@
         if (d.worryText) state.worryText = d.worryText;
         if (d.curGuest && state.spirits[d.curGuest]) state.curGuest = d.curGuest;
         if (d.quests) Object.keys(state.quests).forEach(k => { if (d.quests[k]) state.quests[k] = true; });
+        if (d.mission) Object.keys(state.mission).forEach(k => { if (typeof d.mission[k] === 'number') state.mission[k] = d.mission[k]; });
         if (Array.isArray(d.boardPosts) && d.boardPosts.length) state.boardPosts = d.boardPosts;
         if (Array.isArray(d.likedIds)) state.likedIds = d.likedIds;
         if (typeof d.mindScore === 'number') state.mindScore = d.mindScore;
@@ -3991,7 +4152,7 @@
     // ==========================================
     // 6. 카메라 컨트롤 (PC 마우스 드래그 + 아이패드/스마트폰 한 손가락 화면 드래그 지원)
     // ==========================================
-    const camState = { yaw: 0.2, pitch: 0.35, distance: 11.0, isRightDragging: false, isPointerDown: false, dragMoved: false, lastX: 0, lastY: 0, targetPos: new THREE.Vector3(0, 1.8, 10) };
+    const camState = window.camState = { yaw: 0.2, pitch: 0.35, distance: 11.0, isRightDragging: false, isPointerDown: false, dragMoved: false, lastX: 0, lastY: 0, targetPos: new THREE.Vector3(0, 1.8, 10) };
     canvas.addEventListener('contextmenu', e => e.preventDefault());
     canvas.addEventListener('pointerdown', e => {
       camState.isPointerDown = true;
@@ -4746,10 +4907,13 @@
         }
       }
 
-      // 10) 섬 전체 외곽 추락 방지 경계 (확장된 대형 섬 반경 70.0m)
+      // 10) 섬 전체 외곽 추락 방지 경계 (최외곽 트랙 91.5m 포함 반경 94.8m, Y 점프 높이 보존)
+      const MAX_ISLAND_R = 94.8;
       const distIsland = Math.hypot(playerRig.position.x, playerRig.position.z);
-      if (distIsland > 70.0) {
-        playerRig.position.setLength(70.0);
+      if (distIsland > MAX_ISLAND_R) {
+        const clampRatio = MAX_ISLAND_R / distIsland;
+        playerRig.position.x *= clampRatio;
+        playerRig.position.z *= clampRatio;
       }
     }
 
@@ -5126,37 +5290,67 @@
       }, 1500);
     }
 
-    // [인찬이의 마음 손님] 5장 스토리 미션 보드 & 5대 랜드마크 대형 입간판
+    // [인찬이의 마음 손님] 10대 확장 스토리 & 활동 미션 메타 데이터
     const storyQuestMeta = [
       {
-        key: 'joy', shortLabel: '기쁨', chapter: '제1장 · 기쁨 손님 (동쪽 트램펄린)',
+        key: 'joy', shortLabel: '기쁨', chapter: '01 · 기쁨 손님 (동쪽 트램펄린)',
         title: '트램펄린 점프로 공중 황금 링 3개 통과',
         desc: '동쪽 노란 트램펄린을 밟아 공중의 황금 링 3개를 통과하세요.',
-        color: '#f59e0b', x: 50, z: -8, max: 3
+        reward: '황금 기쁨 구슬', color: '#f59e0b', x: 50, z: -8, max: 3
       },
       {
-        key: 'sad', shortLabel: '슬픔', chapter: '제2장 · 슬픔 손님 (서쪽 치유 연못)',
+        key: 'sad', shortLabel: '슬픔', chapter: '02 · 슬픔 손님 (서쪽 치유 연못)',
         title: '기억 물방울 3개 모으고 무지개 분수 피우기',
         desc: '서쪽 연못의 물방울 3개를 모은 뒤 연못 중앙 단상으로 걸어가세요.',
-        color: '#38bdf8', x: -36, z: 0, max: 3
+        reward: '치유 물방울 구슬', color: '#38bdf8', x: -36, z: 0, max: 3
       },
       {
-        key: 'anger', shortLabel: '화', chapter: '제3장 · 화 손님 (남쪽 모닥불 쉼터)',
+        key: 'anger', shortLabel: '화', chapter: '03 · 화 손님 (남쪽 모닥불 쉼터)',
         title: '모닥불 앞에서 깊은 심호흡(C키) 3번 하기',
         desc: '남쪽 모닥불 앞 초록빛 타이밍에 맞춰 [C]키로 심호흡을 3번 하세요.',
-        color: '#ef4444', x: 0, z: 52, max: 3
+        reward: '평온의 불꽃 구슬', color: '#ef4444', x: 0, z: 52, max: 3
       },
       {
-        key: 'fear', shortLabel: '두려움', chapter: '제4장 · 두려움 손님 (북서쪽 수호 등대)',
+        key: 'fear', shortLabel: '두려움', chapter: '04 · 두려움 손님 (북서쪽 수호 등대)',
         title: '따뜻한 별빛(F키)으로 밤바다 그림자 비추기',
-        desc: '북서쪽 등대 주변을 맴도는 그림자에 [F]키로 별빛 응원을 비춰주세요.',
-        color: '#a855f7', x: -46, z: -46, max: 5
+        desc: '북서쪽 등대 주변을 맴도는 그림자에 [F]키로 별빛 응원을 발사하세요.',
+        reward: '용기의 등대 구슬', color: '#a855f7', x: -46, z: -46, max: 5
       },
       {
-        key: 'worry', shortLabel: '걱정', chapter: '제5장 · 걱정 손님 (북동쪽 털실 벤치)',
+        key: 'worry', shortLabel: '걱정', chapter: '05 · 걱정 손님 (북동쪽 털실 벤치)',
         title: '초록 털실 3개 풀고 소원 연등 띄우기(G)',
         desc: '북동쪽 잔디밭 털실 3개를 밟아 풀고 벤치에서 소원 연등을 날려보세요.',
-        color: '#10b981', x: 34, z: -40, max: 3
+        reward: '생각 털실 구슬', color: '#10b981', x: 34, z: -40, max: 3
+      },
+      {
+        key: 'robot', shortLabel: '대화', chapter: '06 · 나-전달법 (남쪽 로봇 수리)',
+        title: '망가진 장난감 로봇 나-전달법(R키)으로 수리',
+        desc: '남쪽 장난감 로봇에게 다가가 마음을 다정히 전하는 [R] 대화를 완수하세요.',
+        reward: '평화의 대화 배지', color: '#2563eb', x: -7.5, z: 48, max: 1, hasOwnSign: true
+      },
+      {
+        key: 'stage', shortLabel: '발표', chapter: '07 · 학예 발표 (북동쪽 레드 무대)',
+        title: '학예 발표회 무대 클릭해 3단계 연습하기',
+        desc: '동북쪽 레드카펫 무대에 올라 클릭 또는 터치로 3단계 발표 연습을 마치세요.',
+        reward: '자신감 스포트라이트', color: '#e11d48', x: 52, z: -32, max: 3, hasOwnSign: true
+      },
+      {
+        key: 'flutter', shortLabel: '설렘', chapter: '08 · 설렘 요정 (중앙 북쪽 화원)',
+        title: '코랄핑크 설렘이에게 3단 날개 축복받기(G)',
+        desc: '분수대 북쪽 설렘 요정 앞에서 [G]키로 교감해 3단 점프 날개를 장착하세요.',
+        reward: '설렘 나비 날개', color: '#ec4899', x: 0, z: -10.5, max: 1, hasOwnSign: true
+      },
+      {
+        key: 'coop', shortLabel: '협동', chapter: '09 · 협동 광주리 (광장 친구들)',
+        title: '무거워진 친구 광주리 다가가 함께 들어주기',
+        desc: '붉은 원으로 도움을 요청하는 친구에게 다가가 [G]키로 함께 점프해 들어주세요.',
+        reward: '협동의 우정 배지', color: '#f43f5e', x: 12, z: 12, max: 1, hasOwnSign: true
+      },
+      {
+        key: 'track', shortLabel: '질주', chapter: '10 · 외곽 서킷 (최외곽 달리기 트랙)',
+        title: '맵 최외곽 슈퍼 트랙 부스터 8개 밟고 1바퀴 완주',
+        desc: '섬 맨 바깥쪽 붉은 트랙을 따라 8개의 스피드 부스터 게이트를 통과하세요.',
+        reward: '질주 챔피언 훈장', color: '#06b6d4', x: 64.7, z: 64.7, max: 8, hasOwnSign: true
       }
     ];
 
@@ -5520,7 +5714,8 @@
       createMagicImpact(toyRobotGroup.position.clone().add(new THREE.Vector3(0, 1.5, 0)), '#fbbf24');
       window.addMindScore(250, '🤖 제4장 나-전달법 & 장난감 로봇 수리 완성!');
       state.stardustCount = (state.stardustCount || 0) + 6;
-      saveProgress();
+      if (typeof window.completeExtraMission === 'function') window.completeExtraMission('robot', '평화의 대화 배지');
+      else saveProgress();
       showCongratsBanner('🤖 제4장 평화의 나-전달법 성공!', '“네가 장난감을 망가뜨려서 속상했어. 조심해서 놀면 좋겠어!” 로봇이 멋지게 수리되었습니다! (+250점)');
     };
 
@@ -5571,6 +5766,8 @@
       stageSpotlightMat.opacity = 0.35;
       doDance();
       createMagicImpact(talentStageGroup.position.clone().add(new THREE.Vector3(0, 1.6, 0)), '#34d399');
+      state.mission.stage = Math.max(state.mission.stage || 0, stagePracticeStep);
+      if (typeof renderStoryMissionTracker === 'function') renderStoryMissionTracker();
 
       if (stagePracticeStep === 1) {
         soundChime(523);
@@ -5590,7 +5787,8 @@
         stageSign.tex.needsUpdate = true;
         window.addMindScore(200, '🎤 제6장 학예 발표회 연습 마스터!');
         state.stardustCount = (state.stardustCount || 0) + 5;
-        saveProgress();
+        if (typeof window.completeExtraMission === 'function') window.completeExtraMission('stage', '자신감 스포트라이트');
+        else saveProgress();
         showCongratsBanner('🎤 제6장 학예 발표회 연습 완성!', '걱정이 덕분에 지금 할 수 있는 일을 찾아 멋지게 준비했습니다! (+200점)');
       }
     };
@@ -5699,6 +5897,7 @@
       createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '#ec4899');
       createMagicImpact(flutterNpcGroup.position.clone().add(new THREE.Vector3(0, 1.8, 0)), '#fef08a');
       window.addMindScore(300, '🦋 설렘 나비 날개 장착 & 3단 하늘점프 변신!');
+      if (typeof window.completeExtraMission === 'function') window.completeExtraMission('flutter', '설렘 나비 날개');
       showPlayerBubble('🦋 “와아! 내 등에 코랄핑크 설렘 나비 날개가 돋아났어! 3단 하늘 점프!”');
       showCongratsBanner('🦋 코랄핑크 설렘 나비 날개 변신 완료!', '인찬이의 등에 반짝이는 설렘 나비 날개가 장착되어 하늘 높이 날아올랐습니다! [SPACE 3단 점프] (+300점)');
     };
@@ -5757,16 +5956,17 @@
     };
 
     // ------------------------------------------------------------------------------
-    // [11. 맵 외곽 육상 달리기 트랙 & 스피드 대시 레이스 게임 (Outer Running Track & Dash Game)]
+    // [11. 맵 최외곽 육상 달리기 트랙 & 스피드 대시 레이스 게임 (R = 91.5m 최외곽 둘레길)]
     // ------------------------------------------------------------------------------
     const runningTrackGroup = new THREE.Group();
-    const TRACK_RADIUS = 60.5;
-    const TRACK_WIDTH = 3.6;
+    const TRACK_RADIUS = 91.5;
+    const TRACK_WIDTH = 4.6;
+    window.TRACK_RADIUS = TRACK_RADIUS;
 
-    // 1) 코랄 브릭 레드 육상 트랙 바닥 링 (반경 58.7m ~ 62.3m)
+    // 1) 코랄 브릭 레드 육상 트랙 바닥 링 (반경 89.2m ~ 93.8m)
     const trackSurface = new THREE.Mesh(
-      new THREE.RingGeometry(TRACK_RADIUS - TRACK_WIDTH / 2, TRACK_RADIUS + TRACK_WIDTH / 2, 72),
-      new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.75, side: THREE.DoubleSide })
+      new THREE.RingGeometry(TRACK_RADIUS - TRACK_WIDTH / 2, TRACK_RADIUS + TRACK_WIDTH / 2, 96),
+      new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.72, side: THREE.DoubleSide })
     );
     trackSurface.rotation.x = -Math.PI / 2;
     trackSurface.position.y = 0.04;
@@ -5774,35 +5974,54 @@
     runningTrackGroup.add(trackSurface);
 
     // 2) 트랙 안쪽·중앙·바깥쪽 화이트 레인 라인 3줄
-    [TRACK_RADIUS - 1.65, TRACK_RADIUS, TRACK_RADIUS + 1.65].forEach((rLine, lIdx) => {
+    [TRACK_RADIUS - 2.1, TRACK_RADIUS, TRACK_RADIUS + 2.1].forEach((rLine, lIdx) => {
       const lineRing = new THREE.Mesh(
-        new THREE.RingGeometry(rLine - 0.06, rLine + 0.06, 72),
-        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: lIdx === 1 ? 0.55 : 0.85, side: THREE.DoubleSide })
+        new THREE.RingGeometry(rLine - 0.07, rLine + 0.07, 96),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: lIdx === 1 ? 0.55 : 0.88, side: THREE.DoubleSide })
       );
       lineRing.rotation.x = -Math.PI / 2;
       lineRing.position.y = 0.055;
       runningTrackGroup.add(lineRing);
     });
 
-    // 3) 남동쪽 트랙 스타트/골인 아치 게이트 (각도 Math.PI * 0.25 -> x: 42.8, z: 42.8)
+    // 2-1) 섬 최외곽 안전 야광 가드레일 (반경 95.8m) — 추락 보호 + 서킷 비주얼
+    const GUARD_RADIUS = 95.8;
+    const railMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, emissive: 0x38bdf8, emissiveIntensity: 0.35, roughness: 0.3 });
+    const postMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.5 });
+    [0.65, 1.15].forEach(ry => {
+      const railRing = new THREE.Mesh(new THREE.TorusGeometry(GUARD_RADIUS, 0.09, 8, 96), railMat);
+      railRing.rotation.x = Math.PI / 2;
+      railRing.position.y = ry;
+      runningTrackGroup.add(railRing);
+    });
+    const postGeo = new THREE.CylinderGeometry(0.11, 0.13, 1.35, 8);
+    for (let pi = 0; pi < 48; pi++) {
+      const pAng = (pi / 48) * Math.PI * 2;
+      const pMesh = new THREE.Mesh(postGeo, postMat);
+      pMesh.position.set(Math.cos(pAng) * GUARD_RADIUS, 0.68, Math.sin(pAng) * GUARD_RADIUS);
+      runningTrackGroup.add(pMesh);
+    }
+
+    // 3) 남동쪽 최외곽 트랙 스타트/골인 아치 게이트 (각도 Math.PI * 0.25 -> x: 64.7, z: 64.7)
     const startArchAngle = Math.PI * 0.25;
     const startArchGroup = new THREE.Group();
     startArchGroup.position.set(Math.cos(startArchAngle) * TRACK_RADIUS, 0, Math.sin(startArchAngle) * TRACK_RADIUS);
     startArchGroup.rotation.y = -startArchAngle;
     const archPillarMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xd97706, emissiveIntensity: 0.4, roughness: 0.3 });
-    const archColL = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 4.2, 12), archPillarMat);
-    archColL.position.set(-2.1, 2.1, 0);
-    const archColR = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 4.2, 12), archPillarMat);
-    archColR.position.set(2.1, 2.1, 0);
-    const archBanner = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.75, 0.35), new THREE.MeshStandardMaterial({ color: 0x18181b }));
-    archBanner.position.set(0, 4.1, 0);
-    const archSign = makeChatBubbleSprite('🏁 외곽 달리기 트랙 START / FINISH (부스터 발판을 밟아 질주하세요!)');
-    archSign.sprite.position.set(0, 5.2, 0);
+    const archColL = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.3, 4.4, 12), archPillarMat);
+    archColL.position.set(-2.55, 2.2, 0);
+    const archColR = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.3, 4.4, 12), archPillarMat);
+    archColR.position.set(2.55, 2.2, 0);
+    const archBanner = new THREE.Mesh(new THREE.BoxGeometry(5.6, 0.8, 0.38), new THREE.MeshStandardMaterial({ color: 0x18181b }));
+    archBanner.position.set(0, 4.3, 0);
+    const archSign = makeChatBubbleSprite('🏁 최외곽 슈퍼 달리기 트랙 START / FINISH (부스터 발판을 밟아 1바퀴 완주!)');
+    archSign.sprite.position.set(0, 5.4, 0);
     startArchGroup.add(archColL, archColR, archBanner, archSign.sprite);
     runningTrackGroup.add(startArchGroup);
 
-    // 4) 트랙 위 8개의 터보 스피드 부스터 패드 & 황금 링 게이트 (밟으면 초고속 질주 + 체크포인트 통과!)
+    // 4) 트랙 위 8개의 터보 스피드 부스터 패드 & 황금 링 게이트
     const trackBoostPads = [];
+    window.trackBoostPads = trackBoostPads;
     let trackCheckpointsCleared = 0;
     let trackLapCount = 0;
     for (let bi = 0; bi < 8; bi++) {
@@ -5812,18 +6031,16 @@
 
       const bGroup = new THREE.Group();
       bGroup.position.set(bx, 0.06, bz);
-      // 트랙 접선 방향을 바라보도록 회전
       bGroup.rotation.y = -bAng;
 
       const padMat = new THREE.MeshStandardMaterial({
         color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.9, roughness: 0.2
       });
-      const padBox = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 2.8), padMat);
+      const padBox = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.08, 3.2), padMat);
       bGroup.add(padBox);
 
-      // 체크포인트 미니 황금 아치 링
       const gateRing = new THREE.Mesh(
-        new THREE.TorusGeometry(1.75, 0.1, 10, 24, Math.PI),
+        new THREE.TorusGeometry(2.15, 0.11, 10, 24, Math.PI),
         new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 1.0 })
       );
       gateRing.position.y = 0.1;
@@ -5841,6 +6058,20 @@
         cooldown: 0,
         passedInLap: false
       });
+    }
+
+    // 5) 트랙 주회 경로 사이사이 16개 별빛 스피드 코인 링
+    const trackCoins = [];
+    const tCoinGeo = new THREE.TorusGeometry(0.45, 0.12, 8, 18);
+    const tCoinMat = new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 0.85, roughness: 0.2 });
+    for (let ci = 0; ci < 16; ci++) {
+      const cAng = ((ci + 0.5) / 16) * Math.PI * 2;
+      const cx = Math.cos(cAng) * TRACK_RADIUS;
+      const cz = Math.sin(cAng) * TRACK_RADIUS;
+      const cm = new THREE.Mesh(tCoinGeo, tCoinMat);
+      cm.position.set(cx, 1.25, cz);
+      runningTrackGroup.add(cm);
+      trackCoins.push({ mesh: cm, x: cx, z: cz, cleared: false, respawnTimer: 0 });
     }
     worldGroup.add(runningTrackGroup);
 
@@ -5862,8 +6093,8 @@
       fr.needsCoopHelp = (idx === 0);
     });
 
-    // 5대 랜드마크 상공 3D 미션 안내판 등록
-    storyQuestMeta.forEach(makeLandmarkStorySign);
+    // 5대 핵심 감정 랜드마크 상공 3D 미션 안내판 등록 (고유 간판이 있는 추가 미션은 제외하여 중복 방지)
+    storyQuestMeta.filter(m => !m.hasOwnSign).forEach(makeLandmarkStorySign);
 
     let activeGuidedQuestKey = 'joy';
 
@@ -5893,10 +6124,10 @@
       const listEl = document.getElementById('storyMissionList');
       if (!listEl) return;
 
-      // 완료 카운트 배지 업데이트
+      // 완료 카운트 배지 업데이트 (총 10대 미션 기준)
       const doneQuests = storyQuestMeta.filter(m => !!state.quests[m.key]);
       const doneBadgeEl = document.getElementById('storyDoneBadge');
-      if (doneBadgeEl) doneBadgeEl.textContent = `${doneQuests.length}/5`;
+      if (doneBadgeEl) doneBadgeEl.textContent = `${doneQuests.length}/${storyQuestMeta.length}`;
 
       const activeMeta = storyQuestMeta.find(m => m.key === activeGuidedQuestKey) || storyQuestMeta[0];
       const activeDone = !!state.quests[activeMeta.key];
@@ -5909,37 +6140,47 @@
       if (tsmDot) tsmDot.style.background = activeMeta.color;
       if (tsmText) tsmText.textContent = `${activeMeta.chapter.split('·')[1]?.trim() || activeMeta.shortLabel} · ${activeMeta.title}`;
       if (tsmProg) {
-        tsmProg.textContent = activeDone ? '완료 ✓' : `${activeCurVal}/${activeMeta.max}`;
-        tsmProg.style.color = activeDone ? '#16a34a' : '#d97706';
+        tsmProg.textContent = activeDone ? '완료' : `${activeCurVal}/${activeMeta.max}`;
+        tsmProg.style.color = activeDone ? '#15803d' : '#18181b';
       }
 
-      // 좌측 상단: 5개 감정 탭 버튼 + 클릭한 1개 미션의 상세 카드만 간결하게 표시!
+      // 좌측 상단: Nothing Design 5x2 기계식 인덱스 탭 + 정밀 계측기 카드
       const tabsHtml = `
         <div class="story-tabs-row">
-          ${storyQuestMeta.map(m => {
+          ${storyQuestMeta.map((m, idx) => {
             const isSel = (m.key === activeMeta.key);
             const isDone = !!state.quests[m.key];
+            const numStr = String(idx + 1).padStart(2, '0');
             return `
               <button type="button" class="story-tab-pill ${isSel ? 'active' : ''} ${isDone ? 'done' : ''}" onclick="window.guideToStoryQuest('${m.key}')">
-                <span class="st-dot" style="background:${m.color};"></span>
-                <span>${m.shortLabel}${isDone ? '✓' : ''}</span>
+                <span class="story-tab-num">${numStr}</span>
+                <span>${m.shortLabel}</span>
               </button>
             `;
           }).join('')}
         </div>
       `;
 
+      const dotGaugeCount = Math.min(8, activeMeta.max);
+      const filledDots = activeMeta.max > 0 ? Math.round((activeCurVal / activeMeta.max) * dotGaugeCount) : 0;
+      const dotsHtml = Array.from({ length: dotGaugeCount }, (_, di) => `<i class="${di < filledDots ? 'filled' : ''}"></i>`).join('');
+
       const detailHtml = `
         <div class="story-detail-card">
           <div class="story-q-top">
-            <span class="story-q-chapter" style="color:${activeMeta.color};">${activeMeta.chapter}</span>
-            <span class="story-q-prog">${activeDone ? '완료 ✓' : `${activeCurVal} / ${activeMeta.max}`}</span>
+            <span class="story-q-chapter"><span class="story-q-dot" style="background:${activeMeta.color};"></span>${activeMeta.chapter}</span>
+            <span class="story-q-prog ${activeDone ? 'done' : ''}">${activeDone ? '완료' : `${activeCurVal} / ${activeMeta.max}`}</span>
           </div>
           <div class="story-q-title">${activeMeta.title}</div>
           <div class="story-q-desc">${activeMeta.desc}</div>
-          <div class="story-q-actions">
+          <div class="story-q-meta-bar">
+            <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
+              <div class="story-dot-gauge">${dotsHtml}</div>
+              <span class="story-q-reward">보상: ${activeMeta.reward || '마음 포인트'}</span>
+            </div>
             <button type="button" class="story-btn-autowalk" onclick="window.startAutoWalkToQuest('${activeMeta.key}')">
-              🚶 자동 안내 걷기
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 14 15 9 13 15 10 14"/></svg>
+              <span>자동 안내</span>
             </button>
           </div>
         </div>
@@ -5959,7 +6200,7 @@
       renderStoryMissionTracker();
       if (meta) {
         soundChime(659);
-        showToast(`🧭 <b>[${meta.chapter}]</b> 길안내 별빛 도로가 열렸습니다! [🚶 자동 안내 걷기]를 누르면 자동으로 걸어갑니다.`);
+        showToast(`<b>[${meta.chapter}]</b> 길안내 디딤돌이 표시되었습니다. [자동 안내]를 누르면 직접 이동합니다.`);
       }
     };
 
@@ -5972,7 +6213,7 @@
         isAutoWalking = true;
         autoWalkTarget = new THREE.Vector3(meta.x, 0, meta.z);
         soundQuestComplete();
-        showToast(`🚶 <b>[${meta.chapter}]</b>(으)로 인찬이가 뚜벅뚜벅 걸어갑니다!<br><span style="font-size:11px; color:#fde047;">(방향키/WASD를 누르면 즉시 직접 조작으로 전환됩니다)</span>`);
+        showToast(`<b>[${meta.chapter}]</b> 방향으로 이동합니다.<br><span style="font-size:11px; color:#52525b;">(조이스틱 또는 방향키를 누르면 즉시 직접 조작으로 전환됩니다)</span>`);
       }
     };
 
@@ -5985,10 +6226,10 @@
 
     window.toggleStoryTracker = function() {
       const el = document.getElementById('storyTracker');
-      const btn = document.getElementById('btnToggleStoryTracker');
+      const btn = document.getElementById('btnStoryTrackerToggle');
       if (!el) return;
       el.classList.toggle('collapsed');
-      if (btn) btn.textContent = el.classList.contains('collapsed') ? '펼치기 ▼' : '접기 ▲';
+      if (btn) btn.textContent = el.classList.contains('collapsed') ? '펼치기' : '접기';
     };
 
     function syncQuestHUD() {
@@ -6006,8 +6247,9 @@
           if (basketGems[k]) basketGems[k].visible = false;
         }
       });
-      const totalDone = Object.values(state.quests).filter(Boolean).length;
-      document.getElementById('questCountText').textContent = `${totalDone}/5`;
+      const coreDone = Object.keys(dotMap).filter(k => !!state.quests[k]).length;
+      const qCountEl = document.getElementById('questCountText');
+      if (qCountEl) qCountEl.textContent = `${coreDone}/5`;
       renderStoryMissionTracker();
     }
 
@@ -6017,7 +6259,8 @@
       saveProgress(); syncQuestHUD(); soundQuestComplete();
       levelUpMindBasket();
       showToast(`<b>[퀘스트 달성] ${name}</b> · 등 뒤 광주리에 구슬이 담겼습니다!`);
-      if (Object.values(state.quests).filter(Boolean).length === 5) {
+      const coreDone = ['joy', 'sad', 'anger', 'fear', 'worry'].filter(k => !!state.quests[k]).length;
+      if (coreDone === 5) {
         setTimeout(() => {
           showToast('<b>축하합니다! 5대 감정 구슬을 모두 모아 광주리가 완성되었습니다.</b>');
           soundQuestComplete(); openModal('modalTrophy'); renderTrophyCard();
@@ -6025,10 +6268,30 @@
       }
     }
 
+    window.completeExtraMission = function(key, rewardTitle) {
+      const meta = storyQuestMeta.find(m => m.key === key);
+      if (!meta) return;
+      const firstDone = !state.quests[key];
+      state.quests[key] = true;
+      state.mission[key] = meta.max;
+      saveProgress();
+      syncQuestHUD();
+      if (firstDone) {
+        showToast(`<b>[미션 완료] ${meta.chapter}</b> · 보상 [${rewardTitle || meta.reward}] 획득!`);
+        const totalDone = storyQuestMeta.filter(m => !!state.quests[m.key]).length;
+        if (totalDone === storyQuestMeta.length) {
+          setTimeout(() => {
+            showCongratsBanner('10대 마음 미션 그랜드 마스터!', '동화 속 모든 감정 손님과 챌린지를 완수했습니다!');
+            soundQuestComplete();
+          }, 900);
+        }
+      }
+    };
+
     // ==========================================
     // 9. 입력 & 물리 & NPC 대화
     // ==========================================
-    const input = { w: false, a: false, s: false, d: false, shift: false, joyX: 0, joyY: 0 };
+    const input = { w: false, a: false, s: false, d: false, shift: false, joyX: 0, joyY: 0, lookJoyX: 0, lookJoyY: 0 };
     const playerPhysics = window.playerPhysics = { velY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true, isDancing: false, danceTimer: 0, isMeditating: false, walkCycle: 0, blinkTimer: 0, dustTimer: 0, armSwingTimer: 0 };
 
     window.addEventListener('keydown', e => {
@@ -6367,16 +6630,72 @@
       showToast(`시간대가 <b>[${cfg.label}]</b>(으)로 전환되었습니다.`);
     }
 
-    // 모바일 조이스틱
+    // 모바일 & 태블릿 좌/우 듀얼 가상 조이스틱 (이동 + 카메라 시점)
     const joyZone = document.getElementById('joyZone'), joyKnob = document.getElementById('joyKnob');
-    joyZone.addEventListener('pointerdown', e => { joyZone.setPointerCapture(e.pointerId); handleJoy(e); });
-    joyZone.addEventListener('pointermove', e => { if (joyZone.hasPointerCapture(e.pointerId)) handleJoy(e); });
-    joyZone.addEventListener('pointerup', e => { joyZone.releasePointerCapture(e.pointerId); input.joyX = 0; input.joyY = 0; joyKnob.style.transform = 'translate(0,0)'; });
-    function handleJoy(e) {
-      const r = joyZone.getBoundingClientRect();
-      let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-      const d = Math.hypot(dx, dy); if (d > 38) { dx = (dx/d)*38; dy = (dy/d)*38; }
-      joyKnob.style.transform = `translate(${dx}px, ${dy}px)`; input.joyX = dx / 38; input.joyY = dy / 38;
+    if (joyZone && joyKnob) {
+      let movePtrId = null;
+      joyZone.addEventListener('pointerdown', e => {
+        e.stopPropagation();
+        movePtrId = e.pointerId;
+        try { joyZone.setPointerCapture(e.pointerId); } catch(err){}
+        handleJoy(e);
+      });
+      joyZone.addEventListener('pointermove', e => {
+        if (e.pointerId === movePtrId || joyZone.hasPointerCapture(e.pointerId)) {
+          e.stopPropagation();
+          handleJoy(e);
+        }
+      });
+      const resetMoveJoy = e => {
+        if (e.pointerId === movePtrId || joyZone.hasPointerCapture(e.pointerId)) {
+          try { joyZone.releasePointerCapture(e.pointerId); } catch(err){}
+          movePtrId = null;
+          input.joyX = 0; input.joyY = 0;
+          joyKnob.style.transform = 'translate(0,0)';
+        }
+      };
+      joyZone.addEventListener('pointerup', resetMoveJoy);
+      joyZone.addEventListener('pointercancel', resetMoveJoy);
+      function handleJoy(e) {
+        const r = joyZone.getBoundingClientRect();
+        let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        const d = Math.hypot(dx, dy); if (d > 36) { dx = (dx / d) * 36; dy = (dy / d) * 36; }
+        joyKnob.style.transform = `translate(${dx}px, ${dy}px)`; input.joyX = dx / 36; input.joyY = dy / 36;
+      }
+    }
+
+    const lookJoyZone = document.getElementById('lookJoyZone'), lookJoyKnob = document.getElementById('lookJoyKnob');
+    if (lookJoyZone && lookJoyKnob) {
+      let lookPtrId = null;
+      lookJoyZone.addEventListener('pointerdown', e => {
+        e.stopPropagation();
+        lookPtrId = e.pointerId;
+        try { lookJoyZone.setPointerCapture(e.pointerId); } catch(err){}
+        handleLookJoy(e);
+      });
+      lookJoyZone.addEventListener('pointermove', e => {
+        if (e.pointerId === lookPtrId || lookJoyZone.hasPointerCapture(e.pointerId)) {
+          e.stopPropagation();
+          handleLookJoy(e);
+        }
+      });
+      const resetLookJoy = e => {
+        if (e.pointerId === lookPtrId || lookJoyZone.hasPointerCapture(e.pointerId)) {
+          try { lookJoyZone.releasePointerCapture(e.pointerId); } catch(err){}
+          lookPtrId = null;
+          input.lookJoyX = 0; input.lookJoyY = 0;
+          lookJoyKnob.style.transform = 'translate(0,0)';
+        }
+      };
+      lookJoyZone.addEventListener('pointerup', resetLookJoy);
+      lookJoyZone.addEventListener('pointercancel', resetLookJoy);
+      function handleLookJoy(e) {
+        const r = lookJoyZone.getBoundingClientRect();
+        let dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        const d = Math.hypot(dx, dy); if (d > 36) { dx = (dx / d) * 36; dy = (dy / d) * 36; }
+        lookJoyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+        input.lookJoyX = dx / 36; input.lookJoyY = dy / 36;
+      }
     }
 
     // ==========================================
@@ -6384,21 +6703,25 @@
     // ==========================================
     const mmCtx = document.getElementById('minimapCanvas').getContext('2d');
     function drawMinimap(time) {
-      const w = 126, h = 126, cx = 63, cy = 63, sc = 0.52;
+      const w = 126, h = 126, cx = 63, cy = 63, sc = 0.54;
       mmCtx.clearRect(0, 0, w, h);
 
-      // 외곽 달리기 트랙 표시 (R = 60.5 * 0.52 = 31.5)
-      mmCtx.strokeStyle = 'rgba(225, 29, 72, 0.32)'; mmCtx.lineWidth = 3.5;
-      mmCtx.beginPath(); mmCtx.arc(cx, cy, 60.5 * sc, 0, Math.PI * 2); mmCtx.stroke();
+      // 섬 전체 외곽 경계 원 (R = 100 * 0.54 = 54)
+      mmCtx.strokeStyle = 'rgba(24, 24, 27, 0.16)'; mmCtx.lineWidth = 1;
+      mmCtx.beginPath(); mmCtx.arc(cx, cy, 100 * sc, 0, Math.PI * 2); mmCtx.stroke();
+
+      // 최외곽 달리기 트랙 표시 (R = 91.5 * 0.54 = 49.4)
+      mmCtx.strokeStyle = 'rgba(215, 25, 33, 0.36)'; mmCtx.lineWidth = 3.2;
+      mmCtx.beginPath(); mmCtx.arc(cx, cy, TRACK_RADIUS * sc, 0, Math.PI * 2); mmCtx.stroke();
 
       // 레이더 동심원 그리드
-      mmCtx.strokeStyle = 'rgba(24, 24, 27, 0.1)'; mmCtx.lineWidth = 1;
-      [18, 36, 54].forEach(r => { mmCtx.beginPath(); mmCtx.arc(cx, cy, r, 0, Math.PI * 2); mmCtx.stroke(); });
+      mmCtx.strokeStyle = 'rgba(24, 24, 27, 0.08)'; mmCtx.lineWidth = 1;
+      [16, 32].forEach(r => { mmCtx.beginPath(); mmCtx.arc(cx, cy, r, 0, Math.PI * 2); mmCtx.stroke(); });
 
       // 섬 중앙 마음 광주리
       mmCtx.fillStyle = '#f59e0b'; mmCtx.beginPath(); mmCtx.arc(cx, cy, 3, 0, Math.PI * 2); mmCtx.fill();
 
-      // 5대 힐링 테마파크 + 설렘이 & 엄마 아이콘 렌더링
+      // 5대 힐링 테마파크 + 설렘이 & 엄마 & 로봇 & 무대 아이콘 렌더링
       const themeParks = [
         { emoji: '🐾', x: -18, z: -22 },
         { emoji: '🌺', x: -26, z: 26 },
@@ -6406,7 +6729,10 @@
         { emoji: '🎡', x: 28, z: 22 },
         { emoji: '🏖️', x: -48, z: -22 },
         { emoji: '🌸', x: 0, z: -10.5 },
-        { emoji: '💕', x: 14, z: 12 }
+        { emoji: '💕', x: 14, z: 12 },
+        { emoji: '🤖', x: -7.5, z: 48 },
+        { emoji: '🎤', x: 52, z: -32 },
+        { emoji: '🏁', x: 64.7, z: 64.7 }
       ];
       mmCtx.font = '9px sans-serif'; mmCtx.textAlign = 'center'; mmCtx.textBaseline = 'middle';
       themeParks.forEach(tp => {
@@ -7103,16 +7429,15 @@
         }
       }
 
-      // [신규 11. 맵 외곽 육상 달리기 트랙 부스터 패드 & 트랙 완주 미니게임]
+      // [신규 11. 맵 최외곽 육상 달리기 트랙 부스터 패드 & 스피드 코인 & 완주 퀘스트]
       if (typeof trackBoostPads !== 'undefined') {
         trackBoostPads.forEach(tb => {
           if (tb.cooldown > 0) tb.cooldown -= dt;
           tb.gateRing.rotation.z = Math.sin(time * 3.0 + tb.index) * 0.12;
           const dPad = Math.hypot(playerRig.position.x - tb.x, playerRig.position.z - tb.z);
-          if (dPad < 2.4 && tb.cooldown <= 0) {
+          if (dPad < 2.8 && tb.cooldown <= 0) {
             tb.cooldown = 3.5;
             playerPhysics.speedBuffTimer = Math.max(playerPhysics.speedBuffTimer || 0, 5.5);
-            // 트랙 진행 방향(접선)으로 경쾌한 대시 임펄스 부여
             const tangent = new THREE.Vector3(-Math.sin(tb.angle), 0, Math.cos(tb.angle)).normalize();
             playerRig.position.addScaledVector(tangent, 1.35);
             soundChime(659 + (tb.index % 4) * 80);
@@ -7120,20 +7445,46 @@
 
             if (!tb.passedInLap) {
               tb.passedInLap = true;
+              tb.padMat.color.setHex(0x22c55e);
+              tb.padMat.emissive.setHex(0x16a34a);
               trackCheckpointsCleared = trackBoostPads.filter(p => p.passedInLap).length;
+              state.mission.track = Math.max(state.mission.track || 0, trackCheckpointsCleared);
+              renderStoryMissionTracker();
               window.addMindScore(35, `🏃 외곽 달리기 트랙 대시! (${trackCheckpointsCleared}/8)`);
               if (trackCheckpointsCleared >= 8) {
                 trackLapCount += 1;
-                trackBoostPads.forEach(p => { p.passedInLap = false; });
+                trackBoostPads.forEach(p => {
+                  p.passedInLap = false;
+                  p.padMat.color.setHex(0x38bdf8);
+                  p.padMat.emissive.setHex(0x0284c7);
+                });
                 trackCheckpointsCleared = 0;
                 soundQuestComplete();
                 spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2.0, 0)));
                 window.addMindScore(350, `🏆 외곽 달리기 트랙 ${trackLapCount}바퀴 완주 챔피언!`);
-                showCongratsBanner(`🏆 외곽 달리기 트랙 ${trackLapCount}바퀴 완주!`, '8개의 부스터 게이트를 모두 통과해 섬 외곽 트랙을 완주했습니다! (+350점)');
+                if (typeof window.completeExtraMission === 'function') window.completeExtraMission('track', '질주 챔피언 훈장');
+                showCongratsBanner(`🏆 외곽 달리기 트랙 ${trackLapCount}바퀴 완주!`, '8개의 부스터 게이트를 모두 통과해 섬 최외곽 트랙을 완주했습니다! (+350점)');
               } else {
                 showToast(`🏃💨 <b>[스피드 부스터 발동!]</b> 달리기 속도가 빨라집니다! (트랙 체크포인트 ${trackCheckpointsCleared}/8 · +35점)`);
               }
             }
+          }
+        });
+      }
+      if (typeof trackCoins !== 'undefined') {
+        trackCoins.forEach(tc => {
+          if (tc.cleared) {
+            tc.respawnTimer += dt;
+            if (tc.respawnTimer > 15.0) { tc.cleared = false; tc.mesh.visible = true; tc.respawnTimer = 0; }
+            return;
+          }
+          tc.mesh.rotation.y += dt * 3.0;
+          tc.mesh.position.y = 1.2 + Math.sin(time * 3.5 + tc.x) * 0.16;
+          if (Math.hypot(playerRig.position.x - tc.x, playerRig.position.z - tc.z) < 2.2) {
+            tc.cleared = true; tc.mesh.visible = false; tc.respawnTimer = 0;
+            soundCoin();
+            createMagicImpact(tc.mesh.position, '#fde047');
+            window.addMindScore(20, '외곽 트랙 별빛 코인');
           }
         });
       }
@@ -7452,6 +7803,10 @@
       let mx = 0, mz = 0;
       if (input.w) mz -= 1; if (input.s) mz += 1; if (input.a) mx -= 1; if (input.d) mx += 1;
       if (input.joyX !== 0 || input.joyY !== 0) { mx = input.joyX; mz = input.joyY; }
+      if (input.lookJoyX !== 0 || input.lookJoyY !== 0) {
+        camState.yaw -= input.lookJoyX * dt * 2.4;
+        camState.pitch = THREE.MathUtils.clamp(camState.pitch + input.lookJoyY * dt * 1.6, 0.1, 1.15);
+      }
 
       // 사용자가 수동 조작 키를 입력하면 자동 걷기 즉시 해제 (사용자 조작 우선)
       if (mx !== 0 || mz !== 0 || input.space) {
@@ -7748,7 +8103,12 @@
         eyeL.scale.y = 0.1; eyeR.scale.y = 0.1;
         if (playerPhysics.blinkTimer > 3.65) { eyeL.scale.y = 1; eyeR.scale.y = 1; playerPhysics.blinkTimer = 0; }
       }
-      if (Math.hypot(playerRig.position.x, playerRig.position.z) > 70) playerRig.position.setLength(70);
+      const _distMaxR = Math.hypot(playerRig.position.x, playerRig.position.z);
+      if (_distMaxR > 94.8) {
+        const _clampK = 94.8 / _distMaxR;
+        playerRig.position.x *= _clampK;
+        playerRig.position.z *= _clampK;
+      }
 
       // Playroom 인터넷 원격 플레이어 3D 아바타 동기화 및 애니메이션
       if (window.playroomConnected && remotePlayers.size > 0) {
@@ -8128,20 +8488,26 @@
     const bindClick = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
     bindClick('btnGuestSelect', () => openModal('modalSpirit'));
     bindClick('btnJumpAction', doJump);
-    bindClick('btnBreatheWind', doBreatheWind);
+    bindClick('btnShootAction', () => shootMagicBullet());
+    bindClick('btnInteractAction', () => interactCurrentZone());
+    bindClick('btnPlaceAction', () => placeBlockAtPointer());
+    bindClick('btnJumpDock', () => doJump());
+    bindClick('btnBreatheWind', () => { doBreatheWind(); if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(); });
     bindClick('btnDanceAction', doDance);
     bindClick('btnMeditateAction', doMeditate);
     bindClick('btnFarewellAction', () => { openModal('modalFarewell'); renderFarewell(); });
 
-    // 패드(아이패드)/스마트폰 전용 우측 하단 4대 원터치 액션 패드 연결
+    // 패드(아이패드)/스마트폰 우측 세로 액션 패드 (하단 컨트롤 독의 핵심 동작과 1:1 완전 일치)
+    bindClick('btnTouchMagic', () => shootMagicBullet());
+    bindClick('btnTouchJump', () => doJump());
+    bindClick('btnTouchInteract', () => interactCurrentZone());
     bindClick('btnTouchBuild', () => placeBlockAtPointer());
     bindClick('btnTouchMine', () => { selectHotbarSlot(5); mineBlockAtPointer(); });
-    bindClick('btnTouchJump', () => doJump());
-    bindClick('btnTouchMagic', () => { selectHotbarSlot(6); shootMagicBullet(); });
+    bindClick('btnTouchBreath', () => { doBreatheWind(); if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(); });
     bindClick('btnTrophy', () => { openModal('modalTrophy'); renderTrophyCard(); });
     bindClick('btnTOD', cycleTimeOfDay);
     bindClick('btnStory', () => { openStoryBookModal(); switchStoryBookTab('text'); });
-    bindClick('btnHelp', () => showToast('WASD 이동 · SPACE 점프 · F 별빛응원 · C 심호흡 · G 대화 · M 3손가락탐정 · R 로봇수리'));
+    bindClick('btnHelp', () => showToast('WASD 이동 · SPACE 점프 · F 별빛발사 · C 심호흡 · G 대화·체험 · B 놓기 · M 3손가락탐정 · R 로봇수리'));
 
     function updateAudioUI() {
       const btn = document.getElementById('btnAudio');
@@ -8445,8 +8811,10 @@
     });
     bindClick('btnResetProgress', () => {
       Object.keys(state.quests).forEach(k => state.quests[k] = false);
-      state.mission = { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0 };
-      state.breathProgress = 0; document.getElementById('breathBarFill').style.width = '0%';
+      state.mission = { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0, robot: 0, stage: 0, flutter: 0, coop: 0, track: 0 };
+      state.breathProgress = 0;
+      const bFill = document.getElementById('breathBarFill');
+      if (bFill) bFill.style.width = '0%';
       campfireLight.color.set(0xef4444); beamMat.color.set(0xc084fc);
       joyRings.forEach(jr => { jr.cleared = false; jr.mesh.visible = true; });
       sadDrops.forEach(sd => { sd.cleared = false; sd.mesh.visible = true; });
@@ -8462,7 +8830,7 @@
     });
 
     // ==========================================
-    // 우측 상단 [설정] 드롭다운 메뉴 제어 & 라이트 모드 캐릭터 스튜디오 쇼케이스
+    // 우측 상단 [설정] 드롭다운 메뉴 & 터치 조이스틱 토글 & 캐릭터 쇼케이스
     // ==========================================
     window.toggleTopSettingsMenu = function(e) {
       if (e) e.stopPropagation();
@@ -8473,6 +8841,19 @@
       const menu = document.getElementById('topSettingsMenu');
       if (menu) menu.classList.remove('open');
     };
+    window.toggleTouchControlsUI = function(forceShow) {
+      const hidden = typeof forceShow === 'boolean'
+        ? !forceShow
+        : !document.body.classList.contains('touch-hidden');
+      document.body.classList.toggle('touch-hidden', hidden);
+      const badge = document.getElementById('touchUIBadge');
+      if (badge) badge.textContent = hidden ? '꺼짐' : '켜짐';
+      try { localStorage.setItem('inchan_touch_hidden', hidden ? '1' : '0'); } catch(e) {}
+    };
+    try {
+      const savedTouchHidden = localStorage.getItem('inchan_touch_hidden') === '1';
+      if (savedTouchHidden) window.toggleTouchControlsUI(false);
+    } catch(e) {}
     window.addEventListener('click', (e) => {
       const wrap = document.getElementById('topSettingsWrap');
       if (wrap && !wrap.contains(e.target)) {
@@ -9227,6 +9608,7 @@
       fr.needsCoopHelp = false;
       if (fr.heavyBasketRing) fr.heavyBasketRing.visible = false;
       fr.danceTimer = 3.8;
+      if (typeof window.completeExtraMission === 'function') window.completeExtraMission('coop', '협동의 우정 배지');
       if (typeof showPlayerBubble === 'function') {
         showPlayerBubble(`🧺 “영차영차! ${fr.name}야, 광주리를 사이에 두고 같이 점프하며 들어올리자!”`);
       }
