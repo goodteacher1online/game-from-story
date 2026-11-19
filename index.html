@@ -1914,6 +1914,7 @@
       hairColor: '#1c1917',
       equippedRewards: { wings: false, tiara: false, flameband: false, cape: false, scarf: false },
       stardustCount: 0,
+      collectedGemIds: [],
       mindNote: '모든 감정 손님은 나를 도우러 온 소중한 친구예요.',
       worryText: '',
       breathProgress: 0,
@@ -1943,6 +1944,7 @@
           shirtColor: state.shirtColor, hatType: state.hatType,
           mindNote: state.mindNote, worryText: state.worryText,
           quests: state.quests, mission: state.mission, curGuest: state.curGuest, mindScore: state.mindScore, mindLevel: state.mindLevel,
+          stardustCount: state.stardustCount || 0, collectedGemIds: state.collectedGemIds || [],
           boardPosts: state.boardPosts, likedIds: state.likedIds
         }));
       } catch (e) {}
@@ -1965,6 +1967,8 @@
         if (Array.isArray(d.likedIds)) state.likedIds = d.likedIds;
         if (typeof d.mindScore === 'number') state.mindScore = d.mindScore;
         if (typeof d.mindLevel === 'number') state.mindLevel = d.mindLevel;
+        if (typeof d.stardustCount === 'number') state.stardustCount = d.stardustCount;
+        if (Array.isArray(d.collectedGemIds)) state.collectedGemIds = d.collectedGemIds;
       } catch (e) {}
     }
     loadProgress();
@@ -2742,12 +2746,12 @@
       animatedAnimals.push({ group: pg, type: 'penguin', baseX: px, baseZ: pz, phase: idx * 2.0 });
     });
 
-    // 동물원 입구 간판
+    // 동물원 입구 간판 (그룹 로컬 좌표 기준)
     const zooSign = makeLandmarkStorySign({
       customGroup: true,
       chapter: '🐾 숲속 아기 동물원',
       title: '토끼·아기곰·펭귄 친구들과 교감하며 마음 달래기',
-      color: '#86efac', x: -18, z: -16
+      color: '#86efac', x: 0, z: 6
     });
     zooGroup.add(zooSign);
 
@@ -2799,7 +2803,7 @@
       customGroup: true,
       chapter: '🌺 치유의 유리온실 식물원',
       title: '무지개 꽃향기를 맡으며 편안하게 숨 고르기',
-      color: '#f43f5e', x: -26, z: 34
+      color: '#f43f5e', x: 0, z: 8
     });
     gardenGroup.add(gardenSign);
 
@@ -2852,7 +2856,7 @@
       customGroup: true,
       chapter: '📚 숲속 야외 마음 독서대',
       title: '《인찬이의 마음 손님》 원작 감정 동화책 함께 읽기',
-      color: '#38bdf8', x: 22, z: -18
+      color: '#38bdf8', x: 0, z: 6
     });
     libraryGroup.add(librarySign);
 
@@ -2906,7 +2910,7 @@
       customGroup: true,
       chapter: '🎡 신나는 마음 놀이터',
       title: '미끄럼틀·그네·시소를 타며 친구들과 활기차게 웃기',
-      color: '#fbbf24', x: 28, z: 28
+      color: '#fbbf24', x: 0, z: 6
     });
     playGroup.add(playSign);
 
@@ -2954,7 +2958,7 @@
       customGroup: true,
       chapter: '🏖️ 치유의 물놀이 풀장',
       title: '시원한 물줄기와 파라솔 쉼터에서 마음의 땀 식히기',
-      color: '#38bdf8', x: -48, z: -15
+      color: '#38bdf8', x: 0, z: 7
     });
     beachGroup.add(beachSign);
 
@@ -3249,7 +3253,7 @@
     const zoneNpcs = [];
     const npcDefinitions = [
       { key: 'joy', x: 44.0, z: -4.0, color: 0xf59e0b, title: '기쁨이 (별토끼)', dialogue: '“안녕! 나는 네 마음 광주리에 웃음을 가져다주는 별토끼 기쁨이야!<br>노란 트램펄린 위에서 마음껏 높이 점프하고 남동쪽 축구장에서도 골을 넣어 볼래?”', actionLabel: '트램펄린으로 점프하러 가기' },
-      { key: 'sad', x: -36.0, z: 0.0, color: 0x3b82f6, title: '슬픔이 (물방울)', dialogue: '“안녕… 나는 소중한 것을 기억하게 해주는 물방울 슬픔이야.<br>울고 싶을 땐 참지 않아도 괜찮아. 연못에 마음의 눈물을 띄워 보내자.”', actionLabel: '치유의 눈물 띄워 보내기' },
+      { key: 'sad', x: -36.0, z: -2.2, color: 0x3b82f6, title: '슬픔이 (물방울)', dialogue: '“안녕… 나는 소중한 것을 기억하게 해주는 물방울 슬픔이야.<br>울고 싶을 땐 참지 않아도 괜찮아. 연못에 마음의 눈물을 띄워 보내자.”', actionLabel: '치유의 눈물 띄워 보내기' },
       { key: 'anger', x: 4.5, z: 47.5, color: 0xef4444, title: '화 (불도깨비)', dialogue: '“으르렁! 나는 네 소중한 마음을 지키려고 찾아온 불도깨비 화야.<br>너무 뜨거워지면 나도 힘들어… 모닥불 앞에서 깊게 숨을 내쉬어 줄래?”', actionLabel: '불길 달래는 심호흡 시작' },
       { key: 'fear', x: -42.0, z: -42.0, color: 0xa855f7, title: '두려움 (꼬마망토)', dialogue: '“저기… 나는 위험을 알려주는 꼬마망토 두려움이야.<br>등대 주변의 어둠 구름들을 별빛 마법(F키)으로 비춰주면 용기가 생길 거야!”', actionLabel: '별빛 마법으로 어둠 비추기' },
       { key: 'worry', x: 30.5, z: -36.5, color: 0x10b981, title: '걱정이 (털실이)', dialogue: '“음… 머릿속이 실타래처럼 엉켜버렸어.<br>벤치에 앉아 네 걱정을 소원 연등에 적어 하늘로 날려 보내자!”', actionLabel: '걱정 털실 풀고 연등 날리기' }
@@ -4572,8 +4576,7 @@
         if (idx !== -1) emotionOres.splice(idx, 1);
         state.stardustCount = (state.stardustCount || 0) + 3;
         collectedStardust = Math.min(15, collectedStardust + 1);
-        const stEl = document.getElementById('stardustText');
-        if (stEl) stEl.textContent = `${collectedStardust}/15`;
+        if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
         saveProgress();
         showToast(`⛏️ <b>[${oData.name} 채굴 성공!]</b> 마음 별가루 보너스 획득!`);
         spawnConfetti(oreGroup.position);
@@ -4586,10 +4589,11 @@
       if (tHits.length > 0 && tHits[0].distance < 22) {
         const wt = worryThreads.find(w => w.mesh === tHits[0].object);
         if (wt && !wt.cleared) {
-          wt.cleared = true; wt.mesh.visible = false;
+          wt.cleared = true; wt.mesh.visible = false; wt.respawnTimer = 0;
           triggerArmSwing(wt.mesh.position.x, wt.mesh.position.z);
-          state.mission.worry = worryThreads.filter(t => t.cleared).length;
+          state.mission.worry = Math.min(3, worryThreads.filter(t => t.cleared).length);
           saveProgress();
+          if (typeof renderStoryMissionTracker === 'function') renderStoryMissionTracker();
           soundChime(520 + state.mission.worry * 45);
           createMagicImpact(wt.mesh.position, 0x10b981);
           showToast(state.mission.worry >= 3 ? '🧶 엉킨 털실 매듭을 모두 풀었어요! 벤치에서 소원 연등을 날려보세요.' : `🧶 곡괭이로 털실 매듭 풀기! (${state.mission.worry}/3)`);
@@ -4742,6 +4746,11 @@
         const dTop = 2.1;
         if (dTop <= py + 0.65 && dTop > highest) highest = dTop;
       }
+      // 10. 서쪽 슬픔의 치유 연못 중앙 단상 (위치: -36, 0, 반경 3.85m, 높이 0.35m) — 걸어서 올라갈 수 있도록 개방
+      if (Math.hypot(px - (-36), pz) <= 3.85) {
+        const sadTop = 0.35;
+        if (sadTop <= py + 0.55 && sadTop > highest) highest = sadTop;
+      }
 
       return highest;
     }
@@ -4859,8 +4868,7 @@
       pushOutCircle(0, 52, 3.8, 2.5);
       // 4) 북동쪽 걱정의 털실 벤치 (위치: 34, -40)
       pushOutBox(34, -40, 2.0, 0.75, 1.8);
-      // 4-2) 서쪽 슬픔의 치유 연못 중앙 단상 (위치: -36, 0)
-      pushOutCircle(-36, 0, 3.8, 0.35);
+      // (슬픔 연못 중앙 단상 -36, 0은 getGroundHeight로 자연 보행 가능)
       // 5) 북쪽 실시간 전광판 기둥 2개
       pushOutCircle(-7.5, -26.25, 0.78, 9.5);
       pushOutCircle(7.5, -26.25, 0.78, 9.5);
@@ -4994,11 +5002,42 @@
       initAudio(); soundMagic();
       triggerArmSwing();
       const s = state.spirits[state.curGuest];
-      const fwd = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRig.rotation.y);
-      const spawnPos = playerRig.position.clone().add(new THREE.Vector3(0, 1.4, 0)).addScaledVector(fwd, 0.8);
+      let targetPos = null;
+      let bestDist = 22.0;
+      // 1) 두려움 어둠 그림자 우선 3D 스마트 에임 어시스트
+      if (typeof fearShadows !== 'undefined') {
+        for (const fs of fearShadows) {
+          if (!fs.cleared && fs.group && fs.group.visible) {
+            const d = playerRig.position.distanceTo(fs.group.position);
+            if (d < bestDist) { bestDist = d; targetPos = fs.group.position.clone(); }
+          }
+        }
+      }
+      // 2) 주변에 협동 도움 필요한 친구가 있으면 자동 조준
+      if (!targetPos && typeof friendAgents !== 'undefined') {
+        let bestFDist = 16.0;
+        for (const fr of friendAgents) {
+          if (fr.needsCoopHelp && fr.group) {
+            const d = playerRig.position.distanceTo(fr.group.position);
+            if (d < bestFDist) { bestFDist = d; targetPos = fr.group.position.clone().add(new THREE.Vector3(0, 1.1, 0)); }
+          }
+        }
+      }
+      let dir3D;
+      const muzzleOrigin = playerRig.position.clone().add(new THREE.Vector3(0, 1.4, 0));
+      if (targetPos) {
+        dir3D = targetPos.clone().sub(muzzleOrigin).normalize();
+        playerRig.rotation.y = Math.atan2(dir3D.x, dir3D.z);
+      } else {
+        // 주변 타깃이 없을 때는 카메라 시선 수평 전방으로 직관 발사
+        dir3D = new THREE.Vector3(-Math.sin(camState.yaw), 0, -Math.cos(camState.yaw)).normalize();
+        playerRig.rotation.y = Math.atan2(dir3D.x, dir3D.z);
+      }
+      const horizFwd = new THREE.Vector3(dir3D.x, 0, dir3D.z).normalize();
+      const spawnPos = muzzleOrigin.addScaledVector(horizFwd, 0.75);
       const pMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.32), new THREE.MeshStandardMaterial({ color: s.color, emissive: s.color, emissiveIntensity: 1.5 }));
       pMesh.position.copy(spawnPos); scene.add(pMesh);
-      magicProjectiles.push({ mesh: pMesh, vel: fwd.clone().multiplyScalar(25.0), color: s.color, life: 1.6 });
+      magicProjectiles.push({ mesh: pMesh, vel: dir3D.clone().multiplyScalar(28.0), color: s.color, life: 1.6 });
     }
 
     function createMagicImpact(pos, colorHex) {
@@ -5159,29 +5198,31 @@
       }
       spawnConfetti(new THREE.Vector3(-36, 3.5, 0));
 
-      // 6.5초 동안 서서히 물기둥이 은은한 치유의 비로 흩뿌려짐
-      let elapsed = 0;
+      // 6.5초 동안 서서히 물기둥이 은은한 치유의 비로 흩뿌려짐 (실시간 경과 기반 확정 정리)
+      const startTimeMs = performance.now();
       const animTimer = setInterval(() => {
-        elapsed += 0.05;
+        const elapsed = (performance.now() - startTimeMs) / 1000;
         colMesh.rotation.y += 0.08;
         colMesh.scale.x = 1.0 + Math.sin(elapsed * 5) * 0.15;
         colMesh.scale.z = colMesh.scale.x;
         if (elapsed > 6.0) {
-          clearInterval(animTimer);
-          colMat.opacity -= 0.05;
+          colMat.opacity = Math.max(0, 0.85 * (1 - (elapsed - 6.0) / 0.8));
           if (colMat.opacity <= 0) {
+            clearInterval(animTimer);
             worldGroup.remove(fountainGroup);
+            colGeo.dispose();
+            colMat.dispose();
             const idx = sadFountainPillars.indexOf(fountainGroup);
             if (idx !== -1) sadFountainPillars.splice(idx, 1);
           }
         }
       }, 50);
 
-      // 마음 조각 +10 지급 및 마음 점수 보너스
-      state.stardust = (state.stardust || 0) + 10;
+      // 마음 조각 +5 지급 및 마음 점수 보너스
       state.stardustCount = (state.stardustCount || 0) + 5;
       state.mission.sad = 3;
       saveProgress();
+      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
       window.addMindScore(300, '💧 치유의 눈물 떠나보내기 & 무지개 연꽃 개화! 🌈');
 
       if (!state.quests.sad) {
@@ -5467,7 +5508,7 @@
       breathParticles.push({ mesh: bp, active: false, life: 0, vel: new THREE.Vector3() });
     }
 
-    window.triggerDeepBreathCoolFire = function() {
+    window.triggerDeepBreathCoolFire = function(shouldCoolFire = false) {
       // 남쪽 모닥불(0, 52) 근처일 때는 먼저 모닥불 쪽으로 자연스럽게 얼굴 방향을 회전
       const distToFire = Math.hypot(playerRig.position.x - 0, playerRig.position.z - 52);
       if (distToFire < 9.5 && distToFire > 0.2) {
@@ -5477,7 +5518,7 @@
       const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRig.rotation.y).normalize();
       const mouthPos = playerRig.position.clone().add(new THREE.Vector3(0, 1.85, 0)).add(forward.clone().multiplyScalar(0.52));
 
-      breathParticles.forEach((bp, idx) => {
+      breathParticles.forEach((bp) => {
         bp.mesh.position.copy(mouthPos);
         bp.mesh.material.opacity = 0.88;
         bp.active = true;
@@ -5485,19 +5526,14 @@
         bp.vel.copy(forward).multiplyScalar(4.8 + Math.random() * 2.4).add(new THREE.Vector3((Math.random() - 0.5) * 0.9, 0.25 + Math.random() * 0.3, (Math.random() - 0.5) * 0.9));
       });
 
-      if (distToFire < 7.5) {
+      // 실제 불길 크기 축소는 타이밍 적중 시에만 실행 (중복 토스트/미스 오작동 방지)
+      if (distToFire < 9.5 && shouldCoolFire) {
         if (fireAngerStage > 1) {
           fireAngerStage -= 1;
-          soundChime(440 + fireAngerStage * 80);
-          showToast(`💨 <b>후우— 깊은 심호흡!</b> 화나는 불길이 차분하게 가라앉습니다. (남은 단계: ${fireAngerStage - 1}회)`);
-          window.addMindScore(30, '심호흡으로 불길 가라앉히기');
-          createMagicImpact(new THREE.Vector3(0, 1.5, 52), '#38bdf8');
         } else {
-          fireAngerStage = 3; // 다시 순환 연습 가능
-          showToast('🌸 <b>마음의 평온:</b> 거센 화가 바람 빠진 풍선처럼 작아지고 따뜻하고 포근한 온기만 남았습니다! (+60점)');
-          window.addMindScore(60, '화 다스리기 마스터');
-          createMagicImpact(new THREE.Vector3(0, 1.5, 52), '#fbbf24');
+          fireAngerStage = 3;
         }
+        createMagicImpact(new THREE.Vector3(0, 1.5, 52), '#38bdf8');
       }
     };
 
@@ -5714,6 +5750,7 @@
       createMagicImpact(toyRobotGroup.position.clone().add(new THREE.Vector3(0, 1.5, 0)), '#fbbf24');
       window.addMindScore(250, '🤖 제4장 나-전달법 & 장난감 로봇 수리 완성!');
       state.stardustCount = (state.stardustCount || 0) + 6;
+      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
       if (typeof window.completeExtraMission === 'function') window.completeExtraMission('robot', '평화의 대화 배지');
       else saveProgress();
       showCongratsBanner('🤖 제4장 평화의 나-전달법 성공!', '“네가 장난감을 망가뜨려서 속상했어. 조심해서 놀면 좋겠어!” 로봇이 멋지게 수리되었습니다! (+250점)');
@@ -5787,6 +5824,7 @@
         stageSign.tex.needsUpdate = true;
         window.addMindScore(200, '🎤 제6장 학예 발표회 연습 마스터!');
         state.stardustCount = (state.stardustCount || 0) + 5;
+        if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
         if (typeof window.completeExtraMission === 'function') window.completeExtraMission('stage', '자신감 스포트라이트');
         else saveProgress();
         showCongratsBanner('🎤 제6장 학예 발표회 연습 완성!', '걱정이 덕분에 지금 할 수 있는 일을 찾아 멋지게 준비했습니다! (+200점)');
@@ -5907,6 +5945,15 @@
     // ------------------------------------------------------------------------------
     let activePlaygroundRide = null; // { type: 'slide' | 'seesaw' | 'swing' | 'chair', timer: 0 }
 
+    function cancelPlaygroundRide() {
+      if (!activePlaygroundRide) return;
+      activePlaygroundRide = null;
+      if (typeof seePlank !== 'undefined') seePlank.rotation.set(0, 0, 0);
+      if (typeof swSeat1 !== 'undefined') swSeat1.position.set(-0.9, 0.65, 0);
+      leftArm.rotation.set(0, 0, 0);
+      rightArm.rotation.set(0, 0, 0);
+    }
+
     window.ridePlaygroundSlide = function() {
       initAudio();
       soundJump(true);
@@ -5953,6 +6000,80 @@
       showPlayerBubble('📚 “숲속 독서대 의자에 앉아 《인찬이의 마음 손님》 동화책을 읽으니 마음이 따뜻해져!”');
       showToast('📚 <b>[숲속 독서대 독서 타임]</b> 의자에 앉아 감정 손님 동화책의 지혜를 읽었습니다! (+90점)');
       window.addMindScore(90, '📚 숲속 독서대 동화책 읽기');
+    };
+
+    window.interactZooAnimals = function() {
+      initAudio();
+      soundChime(659);
+      setTimeout(() => soundChime(784), 90);
+      triggerArmSwing(-18, -22);
+      if (typeof animatedAnimals !== 'undefined') {
+        animatedAnimals.forEach((a, idx) => {
+          const wp = new THREE.Vector3();
+          a.group.getWorldPosition(wp);
+          a.group.position.y = 0.65;
+          createMagicImpact(wp.add(new THREE.Vector3(0, 0.5, 0)), idx % 2 === 0 ? '#f472b6' : '#86efac');
+        });
+      }
+      showPlayerBubble('🐾 “토끼야, 아기곰아, 펭귄아! 너희와 함께 있으니 마음이 포근해져!”');
+      showToast('🐾 <b>[숲속 아기 동물원 교감!]</b> 귀여운 동물 친구들을 쓰다듬고 당근을 나눠주었습니다! (+60점)');
+      window.addMindScore(60, '🐾 아기 동물원 친구들과 교감');
+    };
+
+    window.interactGardenBloom = function() {
+      initAudio();
+      soundChime(587);
+      setTimeout(() => soundChime(880), 110);
+      playerPhysics.speedBuffTimer = Math.max(playerPhysics.speedBuffTimer || 0, 10.0);
+      createMagicImpact(new THREE.Vector3(-26, 1.5, 26), '#f43f5e');
+      createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '#34d399');
+      showPlayerBubble('🌺 “유리온실 무지개 꽃향기를 깊게 들이마시니 마음이 환해졌어!”');
+      showToast('🌺 <b>[유리온실 꽃향기 치유!]</b> 꽃향기를 맡으며 숨을 고르고 가뿐한 발걸음을 얻었습니다! (+60점)');
+      window.addMindScore(60, '🌺 유리온실 꽃향기 힐링');
+    };
+
+    window.interactBeachSplash = function() {
+      initAudio();
+      soundJump(true);
+      createSadRipple(-48, -22);
+      setTimeout(() => createSadRipple(-48, -22), 180);
+      playerPhysics.velY = 8.5;
+      playerPhysics.isGrounded = false;
+      createMagicImpact(new THREE.Vector3(-48, 0.8, -22), '#38bdf8');
+      showPlayerBubble('🏖️ “풍덩! 시원한 물줄기에 답답한 마음의 땀이 씻겨 내려가!”');
+      showToast('🏖️ <b>[물놀이 풀장 물보라!]</b> 시원한 물방울과 함께 마음이 산뜻해졌습니다! (+60점)');
+      window.addMindScore(60, '🏖️ 물놀이 풀장 힐링');
+    };
+
+    window.kickOrResetSoccerBall = function() {
+      initAudio();
+      if (typeof soccerBall === 'undefined') return;
+      const dist = playerRig.position.distanceTo(soccerBall.pos);
+      if (dist < 4.8) {
+        const goalDir = new THREE.Vector3(52 - soccerBall.pos.x, 0.3, 24.2 - soccerBall.pos.z).normalize();
+        soccerBall.vel.copy(goalDir.multiplyScalar(15.5));
+        playerRig.rotation.y = Math.atan2(goalDir.x, goalDir.z);
+        triggerArmSwing(soccerBall.pos.x, soccerBall.pos.z);
+        soundJump(true);
+        createMagicImpact(soccerBall.pos, '#f59e0b');
+        showToast('⚽ <b>강력한 기쁨 슛!</b> 축구공이 골대를 향해 날아갑니다!');
+      } else {
+        soccerBall.pos.set(52, 0.42, 15);
+        soccerBall.vel.set(0, 0, 0);
+        soccerBall.justScored = false;
+        soundChime(523);
+        createMagicImpact(soccerBall.pos, '#f59e0b');
+        showToast('⚽ <b>축구공을 중앙(52, 15)으로 불러왔습니다!</b> 공 가까이에서 차거나 [G]로 슛해보세요.');
+      }
+    };
+
+    window.startOuterTrackDash = function() {
+      initAudio();
+      soundSpring();
+      playerPhysics.speedBuffTimer = Math.max(playerPhysics.speedBuffTimer || 0, 8.0);
+      createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 1.0, 0)), '#06b6d4');
+      showPlayerBubble('🏃 “출발! 섬 맨 바깥쪽 달리기 트랙 8개 부스터를 향해 질주하자!”');
+      showToast('🏁 <b>[외곽 트랙 스타트!]</b> 부스터 속도가 켜졌습니다! 트랙을 따라 8개 게이트를 통과해 보세요.');
     };
 
     // ------------------------------------------------------------------------------
@@ -6192,6 +6313,11 @@
     // 자동 걷기(Auto-Walk) 상태 관리
     let isAutoWalking = false;
     let autoWalkTarget = null;
+    let autoWalkFollowFriend = null;
+    let autoWalkStuckTimer = 0;
+    let autoWalkAvoidTimer = 0;
+    let autoWalkAvoidSign = 1;
+    const autoWalkLastPos = new THREE.Vector3();
 
     window.guideToStoryQuest = function(key) {
       initAudio();
@@ -6206,12 +6332,24 @@
 
     window.startAutoWalkToQuest = function(key) {
       initAudio();
+      cancelPlaygroundRide();
       activeGuidedQuestKey = key;
       const meta = storyQuestMeta.find(m => m.key === key);
       renderStoryMissionTracker();
       if (meta) {
         isAutoWalking = true;
-        autoWalkTarget = new THREE.Vector3(meta.x, 0, meta.z);
+        autoWalkFollowFriend = null;
+        if (key === 'coop' && typeof friendAgents !== 'undefined' && friendAgents.length > 0) {
+          const targetFr = friendAgents.find(f => f.needsCoopHelp) || friendAgents[0];
+          autoWalkFollowFriend = targetFr;
+          autoWalkTarget = new THREE.Vector3(targetFr.group.position.x, 0, targetFr.group.position.z);
+        } else {
+          autoWalkTarget = new THREE.Vector3(meta.x, 0, meta.z);
+        }
+        autoWalkStuckTimer = 0;
+        autoWalkAvoidTimer = 0;
+        autoWalkAvoidSign = 1;
+        autoWalkLastPos.copy(playerRig.position);
         soundQuestComplete();
         showToast(`<b>[${meta.chapter}]</b> 방향으로 이동합니다.<br><span style="font-size:11px; color:#52525b;">(조이스틱 또는 방향키를 누르면 즉시 직접 조작으로 전환됩니다)</span>`);
       }
@@ -6221,6 +6359,7 @@
       if (isAutoWalking) {
         isAutoWalking = false;
         autoWalkTarget = null;
+        autoWalkFollowFriend = null;
       }
     };
 
@@ -6305,7 +6444,7 @@
       if (e.key === 'Shift') input.shift = true;
       if (e.code === 'Space') { e.preventDefault(); doJump(); }
       if (k === 'f') shootMagicBullet();
-      if (k === 'c') { doBreatheWind(); if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(); }
+      if (k === 'c') doBreatheWind();
       if (k === 'e') doDance();
       if (k === 'q') doMeditate();
       if (k === 'g') interactCurrentZone();
@@ -6345,6 +6484,13 @@
       if (typeof seesawGroup !== 'undefined' && raycaster.intersectObjects(seesawGroup.children, true).length > 0) return { type: 'seesaw' };
       if (typeof swingGroup !== 'undefined' && raycaster.intersectObjects(swingGroup.children, true).length > 0) return { type: 'swing' };
       if (typeof libraryGroup !== 'undefined' && raycaster.intersectObjects(libraryGroup.children, true).length > 0) return { type: 'library' };
+      if (typeof worryThreads !== 'undefined') {
+        const activeYarnMeshes = worryThreads.filter(t => !t.cleared && t.mesh.visible).map(t => t.mesh);
+        const yHits = raycaster.intersectObjects(activeYarnMeshes, false);
+        if (yHits.length > 0 && yHits[0].distance < 22 && typeof yHits[0].object.userData?.index === 'number') {
+          return { type: 'worryThread', index: yHits[0].object.userData.index };
+        }
+      }
       const friendMeshes = friendAgents.map(f => f.group);
       const fHits = raycaster.intersectObjects(friendMeshes, true);
       if (fHits.length > 0 && fHits[0].distance < 24) {
@@ -6440,6 +6586,7 @@
     });
 
     function doJump() {
+      cancelPlaygroundRide();
       if (playerPhysics.jumpCount < playerPhysics.maxJumps) {
         const isDouble = (playerPhysics.jumpCount === 1);
         playerPhysics.velY = isDouble ? 11.5 : 9.5;
@@ -6505,13 +6652,13 @@
     function doBreatheWind() {
       initAudio(); soundChime(396);
       const distFire = Math.hypot(playerRig.position.x, playerRig.position.z - 52);
-      if (distFire < 7.5) {
-        if (timingCursorPct >= 36 && timingCursorPct <= 64) {
+      if (distFire < 9.5) {
+        const isTimingHit = (timingCursorPct >= 36 && timingCursorPct <= 64);
+        if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(isTimingHit);
+        if (isTimingHit) {
           state.mission.anger = Math.min(3, (state.mission.anger || 0) + 1);
           soundChime(659);
-          document.getElementById('zpProgress').textContent = `${state.mission.anger}/3`;
           window.addMindScore(70, '마음 쉼터 호흡 성공!');
-          createMagicImpact(new THREE.Vector3(0, 1.2, 52), '#f97316');
           if (state.mission.anger >= 3) {
             triggerCampfireDisperse();
             window.addMindScore(250, '🔥 화의 불꽃 평온 전환!');
@@ -6523,6 +6670,7 @@
               state.mission.anger = 0;
               if (typeof campfireLight !== 'undefined') campfireLight.color.set(0xf97316);
               saveProgress();
+              if (typeof renderStoryMissionTracker === 'function') renderStoryMissionTracker();
               if (typeof updateZonePrompt === 'function') updateZonePrompt();
             }, 2600);
           } else {
@@ -6530,11 +6678,14 @@
           }
         } else {
           state.mission.anger = Math.max(0, (state.mission.anger || 0) - 1);
-          document.getElementById('zpProgress').textContent = `${state.mission.anger}/3`;
           soundChime(220);
           showToast('<b>쉼터를 빗나갔어요!</b> 커서가 가운데 초록 존에 올 때 [C]를 눌러보세요.');
         }
+        saveProgress();
+        if (typeof renderStoryMissionTracker === 'function') renderStoryMissionTracker();
+        if (typeof updateZonePrompt === 'function') updateZonePrompt();
       } else {
+        if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(false);
         showToast('<b>후~ 심호흡 불기!</b> 몸 안의 긴장을 부드럽게 풀어봅니다.');
       }
     }
@@ -6584,10 +6735,17 @@
     }
 
     function interactCurrentZone() {
-      if (!state.activeZone) { showToast('5개 구역 감정 손님, 설렘이, 놀이터, 독서대, 친구 아바타 근처에서 [G]를 눌러보세요.'); return; }
+      if (!state.activeZone) { showToast('감정 손님, 로봇, 발표 무대, 설렘이, 놀이터, 독서대, 테마파크, 친구 근처에서 [G]를 눌러보세요.'); return; }
       if (state.activeZone === 'board') { openBoardModal(); return; }
       if (state.activeZone === 'mom') { window.openMomModal(); return; }
       if (state.activeZone === 'flutter') { window.activateFlutterBlessing(); return; }
+      if (state.activeZone === 'robot') { window.openRobotIMessageModal(); return; }
+      if (state.activeZone === 'stage') { window.triggerStagePractice(); return; }
+      if (state.activeZone === 'soccer') { window.kickOrResetSoccerBall(); return; }
+      if (state.activeZone === 'track') { window.startOuterTrackDash(); return; }
+      if (state.activeZone === 'zoo') { window.interactZooAnimals(); return; }
+      if (state.activeZone === 'garden') { window.interactGardenBloom(); return; }
+      if (state.activeZone === 'beach') { window.interactBeachSplash(); return; }
       if (state.activeZone === 'playground') { window.ridePlaygroundSlide(); return; }
       if (state.activeZone === 'library') { window.sitLibraryChair(); return; }
       if (state.activeZone === 'worry') {
@@ -6787,53 +6945,81 @@
     }
 
     let lastPromptZone = null;
+    let lastPromptSig = '';
     function getZoneProgressText(zone) {
       if (zone === 'joy' && !state.quests.joy) return `하늘 링 통과 ${state.mission.joy}/3`;
       if (zone === 'sad' && !state.quests.sad) return `기억의 물방울 ${state.mission.sad}/3`;
       if (zone === 'anger' && !state.quests.anger) return `호흡 리듬 성공 ${state.mission.anger}/3`;
       if (zone === 'fear' && !state.quests.fear) return `어둠 그림자 정화 ${state.mission.fear}/5`;
       if (zone === 'worry' && !state.quests.worry) return `털실 매듭 풀기 ${state.mission.worry}/3`;
+      if (zone === 'robot') return state.quests.robot ? '수리 완료' : '로봇 수리 0/1';
+      if (zone === 'stage') return state.quests.stage ? '발표 완성' : `발표 연습 ${state.mission.stage || 0}/3`;
+      if (zone === 'flutter') return state.quests.flutter ? '3단 점프 활성' : '날개 축복 0/1';
+      if (zone === 'track') return state.quests.track ? `완주 ${trackLapCount}바퀴` : `부스터 통과 ${state.mission.track || 0}/8`;
       return '';
     }
 
     function updateZonePrompt() {
       let foundZone = null;
       const px = playerRig.position.x, pz = playerRig.position.z;
-      const zoneRadius = { joy: 7.5, sad: 9.5, anger: 9.0, fear: 8.5, worry: 9.5 };
-      for (const lm of landmarkCoords) {
-        if (Math.hypot(px - lm.x, pz - lm.z) < zoneRadius[lm.key]) { foundZone = lm.key; break; }
+      // 독립 미션 포인트(로봇/무대/설렘이) 및 테마파크·축구·트랙 우선 판정
+      if (Math.hypot(px - (-7.5), pz - 48) < 4.6) foundZone = 'robot';
+      else if (Math.hypot(px - 52, pz - (-32)) < 6.5) foundZone = 'stage';
+      else if (Math.hypot(px - 0, pz - (-10.5)) < 4.6) foundZone = 'flutter';
+      else if (Math.hypot(px - 64.7, pz - 64.7) < 7.0) foundZone = 'track';
+
+      if (!foundZone) {
+        const zoneRadius = { joy: 7.5, sad: 9.5, anger: 9.0, fear: 8.5, worry: 9.5 };
+        for (const lm of landmarkCoords) {
+          if (Math.hypot(px - lm.x, pz - lm.z) < zoneRadius[lm.key]) { foundZone = lm.key; break; }
+        }
       }
       if (!foundZone && Math.hypot(px, pz - (-22)) < 7.0) foundZone = 'board';
-      // 제10장 코랄핑크 설렘이 NPC 근접 감지 (0, -10.5)
-      if (!foundZone && Math.hypot(px - 0, pz - (-10.5)) < 4.6) foundZone = 'flutter';
       // 온화한 엄마 NPC 근접 감지 (14, 12)
       const distToMom = Math.hypot(px - 14, pz - 12);
       if (!foundZone && distToMom < 5.2) foundZone = 'mom';
-      // 신나는 테마 놀이터 근접 감지 (28, 22)
+      // 축구 광장 근접 감지 (52, 19.5 — 골대와 공 모두 커버)
+      if (!foundZone && Math.hypot(px - 52, pz - 19.5) < 9.5) foundZone = 'soccer';
+      // 4대 힐링 테마파크 근접 감지 (놀이터, 독서대, 동물원, 식물원, 해변)
       if (!foundZone && Math.hypot(px - 28, pz - 22) < 8.5) foundZone = 'playground';
-      // 숲속 야외 마음 독서대 근접 감지 (22, -24)
       if (!foundZone && Math.hypot(px - 22, pz - (-24)) < 7.8) foundZone = 'library';
+      if (!foundZone && Math.hypot(px - (-18), pz - (-22)) < 8.5) foundZone = 'zoo';
+      if (!foundZone && Math.hypot(px - (-26), pz - 26) < 8.5) foundZone = 'garden';
+      if (!foundZone && Math.hypot(px - (-48), pz - (-22)) < 8.5) foundZone = 'beach';
 
       let nearFriend = null, bestFriendDist = 4.5;
       for (const fr of friendAgents) {
         const d = Math.hypot(px - fr.group.position.x, pz - fr.group.position.z);
         if (d < bestFriendDist) { bestFriendDist = d; nearFriend = fr; }
       }
-      if (nearFriend && (!foundZone || bestFriendDist < 3.0)) foundZone = 'friend:' + nearFriend.id;
+      // 협동 도움 요청 중인 친구는 최우선, 일반 친구는 고정 체험 구역 침범 방지(<1.8m 밀착 시에만 전환)
+      if (nearFriend && (!foundZone || nearFriend.needsCoopHelp || bestFriendDist < 1.8)) {
+        foundZone = 'friend:' + nearFriend.id;
+      }
 
       state.activeZone = foundZone;
       const box = document.getElementById('zonePrompt');
-      if (!foundZone) { if (lastPromptZone !== null) { box.classList.remove('visible'); lastPromptZone = null; } return; }
-
-      const progEl = document.getElementById('zpProgress');
-      if (!foundZone.startsWith('friend:') && !['board','flutter','mom','playground','library'].includes(foundZone)) {
-        progEl.textContent = getZoneProgressText(foundZone);
-      } else {
-        progEl.textContent = '';
+      if (!foundZone) {
+        if (lastPromptZone !== null) {
+          box.classList.remove('visible');
+          lastPromptZone = null;
+          lastPromptSig = '';
+        }
+        return;
       }
 
-      if (lastPromptZone === foundZone) return;
+      const progEl = document.getElementById('zpProgress');
+      const progTxt = !foundZone.startsWith('friend:') && !['board','mom','playground','library','soccer','zoo','garden','beach'].includes(foundZone)
+        ? getZoneProgressText(foundZone) : '';
+      if (progEl) {
+        progEl.textContent = progTxt;
+        progEl.style.display = progTxt ? 'inline-block' : 'none';
+      }
+
+      const sig = foundZone + '|' + (state.mission[foundZone] || 0) + '|' + (state.quests[foundZone] ? 1 : 0) + '|' + (foundZone.startsWith('friend:') ? (nearFriend?.needsCoopHelp ? 1 : 0) : 0);
+      if (lastPromptZone === foundZone && lastPromptSig === sig) return;
       lastPromptZone = foundZone;
+      lastPromptSig = sig;
 
       if (foundZone === 'playground') {
         document.getElementById('zpChip').style.background = '#fbbf24';
@@ -6916,39 +7102,47 @@
       }
 
       const guides = {
-        board: { t: '실시간 마음 게시판', d: '친구들이 남긴 마음 이야기를 읽고 내 감정도 공유해 보세요!', actText: '게시판 열기 (G)', actFn: openBoardModal },
+        board: { color: '#ff5800', t: '실시간 마음 게시판', d: '친구들이 남긴 마음 이야기를 읽고 내 감정도 공유해 보세요!', actText: '게시판 열기 (G)', actFn: openBoardModal },
         joy: { t: '기쁨의 트램펄린 & 축구 광장', d: state.quests.joy ? '기쁨 구슬 획득 완료! 축구공도 골대에 차 넣어보세요!' : '트램펄린과 더블 점프로 공중의 황금 링 3개를 통과하세요!' },
-        sad: { t: '슬픔의 치유 연못', d: '연못에 치유의 눈물 구슬을 흘려보내면 8송이 연꽃과 22m 무지개 분수, 파란 별빛이 피어오릅니다!', actText: '💧 치유의 눈물 떠나보내기', actFn: () => triggerSadRitual() },
-        anger: { t: '화의 캠프파이어 & 부서진 로봇', d: '초록색 중앙 타이밍 구역에 커서가 왔을 때 [C]키 심호흡을 하고, 동생에게 나-전달법[R]으로 로봇을 고쳐보세요!', actText: '타이밍 심호흡 (C)', actFn: () => { doBreatheWind(); if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(); } },
+        sad: { t: '슬픔의 치유 연못', d: '연못에 치유의 눈물 구슬을 흘려보내면 8송이 연꽃과 22m 무지개 분수, 파란 별빛이 피어오릅니다!', actText: '치유의 눈물 떠나보내기', actFn: () => triggerSadRitual() },
+        anger: { t: '화의 캠프파이어', d: '초록색 중앙 타이밍 구역에 커서가 왔을 때 [C]키 심호흡을 하고, 옆 로봇에서 나-전달법[R]으로 화해해 보세요!', actText: '타이밍 심호흡 (C)', actFn: () => doBreatheWind() },
         fear: { t: '두려움의 수호 등대', d: state.quests.fear ? '등대 빛이 용기를 비추고 있어요!' : '움직이는 어둠 그림자 5개에 [F] 키로 별빛 마법을 쏘세요.', actText: '별빛 마법 (F)', actFn: shootMagicBullet },
-        worry: { t: '🏮 소원 연등 벤치 & 학예회 발표 무대', d: (state.mission.worry >= 3) ? '✨ 털실 3개를 모두 풀었습니다! 소원 연등을 띄우거나 옆 무대에서 발표 연습을 해보세요!' : `주변 잔디밭의 엉킨 털실 3개를 밟아 풀고 소원 연등과 학예회 무대 발표 연습에 도전하세요! (현재: ${state.mission.worry || 0}/3)`, actText: '🏮 소원 연등 날리기 (G)', actFn: () => {
+        worry: { t: '소원 연등 벤치', d: (state.mission.worry >= 3) ? '털실 3개를 모두 풀었습니다! 소원 연등을 띄우거나 옆 무대에서 발표 연습을 해보세요!' : `주변 잔디밭의 엉킨 털실 3개를 풀고 소원 연등을 하늘로 띄워보세요! (현재: ${state.mission.worry || 0}/3)`, actText: '소원 연등 날리기 (G)', actFn: () => {
           if ((state.mission.worry || 0) < 3) {
             soundChime(440);
             showToast(`🌱 <b>먼저 주변 잔디밭의 엉킨 털실 3개를 풀어주세요!</b> (현재: ${state.mission.worry || 0}/3)`);
           } else {
             openModal('modalWorry');
           }
-        } }
+        } },
+        robot: { color: '#6366f1', t: '제4장 부서진 장난감 로봇 (나-전달법)', d: state.quests.robot ? '나-전달법으로 동생과 화해해 로봇을 멋지게 고쳤어요!' : '화난 마음을 비난 대신 "나-전달법"으로 표현해 로봇을 고쳐보세요.', actText: '나-전달법 대화 & 수리 (G)', actFn: () => window.openRobotIMessageModal() },
+        stage: { color: '#e11d48', t: '제6장 학예 발표회 미니 무대', d: state.quests.stage ? '차근차근 준비해 학예 발표회를 멋지게 마쳤어요!' : '무대에 올라 지금 할 수 있는 발표 연습을 3단계로 진행해 보세요.', actText: '발표 연습하기 (G)', actFn: () => window.triggerStagePractice() },
+        soccer: { color: '#f59e0b', t: '기쁨 축구 광장 & 골대', d: '축구공 가까이에서 발로 차거나 [G]키로 골대를 향해 멋진 슛을 날려보세요!', actText: '슛 날리기 / 공 리셋 (G)', actFn: () => window.kickOrResetSoccerBall() },
+        track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: '섬 바깥쪽 붉은 트랙을 따라 8개의 스피드 부스터 게이트를 통과해 1바퀴 완주에 도전하세요!', actText: '스피드 대시 출발 (G)', actFn: () => window.startOuterTrackDash() },
+        zoo: { color: '#22c55e', t: '숲속 아기 동물원', d: '토끼, 아기곰, 펭귄 친구들과 교감하며 마음을 따뜻하게 달래보세요.', actText: '동물 친구들과 교감하기 (G)', actFn: () => window.interactZooAnimals() },
+        garden: { color: '#f43f5e', t: '치유의 유리온실 식물원', d: '무지개 빛 꽃향기를 깊게 들이마시며 편안하게 숨을 고르고 가벼운 발걸음을 얻어보세요.', actText: '꽃향기 치유 호흡 (G)', actFn: () => window.interactGardenBloom() },
+        beach: { color: '#38bdf8', t: '치유의 물놀이 해변 & 풀장', d: '시원한 물줄기와 파라솔 쉼터에서 물보라 점프를 하며 마음의 땀을 식혀보세요.', actText: '시원한 물보라 점프 (G)', actFn: () => window.interactBeachSplash() }
       };
       const g = guides[foundZone];
-      document.getElementById('zpChip').style.background = foundZone === 'board' ? '#ff5800' : state.spirits[foundZone].hex;
+      document.getElementById('zpChip').style.background = g.color || state.spirits[foundZone]?.hex || '#ff5800';
       document.getElementById('zpTitle').textContent = g.t;
       document.getElementById('zpDesc').textContent = g.d;
       document.getElementById('breathBarWrap').classList.toggle('active', foundZone === 'anger');
 
       const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
-      if (g.actText && (foundZone === 'board' || foundZone === 'worry' || foundZone === 'sad' || !state.quests[foundZone])) {
+      const alwaysActZones = ['board','worry','sad','robot','stage','soccer','track','zoo','garden','beach'];
+      if (g.actText && (alwaysActZones.includes(foundZone) || !state.quests[foundZone])) {
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = g.actText; b1.onclick = g.actFn; btnsEl.appendChild(b1);
       }
       if (foundZone === 'anger') {
-        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = '#2563eb'; bRob.textContent = '🤖 로봇 수리 & 나-전달법 (R)'; bRob.onclick = () => window.openRobotIMessageModal();
+        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = '#2563eb'; bRob.textContent = '로봇 수리 & 나-전달법 (R)'; bRob.onclick = () => window.openRobotIMessageModal();
         btnsEl.appendChild(bRob);
       }
       if (foundZone === 'worry') {
-        const bStg = document.createElement('button'); bStg.className = 'zp-btn'; bStg.style.background = '#e11d48'; bStg.textContent = '🎤 학예회 발표 연습하기'; bStg.onclick = () => window.triggerStagePractice();
+        const bStg = document.createElement('button'); bStg.className = 'zp-btn'; bStg.style.background = '#e11d48'; bStg.textContent = '학예회 발표 연습하기'; bStg.onclick = () => window.triggerStagePractice();
         btnsEl.appendChild(bStg);
       }
-      if (foundZone !== 'board') {
+      if (state.spirits[foundZone] && npcDefinitions.some(d => d.key === foundZone)) {
         const bNpc = document.createElement('button'); bNpc.className = 'zp-btn secondary'; bNpc.textContent = '손님 대화 (G)'; bNpc.onclick = () => openNpcDialogue(foundZone);
         btnsEl.appendChild(bNpc);
       }
@@ -7001,7 +7195,11 @@
 
     // 15개 황금 마음 별가루 (Stardust Gems)
     const stardustGems = [];
-    let collectedStardust = 0;
+    let collectedStardust = Array.isArray(state.collectedGemIds) ? Math.min(15, state.collectedGemIds.length) : 0;
+    window.updateStardustCountUI = function() {
+      const stEl = document.getElementById('stardustText');
+      if (stEl) stEl.textContent = `${collectedStardust}/15 (${state.stardustCount || 0})`;
+    };
     const stardustCoords = [
       [2, 1.2, 4], [-4, 1.2, 6], [8, 1.5, -4], [-8, 2.0, -12],
       [-16, 2.5, 8], [14, 1.8, 14], [-2, 1.5, 22], [4, 1.5, 18],
@@ -7025,8 +7223,11 @@
       ring.rotation.x = Math.PI / 3;
       starMesh.add(ring);
 
-      stardustGems.push({ mesh: starMesh, collected: false, baseY: coord[1], phase: idx * 0.7 });
+      const wasCollected = Array.isArray(state.collectedGemIds) && state.collectedGemIds.includes(idx);
+      starMesh.visible = !wasCollected;
+      stardustGems.push({ mesh: starMesh, collected: wasCollected, baseY: coord[1], phase: idx * 0.7 });
     });
+    window.updateStardustCountUI();
 
     function soundCoin() {
       if (!audioCtx) return;
@@ -7206,13 +7407,14 @@
       const txtEl = document.getElementById('momSpeechText');
       if (!txtEl) return;
 
-      if (type === 1) {
+        if (type === 1) {
         txtEl.innerHTML = `“정말 대견하고 자랑스럽구나, 우리 ${childTitle} <b>${name}</b>! 모든 감정 손님은 너를 지켜주고 돕는 소중한 친구란다. ${subject}의 마음 광주리가 사랑과 지혜로 가득 차올랐네! 엄마가 늘 응원할게!”`;
         soundChime(659);
         spawnHugHeartBurst();
         showToast(`🌸 엄마의 칭찬으로 ${name}의 마음 광주리가 환하게 빛납니다! (별빛가루 +5)`);
         state.stardustCount = (state.stardustCount || 0) + 5;
         saveProgress();
+        if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
       } else if (type === 2) {
         txtEl.innerHTML = `“그랬구나.. 우리 ${childTitle} <b>${name}</b> 마음이 많이 아리고 슬펐겠네. 소중한 것을 잃었을 때 눈물이 나는 건 아주 자연스럽고 예쁜 감정이란다. 눈물은 마음의 먼지를 씻어주는 촉촉한 비와 같아. 엄마가 꼭 안아줄게.”`;
         soundChime(523);
@@ -7307,6 +7509,11 @@
               soccerBall.justScored = false;
             }, 3000);
           }
+        } else if (Math.hypot(soccerBall.pos.x - 52, soccerBall.pos.z - 19.5) > 20.0) {
+          soccerBall.pos.set(52, 0.42, 15);
+          soccerBall.vel.set(0, 0, 0);
+          soccerBall.justScored = false;
+          createMagicImpact(soccerBall.pos, '#f59e0b');
         }
       }
 
@@ -7380,9 +7587,10 @@
       // [신규 10. 놀이터 기구 타기(미끄럼틀·시소·그네) & 독서대 의자 앉기 실시간 물리 모션]
       if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) {
         activePlaygroundRide.timer -= dt;
+        playerPhysics.velY = 0;
+        playerPhysics.isGrounded = true;
         const rType = activePlaygroundRide.type;
         if (rType === 'slide') {
-          // 2.4초 동안 미끄럼틀 타워(24.5, 2.35, 20.5)에서 슬라이드 끝(24.5, 0.2, 25.2)으로 미끄러져 내려옴
           const prog = 1.0 - Math.max(0, activePlaygroundRide.timer / 2.4);
           playerRig.position.x = 24.5;
           playerRig.position.z = 20.5 + prog * 4.8;
@@ -7390,23 +7598,18 @@
           playerRig.rotation.y = 0;
           leftArm.rotation.z = 0.85; rightArm.rotation.z = -0.85;
           if (activePlaygroundRide.timer <= 0) {
-            leftArm.rotation.z = 0; rightArm.rotation.z = 0;
+            cancelPlaygroundRide();
             playerPhysics.velY = 9.5; playerPhysics.isGrounded = false;
             soundJump(true);
             createMagicImpact(playerRig.position, '#fde047');
-            activePlaygroundRide = null;
           }
         } else if (rType === 'seesaw') {
           const seeWave = Math.sin(time * 4.5);
-          if (typeof seePlank !== 'undefined') seePlank.rotation.x = seeWave * 0.28;
+          if (typeof seePlank !== 'undefined') { seePlank.rotation.z = 0; seePlank.rotation.x = seeWave * 0.28; }
           playerRig.position.set(31.0, 0.95 + Math.max(-0.35, seeWave * 0.55), 22.4);
           playerRig.rotation.y = Math.PI;
           leftArm.rotation.x = -0.7; rightArm.rotation.x = -0.7;
-          if (activePlaygroundRide.timer <= 0) {
-            if (typeof seePlank !== 'undefined') seePlank.rotation.x = 0;
-            leftArm.rotation.x = 0; rightArm.rotation.x = 0;
-            activePlaygroundRide = null;
-          }
+          if (activePlaygroundRide.timer <= 0) cancelPlaygroundRide();
         } else if (rType === 'swing') {
           const swWave = Math.sin(time * 4.2);
           if (typeof swSeat1 !== 'undefined') {
@@ -7416,16 +7619,11 @@
           playerRig.position.set(27.6, 0.82 + Math.abs(swWave) * 0.45, 25.2 + swWave * 1.15);
           playerRig.rotation.y = 0;
           leftArm.rotation.x = -0.6; rightArm.rotation.x = -0.6;
-          if (activePlaygroundRide.timer <= 0) {
-            leftArm.rotation.x = 0; rightArm.rotation.x = 0;
-            activePlaygroundRide = null;
-          }
+          if (activePlaygroundRide.timer <= 0) cancelPlaygroundRide();
         } else if (rType === 'chair') {
           playerRig.position.set(22.0, 0.68, -23.5);
           playerRig.rotation.y = Math.PI;
-          if (activePlaygroundRide.timer <= 0) {
-            activePlaygroundRide = null;
-          }
+          if (activePlaygroundRide.timer <= 0) cancelPlaygroundRide();
         }
       }
 
@@ -7719,10 +7917,11 @@
           }
         });
       }
-      if (typeof seePlank !== 'undefined') {
-        seePlank.rotation.z = Math.sin(time * 2.0) * 0.22;
+      if (typeof seePlank !== 'undefined' && (!activePlaygroundRide || activePlaygroundRide.type !== 'seesaw')) {
+        seePlank.rotation.z = 0;
+        seePlank.rotation.x = Math.sin(time * 2.0) * 0.16;
       }
-      if (typeof swSeat1 !== 'undefined') {
+      if (typeof swSeat1 !== 'undefined' && (!activePlaygroundRide || activePlaygroundRide.type !== 'swing')) {
         swSeat1.position.z = Math.sin(time * 2.2) * 0.65;
         swSeat2.position.z = -Math.sin(time * 2.2) * 0.65;
       }
@@ -7808,30 +8007,56 @@
         camState.pitch = THREE.MathUtils.clamp(camState.pitch + input.lookJoyY * dt * 1.6, 0.1, 1.15);
       }
 
-      // 사용자가 수동 조작 키를 입력하면 자동 걷기 즉시 해제 (사용자 조작 우선)
+      // 사용자가 수동 조작 키를 입력하면 자동 걷기·놀이터 탑승 즉시 해제 (사용자 조작 우선)
       if (mx !== 0 || mz !== 0 || input.space) {
+        cancelPlaygroundRide();
         if (isAutoWalking) {
           isAutoWalking = false;
           autoWalkTarget = null;
+          autoWalkFollowFriend = null;
           showToast('🎮 <b>직접 조작 모드로 전환되었습니다.</b>');
         }
       }
 
-      // 자동 걷기(Auto-Walk) 중일 때 목적지 방향으로 자동 전진!
+      // 자동 걷기(Auto-Walk) 중일 때 장애물 우회 + 동적 목표(협동 친구) 추적으로 확실히 도달!
       if (isAutoWalking && autoWalkTarget) {
+        if (autoWalkFollowFriend && autoWalkFollowFriend.group) {
+          autoWalkTarget.set(autoWalkFollowFriend.group.position.x, 0, autoWalkFollowFriend.group.position.z);
+        }
         const dx = autoWalkTarget.x - playerRig.position.x;
         const dz = autoWalkTarget.z - playerRig.position.z;
         const distToTarget = Math.hypot(dx, dz);
         if (distToTarget < 3.2) {
           isAutoWalking = false;
           autoWalkTarget = null;
+          autoWalkFollowFriend = null;
           soundQuestComplete();
-          showToast(`🎉 <b>목적지에 도착했습니다!</b> 감정 손님과 대화해 보세요.`);
+          if (typeof updateZonePrompt === 'function') updateZonePrompt();
+          showToast(`🎉 <b>목적지에 도착했습니다!</b> [G]키로 체험을 시작해 보세요.`);
         } else {
-          const autoDir = new THREE.Vector3(dx, 0, dz).normalize();
-          playerRig.position.addScaledVector(autoDir, 7.8 * dt);
+          const toTarget = new THREE.Vector3(dx / distToTarget, 0, dz / distToTarget);
+          let moveDir = toTarget;
+          if (autoWalkAvoidTimer > 0) {
+            autoWalkAvoidTimer -= dt;
+            const perp = new THREE.Vector3(-toTarget.z * autoWalkAvoidSign, 0, toTarget.x * autoWalkAvoidSign);
+            moveDir = perp.multiplyScalar(0.95).addScaledVector(toTarget, 0.28).normalize();
+          }
+          const prevX = playerRig.position.x, prevZ = playerRig.position.z;
+          playerRig.position.addScaledVector(moveDir, 7.8 * dt);
           resolveHorizontalCollisions();
-          playerRig.rotation.y = THREE.MathUtils.lerp(playerRig.rotation.y, Math.atan2(autoDir.x, autoDir.z), 0.24);
+          const stepMoved = Math.hypot(playerRig.position.x - prevX, playerRig.position.z - prevZ);
+          if (stepMoved < 2.0 * dt) {
+            autoWalkStuckTimer += dt;
+            if (autoWalkStuckTimer > 0.18) {
+              if (autoWalkAvoidTimer > 0) autoWalkAvoidSign *= -1;
+              autoWalkAvoidTimer = 1.05;
+              autoWalkStuckTimer = 0;
+              if (playerPhysics.isGrounded) doJump();
+            }
+          } else {
+            autoWalkStuckTimer = Math.max(0, autoWalkStuckTimer - dt);
+          }
+          playerRig.rotation.y = THREE.MathUtils.lerp(playerRig.rotation.y, Math.atan2(moveDir.x, moveDir.z), 0.24);
           playerPhysics.walkCycle += dt * 12;
           leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8;
           rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
@@ -7868,7 +8093,7 @@
           scene.add(dMesh); dustParticles.push({ mesh: dMesh, life: 0.45 });
         }
       } else if (!playerPhysics.isDancing && !playerPhysics.isMeditating) {
-        resolveHorizontalCollisions();
+        if (!activePlaygroundRide) resolveHorizontalCollisions();
         leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15);
         if (playerPhysics.armSwingTimer <= 0) {
           rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, 0, 0.15);
@@ -7955,10 +8180,11 @@
           if (playerRig.position.distanceTo(sg.mesh.position) < 1.85) {
             sg.collected = true;
             sg.mesh.visible = false;
-            collectedStardust = Math.min(15, collectedStardust + 1);
+            if (!Array.isArray(state.collectedGemIds)) state.collectedGemIds = [];
+            if (!state.collectedGemIds.includes(idx)) state.collectedGemIds.push(idx);
+            collectedStardust = Math.min(15, state.collectedGemIds.length);
             state.stardustCount = (state.stardustCount || 0) + 1;
-            const stEl = document.getElementById('stardustText');
-            if (stEl) stEl.textContent = `${collectedStardust}/15`;
+            if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
             soundCoin();
             createMagicImpact(sg.mesh.position, '#fbbf24');
             window.addMindScore(40, `마음 조각 수집 (${collectedStardust}/15)`);
@@ -8064,29 +8290,31 @@
         }
       });
 
-      const groundY = getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y);
-      if (!playerPhysics.isGrounded) {
-        playerPhysics.velY -= 26.0 * dt;
-        playerPhysics.prevVelY = playerPhysics.velY;
-        playerRig.position.y += playerPhysics.velY * dt;
-        if (playerPhysics.jumpCount === 2) playerRig.rotation.x += dt * 14.0;
-        if (playerRig.position.y <= groundY) {
-          playerRig.position.y = groundY;
-          playerPhysics.velY = 0;
-          playerPhysics.jumpCount = 0;
-          playerPhysics.isGrounded = true;
-          playerRig.rotation.x = 0;
-          playerRig.scale.set(1.22, 0.78, 1.22);
-        }
-      } else {
-        playerPhysics.prevVelY = 0;
-        if (playerRig.position.y > groundY + 0.15) {
-          playerPhysics.isGrounded = false;
+      if (!activePlaygroundRide) {
+        const groundY = getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y);
+        if (!playerPhysics.isGrounded) {
+          playerPhysics.velY -= 26.0 * dt;
+          playerPhysics.prevVelY = playerPhysics.velY;
+          playerRig.position.y += playerPhysics.velY * dt;
+          if (playerPhysics.jumpCount === 2) playerRig.rotation.x += dt * 14.0;
+          if (playerRig.position.y <= groundY) {
+            playerRig.position.y = groundY;
+            playerPhysics.velY = 0;
+            playerPhysics.jumpCount = 0;
+            playerPhysics.isGrounded = true;
+            playerRig.rotation.x = 0;
+            playerRig.scale.set(1.22, 0.78, 1.22);
+          }
         } else {
-          playerRig.position.y = groundY;
+          playerPhysics.prevVelY = 0;
+          if (playerRig.position.y > groundY + 0.15) {
+            playerPhysics.isGrounded = false;
+          } else {
+            playerRig.position.y = groundY;
+          }
         }
+        resolveHorizontalCollisions();
       }
-      resolveHorizontalCollisions();
       updateGhostBlock();
       playerRig.scale.lerp(new THREE.Vector3(1, 1, 1), 0.16);
 
@@ -8181,9 +8409,13 @@
                 fr.chatObj.sprite.visible = true;
                 fr.chatTimer = 4.5;
               }
+              const wasHeavy = !!fr.needsCoopHelp;
               if (fr.heavyBasketRing) {
                 fr.heavyBasketRing.visible = false;
                 fr.needsCoopHelp = false;
+              }
+              if (wasHeavy && typeof window.completeExtraMission === 'function') {
+                window.completeExtraMission('coop', '협동의 우정 배지');
               }
 
               window.addMindScore(200, `${fr.name}에게 별빛 응원 선물 💖`);
@@ -8200,6 +8432,7 @@
             state.mission.fear = Math.min(fearShadows.length, (state.mission.fear || 0) + 1);
             window.addMindScore(40, '어둠 그림자 정화');
             saveProgress();
+            renderStoryMissionTracker();
             const left = fearShadows.filter(x => !x.cleared).length;
             if (left === 0 || state.mission.fear >= fearShadows.length) {
               beamMat.color.set(0xfbbf24);
@@ -8214,6 +8447,7 @@
                 fearShadows.forEach(s => { s.cleared = false; s.group.visible = true; s.respawnTimer = 0; createMagicImpact(s.group.position, '#a855f7'); });
                 state.mission.fear = 0;
                 saveProgress();
+                renderStoryMissionTracker();
                 showToast('👻 <b>어둠 그림자가 다시 나타났습니다!</b> 계속해서 별빛 마법 [F]으로 정화해보세요.');
               }, 1800);
             } else {
@@ -8492,7 +8726,7 @@
     bindClick('btnInteractAction', () => interactCurrentZone());
     bindClick('btnPlaceAction', () => placeBlockAtPointer());
     bindClick('btnJumpDock', () => doJump());
-    bindClick('btnBreatheWind', () => { doBreatheWind(); if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(); });
+    bindClick('btnBreatheWind', doBreatheWind);
     bindClick('btnDanceAction', doDance);
     bindClick('btnMeditateAction', doMeditate);
     bindClick('btnFarewellAction', () => { openModal('modalFarewell'); renderFarewell(); });
@@ -8503,7 +8737,7 @@
     bindClick('btnTouchInteract', () => interactCurrentZone());
     bindClick('btnTouchBuild', () => placeBlockAtPointer());
     bindClick('btnTouchMine', () => { selectHotbarSlot(5); mineBlockAtPointer(); });
-    bindClick('btnTouchBreath', () => { doBreatheWind(); if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(); });
+    bindClick('btnTouchBreath', doBreatheWind);
     bindClick('btnTrophy', () => { openModal('modalTrophy'); renderTrophyCard(); });
     bindClick('btnTOD', cycleTimeOfDay);
     bindClick('btnStory', () => { openStoryBookModal(); switchStoryBookTab('text'); });
@@ -8813,6 +9047,11 @@
       Object.keys(state.quests).forEach(k => state.quests[k] = false);
       state.mission = { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0, robot: 0, stage: 0, flutter: 0, coop: 0, track: 0 };
       state.breathProgress = 0;
+      state.stardustCount = 0;
+      state.collectedGemIds = [];
+      collectedStardust = 0;
+      stardustGems.forEach(sg => { sg.collected = false; sg.mesh.visible = true; });
+      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
       const bFill = document.getElementById('breathBarFill');
       if (bFill) bFill.style.width = '0%';
       campfireLight.color.set(0xef4444); beamMat.color.set(0xc084fc);
@@ -8820,7 +9059,7 @@
       sadDrops.forEach(sd => { sd.cleared = false; sd.mesh.visible = true; });
       worryThreads.forEach(wt => { wt.cleared = false; wt.mesh.visible = true; });
       fearShadows.forEach(fs => { fs.cleared = false; fs.group.visible = true; });
-      saveProgress(); syncQuestHUD(); lastPromptZone = null; closeModal('modalCheckin');
+      saveProgress(); syncQuestHUD(); lastPromptZone = null; lastPromptSig = ''; closeModal('modalCheckin');
       showToast('수련 진행도가 초기화되었습니다.');
     });
     bindClick('btnReleaseWorry', () => {
@@ -9622,6 +9861,7 @@
       window.addMindScore(pts, `🧺 제9장 ${fr.name}와(과) 광주리 함께 점프해 들기!`);
       state.stardustCount = (state.stardustCount || 0) + 5;
       saveProgress();
+      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
       soundQuestComplete();
       spawnConfetti(fr.group.position.clone().lerp(playerRig.position, 0.5).add(new THREE.Vector3(0, 1.8, 0)));
       createMagicImpact(fr.group.position.clone().lerp(playerRig.position, 0.5), '#fbbf24');
@@ -10310,6 +10550,7 @@
       window.addMindScore(isFirstSolve ? 250 : 100, `🤟 세 손가락 마음 탐정 사건 ${c.id} 해결!`);
       state.stardustCount = (state.stardustCount || 0) + 5;
       saveProgress();
+      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
       renderThreeFingerModal();
 
       if (window.solvedDetectiveCases.length === THREE_FINGER_CASES.length && isFirstSolve) {
