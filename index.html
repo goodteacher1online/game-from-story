@@ -370,7 +370,12 @@
     }
     .spirit-card:hover { border-color: #a1a1aa; }
     .spirit-card.active { border-color: #18181b; background: #f4f4f5; color: #18181b; box-shadow: inset 0 0 0 1px #18181b; }
-    .spirit-dot { width: 16px; height: 16px; border-radius: 50%; }
+    .spirit-dot {
+      width: 40px; height: 40px; border-radius: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #f4f4f5; border: 1px solid #e4e4e7; flex-shrink: 0;
+    }
+    .spirit-dot svg { width: 32px; height: 32px; display: block; }
 
     .btn-primary-full {
       width: 100%; margin-top: 16px; padding: 13px; border-radius: 10px;
@@ -694,8 +699,8 @@
        에디토리얼 라이트 모드 캐릭터 & 동행 정령 스튜디오 전용 CSS
        ============================================================ */
     .cust-modal-sheet {
-      width: 800px !important;
-      min-width: min(800px, 94vw) !important;
+      width: 840px !important;
+      min-width: min(840px, 94vw) !important;
       max-width: 94vw !important;
       flex: 0 0 auto !important;
       background: #faf9f5 !important;
@@ -738,10 +743,10 @@
 
     /* 세련된 라이트 쇼룸 아바타 & 정령 프리뷰 스테이지 (우측 박스 테두리 완전 제거 & 에디토리얼 타이포그래피) */
     .cust-avatar-showcase {
-      display: grid; grid-template-columns: 168px 1fr; gap: 24px; align-items: center;
+      display: grid; grid-template-columns: 164px 1fr; gap: 24px; align-items: center;
       background: #ffffff;
       border: 1px solid #e4e4e7;
-      border-radius: 16px; padding: 16px 22px; margin-bottom: 16px;
+      border-radius: 16px; padding: 18px 24px; margin-bottom: 16px;
     }
     @media (max-width: 580px) {
       .cust-avatar-showcase { grid-template-columns: 1fr; justify-items: center; text-align: center; }
@@ -762,33 +767,33 @@
       border: 1px solid #e4e4e7; pointer-events: none; white-space: nowrap;
     }
     .cust-preview-info {
-      display: flex; flex-direction: column; gap: 6px; min-width: 0;
+      display: flex; flex-direction: column; gap: 9px; min-width: 0;
       padding: 2px 0; overflow: hidden;
     }
     .cust-preview-nametag {
-      font-size: 16.5px; font-weight: 800; color: #18181b;
-      letter-spacing: -0.3px; margin: 0; padding: 0;
+      font-size: 24px; font-weight: 800; color: #18181b;
+      letter-spacing: -0.5px; line-height: 1.2; margin: 0; padding: 0;
       background: transparent; border: none;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-spirit-summary-box {
-      padding: 4px 0 6px 0;
+      padding: 4px 0 8px 0;
       background: transparent; border: none;
       border-bottom: 1px solid #f4f4f5;
-      display: flex; flex-direction: column; gap: 3px; min-width: 0;
+      display: flex; flex-direction: column; gap: 5px; min-width: 0;
     }
     .cust-spirit-summary-title {
-      font-size: 13px; font-weight: 800; color: #18181b;
-      display: flex; align-items: center; gap: 6px;
+      font-size: 16.5px; font-weight: 800; color: #18181b;
+      display: flex; align-items: center; gap: 8px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-spirit-summary-desc {
-      font-size: 11.5px; color: #52525b; line-height: 1.5;
+      font-size: 14px; font-weight: 500; color: #3f3f46; line-height: 1.45;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .cust-preview-meta-line {
-      font-size: 11.5px; font-weight: 600; color: #71717a;
-      display: flex; flex-wrap: nowrap; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 600; color: #52525b;
+      display: flex; flex-wrap: nowrap; align-items: center; gap: 8px;
       padding-top: 2px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
@@ -862,10 +867,11 @@
       box-shadow: inset 0 0 0 1.5px #18181b !important;
     }
     .cust-color-chip {
-      width: 24px; height: 24px; border-radius: 50%;
-      display: inline-block; flex-shrink: 0;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+      width: 34px; height: 34px; border-radius: 5px;
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      background: #f4f4f5; border: 1px solid #e4e4e7;
     }
+    .cust-color-chip svg { width: 28px; height: 28px; display: block; }
     .cust-color-text {
       font-size: 12.5px; font-weight: 800; color: #18181b;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -1315,11 +1321,11 @@
           <div class="cust-preview-nametag" id="custPrevNametag">기쁨 수호자 · 인찬이</div>
           <div class="cust-spirit-summary-box">
             <div class="cust-spirit-summary-title">
-              <span id="custPrevSpiritDot" style="width:9px; height:9px; border-radius:50%; background:#f59e0b; display:inline-block;"></span>
+              <span id="custPrevSpiritDot" style="width:13px; height:13px; border-radius:3px; background:#f59e0b; display:inline-block;"></span>
               <span id="custPrevSpiritName">동행 정령: 기쁨이 (별토끼)</span>
             </div>
             <div class="cust-spirit-summary-desc" id="custPrevSpiritDesc">
-              좋아하는 일이 생길 때 찾아와 발걸음을 가볍게 하고 웃음을 선물합니다.
+              좋아하는 일이 생길 때 찾아와 웃음과 가벼운 발걸음을 선물합니다.
             </div>
           </div>
           <div class="cust-preview-meta-line">
@@ -1329,7 +1335,7 @@
             <span class="cust-meta-sep">·</span>
             <span id="chipSpirit">정령 <b>기쁨이</b></span>
             <span class="cust-meta-sep">·</span>
-            <span id="chipHatType">장식 <b>기본 바보털</b></span>
+            <span id="chipHatType">장식 <b>행운 새싹</b></span>
           </div>
         </div>
       </div>
@@ -1382,42 +1388,54 @@
           <label class="cust-label" style="margin-bottom: 8px;">나와 동행할 마음 손님 정령 선택 (정령의 테마 컬러가 의상에 조화롭게 반영됩니다)</label>
           <div class="cust-color-grid" id="custColorRow">
             <button type="button" class="cust-color-card active" data-spirit="joy" data-color="#f59e0b">
-              <span class="cust-color-chip" style="background:#f59e0b;"></span>
+              <span class="cust-color-chip">
+                <svg viewBox="0 0 36 36" fill="none"><rect x="10" y="3" width="5" height="9" rx="1" fill="#fde047" stroke="#b45309" stroke-width="1.2"/><rect x="21" y="3" width="5" height="9" rx="1" fill="#fde047" stroke="#b45309" stroke-width="1.2"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#f59e0b" stroke="#b45309" stroke-width="1.2"/><rect x="12" y="16" width="3" height="4" fill="#18181b"/><rect x="21" y="16" width="3" height="4" fill="#18181b"/><rect x="11" y="21" width="3" height="2" fill="#fb7185"/><rect x="22" y="21" width="3" height="2" fill="#fb7185"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#d97706"/></svg>
+              </span>
               <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">기쁨이 · 별토끼 정령</span>
                 <span class="cust-color-sub">웃음과 가벼운 발걸음 (선샤인 앰버)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="sad" data-color="#3b82f6">
-              <span class="cust-color-chip" style="background:#3b82f6;"></span>
+              <span class="cust-color-chip">
+                <svg viewBox="0 0 36 36" fill="none"><rect x="15" y="3" width="6" height="4" rx="1" fill="#93c5fd" stroke="#1d4ed8" stroke-width="1.1"/><rect x="13" y="7" width="10" height="4" rx="1" fill="#60a5fa" stroke="#1d4ed8" stroke-width="1.1"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1.2"/><rect x="12" y="16" width="3" height="4" fill="#18181b"/><rect x="21" y="16" width="3" height="4" fill="#18181b"/><rect x="12" y="21" width="2.5" height="3" fill="#bae6fd"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#2563eb"/></svg>
+              </span>
               <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">슬픔이 · 물방울 정령</span>
                 <span class="cust-color-sub">소중함을 달래는 위로 (세룰리안 블루)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="anger" data-color="#ef4444">
-              <span class="cust-color-chip" style="background:#ef4444;"></span>
+              <span class="cust-color-chip">
+                <svg viewBox="0 0 36 36" fill="none"><rect x="9" y="4" width="5" height="7" rx="1" fill="#fbbf24" stroke="#991b1b" stroke-width="1.2"/><rect x="22" y="4" width="5" height="7" rx="1" fill="#fbbf24" stroke="#991b1b" stroke-width="1.2"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#ef4444" stroke="#991b1b" stroke-width="1.2"/><rect x="12" y="16" width="3.5" height="3.5" fill="#18181b"/><rect x="20.5" y="16" width="3.5" height="3.5" fill="#18181b"/><rect x="14" y="22" width="8" height="2.5" fill="#7f1d1d"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#dc2626"/></svg>
+              </span>
               <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">화 · 불도깨비 정령</span>
                 <span class="cust-color-sub">나를 지키는 단단한 에너지 (코랄 레드)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="fear" data-color="#a855f7">
-              <span class="cust-color-chip" style="background:#a855f7;"></span>
+              <span class="cust-color-chip">
+                <svg viewBox="0 0 36 36" fill="none"><rect x="6" y="8" width="24" height="22" rx="1.5" fill="#7e22ce" stroke="#581c87" stroke-width="1.2"/><rect x="9" y="11" width="18" height="16" rx="1" fill="#a855f7"/><rect x="12" y="16" width="3" height="4" fill="#fef08a"/><rect x="21" y="16" width="3" height="4" fill="#fef08a"/><rect x="11" y="28" width="14" height="5" rx="1" fill="#6b21a8"/></svg>
+              </span>
               <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">두려움이 · 꼬마망토 정령</span>
                 <span class="cust-color-sub">안전을 살피는 지혜 등대 (라벤더 퍼플)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="worry" data-color="#10b981">
-              <span class="cust-color-chip" style="background:#10b981;"></span>
+              <span class="cust-color-chip">
+                <svg viewBox="0 0 36 36" fill="none"><rect x="11" y="4" width="14" height="4" rx="1" fill="#6ee7b7" stroke="#047857" stroke-width="1.1"/><rect x="9" y="8" width="18" height="3" rx="1" fill="#34d399" stroke="#047857" stroke-width="1.1"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#10b981" stroke="#047857" stroke-width="1.2"/><rect x="12" y="16" width="3" height="4" fill="#18181b"/><rect x="21" y="16" width="3" height="4" fill="#18181b"/><rect x="14" y="22" width="8" height="2" fill="#065f46"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#059669"/></svg>
+              </span>
               <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">걱정이 · 털실이 정령</span>
                 <span class="cust-color-sub">내일을 차근차근 준비하는 힘 (세이지 민트)</span>
               </div>
             </button>
             <button type="button" class="cust-color-card" data-spirit="flutter" data-color="#ec4899">
-              <span class="cust-color-chip" style="background:#ec4899;"></span>
+              <span class="cust-color-chip">
+                <svg viewBox="0 0 36 36" fill="none"><rect x="2" y="10" width="7" height="10" rx="1" fill="#f9a8d4" stroke="#be185d" stroke-width="1.1"/><rect x="27" y="10" width="7" height="10" rx="1" fill="#f9a8d4" stroke="#be185d" stroke-width="1.1"/><rect x="3" y="20" width="5" height="6" rx="1" fill="#fde047" stroke="#be185d" stroke-width="1.1"/><rect x="28" y="20" width="5" height="6" rx="1" fill="#fde047" stroke="#be185d" stroke-width="1.1"/><rect x="9" y="10" width="18" height="17" rx="1.5" fill="#ec4899" stroke="#be185d" stroke-width="1.2"/><rect x="12" y="15" width="3" height="4" fill="#18181b"/><rect x="21" y="15" width="3" height="4" fill="#18181b"/><rect x="12" y="27" width="12" height="5" rx="1" fill="#db2777"/></svg>
+              </span>
               <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
                 <span class="cust-color-text">설렘이 · 나비요정 정령</span>
                 <span class="cust-color-sub">새로운 시작의 두근거림 (코랄 핑크)</span>
@@ -1515,15 +1533,17 @@
         <div>
           <label class="cust-label" style="margin-bottom: 8px;">3D 머리 장식 &amp; 액세서리 선택 (6종 · 착용 시 3D 월드 아바타에 즉시 반영)</label>
           <div class="cust-hat-grid" id="custHatGrid">
-            <button type="button" class="cust-hat-btn active" data-hat="ahoge">
+            <button type="button" class="cust-hat-btn active" data-hat="sprout">
               <div class="cust-hat-svg">
                 <svg viewBox="0 0 36 36" fill="none">
-                  <circle cx="18" cy="25" r="7" fill="#fde0c6" stroke="#d4d4d8" stroke-width="1.2"/>
-                  <path d="M18 18C18 12 22 8 25 10C22.5 11.5 20.5 14.5 19.5 18" stroke="#18181b" stroke-width="2.4" stroke-linecap="round"/>
+                  <rect x="16.5" y="16" width="3" height="12" rx="1" fill="#16a34a"/>
+                  <path d="M18 17C12.5 16.5 9 12.5 10 8.5C14.5 9 17.5 12.5 18 17Z" fill="#22c55e" stroke="#15803d" stroke-width="1.3"/>
+                  <path d="M18 17C23.5 16.5 27 12.5 26 8.5C21.5 9 18.5 12.5 18 17Z" fill="#4ade80" stroke="#15803d" stroke-width="1.3"/>
+                  <rect x="15.8" y="6.2" width="4.4" height="4.4" rx="1" fill="#fde047" stroke="#ca8a04" stroke-width="1.1"/>
                 </svg>
               </div>
-              <span class="cust-hat-title">기본 바보털</span>
-              <span class="cust-hat-sub">호기심 가득 살랑이는 인찬이 안테나</span>
+              <span class="cust-hat-title">행운 새싹</span>
+              <span class="cust-hat-sub">마음에 희망을 틔우는 초록빛 행운 새싹</span>
             </button>
             <button type="button" class="cust-hat-btn" data-hat="crown">
               <div class="cust-hat-svg">
@@ -1680,12 +1700,12 @@
         오늘 내 마음 광주리에 동행할 감정 정령을 선택하세요. 지팡이의 별빛 색상과 마스코트가 바뀝니다.
       </p>
       <div class="spirit-grid">
-        <div class="spirit-card active" data-guest="joy"><span class="spirit-dot" style="background:#f59e0b;"></span><span>기쁨이 (별토끼)</span></div>
-        <div class="spirit-card" data-guest="sad"><span class="spirit-dot" style="background:#3b82f6;"></span><span>슬픔이 (물방울)</span></div>
-        <div class="spirit-card" data-guest="anger"><span class="spirit-dot" style="background:#ef4444;"></span><span>화 (불도깨비)</span></div>
-        <div class="spirit-card" data-guest="fear"><span class="spirit-dot" style="background:#a855f7;"></span><span>두려움 (꼬마망토)</span></div>
-        <div class="spirit-card" data-guest="worry"><span class="spirit-dot" style="background:#10b981;"></span><span>걱정이 (털실이)</span></div>
-        <div class="spirit-card" data-guest="flutter"><span class="spirit-dot" style="background:#ec4899;"></span><span>설렘이 (나비요정)</span></div>
+        <div class="spirit-card active" data-guest="joy"><span class="spirit-dot"><svg viewBox="0 0 36 36" fill="none"><rect x="10" y="3" width="5" height="9" rx="1" fill="#fde047" stroke="#b45309" stroke-width="1.2"/><rect x="21" y="3" width="5" height="9" rx="1" fill="#fde047" stroke="#b45309" stroke-width="1.2"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#f59e0b" stroke="#b45309" stroke-width="1.2"/><rect x="12" y="16" width="3" height="4" fill="#18181b"/><rect x="21" y="16" width="3" height="4" fill="#18181b"/><rect x="11" y="21" width="3" height="2" fill="#fb7185"/><rect x="22" y="21" width="3" height="2" fill="#fb7185"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#d97706"/></svg></span><span>기쁨이 (별토끼)</span></div>
+        <div class="spirit-card" data-guest="sad"><span class="spirit-dot"><svg viewBox="0 0 36 36" fill="none"><rect x="15" y="3" width="6" height="4" rx="1" fill="#93c5fd" stroke="#1d4ed8" stroke-width="1.1"/><rect x="13" y="7" width="10" height="4" rx="1" fill="#60a5fa" stroke="#1d4ed8" stroke-width="1.1"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1.2"/><rect x="12" y="16" width="3" height="4" fill="#18181b"/><rect x="21" y="16" width="3" height="4" fill="#18181b"/><rect x="12" y="21" width="2.5" height="3" fill="#bae6fd"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#2563eb"/></svg></span><span>슬픔이 (물방울)</span></div>
+        <div class="spirit-card" data-guest="anger"><span class="spirit-dot"><svg viewBox="0 0 36 36" fill="none"><rect x="9" y="4" width="5" height="7" rx="1" fill="#fbbf24" stroke="#991b1b" stroke-width="1.2"/><rect x="22" y="4" width="5" height="7" rx="1" fill="#fbbf24" stroke="#991b1b" stroke-width="1.2"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#ef4444" stroke="#991b1b" stroke-width="1.2"/><rect x="12" y="16" width="3.5" height="3.5" fill="#18181b"/><rect x="20.5" y="16" width="3.5" height="3.5" fill="#18181b"/><rect x="14" y="22" width="8" height="2.5" fill="#7f1d1d"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#dc2626"/></svg></span><span>화 (불도깨비)</span></div>
+        <div class="spirit-card" data-guest="fear"><span class="spirit-dot"><svg viewBox="0 0 36 36" fill="none"><rect x="6" y="8" width="24" height="22" rx="1.5" fill="#7e22ce" stroke="#581c87" stroke-width="1.2"/><rect x="9" y="11" width="18" height="16" rx="1" fill="#a855f7"/><rect x="12" y="16" width="3" height="4" fill="#fef08a"/><rect x="21" y="16" width="3" height="4" fill="#fef08a"/><rect x="11" y="28" width="14" height="5" rx="1" fill="#6b21a8"/></svg></span><span>두려움 (꼬마망토)</span></div>
+        <div class="spirit-card" data-guest="worry"><span class="spirit-dot"><svg viewBox="0 0 36 36" fill="none"><rect x="11" y="4" width="14" height="4" rx="1" fill="#6ee7b7" stroke="#047857" stroke-width="1.1"/><rect x="9" y="8" width="18" height="3" rx="1" fill="#34d399" stroke="#047857" stroke-width="1.1"/><rect x="8" y="11" width="20" height="17" rx="1.5" fill="#10b981" stroke="#047857" stroke-width="1.2"/><rect x="12" y="16" width="3" height="4" fill="#18181b"/><rect x="21" y="16" width="3" height="4" fill="#18181b"/><rect x="14" y="22" width="8" height="2" fill="#065f46"/><rect x="12" y="28" width="12" height="5" rx="1" fill="#059669"/></svg></span><span>걱정이 (털실이)</span></div>
+        <div class="spirit-card" data-guest="flutter"><span class="spirit-dot"><svg viewBox="0 0 36 36" fill="none"><rect x="2" y="10" width="7" height="10" rx="1" fill="#f9a8d4" stroke="#be185d" stroke-width="1.1"/><rect x="27" y="10" width="7" height="10" rx="1" fill="#f9a8d4" stroke="#be185d" stroke-width="1.1"/><rect x="3" y="20" width="5" height="6" rx="1" fill="#fde047" stroke="#be185d" stroke-width="1.1"/><rect x="28" y="20" width="5" height="6" rx="1" fill="#fde047" stroke="#be185d" stroke-width="1.1"/><rect x="9" y="10" width="18" height="17" rx="1.5" fill="#ec4899" stroke="#be185d" stroke-width="1.2"/><rect x="12" y="15" width="3" height="4" fill="#18181b"/><rect x="21" y="15" width="3" height="4" fill="#18181b"/><rect x="12" y="27" width="12" height="5" rx="1" fill="#db2777"/></svg></span><span>설렘이 (나비요정)</span></div>
       </div>
       <button class="btn-primary-full" id="btnConfirmSpirit">정령과 동행하기</button>
     </div>
@@ -1859,7 +1879,6 @@
     </div>
   </div>
 
-  <script src="https://unpkg.com/playroomkit/multiplayer.full.umd.js"></script>
   <script type="importmap">
     {
       "imports": {
@@ -1909,7 +1928,7 @@
       playerName: '인찬이',
       playerTitle: '마음 탐험가',
       shirtColor: '#ff5800',
-      hatType: 'ahoge',
+      hatType: 'sprout',
       hairStyle: 'short',
       hairColor: '#1c1917',
       equippedRewards: { wings: false, tiara: false, flameband: false, cape: false, scarf: false },
@@ -1957,7 +1976,7 @@
         if (d.playerName) state.playerName = d.playerName;
         if (d.playerTitle) state.playerTitle = d.playerTitle;
         if (d.shirtColor) state.shirtColor = d.shirtColor;
-        if (d.hatType) state.hatType = d.hatType;
+        if (d.hatType) state.hatType = (d.hatType === 'ahoge' ? 'sprout' : d.hatType);
         if (d.mindNote) state.mindNote = d.mindNote;
         if (d.worryText) state.worryText = d.worryText;
         if (d.curGuest && state.spirits[d.curGuest]) state.curGuest = d.curGuest;
@@ -3602,10 +3621,22 @@
       return rg;
     }
 
-    // 3D 모자 생성 헬퍼 (내 캐릭터 & 멀티플레이 친구 아바타 공용)
+    // 3D 모자 및 머리 장식 생성 헬퍼 (내 캐릭터 & 스튜디오 & 친구 아바타 공용)
     function createHatMesh(hatType) {
       const hg = new THREE.Group();
-      if (hatType === 'crown') {
+      if (hatType === 'sprout' || hatType === 'ahoge') {
+        const stem = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.24, 0.06), new THREE.MeshStandardMaterial({ color: 0x16a34a, roughness: 0.45 }));
+        stem.position.y = 0.54;
+        const leafMatL = new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x15803d, emissiveIntensity: 0.25, roughness: 0.35 });
+        const leafMatR = new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x15803d, emissiveIntensity: 0.25, roughness: 0.35 });
+        const leafL = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.14), leafMatL);
+        leafL.position.set(-0.12, 0.66, 0); leafL.rotation.z = 0.45;
+        const leafR = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.14), leafMatR);
+        leafR.position.set(0.12, 0.66, 0); leafR.rotation.z = -0.45;
+        const bud = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, 0.08), new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xfacc15, emissiveIntensity: 0.5 }));
+        bud.position.y = 0.72;
+        hg.add(stem, leafL, leafR, bud);
+      } else if (hatType === 'crown') {
         const base = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.32, 0.22, 10), new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xd97706, emissiveIntensity: 0.4, metalness: 0.6, roughness: 0.2 }));
         base.position.y = 0.52;
         hg.add(base);
@@ -3968,23 +3999,9 @@
     hair.position.set(0, 0.28, -0.02);
     head.add(hair);
 
-    // [인찬이 고유 시그니처] 정수리에 쫑긋 솟은 1개의 바보털 (Ahoge)
-    const ahogeGroup = new THREE.Group();
-    ahogeGroup.position.set(0, 0.42, 0.04);
-    const ahogeCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0.06, 0.2, 0.03),
-      new THREE.Vector3(0.2, 0.36, -0.04)
-    ]);
-    const ahogeGeo = new THREE.TubeGeometry(ahogeCurve, 12, 0.032, 6, false);
-    const ahogeMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.5 });
-    const ahogeMesh = new THREE.Mesh(ahogeGeo, ahogeMat);
-    ahogeGroup.add(ahogeMesh);
-    head.add(ahogeGroup);
-
-    // 커스터마이징 3D 모자 그룹들 장착
+    // 커스터마이징 3D 머리 장식 & 모자 그룹들 장착
     const playerHats = {
-      ahoge: ahogeGroup,
+      sprout: createHatMesh('sprout'),
       crown: createHatMesh('crown'),
       wizard: createHatMesh('wizard'),
       bunny: createHatMesh('bunny'),
@@ -3994,7 +4011,7 @@
       explorer: createHatMesh('cap')
     };
     Object.keys(playerHats).forEach(k => {
-      if (k !== 'ahoge') head.add(playerHats[k]);
+      head.add(playerHats[k]);
     });
 
     // 천사 날개 (등 뒤 장착용)
@@ -4019,7 +4036,8 @@
 
     function updatePlayerAppearance() {
       shirtMat.color.set(state.shirtColor || '#ff5800');
-      const curHat = (state.hatType === 'rabbit' ? 'bunny' : (state.hatType || 'ahoge'));
+      const rawHat = (state.hatType === 'ahoge' ? 'sprout' : (state.hatType || 'sprout'));
+      const curHat = (rawHat === 'rabbit' ? 'bunny' : rawHat);
       Object.keys(playerHats).forEach(k => {
         playerHats[k].visible = (k === curHat || (k === 'rabbit' && curHat === 'bunny') || (k === 'bunny' && curHat === 'rabbit'));
       });
@@ -4145,10 +4163,68 @@
     const leftLeg = makeLeg(true);
     const rightLeg = makeLeg(false);
 
-    // 동행 정령
+    // 로블록스 스타일 사각 동행 정령 3D 빌더 (BoxGeometry 전용 캐릭터)
+    function buildRobloxSpiritMesh(key) {
+      const sp = state.spirits[key] || state.spirits.joy;
+      const g = new THREE.Group();
+      const bodyMat = new THREE.MeshStandardMaterial({ color: sp.color, emissive: sp.color, emissiveIntensity: 0.5, roughness: 0.35 });
+      const darkMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
+      const blushMat = new THREE.MeshBasicMaterial({ color: 0xfb7185 });
+
+      const spHead = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.42, 0.44), bodyMat);
+      const spTorso = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.22, 0.24), bodyMat);
+      spTorso.position.y = -0.32;
+
+      const eyeL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, 0.04), key === 'fear' ? new THREE.MeshBasicMaterial({ color: 0xfef08a }) : darkMat);
+      eyeL.position.set(-0.10, 0.03, 0.22);
+      const eyeR = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, 0.04), key === 'fear' ? new THREE.MeshBasicMaterial({ color: 0xfef08a }) : darkMat);
+      eyeR.position.set(0.10, 0.03, 0.22);
+      const blL = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.03), blushMat); blL.position.set(-0.14, -0.07, 0.22);
+      const blR = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.03), blushMat); blR.position.set(0.14, -0.07, 0.22);
+      g.add(spHead, spTorso, eyeL, eyeR, blL, blR);
+
+      if (key === 'joy') {
+        const earMat = new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 0.4 });
+        const earL = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.24, 0.08), earMat); earL.position.set(-0.12, 0.32, 0);
+        const earR = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.24, 0.08), earMat); earR.position.set(0.12, 0.32, 0);
+        g.add(earL, earR);
+      } else if (key === 'sad') {
+        const dropMat = new THREE.MeshStandardMaterial({ color: 0x93c5fd, emissive: 0x3b82f6, emissiveIntensity: 0.6 });
+        const d1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.10, 0.24), dropMat); d1.position.y = 0.26;
+        const d2 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.12, 0.14), dropMat); d2.position.y = 0.36;
+        g.add(d1, d2);
+      } else if (key === 'anger') {
+        const hornMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xf97316, emissiveIntensity: 0.6 });
+        const hL = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.18, 0.10), hornMat); hL.position.set(-0.13, 0.29, 0.02); hL.rotation.z = 0.2;
+        const hR = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.18, 0.10), hornMat); hR.position.set(0.13, 0.29, 0.02); hR.rotation.z = -0.2;
+        g.add(hL, hR);
+      } else if (key === 'fear') {
+        const cloakMat = new THREE.MeshStandardMaterial({ color: 0x6b21a8, emissive: 0x581c87, emissiveIntensity: 0.4 });
+        const hood = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.12, 0.48), cloakMat); hood.position.set(0, 0.24, -0.02);
+        const cape = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.42, 0.08), cloakMat); cape.position.set(0, -0.14, -0.25);
+        g.add(hood, cape);
+      } else if (key === 'worry') {
+        const yarnMat1 = new THREE.MeshStandardMaterial({ color: 0x6ee7b7, emissive: 0x10b981, emissiveIntensity: 0.45 });
+        const yarnMat2 = new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x059669, emissiveIntensity: 0.45 });
+        const y1 = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.09, 0.46), yarnMat2); y1.position.y = 0.24; y1.rotation.y = 0.2;
+        const y2 = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.10, 0.32), yarnMat1); y2.position.y = 0.33; y2.rotation.y = -0.25;
+        g.add(y1, y2);
+      } else if (key === 'flutter') {
+        const wMat1 = new THREE.MeshStandardMaterial({ color: 0xf9a8d4, emissive: 0xec4899, emissiveIntensity: 0.6 });
+        const wMat2 = new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 0.5 });
+        const wl1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.22, 0.05), wMat1); wl1.position.set(-0.28, 0.06, -0.18); wl1.rotation.y = 0.3;
+        const wr1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.22, 0.05), wMat1); wr1.position.set(0.28, 0.06, -0.18); wr1.rotation.y = -0.3;
+        const wl2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.05), wMat2); wl2.position.set(-0.22, -0.14, -0.18);
+        const wr2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.05), wMat2); wr2.position.set(0.22, -0.14, -0.18);
+        g.add(wl1, wr1, wl2, wr2);
+      }
+      return g;
+    }
+
+    // 동행 정령 (월드 3D 로블록스 사각 캐릭터)
     const spiritGroup = new THREE.Group();
-    const spiritBodyMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 1.0 });
-    spiritGroup.add(new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.45), spiritBodyMat));
+    let spiritVisualGroup = buildRobloxSpiritMesh(state.curGuest || 'joy');
+    spiritGroup.add(spiritVisualGroup);
     const spiritLight = new THREE.PointLight(0xf59e0b, 1.4, 8);
     spiritGroup.add(spiritLight);
     scene.add(spiritGroup);
@@ -4518,8 +4594,8 @@
       if (typeof worldChannel !== 'undefined' && worldChannel) {
         worldChannel.postMessage({ type: 'mp_block_place', x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName });
       }
-      if (window.playroomConnected && window.Playroom?.RPC) {
-        window.Playroom.RPC.call('mp_block_place', { x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName }, window.Playroom.RPC.Mode.OTHERS);
+      if (window.mpConnected && mpActions?.sendBlkPut) {
+        mpActions.sendBlkPut({ x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName });
       }
       return { bx, by, bz };
     }
@@ -4554,8 +4630,8 @@
           if (typeof worldChannel !== 'undefined' && worldChannel) {
             worldChannel.postMessage({ type: 'mp_block_mine', x: bInfo.x, y: bInfo.y, z: bInfo.z });
           }
-          if (window.playroomConnected && window.Playroom?.RPC) {
-            window.Playroom.RPC.call('mp_block_mine', { x: bInfo.x, y: bInfo.y, z: bInfo.z, from: state.playerName }, window.Playroom.RPC.Mode.OTHERS);
+          if (window.mpConnected && mpActions?.sendBlkDel) {
+            mpActions.sendBlkDel({ x: bInfo.x, y: bInfo.y, z: bInfo.z, from: state.playerName });
           }
           return true;
         }
@@ -6768,7 +6844,10 @@
       if (!state.spirits[key]) return;
       state.curGuest = key; saveProgress();
       const s = state.spirits[key];
-      spiritBodyMat.color.set(s.color); spiritBodyMat.emissive.set(s.color); spiritLight.color.set(s.color);
+      if (spiritVisualGroup) spiritGroup.remove(spiritVisualGroup);
+      spiritVisualGroup = buildRobloxSpiritMesh(key);
+      spiritGroup.add(spiritVisualGroup);
+      spiritLight.color.set(s.color);
       wandStar.material.color.set(s.color); wandStar.material.emissive.set(s.color);
       soundChime(580);
     }
@@ -8338,10 +8417,10 @@
         playerRig.position.z *= _clampK;
       }
 
-      // Playroom 인터넷 원격 플레이어 3D 아바타 동기화 및 애니메이션
-      if (window.playroomConnected && remotePlayers.size > 0) {
+      // P2P & BroadcastChannel 원격 플레이어 3D 아바타 동기화 및 애니메이션
+      if (remotePlayers.size > 0) {
         remotePlayers.forEach(r => {
-          const rPos = r.player.getState('pos');
+          const rPos = r.targetPos;
           if (rPos) {
             r.group.position.lerp(new THREE.Vector3(rPos.x, rPos.y, rPos.z), 0.22);
             r.group.rotation.y = THREE.MathUtils.lerp(r.group.rotation.y, rPos.rotY || 0, 0.22);
@@ -8365,19 +8444,19 @@
         });
       }
 
-      // 내 위치를 Playroom에 초당 약 7회(140ms 간격) throttled 전송
-      if (window.playroomConnected && window.Playroom?.myPlayer()) {
+      // 내 위치를 P2P 교실 방에 초당 약 7회(140ms 간격) throttled 전송
+      if (window.mpConnected && mpActions?.sendPos) {
         const nowMs = performance.now();
         if (nowMs - lastPlayroomSyncTime > 140) {
           lastPlayroomSyncTime = nowMs;
-          window.Playroom.myPlayer().setState('pos', {
+          mpActions.sendPos({
             x: Number(playerRig.position.x.toFixed(2)),
             y: Number(playerRig.position.y.toFixed(2)),
             z: Number(playerRig.position.z.toFixed(2)),
             rotY: Number(playerRig.rotation.y.toFixed(2)),
             isMoving: !!(isMoving),
             isDancing: !!(playerPhysics.isDancing)
-          }, false);
+          });
         }
       }
 
@@ -8720,7 +8799,10 @@
     }
 
     const bindClick = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
-    bindClick('btnGuestSelect', () => openModal('modalSpirit'));
+    bindClick('btnGuestSelect', () => {
+      document.querySelectorAll('.spirit-card').forEach(x => x.classList.toggle('active', x.dataset.guest === state.curGuest));
+      openModal('modalSpirit');
+    });
     bindClick('btnJumpAction', doJump);
     bindClick('btnShootAction', () => shootMagicBullet());
     bindClick('btnInteractAction', () => interactCurrentZone());
@@ -9120,17 +9202,17 @@
         '#0284c7': '오션 블루', '#10b981': '세이지 민트'
       };
       const hatNames = {
-        ahoge: '기본 바보털', crown: '골드 크라운', wizard: '위저드 모자',
+        sprout: '행운 새싹', crown: '골드 크라운', wizard: '위저드 모자',
         rabbit: '토끼 귀 밴드', angel: '엔젤 헤일로', explorer: '탐험가 캡',
         bunny: '토끼 귀 밴드', cap: '탐험가 캡'
       };
       const spiritSummaryMeta = {
-        joy: { name: '동행 정령: 기쁨이 (별토끼)', desc: '좋아하는 일이 생길 때 찾아와 발걸음을 가볍게 하고 웃음을 선물합니다.' },
-        sad: { name: '동행 정령: 슬픔이 (물방울)', desc: '소중한 것을 잃었을 때 마음을 촉촉이 적셔 위로하고 치유 무지개를 피웁니다.' },
-        anger: { name: '동행 정령: 화 (불도깨비)', desc: '소중한 가치를 지키는 에너지를 주며 심호흡으로 따뜻한 온기로 변합니다.' },
-        fear: { name: '동행 정령: 두려움이 (꼬마망토)', desc: '위험 앞에서 조심하도록 등대 불빛을 비춰주는 지혜로운 안전 수호자입니다.' },
-        worry: { name: '동행 정령: 걱정이 (털실이)', desc: '내일 일어날 일을 미리 차근차근 준비할 수 있도록 도와주는 친구입니다.' },
-        flutter: { name: '동행 정령: 설렘이 (나비요정)', desc: '마음 광주리를 활짝 비추며 가슴 두근거리는 새 출발을 힘차게 응원합니다.' }
+        joy: { name: '동행 정령: 기쁨이 (별토끼)', desc: '좋아하는 일이 생길 때 찾아와 웃음과 가벼운 발걸음을 선물합니다.' },
+        sad: { name: '동행 정령: 슬픔이 (물방울)', desc: '소중한 기억을 따뜻하게 안아주고 치유의 무지개를 피워줍니다.' },
+        anger: { name: '동행 정령: 화 (불도깨비)', desc: '소중한 나를 지키는 힘이며 깊은 호흡으로 따뜻한 온기가 됩니다.' },
+        fear: { name: '동행 정령: 두려움이 (꼬마망토)', desc: '위험 앞에서 미리 살피도록 등대 불빛을 비춰주는 안전 지킴이입니다.' },
+        worry: { name: '동행 정령: 걱정이 (털실이)', desc: '내일 일을 미리 차근차근 준비할 수 있게 도와주는 든든한 친구입니다.' },
+        flutter: { name: '동행 정령: 설렘이 (나비요정)', desc: '마음 광주리를 환히 비추며 두근거리는 새 출발을 힘차게 응원합니다.' }
       };
       const curKey = state.curGuest || 'joy';
       const curSp = state.spirits[curKey] || state.spirits.joy;
@@ -9150,7 +9232,8 @@
       const cHairCol = document.getElementById('chipHairColor');
       if (cHairCol) cHairCol.innerHTML = `컬러 <b>${hairColorNames[(state.hairColor || '#1c1917').toLowerCase()] || '흑단 블랙'}</b>`;
       const cHat = document.getElementById('chipHatType');
-      if (cHat) cHat.innerHTML = `장식 <b>${hatNames[state.hatType] || '기본 바보털'}</b>`;
+      const normalizedHat = state.hatType === 'ahoge' ? 'sprout' : (state.hatType || 'sprout');
+      if (cHat) cHat.innerHTML = `장식 <b>${hatNames[normalizedHat] || '행운 새싹'}</b>`;
     }
 
     // ==============================================================================
@@ -9232,7 +9315,8 @@
       const curSp = state.spirits[state.curGuest] || state.spirits.joy;
       const shirtCol = state.shirtColor || curSp.hex || '#f59e0b';
       const hairCol = state.hairColor || '#1c1917';
-      const curHat = (state.hatType === 'rabbit' ? 'bunny' : (state.hatType || 'ahoge'));
+      const rawHat = (state.hatType === 'ahoge' ? 'sprout' : (state.hatType || 'sprout'));
+      const curHat = (rawHat === 'rabbit' ? 'bunny' : rawHat);
 
       // 라이트 쇼룸 원형 단상(Pedestal)
       const pedMesh = new THREE.Mesh(
@@ -9274,15 +9358,8 @@
       const rHairMesh = createHairMesh(state.hairStyle || 'short', hairCol);
       rHead.add(rHairMesh);
 
-      // 모자/토끼 귀
-      if (curHat && curHat !== 'ahoge') {
-        const rHatMesh = createHatMesh(curHat);
-        rHead.add(rHatMesh);
-      } else {
-        const ahoge = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.35, 6), new THREE.MeshStandardMaterial({ color: 0x27272a }));
-        ahoge.position.set(0.08, 0.55, 0.05); ahoge.rotation.z = -0.35;
-        rHead.add(ahoge);
-      }
+      // 모자/머리 장식 (행운 새싹 포함 공용 빌더 사용)
+      rHead.add(createHatMesh(curHat));
       robloxPreviewAvatarGroup.add(rHead);
 
       // 양팔 & 양다리
@@ -9304,16 +9381,9 @@
         robloxPreviewAvatarGroup.add(wL, wR);
       }
 
-      // 아바타 옆에 둥둥 떠 있는 3D 동행 정령(Companion Spirit) 미니 마스코트!
-      const spGroup = new THREE.Group();
+      // 아바타 옆에 둥둥 떠 있는 3D 로블록스 사각 동행 정령!
+      const spGroup = buildRobloxSpiritMesh(state.curGuest || 'joy');
       spGroup.position.set(1.02, 1.65, 0.22);
-      const spBody = new THREE.Mesh(
-        new THREE.BoxGeometry(0.42, 0.42, 0.42),
-        new THREE.MeshStandardMaterial({ color: curSp.color, emissive: curSp.color, emissiveIntensity: 0.45, roughness: 0.3 })
-      );
-      const spEyeL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.04), rEyeMat); spEyeL.position.set(-0.09, 0.03, 0.22);
-      const spEyeR = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.04), rEyeMat); spEyeR.position.set(0.09, 0.03, 0.22);
-      spGroup.add(spBody, spEyeL, spEyeR);
       robloxPreviewAvatarGroup.add(spGroup);
       robloxPreviewSpiritMesh = spGroup;
     }
@@ -9332,21 +9402,33 @@
       updateAvatarShowcase();
     };
 
-    // 11-B. Playroom Kit 실시간 클라우드 멀티플레이어 & 캐릭터 스튜디오
+    // 11-B. 서버리스 무제한 WebRTC P2P 멀티플레이어 (Trystero MQTT + BroadcastChannel) & 캐릭터 스튜디오
     // ==========================================
     const urlParams = new URLSearchParams(window.location.search);
     const rawUrlRoom = (urlParams.get('room') || state.roomCode || '101').replace(/[^0-9]/g, '').slice(0, 3);
     state.roomCode = rawUrlRoom.length === 3 ? rawUrlRoom : '101';
     let worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_' + state.roomCode) : null;
+    window.mpConnected = false;
     window.playroomConnected = false;
+    let mpRoom = null;
+    let mpActions = null;
+    let mpCurrentRoomCode = null;
     const remotePlayers = new Map();
 
-    // 원격 접속자 3D 로블록스 아바타 생성 헬퍼
-    function createRemoteAvatar(player) {
-      const pId = player.id;
-      if (remotePlayers.has(pId)) return remotePlayers.get(pId);
+    function getMyProfilePayload() {
+      return {
+        name: state.playerName || '친구',
+        title: state.playerTitle || '마음 탐험가',
+        shirtColor: state.shirtColor || '#ff5800',
+        hatType: state.hatType === 'ahoge' ? 'sprout' : (state.hatType || 'sprout')
+      };
+    }
 
-      const prof = player.getState('profile') || { name: '친구', title: '마음 탐험가', shirtColor: '#3b82f6', hatType: 'ahoge' };
+    // 원격 접속자 3D 로블록스 아바타 생성 헬퍼
+    function createRemoteAvatar(peerId, profile) {
+      if (remotePlayers.has(peerId)) return remotePlayers.get(peerId);
+
+      const prof = profile || { name: '친구', title: '마음 탐험가', shirtColor: '#3b82f6', hatType: 'sprout' };
       const rg = new THREE.Group();
       rg.position.set(0, 0, 10);
 
@@ -9366,13 +9448,8 @@
       rHair.position.set(0, 0.28, -0.02);
       rHead.add(rHair);
 
-      if (prof.hatType && prof.hatType !== 'ahoge') {
-        rHead.add(createHatMesh(prof.hatType));
-      } else {
-        const ahoge = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.35, 6), new THREE.MeshStandardMaterial({ color: 0x27272a }));
-        ahoge.position.set(0.08, 0.55, 0.05); ahoge.rotation.z = -0.35;
-        rHead.add(ahoge);
-      }
+      const rHatType = (!prof.hatType || prof.hatType === 'ahoge') ? 'sprout' : (prof.hatType === 'rabbit' ? 'bunny' : prof.hatType);
+      rHead.add(createHatMesh(rHatType));
 
       // 양팔
       const rArmL = new THREE.Group(); rArmL.position.set(-0.64, 0.45, 0);
@@ -9404,12 +9481,13 @@
 
       scene.add(rg);
       const data = {
-        player, group: rg, torso: rTorso, head: rHead, shirtMat: rShirt,
+        peerId, group: rg, torso: rTorso, head: rHead, shirtMat: rShirt,
         armL: rArmL, armR: rArmR, legL: rLegL, legR: rLegR,
         tagObj: rTagObj, chatObj: rChatObj, chatTimer: 0, walkCycle: 0,
+        targetPos: { x: 0, y: 0, z: 10, rotY: 0, isMoving: false, isDancing: false },
         prof
       };
-      remotePlayers.set(pId, data);
+      remotePlayers.set(peerId, data);
       appendChatLog(prof.name, `광장에 입장했습니다! [${state.roomCode}]`, true);
       updateOnlineStatusText();
       return data;
@@ -9429,52 +9507,90 @@
       const count = (remotePlayers.size + 1);
       const labelEl = document.getElementById('mpLiveStatusLabel');
       if (labelEl) {
-        labelEl.innerHTML = window.playroomConnected
+        labelEl.innerHTML = window.mpConnected
           ? `🟢 [${state.roomCode}] · ${count}명 온라인`
           : `🟢 광장 함께하기 (${count}명)`;
       }
     }
 
-    // PlayroomKit 인터넷 실시간 멀티플레이어 초기화
-    async function initPlayroom() {
-      if (typeof window.Playroom === 'undefined') {
-        console.warn('[PlayroomKit] 라이브러리 로드 대기 중이거나 오프라인 모드로 실행합니다.');
+    // 무제한 무료 WebRTC P2P 교실 멀티플레이어 초기화 (할당량·게임ID 제한 없음)
+    async function initClassroomMultiplayer() {
+      const roomChanged = mpCurrentRoomCode !== null && mpCurrentRoomCode !== state.roomCode;
+      if (mpRoom && roomChanged) {
+        try { mpRoom.leave(); } catch (_) {}
+        mpRoom = null;
+        mpActions = null;
+        window.mpConnected = false;
+        window.playroomConnected = false;
+        Array.from(remotePlayers.keys()).forEach(removeRemoteAvatar);
+        if (typeof BroadcastChannel !== 'undefined') {
+          try { if (worldChannel) worldChannel.close(); } catch (_) {}
+          worldChannel = new BroadcastChannel('inchan_mind_world_' + state.roomCode);
+          if (typeof bindWorldChannelHandlers === 'function') bindWorldChannelHandlers();
+        }
+      }
+      if (mpRoom && mpCurrentRoomCode === state.roomCode) {
+        window.mpConnected = true;
+        window.playroomConnected = true;
+        if (mpActions?.sendProf) mpActions.sendProf(getMyProfilePayload());
         return;
       }
+
+      mpCurrentRoomCode = state.roomCode;
       try {
-        await window.Playroom.insertCoin({
-          skipLobby: true,
-          roomCode: state.roomCode,
-          maxPlayersPerRoom: 60
+        const { joinRoom } = await import('https://cdn.jsdelivr.net/npm/trystero@0.22.0/mqtt/+esm');
+        if (mpCurrentRoomCode !== state.roomCode) return;
+        const room = joinRoom(
+          {
+            appId: 'inchan-mind-basket-sel-2026',
+            relayUrls: ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt']
+          },
+          'room-' + state.roomCode
+        );
+        mpRoom = room;
+
+        const [sendPos, getPos] = room.makeAction('pos');
+        const [sendProf, getProf] = room.makeAction('prof');
+        const [sendBlkPut, getBlkPut] = room.makeAction('blkPut');
+        const [sendBlkDel, getBlkDel] = room.makeAction('blkDel');
+        const [sendBrd, getBrd] = room.makeAction('brd');
+        mpActions = { sendPos, sendProf, sendBlkPut, sendBlkDel, sendBrd };
+
+        getPos((data, peerId) => {
+          if (!data || !peerId) return;
+          const r = remotePlayers.get(peerId) || createRemoteAvatar(peerId, null);
+          r.targetPos = data;
         });
-        window.playroomConnected = true;
-        showToast(`🌐 <b>[Playroom 실시간 인터넷 멀티플레이 연결 성공!]</b><br>방 코드: <b>${state.roomCode}</b> · 교실 전체 친구들과 실시간 동기화됩니다!`);
-        updateOnlineStatusText();
 
-        const me = window.Playroom.myPlayer();
-        me.setState('profile', {
-          name: state.playerName,
-          title: state.playerTitle,
-          shirtColor: state.shirtColor,
-          hatType: state.hatType
-        }, true);
-
-        // 다른 플레이어 참여 시
-        window.Playroom.onPlayerJoin(player => {
-          if (player.id === me.id) return;
-          createRemoteAvatar(player);
-          player.onQuit(() => removeRemoteAvatar(player.id));
+        getProf((prof, peerId) => {
+          if (!prof || !peerId) return;
+          const safeProf = {
+            name: window.sanitizeCleanText(prof.name || '친구', 12) || '친구',
+            title: window.sanitizeCleanText(prof.title || '마음 탐험가', 14) || '마음 탐험가',
+            shirtColor: prof.shirtColor || '#3b82f6',
+            hatType: (!prof.hatType || prof.hatType === 'ahoge') ? 'sprout' : prof.hatType
+          };
+          if (!remotePlayers.has(peerId)) {
+            createRemoteAvatar(peerId, safeProf);
+          } else {
+            const r = remotePlayers.get(peerId);
+            r.prof = safeProf;
+            r.shirtMat.color.set(safeProf.shirtColor);
+            drawCrispNameTag(r.tagObj.ctx, safeProf.name, safeProf.title, safeProf.shirtColor);
+            r.tagObj.tex.needsUpdate = true;
+          }
         });
 
-        // 실시간 RPC 원격 이벤트 등록 (블록 설치/채굴, 채팅, 게시판)
-        window.Playroom.RPC.register('mp_block_place', (data) => {
+        getBlkPut((data) => {
+          if (!data || typeof data.x !== 'number') return;
           if (!placedBlocks.some(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z)) {
             spawnBlockWithAnim(data.x, data.y, data.z, data.slot || 1);
             appendChatLog(data.from, `새로운 감정 블록을 놓았습니다! (${data.x}, ${data.z})`, true);
           }
         });
 
-        window.Playroom.RPC.register('mp_block_mine', (data) => {
+        getBlkDel((data) => {
+          if (!data || typeof data.x !== 'number') return;
           const bIdx = placedBlocks.findIndex(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z);
           if (bIdx !== -1) {
             const bInfo = placedBlocks[bIdx];
@@ -9482,48 +9598,41 @@
             if (bInfo.hitBox) worldGroup.remove(bInfo.hitBox);
             placedBlocks.splice(bIdx, 1);
             soundBlockMine();
-            appendChatLog(data.from, `블록을 회수/채굴했습니다.`, true);
           }
         });
 
-        window.Playroom.RPC.register('mp_chat', (data) => {
-          appendChatLog(data.from, data.msg);
-          showToast(`💬 <b>[${data.from}]</b> ${data.msg}`);
-          if (data.id && remotePlayers.has(data.id)) {
-            const r = remotePlayers.get(data.id);
-            drawChatBubbleCanvas(r.chatObj.ctx, data.msg, '#38bdf8');
-            r.chatObj.tex.needsUpdate = true;
-            r.chatObj.sprite.visible = true;
-            r.chatTimer = 5.5;
-          }
-        });
-
-        window.Playroom.RPC.register('mp_board_sync', (data) => {
-          if (data.post && !state.boardPosts.some(p => p.id === data.post.id)) {
+        getBrd((data) => {
+          if (data?.post && !state.boardPosts.some(p => p.id === data.post.id)) {
+            data.post.author = window.sanitizeCleanText(data.post.author || '친구', 14);
+            data.post.title = window.sanitizeCleanText(data.post.title || '', 40);
+            data.post.body = window.sanitizeCleanText(data.post.body || '', 80);
             state.boardPosts.unshift(data.post);
             state.stats[data.post.emotion] = (state.stats[data.post.emotion] || 0) + 1;
             saveProgress(); updateScreenCanvas();
             if (document.getElementById('modalBoard').classList.contains('open')) renderBoard();
-            showToast(`친구 <b>${data.post.author}</b>님이 실시간 마음 게시판에 글을 남겼습니다.`);
+            showToast(`친구 <b>${window.escapeHtml(data.post.author)}</b>님이 실시간 마음 게시판에 글을 남겼습니다.`);
           }
         });
 
-        window.Playroom.RPC.register('mp_profile_update', (data) => {
-          if (data.id && remotePlayers.has(data.id)) {
-            const r = remotePlayers.get(data.id);
-            r.prof = data.prof;
-            r.shirtMat.color.set(data.prof.shirtColor || '#3b82f6');
-            drawNameCanvas(r.tagObj.ctx, data.prof.name, data.prof.title || '친구', data.prof.shirtColor || '#38bdf8');
-            r.tagObj.tex.needsUpdate = true;
-          }
+        room.onPeerJoin((peerId) => {
+          sendProf(getMyProfilePayload(), peerId);
+        });
+        room.onPeerLeave((peerId) => {
+          removeRemoteAvatar(peerId);
         });
 
+        window.mpConnected = true;
+        window.playroomConnected = true;
+        updateOnlineStatusText();
+        showToast(`🌐 <b>[교실 실시간 연결 완료]</b><br>방 코드: <b>${window.escapeHtml(state.roomCode)}</b> · 같은 방 친구들과 실시간 동기화됩니다!`);
       } catch (err) {
-        console.warn('[PlayroomKit] 연결 실패, 브라우저 탭 간 통신(BroadcastChannel)으로 대체합니다:', err);
+        console.warn('[P2P 멀티플레이] 오프라인/브라우저 탭 통신 모드로 동작합니다:', err);
+        window.mpConnected = false;
         window.playroomConnected = false;
         updateOnlineStatusText();
       }
     }
+    const initPlayroom = initClassroomMultiplayer;
 
     // 좌측 하단 채팅창 크기 조절 (축소/기본/확대 버튼 + 우측 상단 모서리 드래그 리사이즈)
     window.setChatSize = function(mode) {
@@ -9594,7 +9703,8 @@
         sw.classList.toggle('active', sw.dataset.spirit === (state.curGuest || 'joy'));
       });
       document.querySelectorAll('#custHatGrid .cust-hat-btn').forEach(hb => {
-        hb.classList.toggle('active', hb.dataset.hat === (state.hatType || 'ahoge'));
+        const activeHat = state.hatType === 'ahoge' ? 'sprout' : (state.hatType || 'sprout');
+        hb.classList.toggle('active', hb.dataset.hat === activeHat);
       });
 
       // 헤어스타일 활성화 상태
@@ -9730,13 +9840,11 @@
       soundQuestComplete();
       showToast(`✨ <b>[방 ${window.escapeHtml(state.roomCode)}] [${window.escapeHtml(state.playerTitle)}] ${window.escapeHtml(state.playerName)}</b> 캐릭터 등록 완료!`);
 
-      // 방 코드가 바뀌었거나 아직 Playroom 연결 전이면 연결 시도
-      if (!window.playroomConnected || oldRoom !== state.roomCode) {
-        initPlayroom();
-      } else if (window.playroomConnected && window.Playroom?.myPlayer()) {
-        const prof = { name: state.playerName, title: state.playerTitle, shirtColor: state.shirtColor, hatType: state.hatType };
-        window.Playroom.myPlayer().setState('profile', prof, true);
-        window.Playroom.RPC.call('mp_profile_update', { id: window.Playroom.myPlayer().id, prof }, window.Playroom.RPC.Mode.OTHERS);
+      // 방 코드가 바뀌었거나 아직 연결 전이면 P2P 멀티플레이어 연결 시도
+      if (!window.mpConnected || oldRoom !== state.roomCode) {
+        initClassroomMultiplayer();
+      } else if (window.mpConnected && mpActions?.sendProf) {
+        mpActions.sendProf(getMyProfilePayload());
       }
 
       if (worldChannel) {
@@ -9764,7 +9872,8 @@
 
     window.sendMpChat = function() {};
 
-    if (worldChannel) {
+    function bindWorldChannelHandlers() {
+      if (!worldChannel) return;
       worldChannel.onmessage = e => {
         const d = e.data;
         if (!d) return;
@@ -9794,6 +9903,7 @@
         }
       };
     }
+    bindWorldChannelHandlers();
 
     window.quickRescueFriendBasket = function(friendId) {
       initAudio();
@@ -10026,8 +10136,8 @@
       saveProgress(); updateScreenCanvas(); renderBoard();
       soundQuestComplete();
       if (worldChannel) worldChannel.postMessage({ type: 'board_sync', post: newPost });
-      if (window.playroomConnected && window.Playroom?.RPC) {
-        window.Playroom.RPC.call('mp_board_sync', { post: newPost }, window.Playroom.RPC.Mode.ALL);
+      if (window.mpConnected && mpActions?.sendBrd) {
+        mpActions.sendBrd({ post: newPost });
       }
       showToast('실시간 마음 게시판과 3D 전광판에 내 글이 게시되었습니다!');
     });
