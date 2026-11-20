@@ -357,8 +357,8 @@
     }
     .modal-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: #18181b; }
     .btn-close {
-      width: 30px; height: 30px; border-radius: 8px; border: 1px solid #e4e4e7;
-      background: #fff; color: #18181b; font-size: 14px; cursor: pointer;
+      width: 36px; height: 36px; border-radius: 9px; border: 1px solid #e4e4e7;
+      background: #fff; color: #18181b; font-size: 17px; cursor: pointer; flex-shrink: 0;
     }
     .btn-close:hover { background: #18181b; color: #fff; }
 
@@ -403,8 +403,13 @@
     .chip-btn:hover { border-color: #18181b; background: #f4f4f5; }
 
     .canvas-frame {
-      width: 100%; border-radius: 12px; overflow: hidden;
-      border: 1px solid #e4e4e7; margin: 10px 0; background: #fff;
+      width: 100%; border-radius: 14px; overflow: hidden;
+      border: 1px solid #e4e2dc; margin: 10px 0 12px; background: #f6f5f0;
+      box-shadow: 0 6px 20px rgba(24, 24, 27, 0.06);
+    }
+    .trophy-modal-sheet {
+      max-width: 860px;
+      padding: 24px 26px;
     }
     canvas#farewellCanvas, canvas#trophyCanvas { width: 100%; height: auto; display: block; }
 
@@ -615,6 +620,15 @@
       background: #18181b; color: #ffffff; border-color: #18181b;
     }
     .story-tab-pill.done.active::after { background: #4ade80; }
+    .story-tab-pill.locked {
+      opacity: 0.54; background: #f4f4f5; color: #71717a; border-style: dashed;
+    }
+    .story-tab-pill.locked::after {
+      content: '🔒'; position: absolute; top: 1px; right: 2px; font-size: 7.5px; line-height: 1;
+    }
+    .story-tab-pill.locked.active {
+      opacity: 0.94; background: #3f3f46; color: #ffffff; border-style: solid; border-color: #18181b;
+    }
     .story-detail-card {
       padding: 10px 12px; border-radius: 10px;
       background: #ffffff; border: 1px solid rgba(24, 24, 27, 0.12);
@@ -866,6 +880,13 @@
       border-color: #18181b !important;
       box-shadow: inset 0 0 0 1.5px #18181b !important;
     }
+    .cust-color-card.locked,
+    .spirit-card.locked {
+      opacity: 0.55;
+      filter: grayscale(0.42);
+      border-style: dashed !important;
+      background: #f4f4f5 !important;
+    }
     .cust-color-chip {
       width: 34px; height: 34px; border-radius: 5px;
       display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -1035,18 +1056,19 @@
     /* 대화 선택지 버튼 (라이트 모드) */
     .mom-choice-btn {
       text-align: left !important;
-      padding: 11px 14px !important;
-      border-radius: 10px !important;
+      padding: 15px 18px !important;
+      border-radius: 12px !important;
       background: #ffffff !important;
       border: 1px solid #e4e4e7 !important;
       color: #18181b !important;
-      font-size: 12.5px !important;
-      font-weight: 600 !important;
+      font-size: 17px !important;
+      font-weight: 700 !important;
+      line-height: 1.5 !important;
       cursor: pointer !important;
       transition: all 0.15s ease !important;
       display: flex !important;
       align-items: center !important;
-      gap: 10px !important;
+      gap: 12px !important;
       width: 100% !important;
       box-sizing: border-box !important;
     }
@@ -1054,7 +1076,22 @@
       background: #f4f4f5 !important;
       border-color: #18181b !important;
     }
-    .mom-choice-btn span:first-child { font-size: 16px; }
+    .mom-choice-btn span:first-child { font-size: 22px; flex-shrink: 0; }
+    @media (max-width: 640px) {
+      .mom-choice-btn {
+        padding: 12px 14px !important;
+        font-size: 15px !important;
+      }
+      #modalThreeFinger .tf-steps-grid {
+        grid-template-columns: 1fr !important;
+      }
+      #modalThreeFinger .modal-sheet,
+      #modalRobotIMessage .modal-sheet,
+      #modalMom .modal-sheet,
+      #modalTrophy .trophy-modal-sheet {
+        padding: 18px 14px !important;
+      }
+    }
 
 </style>
 </head>
@@ -1253,7 +1290,7 @@
   <div class="mc-crosshair"></div>
   <div class="action-dock">
     <div class="mc-hotbar-wrap" id="mcHotbar">
-      <div class="mc-slot active" data-slot="1" title="기쁨 블록 선택 (단축키 1)">
+      <div class="mc-slot" data-slot="1" title="기쁨 블록 선택 (단축키 1)">
         <span class="mc-key">1</span>
         <div class="mc-icon-cube" style="background:#f59e0b;"></div>
         <span class="mc-label">기쁨</span>
@@ -1278,7 +1315,7 @@
         <div class="mc-icon-svg"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/></svg></div>
         <span class="mc-label">지우개</span>
       </div>
-      <div class="mc-slot" data-slot="6" title="별빛 응원 모드 (단축키 6)">
+      <div class="mc-slot active" data-slot="6" title="별빛 응원 모드 (단축키 6)">
         <span class="mc-key">6</span>
         <div class="mc-icon-svg"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
         <span class="mc-label">별빛</span>
@@ -1725,15 +1762,15 @@
 
   <!-- 모달 3: 마스터 수료증 -->
   <div class="modal-overlay" id="modalTrophy">
-    <div class="modal-sheet">
+    <div class="modal-sheet trophy-modal-sheet">
       <div class="modal-header">
-        <h3 class="modal-title">마음 광주리 마스터 수료증</h3>
+        <h3 class="modal-title">마음 광주리 수료증</h3>
         <button class="btn-close" onclick="closeModal('modalTrophy')">✕</button>
       </div>
-      <p style="font-size: 13px; color: var(--ink-sub); line-height: 1.5;">
-        5대 감정 손님(기쁨, 슬픔, 화, 두려움, 걱정)을 모두 만나고 치유 수련을 마쳤습니다.
+      <p id="trophyModalSub" style="font-size: 13px; color: var(--ink-sub); line-height: 1.5;">
+        현재 꾸민 3D 로블록스 프로필 아바타와 마음 수련 기록이 실시간으로 반영됩니다.
       </p>
-      <div class="canvas-frame"><canvas id="trophyCanvas" width="800" height="520"></canvas></div>
+      <div class="canvas-frame"><canvas id="trophyCanvas" width="1200" height="750"></canvas></div>
       <button class="btn-primary-full" id="btnDownloadTrophy">수료증 이미지 저장 (PNG)</button>
     </div>
   </div>
@@ -1981,6 +2018,9 @@
         if (d.worryText) state.worryText = d.worryText;
         if (d.curGuest && state.spirits[d.curGuest]) state.curGuest = d.curGuest;
         if (d.quests) Object.keys(state.quests).forEach(k => { if (d.quests[k]) state.quests[k] = true; });
+        if (state.curGuest === 'flutter' && !['joy', 'sad', 'anger', 'fear', 'worry'].every(k => !!state.quests[k])) {
+          state.curGuest = 'joy';
+        }
         if (d.mission) Object.keys(state.mission).forEach(k => { if (typeof d.mission[k] === 'number') state.mission[k] = d.mission[k]; });
         if (Array.isArray(d.boardPosts) && d.boardPosts.length) state.boardPosts = d.boardPosts;
         if (Array.isArray(d.likedIds)) state.likedIds = d.likedIds;
@@ -2425,7 +2465,7 @@
     // [마인크래프트 스타일 블록 빌딩 & 채굴 시스템]
     // ============================================================
     const placedBlocks = []; window.placedBlocks = placedBlocks;
-    let currentHotbarSlot = 1;
+    let currentHotbarSlot = 6;
 
     // 블록 텍스처/재질
     const blockMaterials = {
@@ -3191,8 +3231,17 @@
     worryGroup.add(worryPad, benchSeat, benchBack);
     worldGroup.add(worryGroup);
 
-    const worryOrbGroup = new THREE.Group(); worryOrbGroup.position.set(34, 1.8, -40);
-    const worryOrbMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(0.35, 0.11, 40, 8), new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x059669, emissiveIntensity: 1.3 }));
+    const worryOrbGroup = new THREE.Group(); worryOrbGroup.position.set(34, 3.25, -40);
+    const worryOrbMesh = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.48, 1),
+      new THREE.MeshStandardMaterial({ color: 0x34d399, emissive: 0x059669, emissiveIntensity: 1.4, roughness: 0.25 })
+    );
+    const worryOrbHalo = new THREE.Mesh(
+      new THREE.TorusGeometry(0.68, 0.055, 8, 24),
+      new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 0.9 })
+    );
+    worryOrbHalo.rotation.x = Math.PI / 2;
+    worryOrbMesh.add(worryOrbHalo);
     worryOrbGroup.add(worryOrbMesh); worldGroup.add(worryOrbGroup);
 
     // 로블록스 스타일 2단/3단 큐브 나무 48그루 (넓은 섬 전역에 풍성하게 배치)
@@ -3372,14 +3421,14 @@
       if (state.quests.fear) sg.visible = false;
     }
 
-    // [미션 5: 걱정 숲 엉킨 털실 매듭 - 벤치(34, 0, -40) 앞과 양옆 넓은 잔디밭 5개 배치]
+    // [미션 5: 걱정 숲 엉킨 털실 매듭 - 벤치 바닥 패드(worryPad: x 30~38, z -44~-36) 바깥 평지 잔디밭 5개 배치]
     const worryThreads = [];
     const yarnGrassPositions = [
-      [34.0, 0.72, -36.5], // 벤치 바로 앞 잔디 지면
-      [30.5, 0.72, -37.8], // 벤치 좌측 앞 잔디 지면
-      [37.5, 0.72, -37.8], // 벤치 우측 앞 잔디 지면
-      [29.8, 0.72, -41.5], // 벤치 좌측 잔디 지면
-      [38.2, 0.72, -41.5]  // 벤치 우측 잔디 지면
+      [34.0, 0.75, -33.2], // 벤치 정면 패드 바깥 평지 잔디
+      [27.2, 0.75, -36.5], // 벤치 남서쪽 평지 잔디 (NPC와 충분히 이격)
+      [40.8, 0.75, -36.5], // 벤치 남동쪽 평지 잔디
+      [27.5, 0.75, -42.5], // 벤치 북서쪽 평지 잔디
+      [40.5, 0.75, -42.5]  // 벤치 북동쪽 평지 잔디
     ];
     yarnGrassPositions.forEach(([wx, wy, wz], idx) => {
       const wm = new THREE.Mesh(
@@ -4144,11 +4193,11 @@
     pickaxeGroup.visible = false;
     rightArm.add(pickaxeGroup);
 
-    // [핫바 1~4번] 마인크래프트 손에 든 미니 복셀 블록 (기본 1번 활성)
+    // [핫바 1~4번] 마인크래프트 손에 든 미니 복셀 블록 (기본 6번 별빛 모드로 초기 숨김)
     const handBlockGeo = new THREE.BoxGeometry(0.38, 0.38, 0.38);
     const handBlockMesh = new THREE.Mesh(handBlockGeo, blockMaterials[1]);
     handBlockMesh.position.set(0, -0.65, 0.32);
-    handBlockMesh.visible = true;
+    handBlockMesh.visible = false;
     rightArm.add(handBlockMesh);
 
     function makeLeg(isLeft) {
@@ -4359,6 +4408,7 @@
     ghostBlockMesh.add(ghostEdges);
     ghostBlockMesh.position.set(0, 0.5, 6);
     worldGroup.add(ghostBlockMesh);
+    ghostBlockMesh.visible = false;
 
     function triggerArmSwing(targetX, targetZ) {
       playerPhysics.armSwingTimer = 0.36;
@@ -4371,8 +4421,8 @@
       }
     }
 
-    // 마인크래프트 6슬롯 핫바 선택 (1~4: 블록 쌓기 도구, 5: 곡괭이 지우기/캐기 도구, 6: 별빛 마법 지팡이)
-    function selectHotbarSlot(num) {
+    // 마인크래프트 6슬롯 핫바 선택 (1~4: 블록 쌓기 도구, 5: 곡괭이 지우기/캐기 도구, 6: 별빛 응원 기본 모드)
+    function selectHotbarSlot(num, silent = false) {
       currentHotbarSlot = num;
       if (num >= 1 && num <= 4) lastBlockSlot = num;
       document.querySelectorAll('.mc-slot').forEach(el => {
@@ -4385,19 +4435,19 @@
         wandGroup.visible = false;
         ghostMat.color.copy(blockMaterials[num].color);
         ghostBlockMesh.visible = true;
-        showToast(`🧱 <b>[${num}번: ${['기쁨','슬픔(물)','용기','평온'][num-1]} 블록]</b> 원하는 바닥·블록 옆/위를 클릭(터치)하면 자석처럼 쌓입니다!`);
+        if (!silent) showToast(`🧱 <b>[${num}번: ${['기쁨','슬픔(물)','용기','평온'][num-1]} 블록]</b> 원하는 바닥·블록 옆/위를 클릭(터치)하면 자석처럼 쌓입니다!`);
       } else if (num === 5) {
         handBlockMesh.visible = false;
         pickaxeGroup.visible = true;
         wandGroup.visible = false;
         ghostMat.color.setHex(0xef4444);
-        showToast('⛏️ <b>[5번: 마음 곡괭이]</b> 지우고 싶은 블록이나 감정 광석을 클릭(터치)하면 즉시 캐냅니다!');
+        if (!silent) showToast('⛏️ <b>[5번: 마음 곡괭이]</b> 지우고 싶은 블록이나 감정 광석을 클릭(터치)하면 즉시 캐냅니다!');
       } else if (num === 6) {
         handBlockMesh.visible = false;
         pickaxeGroup.visible = false;
         wandGroup.visible = false; // 지팡이 제거: 맨손 별빛 응원 발사
         ghostBlockMesh.visible = false;
-        showToast('✨ <b>[6번: 별빛 응원]</b> 화면을 클릭하거나 [F]키를 누르면 친구에게 따스한 별빛이 발사됩니다!');
+        if (!silent) showToast('✨ <b>[6번: 별빛 응원]</b> 화면을 클릭하거나 [F]키를 누르면 친구에게 따스한 별빛이 발사됩니다!');
       }
     }
 
@@ -4827,6 +4877,35 @@
         const sadTop = 0.35;
         if (sadTop <= py + 0.55 && sadTop > highest) highest = sadTop;
       }
+      // 11. 동쪽 기쁨의 트램펄린 광장 패드 (joyPad: 50, -8, 가로세로 8m, 높이 0.40m)
+      if (Math.abs(px - 50) <= 4.1 && Math.abs(pz - (-8)) <= 4.1) {
+        const jTop = 0.40;
+        if (jTop <= py + 0.55 && jTop > highest) highest = jTop;
+      }
+      // 12. 남쪽 화의 캠프파이어 돌 테두리 (fireRing: 0, 52, 반경 4.45m, 높이 0.45m)
+      if (Math.hypot(px, pz - 52) <= 4.45) {
+        const fiTop = 0.45;
+        if (fiTop <= py + 0.55 && fiTop > highest) highest = fiTop;
+      }
+      // 13. 북동쪽 걱정 벤치 바닥 패드 (worryPad: 34, -40, 8x8m, 높이 0.36m) 및 벤치 좌석 상단 (높이 1.00m)
+      if (Math.abs(px - 34) <= 4.1 && Math.abs(pz - (-40)) <= 4.1) {
+        const wTop = 0.36;
+        if (wTop <= py + 0.55 && wTop > highest) highest = wTop;
+      }
+      if (Math.abs(px - 34) <= 1.85 && Math.abs(pz - (-40)) <= 0.6) {
+        const bsTop = 1.00;
+        if (bsTop <= py + 0.55 && bsTop > highest) highest = bsTop;
+      }
+      // 14. 동북쪽 제6장 학예 발표회 레드카펫 무대 (talentStageGroup: 52, -32, 반경 3.55m, 높이 0.36m)
+      if (Math.hypot(px - 52, pz - (-32)) <= 3.55) {
+        const stgTop = 0.36;
+        if (stgTop <= py + 0.55 && stgTop > highest) highest = stgTop;
+      }
+      // 15. 중앙 북쪽 제10장 설렘이 단상 (flPedestal: 0, -10.5, 반경 2.55m, 높이 0.28m)
+      if (Math.hypot(px, pz - (-10.5)) <= 2.55) {
+        const flTop = 0.28;
+        if (flTop <= py + 0.55 && flTop > highest) highest = flTop;
+      }
 
       return highest;
     }
@@ -4942,8 +5021,9 @@
       pushOutCircle(-46, -46, 3.5, 12.0);
       // 3) 남쪽 화의 캠프파이어 불길/장작 중심부 (반경 3.8m, 높이 2.5m, 위치: 0, 52)
       pushOutCircle(0, 52, 3.8, 2.5);
-      // 4) 북동쪽 걱정의 털실 벤치 (위치: 34, -40)
-      pushOutBox(34, -40, 2.0, 0.75, 1.8);
+      // 4) 북동쪽 걱정의 털실 벤치 (위치: 34, -40) — 좌석(높이 1.0m)과 등받이(높이 1.85m) 분리
+      pushOutBox(34, -40, 1.85, 0.58, 0.95);
+      pushOutBox(34, -40.45, 1.85, 0.14, 1.85);
       // (슬픔 연못 중앙 단상 -36, 0은 getGroundHeight로 자연 보행 가능)
       // 5) 북쪽 실시간 전광판 기둥 2개
       pushOutCircle(-7.5, -26.25, 0.78, 9.5);
@@ -5407,67 +5487,87 @@
       }, 1500);
     }
 
-    // [인찬이의 마음 손님] 10대 확장 스토리 & 활동 미션 메타 데이터
+    // [인찬이의 마음 손님] 동화 원작 기반 1단계(5대 핵심 감정) & 2단계(해결 후 활성 심화·에필로그) 미션 시스템
+    const CORE_STORY_KEYS = ['joy', 'sad', 'anger', 'fear', 'worry'];
+    function getCoreStoryDoneCount() {
+      return CORE_STORY_KEYS.filter(k => !!state.quests[k]).length;
+    }
+    function isCoreStoryComplete() {
+      return getCoreStoryDoneCount() === CORE_STORY_KEYS.length;
+    }
+    function getNextCoreStoryKey() {
+      return CORE_STORY_KEYS.find(k => !state.quests[k]) || 'joy';
+    }
+    function isMissionUnlocked(key) {
+      return CORE_STORY_KEYS.includes(key) || isCoreStoryComplete();
+    }
+    function isSpiritUnlocked(key) {
+      return key !== 'flutter' || isCoreStoryComplete();
+    }
+    window.isCoreStoryComplete = isCoreStoryComplete;
+    window.isMissionUnlocked = isMissionUnlocked;
+    window.isSpiritUnlocked = isSpiritUnlocked;
+
     const storyQuestMeta = [
       {
-        key: 'joy', shortLabel: '기쁨', chapter: '01 · 기쁨 손님 (동쪽 트램펄린)',
+        key: 'joy', shortLabel: '기쁨', chapter: '제2장 · 기쁨이 (동쪽 트램펄린)',
         title: '트램펄린 점프로 공중 황금 링 3개 통과',
-        desc: '동쪽 노란 트램펄린을 밟아 공중의 황금 링 3개를 통과하세요.',
+        desc: '동화 2장처럼 좋아하는 일에 마음껏 기뻐하며 노란 트램펄린 위 황금 링 3개를 통과하세요.',
         reward: '황금 기쁨 구슬', color: '#f59e0b', x: 50, z: -8, max: 3
       },
       {
-        key: 'sad', shortLabel: '슬픔', chapter: '02 · 슬픔 손님 (서쪽 치유 연못)',
+        key: 'sad', shortLabel: '슬픔', chapter: '제3장 · 슬픔이 (서쪽 치유 연못)',
         title: '기억 물방울 3개 모으고 무지개 분수 피우기',
-        desc: '서쪽 연못의 물방울 3개를 모은 뒤 연못 중앙 단상으로 걸어가세요.',
+        desc: '동화 3장처럼 소중한 기억을 달래며 물방울 3개를 모아 연못 중앙 단상으로 걸어가세요.',
         reward: '치유 물방울 구슬', color: '#38bdf8', x: -36, z: 0, max: 3
       },
       {
-        key: 'anger', shortLabel: '화', chapter: '03 · 화 손님 (남쪽 모닥불 쉼터)',
+        key: 'anger', shortLabel: '화', chapter: '제4장 · 화 (남쪽 모닥불 쉼터)',
         title: '모닥불 앞에서 깊은 심호흡(C키) 3번 하기',
-        desc: '남쪽 모닥불 앞 초록빛 타이밍에 맞춰 [C]키로 심호흡을 3번 하세요.',
+        desc: '동화 4장의 화 손님 신호를 알아차리고 초록 타이밍에 맞춰 [C]키로 3번 심호흡하세요.',
         reward: '평온의 불꽃 구슬', color: '#ef4444', x: 0, z: 52, max: 3
       },
       {
-        key: 'fear', shortLabel: '두려움', chapter: '04 · 두려움 손님 (북서쪽 수호 등대)',
+        key: 'fear', shortLabel: '두려움', chapter: '제5장 · 두려움 (북서쪽 수호 등대)',
         title: '따뜻한 별빛(F키)으로 밤바다 그림자 비추기',
-        desc: '북서쪽 등대 주변을 맴도는 그림자에 [F]키로 별빛 응원을 발사하세요.',
+        desc: '동화 5장처럼 안전을 살피며 등대 주변 그림자 5개에 [F]키로 별빛을 비춰보세요.',
         reward: '용기의 등대 구슬', color: '#a855f7', x: -46, z: -46, max: 5
       },
       {
-        key: 'worry', shortLabel: '걱정', chapter: '05 · 걱정 손님 (북동쪽 털실 벤치)',
+        key: 'worry', shortLabel: '걱정', chapter: '제6장 · 걱정 (북동쪽 털실 벤치)',
         title: '초록 털실 3개 풀고 소원 연등 띄우기(G)',
-        desc: '북동쪽 잔디밭 털실 3개를 밟아 풀고 벤치에서 소원 연등을 날려보세요.',
+        desc: '동화 6장처럼 지금 할 일을 찾아 잔디밭 엉킨 털실 3개를 풀고 벤치에서 연등을 날리세요.',
         reward: '생각 털실 구슬', color: '#10b981', x: 34, z: -40, max: 3
       },
       {
-        key: 'robot', shortLabel: '대화', chapter: '06 · 나-전달법 (남쪽 로봇 수리)',
+        key: 'robot', shortLabel: '대화', chapter: '제4장 심화 · 나-전달법 (로봇 수리)',
         title: '망가진 장난감 로봇 나-전달법(R키)으로 수리',
-        desc: '남쪽 장난감 로봇에게 다가가 마음을 다정히 전하는 [R] 대화를 완수하세요.',
-        reward: '평화의 대화 배지', color: '#2563eb', x: -7.5, z: 48, max: 1, hasOwnSign: true
+        desc: '동생을 다치지 않게 내 마음을 말한 인찬이처럼 남쪽 로봇 앞에서 [R] 대화를 완수하세요.',
+        reward: '평화의 대화 배지', color: '#2563eb', x: -7.5, z: 48, max: 1, hasOwnSign: true, requiresCore: true
       },
       {
-        key: 'stage', shortLabel: '발표', chapter: '07 · 학예 발표 (북동쪽 레드 무대)',
+        key: 'stage', shortLabel: '발표', chapter: '제6장 심화 · 학예 발표 (레드 무대)',
         title: '학예 발표회 무대 클릭해 3단계 연습하기',
-        desc: '동북쪽 레드카펫 무대에 올라 클릭 또는 터치로 3단계 발표 연습을 마치세요.',
-        reward: '자신감 스포트라이트', color: '#e11d48', x: 52, z: -32, max: 3, hasOwnSign: true
+        desc: '동화 6장의 학예 발표처럼 동북쪽 레드카펫 무대에 올라 3단계 발표 연습을 마치세요.',
+        reward: '자신감 스포트라이트', color: '#e11d48', x: 52, z: -32, max: 3, hasOwnSign: true, requiresCore: true
       },
       {
-        key: 'flutter', shortLabel: '설렘', chapter: '08 · 설렘 요정 (중앙 북쪽 화원)',
-        title: '코랄핑크 설렘이에게 3단 날개 축복받기(G)',
-        desc: '분수대 북쪽 설렘 요정 앞에서 [G]키로 교감해 3단 점프 날개를 장착하세요.',
-        reward: '설렘 나비 날개', color: '#ec4899', x: 0, z: -10.5, max: 1, hasOwnSign: true
-      },
-      {
-        key: 'coop', shortLabel: '협동', chapter: '09 · 협동 광주리 (광장 친구들)',
+        key: 'coop', shortLabel: '협동', chapter: '제9장 · 협동 광주리 (광장 친구들)',
         title: '무거워진 친구 광주리 다가가 함께 들어주기',
-        desc: '붉은 원으로 도움을 요청하는 친구에게 다가가 [G]키로 함께 점프해 들어주세요.',
-        reward: '협동의 우정 배지', color: '#f43f5e', x: 12, z: 12, max: 1, hasOwnSign: true
+        desc: '동화 9장처럼 무거운 광주리를 혼자 들지 않도록 붉은 원 친구에게 [G]키로 함께 점프하세요.',
+        reward: '협동의 우정 배지', color: '#f43f5e', x: 12, z: 12, max: 1, hasOwnSign: true, requiresCore: true
       },
       {
-        key: 'track', shortLabel: '질주', chapter: '10 · 외곽 서킷 (최외곽 달리기 트랙)',
+        key: 'flutter', shortLabel: '설렘', chapter: '제10장 · 새 손님, 설렘이 (중앙 북쪽 화원)',
+        title: '코랄핑크 설렘이에게 3단 날개 축복받기(G)',
+        desc: '5대 감정이 다녀간 빈 광주리에 새로 찾아온 10장 손님 설렘이에게 [G]키로 날개를 받으세요.',
+        reward: '설렘 나비 날개', color: '#ec4899', x: 0, z: -10.5, max: 1, hasOwnSign: true, requiresCore: true
+      },
+      {
+        key: 'track', shortLabel: '질주', chapter: '에필로그 · 마음 질주 (최외곽 트랙)',
         title: '맵 최외곽 슈퍼 트랙 부스터 8개 밟고 1바퀴 완주',
-        desc: '섬 맨 바깥쪽 붉은 트랙을 따라 8개의 스피드 부스터 게이트를 통과하세요.',
-        reward: '질주 챔피언 훈장', color: '#06b6d4', x: 64.7, z: 64.7, max: 8, hasOwnSign: true
+        desc: '모든 감정 손님과 화해한 기쁨으로 섬 최외곽 붉은 트랙의 부스터 8개를 통과하세요.',
+        reward: '질주 챔피언 훈장', color: '#06b6d4', x: 64.7, z: 64.7, max: 8, hasOwnSign: true, requiresCore: true
       }
     ];
 
@@ -5781,6 +5881,11 @@
 
     window.openRobotIMessageModal = function() {
       initAudio();
+      if (!isMissionUnlocked('robot')) {
+        soundChime(220);
+        showToast(`🔒 <b>[제4장 심화 · 나-전달법 로봇]</b><br>먼저 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
+        return;
+      }
       soundChime(523);
       openModal('modalRobotIMessage');
     };
@@ -5874,6 +5979,11 @@
 
     window.triggerStagePractice = function() {
       initAudio();
+      if (!isMissionUnlocked('stage')) {
+        soundChime(220);
+        showToast(`🔒 <b>[제6장 심화 · 학예 발표 무대]</b><br>먼저 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
+        return;
+      }
       stagePracticeStep = (stagePracticeStep % 3) + 1;
       stageSpotlightTimer = 6.0;
       stageSpotlightMat.opacity = 0.35;
@@ -5990,6 +6100,11 @@
 
     window.activateFlutterBlessing = function() {
       initAudio();
+      if (!isMissionUnlocked('flutter')) {
+        soundChime(220);
+        showToast(`🔒 <b>[제10장 새 손님 · 설렘이]</b><br>동화 속 5대 감정 손님(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 설렘이가 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
+        return;
+      }
       soundQuestComplete();
       playerPhysics.maxJumps = 3; // 3단 하늘 활공 점프 해금!
       playerPhysics.speedBuffTimer = 30.0;
@@ -6145,6 +6260,11 @@
 
     window.startOuterTrackDash = function() {
       initAudio();
+      if (!isMissionUnlocked('track')) {
+        soundChime(220);
+        showToast(`🔒 <b>[에필로그 · 외곽 서킷 미션]</b><br>자유롭게 트랙을 달릴 순 있지만, 미션 완주 도전은 동화 5대 감정 해결 후 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
+        return;
+      }
       soundSpring();
       playerPhysics.speedBuffTimer = Math.max(playerPhysics.speedBuffTimer || 0, 8.0);
       createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 1.0, 0)), '#06b6d4');
@@ -6293,7 +6413,58 @@
     // 5대 핵심 감정 랜드마크 상공 3D 미션 안내판 등록 (고유 간판이 있는 추가 미션은 제외하여 중복 방지)
     storyQuestMeta.filter(m => !m.hasOwnSign).forEach(makeLandmarkStorySign);
 
-    let activeGuidedQuestKey = 'joy';
+    let activeGuidedQuestKey = isCoreStoryComplete()
+      ? (['robot', 'stage', 'coop', 'flutter', 'track'].find(k => !state.quests[k]) || 'flutter')
+      : getNextCoreStoryKey();
+
+    function syncStoryUnlockState() {
+      const coreDone = getCoreStoryDoneCount();
+      const coreComplete = coreDone === CORE_STORY_KEYS.length;
+
+      // 1) 스튜디오 프로필 & 정령 선택 모달에서 '설렘이(flutter)' 잠금/해제 동기화
+      document.querySelectorAll('#custColorRow .cust-color-card[data-spirit="flutter"]').forEach(card => {
+        card.classList.toggle('locked', !coreComplete);
+        const sub = card.querySelector('.cust-color-sub');
+        if (sub) {
+          sub.textContent = coreComplete
+            ? '새로운 모험을 반기는 두근거림 (코랄 핑크)'
+            : `🔒 5대 동화 감정 해결 후 활성화 (${coreDone}/5)`;
+        }
+      });
+      document.querySelectorAll('.spirit-card[data-guest="flutter"]').forEach(card => {
+        card.classList.toggle('locked', !coreComplete);
+        card.title = coreComplete
+          ? '제10장 새로운 손님 설렘이'
+          : `5대 동화 감정 해결 후 활성화 (${coreDone}/5)`;
+      });
+
+      // 2) 3D 월드 제10장 설렘이 NPC & 간판 잠금/해제 시각 동기화
+      if (typeof flMat !== 'undefined' && flMat) {
+        flMat.transparent = !coreComplete;
+        flMat.opacity = coreComplete ? 1.0 : 0.38;
+        flMat.needsUpdate = true;
+      }
+      if (typeof flWingMat !== 'undefined' && flWingMat) {
+        flWingMat.opacity = coreComplete ? 0.92 : 0.36;
+      }
+      if (typeof flSign !== 'undefined' && flSign && flSign.ctx) {
+        const txt = coreComplete
+          ? '🌸 제10장 새로운 손님: 코랄핑크 설렘이 (3단 하늘날개 축복!)'
+          : `🔒 5대 동화 감정 해결 후 제10장 '설렘이' 활성화 (${coreDone}/5)`;
+        drawChatBubbleCanvas(flSign.ctx, txt, coreComplete ? '#ec4899' : '#71717a');
+        flSign.tex.needsUpdate = true;
+      }
+
+      // 3) 3D 친구 협동 붉은 원도 5대 감정 해결 후 활성화
+      if (typeof friendAgents !== 'undefined') {
+        friendAgents.forEach(fr => {
+          if (fr.heavyBasketRing) {
+            fr.heavyBasketRing.visible = !!(fr.needsCoopHelp && coreComplete);
+          }
+        });
+      }
+    }
+    window.syncStoryUnlockState = syncStoryUnlockState;
 
     // ============================================================
     // 3D 차분한 발걸음 길안내 디딤돌 (10개 납작한 원형 스텝 도트, 느리고 은은한 흐름)
@@ -6327,18 +6498,24 @@
       if (doneBadgeEl) doneBadgeEl.textContent = `${doneQuests.length}/${storyQuestMeta.length}`;
 
       const activeMeta = storyQuestMeta.find(m => m.key === activeGuidedQuestKey) || storyQuestMeta[0];
+      const activeUnlocked = isMissionUnlocked(activeMeta.key);
       const activeDone = !!state.quests[activeMeta.key];
       const activeCurVal = activeDone ? activeMeta.max : Math.min(activeMeta.max, state.mission[activeMeta.key] || 0);
+      const coreDoneCount = getCoreStoryDoneCount();
 
       // 상단 1줄 요약 미션 배너(#topSingleMissionBar) 실시간 동기화
       const tsmDot = document.getElementById('tsmDot');
       const tsmText = document.getElementById('tsmText');
       const tsmProg = document.getElementById('tsmProg');
-      if (tsmDot) tsmDot.style.background = activeMeta.color;
-      if (tsmText) tsmText.textContent = `${activeMeta.chapter.split('·')[1]?.trim() || activeMeta.shortLabel} · ${activeMeta.title}`;
+      if (tsmDot) tsmDot.style.background = activeUnlocked ? activeMeta.color : '#a1a1aa';
+      if (tsmText) {
+        tsmText.textContent = activeUnlocked
+          ? `${activeMeta.chapter.split('·')[1]?.trim() || activeMeta.shortLabel} · ${activeMeta.title}`
+          : `🔒 ${activeMeta.shortLabel} 미션 · 5대 동화 감정 해결 후 활성화 (${coreDoneCount}/5)`;
+      }
       if (tsmProg) {
-        tsmProg.textContent = activeDone ? '완료' : `${activeCurVal}/${activeMeta.max}`;
-        tsmProg.style.color = activeDone ? '#15803d' : '#18181b';
+        tsmProg.textContent = !activeUnlocked ? `잠금` : (activeDone ? '완료' : `${activeCurVal}/${activeMeta.max}`);
+        tsmProg.style.color = !activeUnlocked ? '#b45309' : (activeDone ? '#15803d' : '#18181b');
       }
 
       // 좌측 상단: Nothing Design 5x2 기계식 인덱스 탭 + 정밀 계측기 카드
@@ -6347,9 +6524,10 @@
           ${storyQuestMeta.map((m, idx) => {
             const isSel = (m.key === activeMeta.key);
             const isDone = !!state.quests[m.key];
+            const isUnlocked = isMissionUnlocked(m.key);
             const numStr = String(idx + 1).padStart(2, '0');
             return `
-              <button type="button" class="story-tab-pill ${isSel ? 'active' : ''} ${isDone ? 'done' : ''}" onclick="window.guideToStoryQuest('${m.key}')">
+              <button type="button" class="story-tab-pill ${isSel ? 'active' : ''} ${isDone ? 'done' : ''} ${!isUnlocked ? 'locked' : ''}" onclick="window.guideToStoryQuest('${m.key}')">
                 <span class="story-tab-num">${numStr}</span>
                 <span>${m.shortLabel}</span>
               </button>
@@ -6359,25 +6537,31 @@
       `;
 
       const dotGaugeCount = Math.min(8, activeMeta.max);
-      const filledDots = activeMeta.max > 0 ? Math.round((activeCurVal / activeMeta.max) * dotGaugeCount) : 0;
+      const filledDots = (activeUnlocked && activeMeta.max > 0) ? Math.round((activeCurVal / activeMeta.max) * dotGaugeCount) : 0;
       const dotsHtml = Array.from({ length: dotGaugeCount }, (_, di) => `<i class="${di < filledDots ? 'filled' : ''}"></i>`).join('');
+      const progBadgeText = !activeUnlocked ? `🔒 ${coreDoneCount}/5` : (activeDone ? '완료' : `${activeCurVal} / ${activeMeta.max}`);
+      const descHtml = activeUnlocked
+        ? activeMeta.desc
+        : `<span style="color:#b45309; font-weight:700;">🔒 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 활성화됩니다! (${coreDoneCount}/5 완료)</span><br>${activeMeta.desc}`;
+      const actionKey = activeUnlocked ? activeMeta.key : getNextCoreStoryKey();
+      const actionLabel = activeUnlocked ? '자동 안내' : '동화 감정으로';
 
       const detailHtml = `
         <div class="story-detail-card">
           <div class="story-q-top">
-            <span class="story-q-chapter"><span class="story-q-dot" style="background:${activeMeta.color};"></span>${activeMeta.chapter}</span>
-            <span class="story-q-prog ${activeDone ? 'done' : ''}">${activeDone ? '완료' : `${activeCurVal} / ${activeMeta.max}`}</span>
+            <span class="story-q-chapter"><span class="story-q-dot" style="background:${activeUnlocked ? activeMeta.color : '#a1a1aa'};"></span>${activeMeta.chapter}</span>
+            <span class="story-q-prog ${activeDone ? 'done' : ''}">${progBadgeText}</span>
           </div>
           <div class="story-q-title">${activeMeta.title}</div>
-          <div class="story-q-desc">${activeMeta.desc}</div>
+          <div class="story-q-desc">${descHtml}</div>
           <div class="story-q-meta-bar">
             <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
               <div class="story-dot-gauge">${dotsHtml}</div>
               <span class="story-q-reward">보상: ${activeMeta.reward || '마음 포인트'}</span>
             </div>
-            <button type="button" class="story-btn-autowalk" onclick="window.startAutoWalkToQuest('${activeMeta.key}')">
+            <button type="button" class="story-btn-autowalk" onclick="window.startAutoWalkToQuest('${actionKey}')">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 14 15 9 13 15 10 14"/></svg>
-              <span>자동 안내</span>
+              <span>${actionLabel}</span>
             </button>
           </div>
         </div>
@@ -6401,14 +6585,25 @@
       const meta = storyQuestMeta.find(m => m.key === key);
       renderStoryMissionTracker();
       if (meta) {
-        soundChime(659);
-        showToast(`<b>[${meta.chapter}]</b> 길안내 디딤돌이 표시되었습니다. [자동 안내]를 누르면 직접 이동합니다.`);
+        if (!isMissionUnlocked(key)) {
+          soundChime(220);
+          showToast(`🔒 <b>[${meta.chapter}]</b><br>먼저 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결해 주세요! (${getCoreStoryDoneCount()}/5)`);
+        } else {
+          soundChime(659);
+          showToast(`<b>[${meta.chapter}]</b> 길안내 디딤돌이 표시되었습니다. [자동 안내]를 누르면 직접 이동합니다.`);
+        }
       }
     };
 
     window.startAutoWalkToQuest = function(key) {
       initAudio();
       cancelPlaygroundRide();
+      if (!isMissionUnlocked(key)) {
+        const nextCore = getNextCoreStoryKey();
+        soundChime(220);
+        showToast(`🔒 5대 동화 감정을 모두 해결해야 다음 미션이 활성화됩니다! (${getCoreStoryDoneCount()}/5) 미완료 동화 감정으로 안내합니다.`);
+        key = nextCore;
+      }
       activeGuidedQuestKey = key;
       const meta = storyQuestMeta.find(m => m.key === key);
       renderStoryMissionTracker();
@@ -6465,27 +6660,42 @@
       const coreDone = Object.keys(dotMap).filter(k => !!state.quests[k]).length;
       const qCountEl = document.getElementById('questCountText');
       if (qCountEl) qCountEl.textContent = `${coreDone}/5`;
+      syncStoryUnlockState();
       renderStoryMissionTracker();
     }
 
     function checkQuestCollect(key, name, msg) {
       if (state.quests[key]) return;
       state.quests[key] = true;
+      const coreDone = getCoreStoryDoneCount();
+      if (CORE_STORY_KEYS.includes(key)) {
+        if (coreDone < CORE_STORY_KEYS.length) {
+          if (activeGuidedQuestKey === key || !isMissionUnlocked(activeGuidedQuestKey)) {
+            activeGuidedQuestKey = getNextCoreStoryKey();
+          }
+        } else {
+          activeGuidedQuestKey = ['robot', 'stage', 'coop', 'flutter', 'track'].find(k => !state.quests[k]) || 'flutter';
+        }
+      }
       saveProgress(); syncQuestHUD(); soundQuestComplete();
       levelUpMindBasket();
       showToast(`<b>[퀘스트 달성] ${name}</b> · 등 뒤 광주리에 구슬이 담겼습니다!`);
-      const coreDone = ['joy', 'sad', 'anger', 'fear', 'worry'].filter(k => !!state.quests[k]).length;
       if (coreDone === 5) {
         setTimeout(() => {
-          showToast('<b>축하합니다! 5대 감정 구슬을 모두 모아 광주리가 완성되었습니다.</b>');
+          showCongratsBanner('🌟 동화 5대 핵심 감정 모두 해결!', '축하합니다! 이제 제10장 새 손님 [설렘이]와 5대 동화 심화 미션이 활성화되었습니다!');
+          showToast('✨ <b>[해금 완료!]</b> 5대 동화 감정을 모두 해결하여 <b>제10장 새 손님 설렘이</b>와 <b>나머지 심화 미션</b>이 활성화되었습니다!');
           soundQuestComplete(); openModal('modalTrophy'); renderTrophyCard();
         }, 1200);
       }
     }
 
     window.completeExtraMission = function(key, rewardTitle) {
+      if (!isMissionUnlocked(key)) {
+        showToast(`🔒 <b>아직 잠겨 있는 미션입니다!</b><br>먼저 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결해 주세요. (${getCoreStoryDoneCount()}/5)`);
+        return false;
+      }
       const meta = storyQuestMeta.find(m => m.key === key);
-      if (!meta) return;
+      if (!meta) return false;
       const firstDone = !state.quests[key];
       state.quests[key] = true;
       state.mission[key] = meta.max;
@@ -6501,6 +6711,7 @@
           }, 900);
         }
       }
+      return true;
     };
 
     // ==========================================
@@ -6841,7 +7052,12 @@
     function doMeditate() { initAudio(); playerPhysics.isMeditating = !playerPhysics.isMeditating; showToast(playerPhysics.isMeditating ? '공중 부양 명상 시작' : '명상 종료'); soundChime(440); }
 
     function selectGuestSpirit(key) {
-      if (!state.spirits[key]) return;
+      if (!state.spirits[key]) return false;
+      if (!isSpiritUnlocked(key)) {
+        soundChime(220);
+        showToast(`🔒 <b>‘설렘이’ 정령은 아직 잠겨 있어요!</b><br>동화 속 5대 감정 손님(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
+        return false;
+      }
       state.curGuest = key; saveProgress();
       const s = state.spirits[key];
       if (spiritVisualGroup) spiritGroup.remove(spiritVisualGroup);
@@ -6850,6 +7066,7 @@
       spiritLight.color.set(s.color);
       wandStar.material.color.set(s.color); wandStar.material.emissive.set(s.color);
       soundChime(580);
+      return true;
     }
 
     // 시간대 전환
@@ -7127,12 +7344,21 @@
       }
 
       if (foundZone === 'flutter') {
-        document.getElementById('zpChip').style.background = '#ec4899';
-        document.getElementById('zpTitle').textContent = '🌸 제10장 새로운 손님 · 코랄핑크 설렘이 (나비요정)';
-        document.getElementById('zpDesc').textContent = '“야호! 나는 설렘이야! 감정 손님들이 다녀간 광주리에는 언제든 새로운 설렘이 찾아온단다!”';
+        const flOpen = isMissionUnlocked('flutter');
+        document.getElementById('zpChip').style.background = flOpen ? '#ec4899' : '#71717a';
+        document.getElementById('zpTitle').textContent = flOpen
+          ? '🌸 제10장 새로운 손님 · 코랄핑크 설렘이 (나비요정)'
+          : `🔒 제10장 새 손님 · 설렘이 (5대 동화 감정 해결 후 활성화 ${getCoreStoryDoneCount()}/5)`;
+        document.getElementById('zpDesc').textContent = flOpen
+          ? '“야호! 나는 설렘이야! 감정 손님들이 다녀간 광주리에는 언제든 새로운 설렘이 찾아온단다!”'
+          : `동화 속 5대 감정 손님(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 설렘이가 활성화됩니다! (현재 ${getCoreStoryDoneCount()}/5)`;
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
-        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.style.background = '#ec4899'; b1.textContent = '🦋 설렘 날개 3단점프 축복받기 (G)'; b1.onclick = () => window.activateFlutterBlessing();
+        const b1 = document.createElement('button');
+        b1.className = 'zp-btn';
+        b1.style.background = flOpen ? '#ec4899' : '#71717a';
+        b1.textContent = flOpen ? '🦋 설렘 날개 3단점프 축복받기 (G)' : `🔒 5대 동화 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`;
+        b1.onclick = () => window.activateFlutterBlessing();
         const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '🤟 3손가락 마음탐정 (M)'; b2.onclick = () => window.openThreeFingerModal();
         btnsEl.appendChild(b1);
         btnsEl.appendChild(b2);
@@ -7163,17 +7389,20 @@
 
       if (foundZone.startsWith('friend:')) {
         const fr = friendAgents.find(f => f.id === foundZone.split(':')[1]);
-        document.getElementById('zpChip').style.background = fr.needsCoopHelp ? '#f43f5e' : '#ff5800';
-        document.getElementById('zpTitle').textContent = fr.needsCoopHelp
+        const coopOpen = isMissionUnlocked('coop');
+        document.getElementById('zpChip').style.background = (fr.needsCoopHelp && coopOpen) ? '#f43f5e' : '#ff5800';
+        document.getElementById('zpTitle').textContent = (fr.needsCoopHelp && coopOpen)
           ? `🧺 [제9장 협동] ${fr.name}의 마음 광주리가 무거워요!`
           : `${fr.name} (동행 친구)`;
-        document.getElementById('zpDesc').textContent = fr.needsCoopHelp
+        document.getElementById('zpDesc').textContent = (fr.needsCoopHelp && coopOpen)
           ? `“오늘 한꺼번에 많은 감정 손님이 찾아와서 광주리가 무거워… 같이 들어줄래?”`
-          : `${fr.name}와(과) 이야기를 나누거나 마음 광주리를 같이 들어줄 수 있어요.`;
+          : (coopOpen ? `${fr.name}와(과) 이야기를 나누거나 마음 광주리를 같이 들어줄 수 있어요.` : `${fr.name}와(과) 이야기를 나눌 수 있어요. (제9장 협동 미션: 5대 감정 해결 후 활성화 ${getCoreStoryDoneCount()}/5)`);
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '친구와 함께하기 (G)'; b1.onclick = () => openFriendModal(fr.id);
-        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '🧺 즉시 광주리 같이 들기 (+250점)'; b2.onclick = () => window.quickRescueFriendBasket(fr.id);
+        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary';
+        b2.textContent = coopOpen ? '🧺 즉시 광주리 같이 들기 (+250점)' : `🔒 협동 미션 (${getCoreStoryDoneCount()}/5 후 활성)`;
+        b2.onclick = () => window.quickRescueFriendBasket(fr.id);
         btnsEl.appendChild(b1);
         btnsEl.appendChild(b2);
         box.classList.add('visible');
@@ -7194,10 +7423,10 @@
             openModal('modalWorry');
           }
         } },
-        robot: { color: '#6366f1', t: '제4장 부서진 장난감 로봇 (나-전달법)', d: state.quests.robot ? '나-전달법으로 동생과 화해해 로봇을 멋지게 고쳤어요!' : '화난 마음을 비난 대신 "나-전달법"으로 표현해 로봇을 고쳐보세요.', actText: '나-전달법 대화 & 수리 (G)', actFn: () => window.openRobotIMessageModal() },
-        stage: { color: '#e11d48', t: '제6장 학예 발표회 미니 무대', d: state.quests.stage ? '차근차근 준비해 학예 발표회를 멋지게 마쳤어요!' : '무대에 올라 지금 할 수 있는 발표 연습을 3단계로 진행해 보세요.', actText: '발표 연습하기 (G)', actFn: () => window.triggerStagePractice() },
+        robot: { color: '#6366f1', t: '제4장 부서진 장난감 로봇 (나-전달법)', d: state.quests.robot ? '나-전달법으로 동생과 화해해 로봇을 멋지게 고쳤어요!' : (isMissionUnlocked('robot') ? '화난 마음을 비난 대신 "나-전달법"으로 표현해 로봇을 고쳐보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('robot') ? '나-전달법 대화 & 수리 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.openRobotIMessageModal() },
+        stage: { color: '#e11d48', t: '제6장 학예 발표회 미니 무대', d: state.quests.stage ? '차근차근 준비해 학예 발표회를 멋지게 마쳤어요!' : (isMissionUnlocked('stage') ? '무대에 올라 지금 할 수 있는 발표 연습을 3단계로 진행해 보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('stage') ? '발표 연습하기 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.triggerStagePractice() },
         soccer: { color: '#f59e0b', t: '기쁨 축구 광장 & 골대', d: '축구공 가까이에서 발로 차거나 [G]키로 골대를 향해 멋진 슛을 날려보세요!', actText: '슛 날리기 / 공 리셋 (G)', actFn: () => window.kickOrResetSoccerBall() },
-        track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: '섬 바깥쪽 붉은 트랙을 따라 8개의 스피드 부스터 게이트를 통과해 1바퀴 완주에 도전하세요!', actText: '스피드 대시 출발 (G)', actFn: () => window.startOuterTrackDash() },
+        track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '섬 바깥쪽 붉은 트랙을 따라 8개의 스피드 부스터 게이트를 통과해 1바퀴 완주에 도전하세요!' : `트랙을 자유롭게 달릴 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (${getCoreStoryDoneCount()}/5 후 활성)`, actFn: () => window.startOuterTrackDash() },
         zoo: { color: '#22c55e', t: '숲속 아기 동물원', d: '토끼, 아기곰, 펭귄 친구들과 교감하며 마음을 따뜻하게 달래보세요.', actText: '동물 친구들과 교감하기 (G)', actFn: () => window.interactZooAnimals() },
         garden: { color: '#f43f5e', t: '치유의 유리온실 식물원', d: '무지개 빛 꽃향기를 깊게 들이마시며 편안하게 숨을 고르고 가벼운 발걸음을 얻어보세요.', actText: '꽃향기 치유 호흡 (G)', actFn: () => window.interactGardenBloom() },
         beach: { color: '#38bdf8', t: '치유의 물놀이 해변 & 풀장', d: '시원한 물줄기와 파라솔 쉼터에서 물보라 점프를 하며 마음의 땀을 식혀보세요.', actText: '시원한 물보라 점프 (G)', actFn: () => window.interactBeachSplash() }
@@ -7214,11 +7443,13 @@
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = g.actText; b1.onclick = g.actFn; btnsEl.appendChild(b1);
       }
       if (foundZone === 'anger') {
-        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = '#2563eb'; bRob.textContent = '로봇 수리 & 나-전달법 (R)'; bRob.onclick = () => window.openRobotIMessageModal();
+        const robOpen = isMissionUnlocked('robot');
+        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = robOpen ? '#2563eb' : '#71717a'; bRob.textContent = robOpen ? '로봇 수리 & 나-전달법 (R)' : `🔒 로봇 수리 (${getCoreStoryDoneCount()}/5 후 활성)`; bRob.onclick = () => window.openRobotIMessageModal();
         btnsEl.appendChild(bRob);
       }
       if (foundZone === 'worry') {
-        const bStg = document.createElement('button'); bStg.className = 'zp-btn'; bStg.style.background = '#e11d48'; bStg.textContent = '학예회 발표 연습하기'; bStg.onclick = () => window.triggerStagePractice();
+        const stgOpen = isMissionUnlocked('stage');
+        const bStg = document.createElement('button'); bStg.className = 'zp-btn'; bStg.style.background = stgOpen ? '#e11d48' : '#71717a'; bStg.textContent = stgOpen ? '학예회 발표 연습하기' : `🔒 학예 발표 (${getCoreStoryDoneCount()}/5 후 활성)`; bStg.onclick = () => window.triggerStagePractice();
         btnsEl.appendChild(bStg);
       }
       if (state.spirits[foundZone] && npcDefinitions.some(d => d.key === foundZone)) {
@@ -7535,6 +7766,7 @@
     }
 
     let lastPlayroomSyncTime = 0;
+    let lastPosSyncKey = '';
 
     function animate() {
       requestAnimationFrame(animate);
@@ -7720,7 +7952,7 @@
             soundChime(659 + (tb.index % 4) * 80);
             createMagicImpact(new THREE.Vector3(tb.x, 0.8, tb.z), '#38bdf8');
 
-            if (!tb.passedInLap) {
+            if (!tb.passedInLap && isMissionUnlocked('track')) {
               tb.passedInLap = true;
               tb.padMat.color.setHex(0x22c55e);
               tb.padMat.emissive.setHex(0x16a34a);
@@ -7744,6 +7976,8 @@
               } else {
                 showToast(`🏃💨 <b>[스피드 부스터 발동!]</b> 달리기 속도가 빨라집니다! (트랙 체크포인트 ${trackCheckpointsCleared}/8 · +35점)`);
               }
+            } else if (!isMissionUnlocked('track')) {
+              showToast(`🏃💨 <b>[스피드 부스터!]</b> 자유롭게 달려보세요! (완주 미션은 5대 동화 감정 해결 후 활성화: ${getCoreStoryDoneCount()}/5)`);
             }
           }
         });
@@ -8444,19 +8678,22 @@
         });
       }
 
-      // 내 위치를 P2P 교실 방에 초당 약 7회(140ms 간격) throttled 전송
+      // 내 위치를 Cloudflare 중계 방에 150ms 간격(정지 상태는 5초 하트비트)으로 전송
       if (window.mpConnected && mpActions?.sendPos) {
         const nowMs = performance.now();
-        if (nowMs - lastPlayroomSyncTime > 140) {
-          lastPlayroomSyncTime = nowMs;
-          mpActions.sendPos({
-            x: Number(playerRig.position.x.toFixed(2)),
-            y: Number(playerRig.position.y.toFixed(2)),
-            z: Number(playerRig.position.z.toFixed(2)),
-            rotY: Number(playerRig.rotation.y.toFixed(2)),
-            isMoving: !!(isMoving),
-            isDancing: !!(playerPhysics.isDancing)
-          });
+        if (nowMs - lastPlayroomSyncTime > 150) {
+          const px = Number(playerRig.position.x.toFixed(2));
+          const py = Number(playerRig.position.y.toFixed(2));
+          const pz = Number(playerRig.position.z.toFixed(2));
+          const prot = Number(playerRig.rotation.y.toFixed(2));
+          const mv = !!(isMoving);
+          const dc = !!(playerPhysics.isDancing);
+          const posKey = `${px},${py},${pz},${prot},${mv},${dc}`;
+          if (posKey !== lastPosSyncKey || nowMs - lastPlayroomSyncTime >= 5000) {
+            lastPlayroomSyncTime = nowMs;
+            lastPosSyncKey = posKey;
+            mpActions.sendPos({ x: px, y: py, z: pz, rotY: prot, isMoving: mv, isDancing: dc });
+          }
         }
       }
 
@@ -8488,8 +8725,8 @@
                 fr.chatObj.sprite.visible = true;
                 fr.chatTimer = 4.5;
               }
-              const wasHeavy = !!fr.needsCoopHelp;
-              if (fr.heavyBasketRing) {
+              const wasHeavy = !!fr.needsCoopHelp && isMissionUnlocked('coop');
+              if (wasHeavy && fr.heavyBasketRing) {
                 fr.heavyBasketRing.visible = false;
                 fr.needsCoopHelp = false;
               }
@@ -8687,7 +8924,8 @@
         ls.sprite.position.y = ls.baseY + Math.sin(time * 2.2 + idx) * 0.28;
         ls.sprite.visible = !state.quests[ls.key];
       });
-      const guidedMeta = storyQuestMeta.find(m => m.key === activeGuidedQuestKey && !state.quests[m.key]) || storyQuestMeta.find(m => !state.quests[m.key]);
+      const guidedMeta = storyQuestMeta.find(m => m.key === activeGuidedQuestKey && !state.quests[m.key] && isMissionUnlocked(m.key))
+        || storyQuestMeta.find(m => !state.quests[m.key] && isMissionUnlocked(m.key));
       if (guidedMeta) {
         const gDist = Math.hypot(guidedMeta.x - playerRig.position.x, guidedMeta.z - playerRig.position.z);
         const showGuide = (gDist > 4.0);
@@ -8840,10 +9078,22 @@
     });
 
     const cards = document.querySelectorAll('.spirit-card');
-    cards.forEach(c => c.addEventListener('click', () => { cards.forEach(x => x.classList.remove('active')); c.classList.add('active'); soundChime(580); }));
+    cards.forEach(c => c.addEventListener('click', () => {
+      const gKey = c.dataset.guest;
+      if (!isSpiritUnlocked(gKey)) {
+        selectGuestSpirit(gKey);
+        return;
+      }
+      cards.forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      soundChime(580);
+    }));
     bindClick('btnConfirmSpirit', () => {
       const act = document.querySelector('.spirit-card.active');
-      if (act) { selectGuestSpirit(act.dataset.guest); closeModal('modalSpirit'); showToast(`[${state.spirits[act.dataset.guest].name}] 정령과 동행합니다.`); }
+      if (act && selectGuestSpirit(act.dataset.guest)) {
+        closeModal('modalSpirit');
+        showToast(`[${state.spirits[act.dataset.guest].name}] 정령과 동행합니다.`);
+      }
     });
 
     function renderFarewell() {
@@ -8864,247 +9114,576 @@
       ctx.fillText(`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 · 마음 모험가 ${state.playerName} 올림`, 400, 456);
     }
 
+    function drawRoundedRectPath(ctx, x, y, w, h, r) {
+      const rad = Math.max(0, Math.min(r, w / 2, h / 2));
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, y, w, h, rad);
+      else ctx.rect(x, y, w, h);
+    }
+
+    function drawTruncatedText(ctx, text, x, y, maxWidth) {
+      const str = String(text ?? '');
+      if (ctx.measureText(str).width <= maxWidth) {
+        ctx.fillText(str, x, y);
+        return;
+      }
+      let lo = 0, hi = str.length;
+      while (lo < hi) {
+        const mid = (lo + hi + 1) >> 1;
+        if (ctx.measureText(str.slice(0, mid) + '…').width <= maxWidth) lo = mid;
+        else hi = mid - 1;
+      }
+      ctx.fillText(str.slice(0, lo) + '…', x, y);
+    }
+
+    // 프로필 스튜디오 SVG와 동일한 로블록스 블록형 정령 마스코트 벡터 렌더러 (OS 이모지 대체)
+    function drawRobloxSpiritVector(ctx, key, cx, cy, size, unlocked) {
+      const s = size / 36;
+      const ox = cx - size / 2;
+      const oy = cy - size / 2;
+      ctx.save();
+      ctx.translate(ox, oy);
+      ctx.scale(s, s);
+
+      const box = (x, y, w, h, fill, stroke, sw = 1.2, r = 1.2) => {
+        ctx.fillStyle = unlocked ? fill : '#e4e4e7';
+        drawRoundedRectPath(ctx, x, y, w, h, r);
+        ctx.fill();
+        if (stroke) {
+          ctx.strokeStyle = unlocked ? stroke : '#a1a1aa';
+          ctx.lineWidth = sw;
+          ctx.stroke();
+        }
+      };
+
+      const eyeColor = unlocked ? '#18181b' : '#71717a';
+
+      if (key === 'joy') {
+        box(10, 3, 5, 9, '#fde047', '#b45309');
+        box(21, 3, 5, 9, '#fde047', '#b45309');
+        box(8, 11, 20, 17, '#f59e0b', '#b45309', 1.2, 1.5);
+        ctx.fillStyle = eyeColor; ctx.fillRect(12, 16, 3, 4); ctx.fillRect(21, 16, 3, 4);
+        ctx.fillStyle = unlocked ? '#fb7185' : '#d4d4d8';
+        ctx.fillRect(11, 21, 3, 2); ctx.fillRect(22, 21, 3, 2);
+        box(12, 28, 12, 5, '#d97706', null, 0, 1);
+      } else if (key === 'sad') {
+        box(15, 3, 6, 4, '#93c5fd', '#1d4ed8', 1.1);
+        box(13, 7, 10, 4, '#60a5fa', '#1d4ed8', 1.1);
+        box(8, 11, 20, 17, '#3b82f6', '#1d4ed8', 1.2, 1.5);
+        ctx.fillStyle = eyeColor; ctx.fillRect(12, 16, 3, 4); ctx.fillRect(21, 16, 3, 4);
+        ctx.fillStyle = unlocked ? '#bae6fd' : '#f4f4f5'; ctx.fillRect(12, 21, 2.5, 3);
+        box(12, 28, 12, 5, '#2563eb', null, 0, 1);
+      } else if (key === 'anger') {
+        box(9, 4, 5, 7, '#fbbf24', '#991b1b');
+        box(22, 4, 5, 7, '#fbbf24', '#991b1b');
+        box(8, 11, 20, 17, '#ef4444', '#991b1b', 1.2, 1.5);
+        ctx.fillStyle = eyeColor; ctx.fillRect(12, 16, 3.5, 3.5); ctx.fillRect(20.5, 16, 3.5, 3.5);
+        ctx.fillStyle = unlocked ? '#7f1d1d' : '#a1a1aa'; ctx.fillRect(14, 22, 8, 2.5);
+        box(12, 28, 12, 5, '#dc2626', null, 0, 1);
+      } else if (key === 'fear') {
+        box(6, 8, 24, 22, '#7e22ce', '#581c87', 1.2, 1.5);
+        box(9, 11, 18, 16, '#a855f7', null, 0, 1);
+        ctx.fillStyle = unlocked ? '#fef08a' : '#f4f4f5'; ctx.fillRect(12, 16, 3, 4); ctx.fillRect(21, 16, 3, 4);
+        box(11, 28, 14, 5, '#6b21a8', null, 0, 1);
+      } else if (key === 'worry') {
+        box(11, 4, 14, 4, '#6ee7b7', '#047857', 1.1);
+        box(9, 8, 18, 3, '#34d399', '#047857', 1.1);
+        box(8, 11, 20, 17, '#10b981', '#047857', 1.2, 1.5);
+        ctx.fillStyle = eyeColor; ctx.fillRect(12, 16, 3, 4); ctx.fillRect(21, 16, 3, 4);
+        ctx.fillStyle = unlocked ? '#065f46' : '#a1a1aa'; ctx.fillRect(14, 22, 8, 2);
+        box(12, 28, 12, 5, '#059669', null, 0, 1);
+      } else {
+        box(2, 10, 7, 10, '#f9a8d4', '#be185d', 1.1);
+        box(27, 10, 7, 10, '#f9a8d4', '#be185d', 1.1);
+        box(3, 20, 5, 6, '#fde047', '#be185d', 1.1);
+        box(28, 20, 5, 6, '#fde047', '#be185d', 1.1);
+        box(9, 10, 18, 17, '#ec4899', '#be185d', 1.2, 1.5);
+        ctx.fillStyle = eyeColor; ctx.fillRect(12, 15, 3, 4); ctx.fillRect(21, 15, 3, 4);
+        box(12, 27, 12, 5, '#db2777', null, 0, 1);
+      }
+      ctx.restore();
+    }
+
+    function drawRobloxBlockyFallback(ctx, cx, cy, curSp) {
+      ctx.save();
+      ctx.fillStyle = '#d4d4d8';
+      drawRoundedRectPath(ctx, cx - 58, cy + 122, 116, 16, 8);
+      ctx.fill();
+      ctx.fillStyle = '#27272a';
+      ctx.fillRect(cx - 28, cy + 68, 24, 54);
+      ctx.fillRect(cx + 4, cy + 68, 24, 54);
+      ctx.fillStyle = state.shirtColor || curSp.hex || '#ff5800';
+      ctx.fillRect(cx - 32, cy - 2, 64, 70);
+      ctx.fillRect(cx - 56, cy - 2, 22, 62);
+      ctx.fillRect(cx + 34, cy - 2, 22, 62);
+      ctx.fillStyle = '#fde0c6';
+      ctx.fillRect(cx - 28, cy - 60, 56, 54);
+      ctx.fillStyle = state.hairColor || '#1c1917';
+      ctx.fillRect(cx - 31, cy - 68, 62, 20);
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(cx - 15, cy - 38, 7, 10);
+      ctx.fillRect(cx + 8, cy - 38, 7, 10);
+      ctx.fillStyle = 'rgba(244, 114, 182, 0.7)';
+      ctx.fillRect(cx - 22, cy - 26, 9, 5);
+      ctx.fillRect(cx + 13, cy - 26, 9, 5);
+      drawRobloxSpiritVector(ctx, state.curGuest || 'joy', cx + 76, cy - 34, 48, true);
+      ctx.restore();
+    }
+
     function renderTrophyCard() {
       const canvas = document.getElementById('trophyCanvas');
       if (!canvas) return;
-      canvas.width = 880; canvas.height = 560;
+      const W = 1200, H = 750;
+      canvas.width = W; canvas.height = H;
       const ctx = canvas.getContext('2d');
 
-      // 1. 배경: 따뜻하고 부드러운 크림빛 양피지
-      const bgGrad = ctx.createLinearGradient(0, 0, 880, 560);
-      bgGrad.addColorStop(0, '#fffdfa');
-      bgGrad.addColorStop(1, '#fef3c7');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, 880, 560);
+      const coreKeys = ['joy', 'sad', 'anger', 'fear', 'worry'];
+      const extraKeys = ['robot', 'stage', 'coop', 'flutter', 'track'];
+      const coreDone = coreKeys.filter(k => !!state.quests?.[k]).length;
+      const extraDone = extraKeys.filter(k => !!state.quests?.[k]).length;
+      const totalDone = coreDone + extraDone;
 
-      // 2. 화려한 골드 챔피언 테두리 프레임
+      const scoreVal = state.mindScore || 0;
+      let lv = 1, levelTitle = '새싹';
+      if (scoreVal >= 5000) { lv = 5; levelTitle = '우주정원사'; }
+      else if (scoreVal >= 2500) { lv = 4; levelTitle = '마스터'; }
+      else if (scoreVal >= 1200) { lv = 3; levelTitle = '지혜등대'; }
+      else if (scoreVal >= 500) { lv = 2; levelTitle = '수호자'; }
+      else if (typeof state.mindLevel === 'number' && state.mindLevel >= 1) {
+        lv = state.mindLevel;
+        levelTitle = ({ 1: '새싹', 2: '수호자', 3: '지혜등대', 4: '마스터', 5: '우주정원사' })[lv] || '새싹';
+      }
+
+      const curGuestKey = state.curGuest || 'joy';
+      const curSp = state.spirits?.[curGuestKey] || state.spirits?.joy || { name: '기쁨이 (별토끼)', hex: '#f59e0b' };
+      const playerName = state.playerName || '인찬이';
+      const playerTitle = state.playerTitle || '마음 탐험가';
+
+      const subEl = document.getElementById('trophyModalSub');
+      if (subEl) {
+        subEl.textContent = coreDone === 5
+          ? `5대 동화 감정 수련 완료 · ${playerName}님의 3D 로블록스 아바타와 실제 마음 기록이 담긴 수료증입니다.`
+          : `핵심 감정 ${coreDone}/5 진행 중 · 지금 꾸민 3D 로블록스 아바타와 실시간 마음 수련 기록이 미리 반영됩니다.`;
+      }
+
+      // 1. 웜 아카이브 페이퍼 배경 + 갤러리 시트
+      ctx.fillStyle = '#f6f5f0';
+      ctx.fillRect(0, 0, W, H);
+
       ctx.save();
-      ctx.strokeStyle = '#d97706'; ctx.lineWidth = 12;
-      ctx.strokeRect(20, 20, 840, 520);
-      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4;
-      ctx.strokeRect(30, 30, 820, 500);
+      ctx.shadowColor = 'rgba(24, 24, 27, 0.06)';
+      ctx.shadowBlur = 24;
+      ctx.shadowOffsetY = 8;
+      ctx.fillStyle = '#ffffff';
+      drawRoundedRectPath(ctx, 28, 28, W - 56, H - 56, 18);
+      ctx.fill();
+      ctx.restore();
 
-      // 네 코너 황금 별 장식
-      const corners = [[36, 36], [844, 36], [36, 524], [844, 524]];
-      corners.forEach(([cx, cy]) => {
-        ctx.fillStyle = '#f59e0b';
-        ctx.font = '24px "Noto Sans KR"';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('⭐', cx, cy);
+      ctx.strokeStyle = '#e4e2dc';
+      ctx.lineWidth = 1.5;
+      drawRoundedRectPath(ctx, 28, 28, W - 56, H - 56, 18);
+      ctx.stroke();
+
+      // 상단 5대(+설렘) 감정 컬러 스펙트럼 바 (시트 상단 클리핑)
+      ctx.save();
+      drawRoundedRectPath(ctx, 28, 28, W - 56, H - 56, 18);
+      ctx.clip();
+      const segCols = state.quests?.flutter
+        ? ['#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6', '#10b981', '#ec4899']
+        : ['#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6', '#10b981'];
+      const segW = (W - 56) / segCols.length;
+      segCols.forEach((col, i) => {
+        ctx.fillStyle = col;
+        ctx.fillRect(28 + i * segW, 28, segW + 1, 5);
       });
       ctx.restore();
 
-      // 3. 상단 헤더 리본 & 타이틀
-      ctx.save();
-      ctx.fillStyle = '#0f172a';
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(140, 38, 600, 62, 16);
-      else ctx.rect(140, 38, 600, 62);
-      ctx.fill();
-      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3;
+      // 내부 헤어라인 프레임 & 네 귀퉁이 건축 등록 눈금
+      ctx.strokeStyle = 'rgba(24, 24, 27, 0.08)';
+      ctx.lineWidth = 1;
+      drawRoundedRectPath(ctx, 42, 42, W - 84, H - 84, 12);
       ctx.stroke();
 
-      ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24';
-      ctx.font = 'bold 30px "Noto Sans KR"';
-      ctx.fillText('👑 2026 마음 수호자 골드 챔피언 수료증 👑', 440, 80);
-      ctx.restore();
-
-      // 4. [좌측] 내 아바타 2D 일러스트 렌더링 카드 (헤어, 머리색, 셔츠, 모자 실시간 반영!)
       ctx.save();
-      const avBoxX = 58, avBoxY = 122, avBoxW = 210, avBoxH = 260;
-      ctx.fillStyle = '#f8fafc';
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(avBoxX, avBoxY, avBoxW, avBoxH, 20);
-      else ctx.rect(avBoxX, avBoxY, avBoxW, avBoxH);
-      ctx.fill();
-      ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 3; ctx.stroke();
-
-      // 아바타 원형 배경
-      const avCX = avBoxX + avBoxW / 2;
-      const avCY = avBoxY + 115;
-      ctx.fillStyle = '#fef08a';
-      ctx.beginPath(); ctx.arc(avCX, avCY, 75, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#facc15'; ctx.lineWidth = 4; ctx.stroke();
-
-      // 상의 (몸통)
-      ctx.fillStyle = state.shirtColor || '#ea580c';
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(avCX - 40, avCY + 36, 80, 52, 12);
-      else ctx.rect(avCX - 40, avCY + 36, 80, 52);
-      ctx.fill();
-
-      // 얼굴 (둥근 사각형)
-      ctx.fillStyle = '#ffdfba';
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(avCX - 32, avCY - 34, 64, 60, 16);
-      else ctx.rect(avCX - 32, avCY - 34, 64, 60);
-      ctx.fill();
-
-      // 볼터치 (핑크)
-      ctx.fillStyle = 'rgba(244, 63, 94, 0.4)';
-      ctx.beginPath(); ctx.arc(avCX - 20, avCY + 6, 7, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(avCX + 20, avCY + 6, 7, 0, Math.PI * 2); ctx.fill();
-
-      // 눈
-      ctx.fillStyle = '#18181b';
-      ctx.beginPath(); ctx.arc(avCX - 12, avCY - 2, 4.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(avCX + 12, avCY - 2, 4.5, 0, Math.PI * 2); ctx.fill();
-
-      // 미소 입
-      ctx.strokeStyle = '#e11d48'; ctx.lineWidth = 3; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.arc(avCX, avCY + 8, 10, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
-
-      // 헤어스타일 및 머리색상 반영
-      ctx.fillStyle = state.hairColor || '#18181b';
-      const hStyle = state.hairStyle || 'dandy';
-      if (hStyle === 'dandy') {
+      ctx.strokeStyle = '#c8c5bc';
+      ctx.lineWidth = 1.5;
+      const tick = 10;
+      [
+        [48, 48, 1, 1],
+        [W - 48, 48, -1, 1],
+        [48, H - 48, 1, -1],
+        [W - 48, H - 48, -1, -1]
+      ].forEach(([tx, ty, dx, dy]) => {
         ctx.beginPath();
-        ctx.arc(avCX, avCY - 28, 36, Math.PI, Math.PI * 2);
-        ctx.lineTo(avCX + 34, avCY - 10);
-        ctx.quadraticCurveTo(avCX + 10, avCY - 14, avCX, avCY - 12);
-        ctx.quadraticCurveTo(avCX - 15, avCY - 26, avCX - 34, avCY - 10);
-        ctx.closePath(); ctx.fill();
-      } else if (hStyle === 'bowl') {
-        ctx.beginPath();
-        ctx.arc(avCX, avCY - 26, 36, Math.PI * 0.9, Math.PI * 2.1);
-        ctx.lineTo(avCX + 34, avCY - 8);
-        ctx.lineTo(avCX - 34, avCY - 8);
-        ctx.closePath(); ctx.fill();
-      } else if (hStyle === 'ponytail' || hStyle === 'twin') {
-        ctx.beginPath();
-        ctx.arc(avCX, avCY - 28, 35, Math.PI, Math.PI * 2);
-        ctx.lineTo(avCX + 34, avCY - 12); ctx.lineTo(avCX - 34, avCY - 12);
-        ctx.closePath(); ctx.fill();
-        // 포니테일 리본/꽁지
-        ctx.beginPath(); ctx.arc(avCX + 38, avCY - 34, 14, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#ec4899'; ctx.beginPath(); ctx.arc(avCX + 32, avCY - 28, 6, 0, Math.PI * 2); ctx.fill();
-      } else {
-        // 기본 쇼트컷
-        ctx.beginPath();
-        ctx.arc(avCX, avCY - 28, 35, Math.PI, Math.PI * 2);
-        ctx.lineTo(avCX + 34, avCY - 12); ctx.lineTo(avCX - 34, avCY - 12);
-        ctx.closePath(); ctx.fill();
-      }
-
-      // 모자 (왕관 또는 고깔모자)
-      if (state.hatType === 'crown') {
-        ctx.fillStyle = '#facc15'; ctx.strokeStyle = '#ca8a04'; ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(avCX - 22, avCY - 44);
-        ctx.lineTo(avCX - 22, avCY - 58);
-        ctx.lineTo(avCX - 11, avCY - 50);
-        ctx.lineTo(avCX, avCY - 64);
-        ctx.lineTo(avCX + 11, avCY - 50);
-        ctx.lineTo(avCX + 22, avCY - 58);
-        ctx.lineTo(avCX + 22, avCY - 44);
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-      } else if (state.hatType === 'party' || state.hatType === 'wizard') {
-        ctx.fillStyle = '#a855f7';
-        ctx.beginPath();
-        ctx.moveTo(avCX - 20, avCY - 44);
-        ctx.lineTo(avCX, avCY - 74);
-        ctx.lineTo(avCX + 20, avCY - 44);
-        ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(avCX, avCY - 74, 5, 0, Math.PI * 2); ctx.fill();
-      }
-
-      // 아바타 하단 네임태그
-      ctx.fillStyle = '#0f172a';
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(avBoxX + 18, avBoxY + avBoxH - 44, avBoxW - 36, 32, 10);
-      else ctx.rect(avBoxX + 18, avBoxY + avBoxH - 44, avBoxW - 36, 32);
-      ctx.fill();
-      ctx.textAlign = 'center'; ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 15px "Noto Sans KR"';
-      ctx.fillText(`✨ ${state.playerName} ✨`, avCX, avBoxY + avBoxH - 23);
+        ctx.moveTo(tx, ty + dy * tick);
+        ctx.lineTo(tx, ty);
+        ctx.lineTo(tx + dx * tick, ty);
+        ctx.stroke();
+      });
       ctx.restore();
 
-      // 5. [우측] 학생 공식 인증 정보 & 명예의 기록
+      // 2. [좌측 컬럼] 3D 로블록스 프로필 스튜디오 쇼케이스
+      const avX = 68, avY = 68, avW = 346, avH = 430;
+      ctx.save();
+      drawRoundedRectPath(ctx, avX, avY, avW, avH, 16);
+      const studioGrad = ctx.createLinearGradient(avX, avY, avX, avY + avH);
+      studioGrad.addColorStop(0, '#f8f7f3');
+      studioGrad.addColorStop(1, '#ece9e0');
+      ctx.fillStyle = studioGrad;
+      ctx.fill();
+      ctx.strokeStyle = '#dfddd6';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      ctx.clip();
+      // 미니멀 도트 매트릭스 배경
+      ctx.fillStyle = 'rgba(24, 24, 27, 0.055)';
+      for (let gx = avX + 18; gx < avX + avW - 10; gx += 18) {
+        for (let gy = avY + 18; gy < avY + avH - 10; gy += 18) {
+          ctx.beginPath();
+          ctx.arc(gx, gy, 1, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // 동행 정령 색상의 은은한 스튜디오 헤일로
+      const haloGrad = ctx.createRadialGradient(avX + avW / 2, avY + 230, 16, avX + avW / 2, avY + 230, 155);
+      haloGrad.addColorStop(0, curSp.hex + '28');
+      haloGrad.addColorStop(0.65, curSp.hex + '0c');
+      haloGrad.addColorStop(1, curSp.hex + '00');
+      ctx.fillStyle = haloGrad;
+      ctx.fillRect(avX, avY, avW, avH);
+
+      // 상단 좌측 스튜디오 라벨
+      ctx.fillStyle = '#71717a';
+      ctx.font = '700 10.5px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('3D ROBLOX PROFILE', avX + 18, avY + 26);
+
+      // 상단 우측 동행 정령 칩
+      const shortSpName = (curSp.name || '기쁨이').split(' ')[0];
+      ctx.font = '700 11.5px "Noto Sans KR", sans-serif';
+      const chipTextW = ctx.measureText(shortSpName).width;
+      const chipW = chipTextW + 30;
+      const chipX = avX + avW - 16 - chipW;
+      const chipY = avY + 12;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      drawRoundedRectPath(ctx, chipX, chipY, chipW, 24, 99);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(24, 24, 27, 0.1)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = curSp.hex;
+      drawRoundedRectPath(ctx, chipX + 9, chipY + 7.5, 9, 9, 2.5);
+      ctx.fill();
+      ctx.fillStyle = '#18181b';
+      ctx.textAlign = 'left';
+      ctx.fillText(shortSpName, chipX + 22, chipY + 16.5);
+
+      // 실제 3D 로블록스 프로필 아바타 + 동행 정령 스냅샷 합성!
+      const portraitSnap = captureRobloxAvatarPortrait(520, 600);
+      if (portraitSnap) {
+        const boxX = avX + 14, boxY = avY + 42, boxW = avW - 28, boxH = avH - 52;
+        const scale = Math.min(boxW / portraitSnap.width, boxH / portraitSnap.height);
+        const drawW = portraitSnap.width * scale;
+        const drawH = portraitSnap.height * scale;
+        const drawX = boxX + (boxW - drawW) / 2;
+        const drawY = boxY + (boxH - drawH) / 2;
+        ctx.drawImage(portraitSnap, drawX, drawY, drawW, drawH);
+      } else {
+        drawRobloxBlockyFallback(ctx, avX + avW / 2 - 12, avY + 250, curSp);
+      }
+      ctx.restore();
+
+      // 좌측 하단 신원 플레이트
+      const idX = avX, idY = 514, idW = avW, idH = 168;
+      ctx.save();
+      ctx.fillStyle = '#ffffff';
+      drawRoundedRectPath(ctx, idX, idY, idW, idH, 14);
+      ctx.fill();
+      ctx.strokeStyle = '#e4e4e7';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      // 칭호 칩
+      ctx.font = '700 11.5px "Noto Sans KR", sans-serif';
+      const titleW = Math.min(idW - 40, ctx.measureText(playerTitle).width + 20);
+      ctx.fillStyle = '#f4f4f5';
+      drawRoundedRectPath(ctx, idX + 20, idY + 16, titleW, 24, 99);
+      ctx.fill();
+      ctx.fillStyle = '#52525b';
+      ctx.textAlign = 'left';
+      drawTruncatedText(ctx, playerTitle, idX + 30, idY + 32, titleW - 20);
+
+      // 수여자 이름
+      ctx.fillStyle = '#18181b';
+      ctx.font = '800 28px "GangwonEdu Modu", "Noto Sans KR", sans-serif';
+      drawTruncatedText(ctx, playerName, idX + 20, idY + 72, idW - 40);
+
+      // 구분선
+      ctx.strokeStyle = '#eceae4';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(idX + 20, idY + 94);
+      ctx.lineTo(idX + idW - 20, idY + 94);
+      ctx.stroke();
+
+      // 동행 정령 & 성장 단계 2열 메타
+      ctx.fillStyle = '#71717a';
+      ctx.font = '600 11px "Noto Sans KR", sans-serif';
+      ctx.fillText('동행 정령', idX + 20, idY + 116);
+      ctx.fillText('성장 단계', idX + 202, idY + 116);
+
+      ctx.fillStyle = curSp.hex;
+      drawRoundedRectPath(ctx, idX + 20, idY + 128, 11, 11, 3);
+      ctx.fill();
+      ctx.fillStyle = '#18181b';
+      ctx.font = '700 14px "Noto Sans KR", sans-serif';
+      drawTruncatedText(ctx, curSp.name || shortSpName, idX + 37, idY + 138, 148);
+
+      ctx.strokeStyle = '#eceae4';
+      ctx.beginPath();
+      ctx.moveTo(idX + 190, idY + 108);
+      ctx.lineTo(idX + 190, idY + 148);
+      ctx.stroke();
+
+      ctx.fillStyle = '#18181b';
+      ctx.font = '700 14px "Noto Sans KR", sans-serif';
+      drawTruncatedText(ctx, `Lv.${lv} ${levelTitle}`, idX + 202, idY + 138, 126);
+      ctx.restore();
+
+      // 3. [우측 컬럼] 에디토리얼 인증 본문
+      const rx = 446, rw = 686;
       ctx.save();
       ctx.textAlign = 'left';
 
-      // 칭호 & 성명
-      ctx.fillStyle = '#b45309'; ctx.font = 'bold 16px "Noto Sans KR"';
-      ctx.fillText('수여자 (마음 탐험가)', 296, 142);
-      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 28px "Noto Sans KR"';
-      ctx.fillText(`${state.playerName} 님`, 296, 178);
+      // 상단 아이브로우 + 상태 배지
+      ctx.fillStyle = '#71717a';
+      ctx.font = '700 11.5px "JetBrains Mono", monospace';
+      ctx.fillText('CERTIFICATE OF COMPLETION · 2026 SEL', rx, 88);
 
-      // 점수 뱃지 (골드 티어)
-      const scoreX = 520, scoreY = 145;
-      ctx.fillStyle = '#fef3c7';
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(scoreX, scoreY, 300, 42, 12);
-      else ctx.rect(scoreX, scoreY, 300, 42);
+      let badgeLabel = `수련 진행 중 · ${coreDone}/5`;
+      let badgeBg = '#f4f4f5', badgeInk = '#18181b', badgeDot = '#f59e0b', badgeBorder = '#e4e4e7';
+      if (totalDone === 10) {
+        badgeLabel = '전 과정 마스터 · 10/10';
+        badgeBg = '#18181b'; badgeInk = '#ffffff'; badgeDot = '#ff5800'; badgeBorder = '#18181b';
+      } else if (coreDone === 5) {
+        badgeLabel = '5대 감정 수료 완료';
+        badgeBg = '#18181b'; badgeInk = '#ffffff'; badgeDot = '#10b981'; badgeBorder = '#18181b';
+      }
+      ctx.font = '700 12px "Noto Sans KR", sans-serif';
+      const bTextW = ctx.measureText(badgeLabel).width;
+      const bW = bTextW + 34;
+      const bX = rx + rw - bW;
+      const bY = 70;
+      ctx.fillStyle = badgeBg;
+      drawRoundedRectPath(ctx, bX, bY, bW, 28, 99);
       ctx.fill();
-      ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.fillStyle = '#b45309'; ctx.font = 'bold 16px "Noto Sans KR"';
-      const curScore = state.mindScore || 1850;
-      ctx.fillText(`💖 치유 점수: ${curScore}점 · 골드 Lv.5`, scoreX + 16, scoreY + 27);
+      ctx.strokeStyle = badgeBorder;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = badgeDot;
+      ctx.beginPath();
+      ctx.arc(bX + 14, bY + 14, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = badgeInk;
+      ctx.fillText(badgeLabel, bX + 24, bY + 18.5);
 
-      // 본문 표창 문구
-      ctx.fillStyle = '#334155'; ctx.font = '500 16px "Noto Sans KR"';
-      ctx.fillText('위 어린이는 《인찬이의 마음 손님》 메타버스 공간에서', 296, 226);
-      ctx.fillText('5대 감정 손님(기쁨·슬픔·화·두려움·걱정)을 모두 반갑게 맞이하고,', 296, 252);
-      ctx.fillText('마음 광주리에 온전히 담아 슬기롭게 다스리는 방법을 훌륭히 배웠습니다.', 296, 278);
+      // 메인 타이틀
+      ctx.fillStyle = '#18181b';
+      ctx.font = '800 40px "GangwonEdu Modu", "Noto Sans KR", sans-serif';
+      ctx.fillText('마음 광주리 수료증', rx, 144);
 
-      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 16.5px "Noto Sans KR"';
-      ctx.fillText('“모든 감정은 나를 돕기 위해 찾아온 소중한 마음의 친구입니다.”', 296, 318);
+      ctx.strokeStyle = '#eceae4';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(rx, 164);
+      ctx.lineTo(rx + rw, 164);
+      ctx.stroke();
 
-      // 오늘의 마음 한마디
-      ctx.fillStyle = '#64748b'; ctx.font = '14.5px "Noto Sans KR"';
-      ctx.fillText(`🌱 수련 다짐: "${state.mindNote || '내 마음의 모든 손님을 따뜻하게 안아줄게요!'}"`, 296, 356);
-
-      // 날짜
-      const d = new Date();
-      ctx.fillStyle = '#475569'; ctx.font = 'bold 15px "Noto Sans KR"';
-      ctx.fillText(`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`, 296, 388);
-      ctx.fillStyle = '#0f172a'; ctx.font = 'bold 16px "Noto Sans KR"';
-      ctx.fillText('2026 사회정서학습(SEL) 연구회 회장 배상', 450, 388);
-      ctx.restore();
-
-      // 6. [하단] 5대 감정 정령 귀여운 마스코트 엠블럼 총출동!
-      ctx.save();
-      const spiritsList = [
-        { name: '기쁨 별토끼', emoji: '🐰⭐', col: '#f59e0b', bg: '#fef3c7' },
-        { name: '슬픔 눈물요정', emoji: '💧', col: '#3b82f6', bg: '#e0f2fe' },
-        { name: '화 불도깨비', emoji: '🔥', col: '#ef4444', bg: '#fee2e2' },
-        { name: '두려움 꼬마망토', emoji: '🕯️', col: '#8b5cf6', bg: '#f3e8ff' },
-        { name: '걱정 털실이', emoji: '🧶', col: '#10b981', bg: '#d1fae5' }
+      // 라이브 수련 기록 메트릭 카드 3종
+      const metrics = [
+        { label: '수여자', value: `${playerName} 님`, accent: curSp.hex },
+        { label: '누적 마음 점수', value: `${scoreVal.toLocaleString()}점`, accent: '#ff5800' },
+        { label: '마음 수련 달성', value: extraDone > 0 || coreDone === 5 ? `핵심 ${coreDone}/5 · 심화 ${extraDone}/5` : `핵심 감정 ${coreDone}/5`, accent: '#10b981' }
       ];
-
-      const spStartY = 416;
-      spiritsList.forEach((sp, i) => {
-        const spX = 64 + i * 128;
-        // 배지 캡슐
-        ctx.fillStyle = sp.bg;
-        ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(spX, spStartY, 116, 88, 16);
-        else ctx.rect(spX, spStartY, 116, 88);
+      const mGap = 14;
+      const mW = (rw - mGap * 2) / 3;
+      const mY = 182, mH = 76;
+      metrics.forEach((m, idx) => {
+        const mx = rx + idx * (mW + mGap);
+        ctx.fillStyle = '#fafaf8';
+        drawRoundedRectPath(ctx, mx, mY, mW, mH, 12);
         ctx.fill();
-        ctx.strokeStyle = sp.col; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.strokeStyle = '#e4e4e7';
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
-        // 이모지 캐릭터
-        ctx.font = '30px "Noto Sans KR"'; ctx.textAlign = 'center';
-        ctx.fillText(sp.emoji, spX + 58, spStartY + 42);
+        ctx.fillStyle = m.accent;
+        ctx.beginPath();
+        ctx.arc(mx + 18, mY + 23, 3.5, 0, Math.PI * 2);
+        ctx.fill();
 
-        // 정령 이름
-        ctx.fillStyle = sp.col; ctx.font = 'bold 12.5px "Noto Sans KR"';
-        ctx.fillText(sp.name, spX + 58, spStartY + 74);
+        ctx.fillStyle = '#71717a';
+        ctx.font = '600 11.5px "Noto Sans KR", sans-serif';
+        ctx.fillText(m.label, mx + 28, mY + 27);
+
+        ctx.fillStyle = '#18181b';
+        ctx.font = idx === 2 && extraDone > 0 ? '800 17.5px "Noto Sans KR", sans-serif' : '800 20px "Noto Sans KR", sans-serif';
+        drawTruncatedText(ctx, m.value, mx + 16, mY + 56, mW - 32);
       });
-      ctx.restore();
 
-      // 7. [우측 하단] 골드 챔피언 공식 씰(Gold Seal) 도장
+      // 표창 본문
+      ctx.fillStyle = '#3f3f46';
+      ctx.font = '500 18.5px "GangwonEdu Modu", "Noto Sans KR", sans-serif';
+      ctx.fillText('위 어린이는 《인찬이의 마음 손님》 3D 마음 정원에서', rx, 296);
+      ctx.fillText('다섯 감정 손님(기쁨·슬픔·화·두려움·걱정)을 따뜻하게 맞이하고,', rx, 326);
+      ctx.fillText('모든 감정을 내 마음 광주리에 담아 슬기롭게 돌보는 지혜를 익혔습니다.', rx, 356);
+
+      ctx.fillStyle = '#18181b';
+      ctx.font = '700 17.5px "GangwonEdu Modu", "Noto Sans KR", sans-serif';
+      ctx.fillText('“모든 감정은 나를 돕기 위해 찾아온 소중한 마음의 친구입니다.”', rx, 392);
+
+      // 오늘의 마음 다짐 인용 박스
+      const qY = 412, qH = 66;
+      ctx.fillStyle = '#f7f6f2';
+      drawRoundedRectPath(ctx, rx, qY, rw, qH, 12);
+      ctx.fill();
+      ctx.strokeStyle = '#e6e4dd';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = curSp.hex;
+      drawRoundedRectPath(ctx, rx + 8, qY + 12, 4, qH - 24, 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#71717a';
+      ctx.font = '700 10px "JetBrains Mono", "Noto Sans KR", monospace';
+      ctx.fillText("TODAY'S MIND PROMISE · 오늘의 마음 다짐", rx + 24, qY + 24);
+
+      ctx.fillStyle = '#18181b';
+      ctx.font = '700 16.5px "GangwonEdu Modu", "Noto Sans KR", sans-serif';
+      const noteText = state.mindNote || '내 마음의 모든 손님을 따뜻하게 안아줄게요!';
+      drawTruncatedText(ctx, `“${noteText}”`, rx + 24, qY + 49, rw - 44);
+
+      // 4. [하단] 로블록스 스타일 감정 정령 벡터 엠블럼
+      const spiritMetaList = [
+        { key: 'joy', name: '기쁨이', sub: '별토끼', col: '#d97706', tint: '#fffbeb', border: '#fcd34d' },
+        { key: 'sad', name: '슬픔이', sub: '물방울', col: '#2563eb', tint: '#eff6ff', border: '#93c5fd' },
+        { key: 'anger', name: '화', sub: '불도깨비', col: '#dc2626', tint: '#fef2f2', border: '#fca5a5' },
+        { key: 'fear', name: '두려움', sub: '꼬마망토', col: '#7c3aed', tint: '#f5f3ff', border: '#c4b5fd' },
+        { key: 'worry', name: '걱정이', sub: '털실이', col: '#059669', tint: '#ecfdf5', border: '#6ee7b7' }
+      ];
+      if (state.quests?.flutter) {
+        spiritMetaList.push({ key: 'flutter', name: '설렘이', sub: '나비요정', col: '#db2777', tint: '#fdf2f8', border: '#f9a8d4' });
+      }
+
+      const spGap = 10;
+      const spW = (rw - spGap * (spiritMetaList.length - 1)) / spiritMetaList.length;
+      const spY = 494, spH = 98;
+      spiritMetaList.forEach((sp, i) => {
+        const sx = rx + i * (spW + spGap);
+        const unlocked = !!state.quests?.[sp.key];
+        ctx.save();
+        ctx.fillStyle = unlocked ? sp.tint : '#fafafa';
+        drawRoundedRectPath(ctx, sx, spY, spW, spH, 12);
+        ctx.fill();
+        ctx.strokeStyle = unlocked ? sp.border : '#e4e4e7';
+        ctx.lineWidth = unlocked ? 1.5 : 1;
+        if (!unlocked) ctx.setLineDash([4, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        if (unlocked) {
+          ctx.fillStyle = sp.col;
+          ctx.beginPath();
+          ctx.arc(sx + spW - 14, spY + 14, 7.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.8;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(sx + spW - 17.2, spY + 14);
+          ctx.lineTo(sx + spW - 14.8, spY + 16.5);
+          ctx.lineTo(sx + spW - 10.6, spY + 11.5);
+          ctx.stroke();
+        }
+
+        drawRobloxSpiritVector(ctx, sp.key, sx + spW / 2, spY + 34, 38, unlocked);
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = unlocked ? '#18181b' : '#a1a1aa';
+        ctx.font = '700 13px "Noto Sans KR", sans-serif';
+        ctx.fillText(sp.name, sx + spW / 2, spY + 72);
+
+        ctx.fillStyle = unlocked ? sp.col : '#a1a1aa';
+        ctx.font = '600 10.5px "Noto Sans KR", sans-serif';
+        ctx.fillText(unlocked ? sp.sub : '수련 전', sx + spW / 2, spY + 88);
+        ctx.restore();
+      });
+
+      // 5. 하단 발행 정보 & 미니멀 공식 벡터 인장
+      ctx.strokeStyle = '#e4e4e7';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(rx, 612);
+      ctx.lineTo(rx + rw, 612);
+      ctx.stroke();
+
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#18181b';
+      ctx.font = '700 14.5px "Noto Sans KR", sans-serif';
+      ctx.fillText(`${yyyy}. ${mm}. ${dd}  ·  2026 사회정서학습(SEL) 연구회 발행`, rx, 642);
+
+      ctx.fillStyle = '#71717a';
+      ctx.font = '500 11px "JetBrains Mono", monospace';
+      const certId = `SEL-${yyyy}-MB-${String(coreDone).padStart(2, '0')}${String(extraDone).padStart(2, '0')}-${String(scoreVal).padStart(4, '0')}`;
+      ctx.fillText(`CERT ID  ${certId}  ·  INCHAN MIND BASKET`, rx, 666);
+
+      // 미니멀 원형 벡터 공식 인장
+      const sealCX = rx + rw - 38, sealCY = 650, sealR = 32;
+      const sealColor = coreDone === 5 ? '#d71921' : '#18181b';
       ctx.save();
-      const sealCX = 770, sealCY = 460;
-      ctx.fillStyle = '#f59e0b';
-      ctx.beginPath(); ctx.arc(sealCX, sealCY, 42, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#d97706'; ctx.lineWidth = 4; ctx.stroke();
+      ctx.strokeStyle = sealColor;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.arc(sealCX, sealCY, sealR, 0, Math.PI * 2);
+      ctx.stroke();
 
-      ctx.fillStyle = '#78350f'; ctx.textAlign = 'center'; ctx.font = 'bold 11px "Noto Sans KR"';
-      ctx.fillText('2026 SEL', sealCX, sealCY - 14);
-      ctx.font = 'bold 15px "Noto Sans KR"';
-      ctx.fillText('OFFICIAL', sealCX, sealCY + 4);
-      ctx.font = 'bold 11px "Noto Sans KR"';
-      ctx.fillText('MASTER', sealCX, sealCY + 20);
+      ctx.lineWidth = 0.9;
+      ctx.setLineDash([2.5, 2.5]);
+      ctx.beginPath();
+      ctx.arc(sealCX, sealCY, sealR - 5.5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 4각 기하학 별 심볼
+      ctx.fillStyle = sealColor;
+      ctx.beginPath();
+      const sY = sealCY - 13, sR = 5;
+      ctx.moveTo(sealCX, sY - sR);
+      ctx.lineTo(sealCX + 1.8, sY - 1.8);
+      ctx.lineTo(sealCX + sR, sY);
+      ctx.lineTo(sealCX + 1.8, sY + 1.8);
+      ctx.lineTo(sealCX, sY + sR);
+      ctx.lineTo(sealCX - 1.8, sY + 1.8);
+      ctx.lineTo(sealCX - sR, sY);
+      ctx.lineTo(sealCX - 1.8, sY - 1.8);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = sealColor;
+      ctx.font = '800 8.5px "JetBrains Mono", monospace';
+      ctx.fillText('2026 SEL', sealCX, sealCY + 4);
+      ctx.font = '700 8px "JetBrains Mono", monospace';
+      ctx.fillText(coreDone === 5 ? 'VERIFIED' : 'RECORD', sealCX, sealCY + 16);
+      ctx.restore();
       ctx.restore();
     }
 
@@ -9252,14 +9831,16 @@
       robloxPreviewCam.position.set(0, 1.05, 4.1);
       robloxPreviewCam.lookAt(0, 1.02, 0);
 
-      robloxPreviewRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, alpha: true, antialias: true });
+      robloxPreviewRenderer = new THREE.WebGLRenderer({ canvas: pCanvas, alpha: true, antialias: true, preserveDrawingBuffer: true });
       robloxPreviewRenderer.setSize(220, 220);
       robloxPreviewRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       const ambLight = new THREE.AmbientLight(0xffffff, 1.55);
       const dirLight = new THREE.DirectionalLight(0xfffaf0, 1.45);
       dirLight.position.set(2.5, 4.5, 3.5);
-      robloxPreviewScene.add(ambLight, dirLight);
+      const rimLight = new THREE.DirectionalLight(0xe0f2fe, 0.45);
+      rimLight.position.set(-2.5, 2.0, -2.0);
+      robloxPreviewScene.add(ambLight, dirLight, rimLight);
 
       robloxPreviewAvatarGroup = new THREE.Group();
       robloxPreviewScene.add(robloxPreviewAvatarGroup);
@@ -9388,6 +9969,63 @@
       robloxPreviewSpiritMesh = spGroup;
     }
 
+    function captureRobloxAvatarPortrait(width = 520, height = 600) {
+      try {
+        renderRobloxStudio3DAvatar();
+        if (!robloxPreviewRenderer || !robloxPreviewScene || !robloxPreviewCam || !robloxPreviewAvatarGroup) return null;
+
+        const prevPR = typeof robloxPreviewRenderer.getPixelRatio === 'function'
+          ? robloxPreviewRenderer.getPixelRatio()
+          : Math.min(window.devicePixelRatio || 1, 2);
+        const prevFov = robloxPreviewCam.fov;
+        const prevAspect = robloxPreviewCam.aspect;
+        const prevCamPos = robloxPreviewCam.position.clone();
+        const prevRotY = robloxPreviewAvatarGroup.rotation.y;
+        const prevSpiritY = robloxPreviewSpiritMesh ? robloxPreviewSpiritMesh.position.y : 1.65;
+        const prevSpiritRotY = robloxPreviewSpiritMesh ? robloxPreviewSpiritMesh.rotation.y : 0;
+
+        try {
+          robloxPreviewRenderer.setPixelRatio(1);
+          robloxPreviewRenderer.setSize(width, height, false);
+          robloxPreviewCam.fov = 38;
+          robloxPreviewCam.aspect = width / height;
+          robloxPreviewCam.position.set(0.08, 0.94, 3.55);
+          robloxPreviewCam.lookAt(0.08, 0.84, 0);
+          robloxPreviewCam.updateProjectionMatrix();
+
+          robloxPreviewAvatarGroup.rotation.y = 0.24;
+          if (robloxPreviewSpiritMesh) {
+            robloxPreviewSpiritMesh.position.y = 1.66;
+            robloxPreviewSpiritMesh.rotation.y = -0.22;
+          }
+          robloxPreviewRenderer.render(robloxPreviewScene, robloxPreviewCam);
+
+          const snapCanvas = document.createElement('canvas');
+          snapCanvas.width = width;
+          snapCanvas.height = height;
+          const snapCtx = snapCanvas.getContext('2d');
+          snapCtx.drawImage(robloxPreviewRenderer.domElement, 0, 0, width, height);
+          return snapCanvas;
+        } finally {
+          robloxPreviewRenderer.setPixelRatio(prevPR);
+          robloxPreviewRenderer.setSize(220, 220, false);
+          robloxPreviewCam.fov = prevFov;
+          robloxPreviewCam.aspect = prevAspect;
+          robloxPreviewCam.position.copy(prevCamPos);
+          robloxPreviewCam.lookAt(0, 1.02, 0);
+          robloxPreviewCam.updateProjectionMatrix();
+          robloxPreviewAvatarGroup.rotation.y = prevRotY;
+          if (robloxPreviewSpiritMesh) {
+            robloxPreviewSpiritMesh.position.y = prevSpiritY;
+            robloxPreviewSpiritMesh.rotation.y = prevSpiritRotY;
+          }
+          robloxPreviewRenderer.render(robloxPreviewScene, robloxPreviewCam);
+        }
+      } catch (e) {
+        return null;
+      }
+    }
+
     window.updateAvatarShowcase = updateAvatarShowcase;
 
     // 커스터마이징 모달 4대 탭 전환 핸들러
@@ -9402,18 +10040,41 @@
       updateAvatarShowcase();
     };
 
-    // 11-B. 서버리스 무제한 WebRTC P2P 멀티플레이어 (Trystero MQTT + BroadcastChannel) & 캐릭터 스튜디오
+    // 11-B. 서버리스 Cloudflare WebSocket 중계 멀티플레이어 (+ 교실 내 BroadcastChannel) & 캐릭터 스튜디오
     // ==========================================
+    const DEFAULT_RELAY_URL = 'wss://classroom-relay.classroom-relay.workers.dev';
     const urlParams = new URLSearchParams(window.location.search);
     const rawUrlRoom = (urlParams.get('room') || state.roomCode || '101').replace(/[^0-9]/g, '').slice(0, 3);
     state.roomCode = rawUrlRoom.length === 3 ? rawUrlRoom : '101';
     let worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_' + state.roomCode) : null;
     window.mpConnected = false;
     window.playroomConnected = false;
-    let mpRoom = null;
+    let mpSocket = null;
     let mpActions = null;
     let mpCurrentRoomCode = null;
+    let mpConnectSeq = 0;
+    let mpReconnectTimer = null;
+    let mpReconnectAttempt = 0;
+    let mpNotifiedOnce = false;
+    const MP_RECONNECT_DELAYS_MS = [1500, 3000, 6000, 12000];
     const remotePlayers = new Map();
+    Object.defineProperty(window, '__mpState', {
+      configurable: true,
+      get: () => ({
+        connected: window.mpConnected,
+        room: state.roomCode,
+        remoteCount: remotePlayers.size,
+        blockCount: placedBlocks.length,
+        boardCount: state.boardPosts.length,
+        boardTitles: state.boardPosts.map(p => p.title),
+        peers: Array.from(remotePlayers.values()).map(r => ({
+          name: r.prof?.name,
+          x: r.targetPos?.x,
+          y: r.targetPos?.y,
+          z: r.targetPos?.z
+        }))
+      })
+    });
 
     function getMyProfilePayload() {
       return {
@@ -9424,11 +10085,42 @@
       };
     }
 
+    function getMyPositionPayload() {
+      return {
+        x: Number(playerRig.position.x.toFixed(2)),
+        y: Number(playerRig.position.y.toFixed(2)),
+        z: Number(playerRig.position.z.toFixed(2)),
+        rotY: Number(playerRig.rotation.y.toFixed(2)),
+        isMoving: false,
+        isDancing: !!(playerPhysics.isDancing)
+      };
+    }
+
+    function resolveRelayBaseUrl() {
+      const override = urlParams.get('relay') || window.CLASSROOM_RELAY_URL || DEFAULT_RELAY_URL || '';
+      const trimmed = String(override).trim().replace(/\/+$/, '');
+      if (!trimmed) return '';
+      if (trimmed.startsWith('https://')) return 'wss://' + trimmed.slice(8);
+      if (trimmed.startsWith('http://')) return 'ws://' + trimmed.slice(7);
+      if (trimmed.startsWith('wss://') || trimmed.startsWith('ws://')) return trimmed;
+      return '';
+    }
+
+    function sanitizeRemoteProfile(prof) {
+      const p = prof || {};
+      return {
+        name: window.sanitizeCleanText(p.name || '친구', 12) || '친구',
+        title: window.sanitizeCleanText(p.title || '마음 탐험가', 14) || '마음 탐험가',
+        shirtColor: p.shirtColor || '#3b82f6',
+        hatType: (!p.hatType || p.hatType === 'ahoge') ? 'sprout' : (p.hatType === 'rabbit' ? 'bunny' : p.hatType)
+      };
+    }
+
     // 원격 접속자 3D 로블록스 아바타 생성 헬퍼
     function createRemoteAvatar(peerId, profile) {
       if (remotePlayers.has(peerId)) return remotePlayers.get(peerId);
 
-      const prof = profile || { name: '친구', title: '마음 탐험가', shirtColor: '#3b82f6', hatType: 'sprout' };
+      const prof = sanitizeRemoteProfile(profile);
       const rg = new THREE.Group();
       rg.position.set(0, 0, 10);
 
@@ -9493,6 +10185,61 @@
       return data;
     }
 
+    function applyRemoteProfile(peerId, prof) {
+      if (!prof || !peerId) return;
+      const safeProf = sanitizeRemoteProfile(prof);
+      if (!remotePlayers.has(peerId)) {
+        createRemoteAvatar(peerId, safeProf);
+      } else {
+        const r = remotePlayers.get(peerId);
+        r.prof = safeProf;
+        r.shirtMat.color.set(safeProf.shirtColor);
+        drawCrispNameTag(r.tagObj.ctx, safeProf.name, safeProf.title, safeProf.shirtColor);
+        r.tagObj.tex.needsUpdate = true;
+      }
+    }
+
+    function applyRemoteBlockPut(data, silent) {
+      if (!data || typeof data.x !== 'number' || typeof data.y !== 'number' || typeof data.z !== 'number') return;
+      if (!placedBlocks.some(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z)) {
+        spawnBlockWithAnim(data.x, data.y, data.z, data.slot || 1);
+        if (!silent) appendChatLog(data.from || '친구', `새로운 감정 블록을 놓았습니다! (${data.x}, ${data.z})`, true);
+      }
+    }
+
+    function applyRemoteBlockDel(data) {
+      if (!data || typeof data.x !== 'number' || typeof data.y !== 'number' || typeof data.z !== 'number') return;
+      const bIdx = placedBlocks.findIndex(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z);
+      if (bIdx !== -1) {
+        const bInfo = placedBlocks[bIdx];
+        worldGroup.remove(bInfo.mesh);
+        if (bInfo.hitBox) worldGroup.remove(bInfo.hitBox);
+        placedBlocks.splice(bIdx, 1);
+        soundBlockMine();
+      }
+    }
+
+    function applyRemoteBoardPost(rawPost, silent, sourceLabel) {
+      if (!rawPost || (!rawPost.id && rawPost.id !== 0)) return false;
+      if (state.boardPosts.some(p => p.id === rawPost.id)) return false;
+      const post = {
+        ...rawPost,
+        author: window.sanitizeCleanText(rawPost.author || '친구', 14),
+        title: window.sanitizeCleanText(rawPost.title || '', 40),
+        body: window.sanitizeCleanText(rawPost.body || '', 80)
+      };
+      if (post.insight) post.insight = window.sanitizeCleanText(post.insight, 120);
+      state.boardPosts.unshift(post);
+      state.stats[post.emotion] = (state.stats[post.emotion] || 0) + 1;
+      if (!silent) {
+        saveProgress(); updateScreenCanvas();
+        if (document.getElementById('modalBoard').classList.contains('open')) renderBoard();
+        const who = sourceLabel ? `${sourceLabel} <b>${window.escapeHtml(post.author)}</b>님` : `친구 <b>${window.escapeHtml(post.author)}</b>님`;
+        showToast(`${who}이 마음 게시판에 새 글을 남겼습니다.`);
+      }
+      return true;
+    }
+
     function removeRemoteAvatar(pId) {
       if (remotePlayers.has(pId)) {
         const r = remotePlayers.get(pId);
@@ -9513,12 +10260,18 @@
       }
     }
 
-    // 무제한 무료 WebRTC P2P 교실 멀티플레이어 초기화 (할당량·게임ID 제한 없음)
-    async function initClassroomMultiplayer() {
+    // Cloudflare Workers + Durable Objects WebSocket 교실 멀티플레이어 초기화
+    function initClassroomMultiplayer() {
       const roomChanged = mpCurrentRoomCode !== null && mpCurrentRoomCode !== state.roomCode;
-      if (mpRoom && roomChanged) {
-        try { mpRoom.leave(); } catch (_) {}
-        mpRoom = null;
+      if (roomChanged) {
+        mpConnectSeq += 1;
+        if (mpReconnectTimer) { clearTimeout(mpReconnectTimer); mpReconnectTimer = null; }
+        mpReconnectAttempt = 0;
+        mpNotifiedOnce = false;
+        if (mpSocket) {
+          try { mpSocket.close(1000, 'room-change'); } catch (_) {}
+          mpSocket = null;
+        }
         mpActions = null;
         window.mpConnected = false;
         window.playroomConnected = false;
@@ -9529,108 +10282,161 @@
           if (typeof bindWorldChannelHandlers === 'function') bindWorldChannelHandlers();
         }
       }
-      if (mpRoom && mpCurrentRoomCode === state.roomCode) {
+
+      if (mpSocket && mpSocket.readyState === WebSocket.OPEN && mpCurrentRoomCode === state.roomCode) {
         window.mpConnected = true;
         window.playroomConnected = true;
         if (mpActions?.sendProf) mpActions.sendProf(getMyProfilePayload());
         return;
       }
+      if (mpSocket && mpSocket.readyState === WebSocket.CONNECTING && mpCurrentRoomCode === state.roomCode) {
+        return;
+      }
 
       mpCurrentRoomCode = state.roomCode;
-      try {
-        const { joinRoom } = await import('https://cdn.jsdelivr.net/npm/trystero@0.22.0/mqtt/+esm');
-        if (mpCurrentRoomCode !== state.roomCode) return;
-        const room = joinRoom(
-          {
-            appId: 'inchan-mind-basket-sel-2026',
-            relayUrls: ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt']
-          },
-          'room-' + state.roomCode
-        );
-        mpRoom = room;
-
-        const [sendPos, getPos] = room.makeAction('pos');
-        const [sendProf, getProf] = room.makeAction('prof');
-        const [sendBlkPut, getBlkPut] = room.makeAction('blkPut');
-        const [sendBlkDel, getBlkDel] = room.makeAction('blkDel');
-        const [sendBrd, getBrd] = room.makeAction('brd');
-        mpActions = { sendPos, sendProf, sendBlkPut, sendBlkDel, sendBrd };
-
-        getPos((data, peerId) => {
-          if (!data || !peerId) return;
-          const r = remotePlayers.get(peerId) || createRemoteAvatar(peerId, null);
-          r.targetPos = data;
-        });
-
-        getProf((prof, peerId) => {
-          if (!prof || !peerId) return;
-          const safeProf = {
-            name: window.sanitizeCleanText(prof.name || '친구', 12) || '친구',
-            title: window.sanitizeCleanText(prof.title || '마음 탐험가', 14) || '마음 탐험가',
-            shirtColor: prof.shirtColor || '#3b82f6',
-            hatType: (!prof.hatType || prof.hatType === 'ahoge') ? 'sprout' : prof.hatType
-          };
-          if (!remotePlayers.has(peerId)) {
-            createRemoteAvatar(peerId, safeProf);
-          } else {
-            const r = remotePlayers.get(peerId);
-            r.prof = safeProf;
-            r.shirtMat.color.set(safeProf.shirtColor);
-            drawCrispNameTag(r.tagObj.ctx, safeProf.name, safeProf.title, safeProf.shirtColor);
-            r.tagObj.tex.needsUpdate = true;
-          }
-        });
-
-        getBlkPut((data) => {
-          if (!data || typeof data.x !== 'number') return;
-          if (!placedBlocks.some(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z)) {
-            spawnBlockWithAnim(data.x, data.y, data.z, data.slot || 1);
-            appendChatLog(data.from, `새로운 감정 블록을 놓았습니다! (${data.x}, ${data.z})`, true);
-          }
-        });
-
-        getBlkDel((data) => {
-          if (!data || typeof data.x !== 'number') return;
-          const bIdx = placedBlocks.findIndex(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z);
-          if (bIdx !== -1) {
-            const bInfo = placedBlocks[bIdx];
-            worldGroup.remove(bInfo.mesh);
-            if (bInfo.hitBox) worldGroup.remove(bInfo.hitBox);
-            placedBlocks.splice(bIdx, 1);
-            soundBlockMine();
-          }
-        });
-
-        getBrd((data) => {
-          if (data?.post && !state.boardPosts.some(p => p.id === data.post.id)) {
-            data.post.author = window.sanitizeCleanText(data.post.author || '친구', 14);
-            data.post.title = window.sanitizeCleanText(data.post.title || '', 40);
-            data.post.body = window.sanitizeCleanText(data.post.body || '', 80);
-            state.boardPosts.unshift(data.post);
-            state.stats[data.post.emotion] = (state.stats[data.post.emotion] || 0) + 1;
-            saveProgress(); updateScreenCanvas();
-            if (document.getElementById('modalBoard').classList.contains('open')) renderBoard();
-            showToast(`친구 <b>${window.escapeHtml(data.post.author)}</b>님이 실시간 마음 게시판에 글을 남겼습니다.`);
-          }
-        });
-
-        room.onPeerJoin((peerId) => {
-          sendProf(getMyProfilePayload(), peerId);
-        });
-        room.onPeerLeave((peerId) => {
-          removeRemoteAvatar(peerId);
-        });
-
-        window.mpConnected = true;
-        window.playroomConnected = true;
-        updateOnlineStatusText();
-        showToast(`🌐 <b>[교실 실시간 연결 완료]</b><br>방 코드: <b>${window.escapeHtml(state.roomCode)}</b> · 같은 방 친구들과 실시간 동기화됩니다!`);
-      } catch (err) {
-        console.warn('[P2P 멀티플레이] 오프라인/브라우저 탭 통신 모드로 동작합니다:', err);
+      const relayBase = resolveRelayBaseUrl();
+      if (!relayBase) {
         window.mpConnected = false;
         window.playroomConnected = false;
         updateOnlineStatusText();
+        return;
       }
+
+      const seq = ++mpConnectSeq;
+      if (mpReconnectTimer) { clearTimeout(mpReconnectTimer); mpReconnectTimer = null; }
+
+      const wsUrl = `${relayBase}/ws/inchan/room-${encodeURIComponent(state.roomCode)}`;
+      let ws;
+      try {
+        ws = new WebSocket(wsUrl);
+      } catch (err) {
+        console.warn('[Cloudflare 멀티플레이] 오프라인/로컬 탭 모드로 동작합니다:', err);
+        window.mpConnected = false;
+        window.playroomConnected = false;
+        updateOnlineStatusText();
+        return;
+      }
+
+      mpSocket = ws;
+      const sendPacket = (t, d) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          try { ws.send(JSON.stringify({ t, d })); } catch (_) {}
+        }
+      };
+      const actions = {
+        sendPos: d => sendPacket('pos', d),
+        sendProf: d => sendPacket('prof', d),
+        sendBlkPut: d => sendPacket('blkPut', d),
+        sendBlkDel: d => sendPacket('blkDel', d),
+        sendBrd: d => sendPacket('brd', d),
+        sendCheer: d => sendPacket('cheer', d)
+      };
+
+      ws.addEventListener('open', () => {
+        if (seq !== mpConnectSeq || mpSocket !== ws) return;
+        mpReconnectAttempt = 0;
+        lastPosSyncKey = '';
+        mpActions = actions;
+        window.mpConnected = true;
+        window.playroomConnected = true;
+        actions.sendProf(getMyProfilePayload());
+        actions.sendPos(getMyPositionPayload());
+        updateOnlineStatusText();
+        if (!mpNotifiedOnce) {
+          mpNotifiedOnce = true;
+          showToast(`🌐 <b>[교실 실시간 연결 완료]</b><br>방 코드: <b>${window.escapeHtml(state.roomCode)}</b> · 같은 방 친구들과 실시간 동기화됩니다!`);
+        }
+      });
+
+      ws.addEventListener('message', (ev) => {
+        if (seq !== mpConnectSeq || mpSocket !== ws) return;
+        let msg;
+        try { msg = JSON.parse(ev.data); } catch (_) { return; }
+        if (!msg || typeof msg.t !== 'string') return;
+
+        switch (msg.t) {
+          case 'welcome': {
+            if (Array.isArray(msg.peers)) {
+              msg.peers.forEach(p => {
+                if (!p || !p.id) return;
+                if (p.profile) applyRemoteProfile(p.id, p.profile);
+                else if (p.pos) createRemoteAvatar(p.id, null);
+                const r = remotePlayers.get(p.id);
+                if (r && p.pos) {
+                  r.targetPos = p.pos;
+                  r.group.position.set(p.pos.x || 0, p.pos.y || 0, p.pos.z || 10);
+                }
+              });
+            }
+            if (msg.state) {
+              if (Array.isArray(msg.state.blocks)) {
+                msg.state.blocks.forEach(blk => applyRemoteBlockPut(blk, true));
+              }
+              if (Array.isArray(msg.state.board)) {
+                let boardChanged = false;
+                for (let i = msg.state.board.length - 1; i >= 0; i--) {
+                  if (applyRemoteBoardPost(msg.state.board[i], true)) boardChanged = true;
+                }
+                if (boardChanged) {
+                  saveProgress(); updateScreenCanvas();
+                  if (document.getElementById('modalBoard').classList.contains('open')) renderBoard();
+                }
+              }
+            }
+            updateOnlineStatusText();
+            break;
+          }
+          case 'prof':
+            applyRemoteProfile(msg.id, msg.d);
+            break;
+          case 'pos':
+            if (msg.id && msg.d) {
+              const r = remotePlayers.get(msg.id) || createRemoteAvatar(msg.id, null);
+              r.targetPos = msg.d;
+            }
+            break;
+          case 'blkPut':
+            applyRemoteBlockPut(msg.d, false);
+            break;
+          case 'blkDel':
+            applyRemoteBlockDel(msg.d);
+            break;
+          case 'brd':
+            if (msg.d?.post) applyRemoteBoardPost(msg.d.post, false, '친구');
+            break;
+          case 'cheer':
+            if (msg.d) {
+              const safeFrom = window.sanitizeCleanText(msg.d.from || '친구', 14);
+              const safeTo = window.sanitizeCleanText(msg.d.to || '친구', 14);
+              const safeMsg = window.sanitizeCleanText(msg.d.msg || '', 50);
+              showToast(`💖 <b>${window.escapeHtml(safeFrom)}</b>님이 <b>${window.escapeHtml(safeTo)}</b>님과 마음을 나누었습니다: ${window.escapeHtml(safeMsg)}`);
+            }
+            break;
+          case 'leave':
+            if (msg.id) removeRemoteAvatar(msg.id);
+            break;
+        }
+      });
+
+      ws.addEventListener('error', () => {
+        if (seq !== mpConnectSeq || mpSocket !== ws) return;
+        console.warn('[Cloudflare 멀티플레이] 중계 연결 지연 - 오프라인/로컬 탭 모드로 대기합니다.');
+      });
+
+      ws.addEventListener('close', () => {
+        if (seq !== mpConnectSeq || mpSocket !== ws) return;
+        mpSocket = null;
+        mpActions = null;
+        window.mpConnected = false;
+        window.playroomConnected = false;
+        updateOnlineStatusText();
+        if (mpReconnectAttempt < MP_RECONNECT_DELAYS_MS.length) {
+          const delay = MP_RECONNECT_DELAYS_MS[mpReconnectAttempt++];
+          mpReconnectTimer = setTimeout(() => {
+            if (seq === mpConnectSeq) initClassroomMultiplayer();
+          }, delay);
+        }
+      });
     }
     const initPlayroom = initClassroomMultiplayer;
 
@@ -9737,6 +10543,7 @@
         }
       });
 
+      syncStoryUnlockState();
       openModal('modalCustomize'); setTimeout(() => { if (typeof renderRobloxStudio3DAvatar === 'function') renderRobloxStudio3DAvatar(); }, 50);
     }
     window.openCustomizeStudio = openCustomizeStudio;
@@ -9745,14 +10552,13 @@
 
     document.querySelectorAll('#custColorRow .cust-color-card').forEach(sw => {
       sw.onclick = () => {
+        const spKey = sw.dataset.spirit || 'joy';
+        if (!selectGuestSpirit(spKey)) return;
         document.querySelectorAll('#custColorRow .cust-color-card').forEach(s => s.classList.remove('active'));
         sw.classList.add('active');
-        const spKey = sw.dataset.spirit || 'joy';
-        selectGuestSpirit(spKey);
         state.shirtColor = sw.dataset.color || state.spirits[spKey]?.hex || '#f59e0b';
         updatePlayerAppearance();
         updateAvatarShowcase();
-        soundChime(580);
       };
     });
 
@@ -9840,7 +10646,7 @@
       soundQuestComplete();
       showToast(`✨ <b>[방 ${window.escapeHtml(state.roomCode)}] [${window.escapeHtml(state.playerTitle)}] ${window.escapeHtml(state.playerName)}</b> 캐릭터 등록 완료!`);
 
-      // 방 코드가 바뀌었거나 아직 연결 전이면 P2P 멀티플레이어 연결 시도
+      // 방 코드가 바뀌었거나 아직 연결 전이면 실시간 멀티플레이어 연결 시도
       if (!window.mpConnected || oldRoom !== state.roomCode) {
         initClassroomMultiplayer();
       } else if (window.mpConnected && mpActions?.sendProf) {
@@ -9877,29 +10683,14 @@
       worldChannel.onmessage = e => {
         const d = e.data;
         if (!d) return;
-        if (d.type === 'board_sync' && d.post && !state.boardPosts.some(p => p.id === d.post.id)) {
-          d.post.author = window.sanitizeCleanText(d.post.author || '친구', 14);
-          d.post.title = window.sanitizeCleanText(d.post.title || '', 40);
-          d.post.body = window.sanitizeCleanText(d.post.body || '', 80);
-          state.boardPosts.unshift(d.post);
-          state.stats[d.post.emotion] = (state.stats[d.post.emotion] || 0) + 1;
-          saveProgress(); updateScreenCanvas();
-          if (document.getElementById('modalBoard').classList.contains('open')) renderBoard();
-          showToast(`다른 탭의 친구 <b>${window.escapeHtml(d.post.author)}</b>님이 마음 게시판에 새 글을 남겼습니다.`);
+        if (d.type === 'board_sync' && d.post) {
+          applyRemoteBoardPost(d.post, false, '다른 탭의 친구');
         } else if (d.type === 'coop_cheer') {
           showToast(`<b>${window.escapeHtml(d.from)}</b>님이 <b>${window.escapeHtml(d.to)}</b>님과 마음을 나누었습니다: ${window.escapeHtml(window.sanitizeCleanText(d.msg, 50))}`);
         } else if (d.type === 'mp_block_place') {
-          if (!placedBlocks.some(b => b.x === d.x && Math.abs(b.y - d.y) < 0.5 && b.z === d.z)) {
-            spawnBlockWithAnim(d.x, d.y, d.z, d.slot || 1);
-          }
+          applyRemoteBlockPut(d, true);
         } else if (d.type === 'mp_block_mine') {
-          const bIdx = placedBlocks.findIndex(b => b.x === d.x && Math.abs(b.y - d.y) < 0.5 && b.z === d.z);
-          if (bIdx !== -1) {
-            const bInfo = placedBlocks[bIdx];
-            worldGroup.remove(bInfo.mesh);
-            if (bInfo.hitBox) worldGroup.remove(bInfo.hitBox);
-            placedBlocks.splice(bIdx, 1);
-          }
+          applyRemoteBlockDel(d);
         }
       };
     }
@@ -9907,6 +10698,11 @@
 
     window.quickRescueFriendBasket = function(friendId) {
       initAudio();
+      if (!isMissionUnlocked('coop')) {
+        soundChime(220);
+        showToast(`🔒 <b>[제9장 협동 · 마음 광주리 같이 들기]</b><br>먼저 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
+        return;
+      }
       const fr = friendAgents.find(f => f.id === friendId) || friendAgents.find(f => f.id === state.activeFriendId) || friendAgents[0];
       if (!fr) return;
 
@@ -9978,7 +10774,11 @@
       closeModal('modalFriend');
       lastPromptZone = null;
       showToast(`🧺 <b>[제9장 협동 점프 성공!] ${fr.name}</b>와(과) 마음 광주리를 사이에 두고 함께 점프하며 가볍게 들어올렸습니다! (+${pts}점 · 총 협력 ${state.coopHelped}회)`);
-      if (worldChannel) worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: '광주리를 함께 점프하며 들어주었어요!' });
+      const rescueMsg = '광주리를 함께 점프하며 들어주었어요!';
+      if (worldChannel) worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: rescueMsg });
+      if (window.mpConnected && mpActions?.sendCheer) {
+        mpActions.sendCheer({ from: state.playerName, to: fr.name, msg: rescueMsg });
+      }
     };
 
     bindClick('btnHelpBasket', () => {
@@ -10026,6 +10826,10 @@
       if (worldChannel) {
         worldChannel.postMessage({ type: 'board_sync', post: newPost });
         worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: msg });
+      }
+      if (window.mpConnected && mpActions) {
+        mpActions.sendBrd?.({ post: newPost });
+        mpActions.sendCheer?.({ from: state.playerName, to: fr.name, msg: msg });
       }
     });
 
@@ -10548,7 +11352,7 @@
       tabsEl.innerHTML = THREE_FINGER_CASES.map((item, idx) => {
         const solved = window.solvedDetectiveCases.includes(item.id);
         const active = (idx === window.curDetectiveCaseIdx);
-        return `<button type="button" onclick="selectDetectiveCase(${idx})" style="padding:6px 11px; border-radius:999px; border:1px solid ${active ? '#18181b' : (solved ? '#86efac' : '#e4e2dd')}; background:${active ? '#18181b' : (solved ? '#f0fdf4' : '#ffffff')}; color:${active ? '#ffffff' : (solved ? '#15803d' : '#52525b')}; font-size:11.5px; font-weight:700; cursor:pointer;">사건 ${idx + 1} ${solved ? '✓' : ''}</button>`;
+        return `<button type="button" onclick="selectDetectiveCase(${idx})" style="padding:9px 16px; border-radius:999px; border:1px solid ${active ? '#18181b' : (solved ? '#86efac' : '#e4e2dd')}; background:${active ? '#18181b' : (solved ? '#f0fdf4' : '#ffffff')}; color:${active ? '#ffffff' : (solved ? '#15803d' : '#52525b')}; font-size:15px; font-weight:800; cursor:pointer;">사건 ${idx + 1} ${solved ? '✓' : ''}</button>`;
       }).join('');
     }
 
@@ -10608,11 +11412,11 @@
       // 사건 해결 완료 화면!
       qTitleEl.innerHTML = '🎉 <b>세 손가락 마음 질문 비법으로 사건을 완벽히 해결했어요!</b>';
       optsEl.innerHTML = `
-        <div style="padding:14px 16px; border-radius:12px; background:#f0fdf4; border:1px solid #86efac; color:#14532d; font-size:13px; line-height:1.65;">
+        <div style="padding:18px 20px; border-radius:12px; background:#f0fdf4; border:1px solid #86efac; color:#14532d; font-size:16.5px; line-height:1.7;">
           ${c.lesson}
         </div>
         <div style="display:flex; gap:8px; margin-top:8px;">
-          <button type="button" class="cust-btn-submit" style="margin-top:0; height:42px;" onclick="nextThreeFingerCase()">
+          <button type="button" class="cust-btn-submit" style="margin-top:0; height:50px; font-size:16.5px; font-weight:800;" onclick="nextThreeFingerCase()">
             <span>다음 마음 사건 해결하러 가기 →</span>
           </button>
         </div>
@@ -10694,11 +11498,16 @@
   
     window.trees = trees;
     window.joyRings = joyRings;
+    window.worryThreads = worryThreads;
+    window.worryOrbGroup = worryOrbGroup;
+    window.getGroundHeight = getGroundHeight;
+    window.syncQuestHUD = syncQuestHUD;
     window.playerRig = playerRig;
     window.updateZonePrompt = updateZonePrompt;
     window.triggerCampfireDisperse = triggerCampfireDisperse;
     window.renderStoryMissionTracker = renderStoryMissionTracker;
     window.renderTrophyCard = renderTrophyCard;
+    window.captureRobloxAvatarPortrait = captureRobloxAvatarPortrait;
     window.openModal = openModal;
     window.closeModal = closeModal;
 
@@ -10725,50 +11534,50 @@
        [라이트 모드] 동화 제8장: ☝️✌️🤟 세 손가락 마음 탐정 스캐너 (3-Step SEL Detective)
        ========================================= -->
   <div class="modal-overlay" id="modalThreeFinger">
-    <div class="modal-sheet" style="max-width: 580px;">
+    <div class="modal-sheet" style="max-width: 740px; padding: 28px;">
       <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div style="width:38px; height:38px; border-radius:12px; background:#f3e8ff; border:1px solid #d8b4fe; display:flex; align-items:center; justify-content:center; font-size:20px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#f3e8ff; border:1px solid #d8b4fe; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0;">
             🤟
           </div>
           <div>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="background:#f3e8ff; color:#7e22ce; font-weight:700; font-size:10.5px; padding:2px 8px; border-radius:6px;">동화 제8장 핵심 비법</span>
-              <h3 class="modal-title" style="margin:0; font-size:16px;">세 손가락 마음 질문 비법 · 마음 탐정</h3>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span style="background:#f3e8ff; color:#7e22ce; font-weight:700; font-size:13.5px; padding:4px 10px; border-radius:7px;">동화 제8장 핵심 비법</span>
+              <h3 class="modal-title" style="margin:0; font-size:22px; font-weight:800;">세 손가락 마음 질문 비법 · 마음 탐정</h3>
             </div>
-            <div style="font-size:11.5px; color:#52525b; margin-top:2px;">엄마가 알려준 세 손가락 질문으로 내 감정 손님과 몸의 신호, 지혜로운 행동을 찾아보세요!</div>
+            <div style="font-size:15px; color:#3f3f46; line-height:1.5; margin-top:4px;">엄마가 알려준 세 손가락 질문으로 내 감정 손님과 몸의 신호, 지혜로운 행동을 찾아보세요!</div>
           </div>
         </div>
         <button type="button" class="btn-close" onclick="closeModal('modalThreeFinger')">✕</button>
       </div>
 
       <!-- 사건 선택 탭 (1~6) -->
-      <div id="tfCaseTabs" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;"></div>
+      <div id="tfCaseTabs" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;"></div>
 
       <!-- 현재 사건 상황 카드 -->
-      <div style="background:#ffffff; border:1px solid #e4e2dd; border-radius:14px; padding:13px 16px; margin-bottom:12px;">
-        <div id="tfCaseBadge" style="font-size:11px; font-weight:700; color:#d97706; margin-bottom:3px;">사건 1</div>
-        <div id="tfCaseTitle" style="font-size:15px; font-weight:800; color:#18181b; margin-bottom:6px;">사건 제목</div>
-        <div id="tfCaseSituation" style="font-size:13px; line-height:1.6; color:#52525b;">상황 설명</div>
+      <div style="background:#ffffff; border:1px solid #e4e2dd; border-radius:16px; padding:18px 22px; margin-bottom:16px;">
+        <div id="tfCaseBadge" style="font-size:14.5px; font-weight:800; color:#d97706; margin-bottom:6px;">사건 1</div>
+        <div id="tfCaseTitle" style="font-size:21px; font-weight:800; line-height:1.4; color:#18181b; margin-bottom:8px;">사건 제목</div>
+        <div id="tfCaseSituation" style="font-size:17px; line-height:1.65; color:#27272a;">상황 설명</div>
       </div>
 
       <!-- 세 손가락 3단계 진행 표시줄 -->
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:12px;">
-        <div id="tfStep1Pill" style="padding:7px 8px; border-radius:10px; border:1px solid #fdba74; background:#fff7ed; color:#c2410c; text-align:center; font-size:11.5px; font-weight:700;">
+      <div class="tf-steps-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:16px;">
+        <div id="tfStep1Pill" style="padding:11px 12px; border-radius:12px; border:1px solid #fdba74; background:#fff7ed; color:#c2410c; text-align:center; font-size:15px; font-weight:800;">
           ☝️ 1. 감정 손님 누구?
         </div>
-        <div id="tfStep2Pill" style="padding:7px 8px; border-radius:10px; border:1px solid #e4e2dd; background:#f4f3ef; color:#71717a; text-align:center; font-size:11.5px; font-weight:700;">
+        <div id="tfStep2Pill" style="padding:11px 12px; border-radius:12px; border:1px solid #e4e2dd; background:#f4f3ef; color:#71717a; text-align:center; font-size:15px; font-weight:800;">
           ✌️ 2. 내 몸의 신호는?
         </div>
-        <div id="tfStep3Pill" style="padding:7px 8px; border-radius:10px; border:1px solid #e4e2dd; background:#f4f3ef; color:#71717a; text-align:center; font-size:11.5px; font-weight:700;">
+        <div id="tfStep3Pill" style="padding:11px 12px; border-radius:12px; border:1px solid #e4e2dd; background:#f4f3ef; color:#71717a; text-align:center; font-size:15px; font-weight:800;">
           🤟 3. 어떻게 행동할까?
         </div>
       </div>
 
       <!-- 현재 단계 질문 및 선택지 -->
-      <div id="tfQuestionTitle" style="font-size:13.5px; color:#18181b; margin-bottom:9px;">질문</div>
-      <div id="tfOptionsList" style="display:flex; flex-direction:column; gap:8px;"></div>
-      <div id="tfFeedbackBox" style="display:none; margin-top:10px; padding:10px 13px; border-radius:10px; border:1px solid #fca5a5; background:#fef2f2; font-size:12.5px; line-height:1.55; color:#991b1b;"></div>
+      <div id="tfQuestionTitle" style="font-size:18px; line-height:1.5; color:#18181b; margin-bottom:12px;">질문</div>
+      <div id="tfOptionsList" style="display:flex; flex-direction:column; gap:10px;"></div>
+      <div id="tfFeedbackBox" style="display:none; margin-top:12px; padding:14px 16px; border-radius:12px; border:1px solid #fca5a5; background:#fef2f2; font-size:15.5px; line-height:1.6; color:#991b1b;"></div>
     </div>
   </div>
 
@@ -10776,27 +11585,27 @@
        [라이트 모드] 동화 제4장: 🤖 부서진 장난감 로봇 & 평화의 나-전달법(I-Message) 수리
        ========================================= -->
   <div class="modal-overlay" id="modalRobotIMessage">
-    <div class="modal-sheet" style="max-width: 530px;">
+    <div class="modal-sheet" style="max-width: 680px; padding: 28px;">
       <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div style="width:38px; height:38px; border-radius:12px; background:#eff6ff; border:1px solid #bfdbfe; display:flex; align-items:center; justify-content:center; font-size:20px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:48px; height:48px; border-radius:14px; background:#eff6ff; border:1px solid #bfdbfe; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0;">
             🤖
           </div>
           <div>
-            <span style="background:#fef2f2; color:#dc2626; font-weight:700; font-size:10.5px; padding:2px 7px; border-radius:6px;">동화 제4장 · 세 번째 손님, 화</span>
-            <h3 class="modal-title" style="margin:2px 0 0 0; font-size:16px;">부서진 장난감 로봇 &amp; 평화의 나-전달법</h3>
+            <span style="background:#fef2f2; color:#dc2626; font-weight:700; font-size:13px; padding:3px 9px; border-radius:7px; display:inline-block;">동화 제4장 · 세 번째 손님, 화</span>
+            <h3 class="modal-title" style="margin:4px 0 0 0; font-size:21px; font-weight:800;">부서진 장난감 로봇 &amp; 평화의 나-전달법</h3>
           </div>
         </div>
         <button type="button" class="btn-close" onclick="closeModal('modalRobotIMessage')">✕</button>
       </div>
 
-      <div style="background:#ffffff; border:1px solid #e4e2dd; border-radius:12px; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.65; color:#52525b;">
+      <div style="background:#ffffff; border:1px solid #e4e2dd; border-radius:14px; padding:18px 20px; margin-bottom:16px; font-size:16.5px; line-height:1.65; color:#27272a;">
         동생이 인찬이의 아끼는 장난감 로봇을 망가뜨렸어요! 빨간 털뭉치 <b>‘화’</b>가 쿵! 튀어나와 말했어요.<br>
         <span style="color:#d97706; font-weight:700;">“인찬아, 화가 나는 건 당연해. 감정은 내가 선택하지 않아도 생기지만, 행동은 네가 선택할 수 있잖아!”</span><br>
         깊게 <b>“후우—”</b> 숨을 쉰 인찬이는 동생에게 어떻게 말해야 장난감 로봇과 평화를 되찾을 수 있을까요?
       </div>
 
-      <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; flex-direction:column; gap:10px;">
         <button type="button" class="mom-choice-btn" onclick="chooseRobotIMessage(1)">
           <span>💢</span> <span>“너 때문에 내 로봇 망가졌잖아! 저리 가!” 하고 소리치며 동생을 민다.</span>
         </button>
@@ -10808,38 +11617,38 @@
         </button>
       </div>
 
-      <div id="robotIMessageFeedback" style="display:none; margin-top:10px; padding:10px 13px; border-radius:10px; border:1px solid #fca5a5; font-size:12.5px; line-height:1.55; color:#991b1b;"></div>
+      <div id="robotIMessageFeedback" style="display:none; margin-top:12px; padding:14px 16px; border-radius:12px; border:1px solid #fca5a5; font-size:15.5px; line-height:1.6; color:#991b1b;"></div>
     </div>
   </div>
 
   <!-- [라이트 모드] 온화한 엄마 인터랙티브 SEL 감성 대화 & 치유 모달 -->
   <div class="modal-overlay" id="modalMom">
-    <div class="modal-sheet" style="max-width: 520px;">
+    <div class="modal-sheet" style="max-width: 680px; padding: 28px;">
       <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 38px; height: 38px; border-radius: 12px; background: #fff1f2; border: 1px solid #fecdd3; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 48px; height: 48px; border-radius: 14px; background: #fff1f2; border: 1px solid #fecdd3; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;">
             👩‍👧
           </div>
           <div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="background: #fff1f2; color: #e11d48; font-weight: 700; font-size: 10px; padding: 2px 7px; border-radius: 6px;">마음의 안식처</span>
-              <h3 class="modal-title" style="margin: 0; font-size: 16px;">온화한 엄마의 따뜻한 품 💕</h3>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="background: #fff1f2; color: #e11d48; font-weight: 700; font-size: 13px; padding: 3px 9px; border-radius: 7px;">마음의 안식처</span>
+              <h3 class="modal-title" style="margin: 0; font-size: 21px; font-weight: 800;">온화한 엄마의 따뜻한 품 💕</h3>
             </div>
-            <div id="momModalSub" style="font-size: 11px; color: #71717a; margin-top: 2px;">인찬이를 세상에서 가장 사랑하는 엄마와의 정서적 교감</div>
+            <div id="momModalSub" style="font-size: 14.5px; color: #52525b; margin-top: 4px;">인찬이를 세상에서 가장 사랑하는 엄마와의 정서적 교감</div>
           </div>
         </div>
         <button type="button" class="btn-close" onclick="closeModal('modalMom')">✕</button>
       </div>
 
       <!-- 엄마의 대화 말풍선 -->
-      <div id="momSpeechBox" style="background: #ffffff; border: 1px solid #e4e2dd; border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; position: relative;">
-        <p id="momSpeechText" style="margin: 0; font-size: 13.5px; line-height: 1.65; color: #18181b; font-weight: 500;">
+      <div id="momSpeechBox" style="background: #ffffff; border: 1px solid #e4e2dd; border-radius: 16px; padding: 18px 20px; margin-bottom: 16px; position: relative;">
+        <p id="momSpeechText" style="margin: 0; font-size: 16.5px; line-height: 1.65; color: #18181b; font-weight: 500;">
           “인찬아, 오늘 마음 광주리 여행은 어땠니? 어떤 감정 손님이 찾아왔어? 기쁨, 슬픔, 화, 두려움, 걱정... 어떤 감정이든 엄마에게 편하게 털어놓으렴.”
         </p>
       </div>
 
       <!-- 학생 선택지 4가지 (SEL 감정 표현) -->
-      <div style="display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
         <button type="button" class="mom-choice-btn" onclick="selectMomDialogue(1)">
           <span>🌸</span> <span>“엄마, 미션을 하며 감정 손님들을 친구로 소중히 맞이했어요!”</span>
         </button>
@@ -10855,11 +11664,11 @@
       </div>
 
       <!-- 하단 액션 버튼들 -->
-      <div style="display: flex; gap: 8px; justify-content: flex-end;">
-        <button type="button" onclick="doMomHug()" style="padding: 10px 18px; border-radius: 999px; background: #18181b; color: #fff; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+      <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+        <button type="button" onclick="doMomHug()" style="padding: 13px 22px; border-radius: 999px; background: #18181b; color: #fff; font-size: 15.5px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
           <span>🤗</span> <span>따뜻하게 안아드리기 (+마음조각 5)</span>
         </button>
-        <button type="button" onclick="closeModal('modalMom')" style="padding: 10px 16px; border-radius: 999px; background: #ffffff; color: #52525b; font-size: 12.5px; font-weight: 700; border: 1px solid #e4e2dd; cursor: pointer;">
+        <button type="button" onclick="closeModal('modalMom')" style="padding: 13px 20px; border-radius: 999px; background: #ffffff; color: #3f3f46; font-size: 15.5px; font-weight: 700; border: 1px solid #e4e2dd; cursor: pointer;">
           고마워요, 엄마!
         </button>
       </div>
