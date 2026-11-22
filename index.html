@@ -46,7 +46,7 @@
       display: inline-flex; align-items: center; gap: 10px; flex-wrap: nowrap;
       background: var(--bg-surface); backdrop-filter: blur(14px);
       border: 1px solid var(--line-hair); border-radius: var(--radius-lg);
-      padding: 7px 14px; box-shadow: var(--shadow-clean);
+      padding: 6px 13px; box-shadow: var(--shadow-clean);
       flex-shrink: 0;
     }
     .brand-mark {
@@ -54,30 +54,37 @@
       color: #fff; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .brand-text { display: flex; flex-direction: column; line-height: 1.2; white-space: nowrap; flex-shrink: 0; }
-    .brand-title { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; color: var(--ink-main); white-space: nowrap; }
-    .brand-sub { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--ink-sub); letter-spacing: 0.3px; white-space: nowrap; }
+    .brand-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; line-height: 1.15; white-space: nowrap; flex-shrink: 0; }
+    .brand-title { font-size: 16.5px; font-weight: 800; letter-spacing: -0.25px; color: var(--ink-main); white-space: nowrap; }
 
     .divider-v { width: 1px; height: 22px; background: var(--line-hair); flex-shrink: 0; }
+    .divider-v.hud-tall-div { height: 36px; }
 
     /* 5대 감정 LED 인디케이터 */
-    .quest-leds { display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; }
+    .quest-leds { display: flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }
     .quest-led {
-      width: 12px; height: 12px; border-radius: 50%;
+      width: 11px; height: 11px; border-radius: 50%;
       background: rgba(24, 24, 27, 0.12); border: 1px solid rgba(24, 24, 27, 0.2);
       transition: all 0.35s ease;
     }
     .quest-led.on { border-color: transparent; transform: scale(1.18); box-shadow: 0 0 10px currentColor; }
     .quest-count {
-      font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
       color: var(--ink-main); font-variant-numeric: tabular-nums; margin-left: 2px;
     }
+    .hud-metrics-col { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; flex-shrink: 0; }
+    .mind-score-badge {
+      display: inline-flex; align-items: center; gap: 5px; background: transparent;
+      padding: 1px 8px 1px 3px; border-radius: 99px; border: 1px solid rgba(24,24,27,0.16);
+      font-weight: 700; line-height: 1.25; white-space: nowrap;
+    }
     .stardust-chip-btn {
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; gap: 5px;
       background: transparent; border: 1px solid rgba(24,24,27,0.16);
-      padding: 3px 10px; border-radius: 99px; font-size: 13.5px; font-weight: 700;
-      color: #18181b; cursor: pointer; font-family: inherit; line-height: 1.3;
+      padding: 1px 8px; border-radius: 99px; font-size: 12.5px; font-weight: 700;
+      color: #18181b; cursor: pointer; font-family: inherit; line-height: 1.25;
       transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+      white-space: nowrap;
     }
     .stardust-chip-btn:hover { background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.55); }
     .stardust-chip-btn:active { transform: scale(0.97); }
@@ -139,7 +146,7 @@
 
     /* 토스트 알림 (클린 라이트 모드) */
     .toast-box {
-      position: fixed; top: 72px; left: 50%; transform: translateX(-50%);
+      position: fixed; top: 84px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; gap: 6px; z-index: 60;
       pointer-events: none; align-items: center; width: max-content; max-width: 90vw;
     }
@@ -381,6 +388,34 @@
       font-size: 12px; font-weight: 700;
       padding: 1px 9px; border-radius: 99px; letter-spacing: 0.4px;
     }
+
+    /* 카메라 화면 축소 · 확대 컨트롤 (우측 레이더 아래 컴팩트 알약형) */
+    .cam-zoom-dock {
+      position: fixed; right: 16px; top: 204px; z-index: 44;
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 4px; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.90);
+      border: 1px solid rgba(24, 24, 27, 0.14);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+    .cam-zoom-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid rgba(24, 24, 27, 0.12); background: #ffffff;
+      color: #18181b; font-size: 16px; font-weight: 900; line-height: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.14s, color 0.14s, transform 0.1s;
+    }
+    .cam-zoom-btn:hover { background: #18181b; color: #ffffff; }
+    .cam-zoom-btn:active { transform: scale(0.92); }
+    .cam-zoom-pct {
+      min-width: 42px; height: 26px; padding: 0 4px; border-radius: 999px;
+      border: none; background: transparent; color: #3f3f46;
+      font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 800;
+      cursor: pointer; text-align: center;
+    }
+    .cam-zoom-pct:hover { background: #f4f4f5; color: #18181b; }
 
     /* 우측 상단 설정 드롭다운 팝오버 (소리 제외 나머지 메뉴 깔끔 통합) */
     .top-settings-wrap {
@@ -747,7 +782,7 @@
        [Dieter Rams / Nothing Design] 좌측 상단 정밀 계측기 미션 HUD
        ============================================================ */
     .story-tracker {
-      position: fixed; top: 70px; left: 16px; z-index: 43;
+      position: fixed; top: 82px; left: 16px; z-index: 43;
       width: 344px; max-width: calc(100vw - 32px);
       background: rgba(250, 249, 245, 0.95);
       background-image: radial-gradient(rgba(24, 24, 27, 0.06) 1px, transparent 1px);
@@ -880,6 +915,7 @@
     /* 태블릿·스마트폰 반응형 HUD 정렬 (.story-tracker 선언 이후 배치하여 우선순위 보장) */
     @media (max-width: 900px) {
       .minimap-box { width: 88px; height: 88px; right: 12px; top: 66px; }
+      .cam-zoom-dock { right: 12px; top: 172px; }
       .v-joy-zone, .v-look-zone { width: 96px; height: 96px; bottom: 78px; }
       .v-joy-zone { left: 12px; }
       .v-look-zone { right: 12px; }
@@ -887,18 +923,20 @@
       .touch-action-pad { right: 12px; bottom: 186px; gap: 5px; padding: 6px; }
       .touch-pad-btn { width: 46px; height: 46px; }
       .touch-pad-btn svg { width: 16px; height: 16px; }
-      .story-tracker { width: calc(100vw - 122px); max-width: 312px; left: 12px; top: 66px; padding: 10px 11px; }
+      .story-tracker { width: calc(100vw - 122px); max-width: 312px; left: 12px; top: 78px; padding: 10px 11px; }
       .zone-prompt { max-width: min(500px, calc(100vw - 24px)); padding: 12px 16px; }
     }
     @media (max-width: 600px) {
       .hud-top { top: 10px; left: 10px; right: 10px; gap: 6px; }
       .hud-row { flex-wrap: nowrap; gap: 4px; }
       .module-bar { max-width: calc(100vw - 194px); overflow-x: auto; padding: 5px 9px; gap: 6px; }
-      .brand-title { font-size: 14.5px; }
-      .brand-sub { display: none; }
+      .brand-title { font-size: 14px; }
       .hw-btn { height: 36px; padding: 0 9px; font-size: 13px; gap: 4px; }
       .minimap-box { width: 78px; height: 78px; right: 10px; top: 56px; }
-      .story-tracker { width: calc(100vw - 104px); max-width: 288px; left: 10px; top: 56px; padding: 8px 10px; }
+      .cam-zoom-dock { right: 10px; top: 152px; padding: 3px; gap: 2px; }
+      .cam-zoom-btn { width: 25px; height: 25px; font-size: 14px; }
+      .cam-zoom-pct { min-width: 36px; font-size: 10.5px; }
+      .story-tracker { width: calc(100vw - 104px); max-width: 288px; left: 10px; top: 74px; padding: 8px 10px; }
       .story-q-title { font-size: 15px; }
       .story-q-desc { font-size: 13.5px; }
       .v-joy-zone, .v-look-zone { width: 92px; height: 92px; bottom: 76px; }
@@ -1595,7 +1633,7 @@
     /* 패드 (16:9) 균형 터치 모드 */
     body.view-mode-pad .touch-pad-kbd { display: none !important; }
     body.view-mode-pad .action-dock .act-btn.touch-dup { display: none !important; }
-    body.view-mode-pad .story-tracker { width: 300px; top: 66px; left: 12px; padding: 10px 12px; }
+    body.view-mode-pad .story-tracker { width: 300px; top: 80px; left: 12px; padding: 10px 12px; }
     body.view-mode-pad .v-joy-zone,
     body.view-mode-pad .v-look-zone { width: 102px; height: 102px; bottom: 76px; }
     body.view-mode-pad .touch-action-pad { right: 12px; bottom: 188px; }
@@ -1667,13 +1705,14 @@
       padding: 3px 8px; gap: 5px; max-width: calc(100vw - 168px); overflow-x: visible;
     }
     body.view-mode-phone .brand-mark,
-    body.view-mode-phone .brand-text,
+    body.view-mode-phone .brand-title,
     body.view-mode-phone .module-bar > .divider-v,
-    body.view-mode-phone .quest-leds > .divider-v,
     body.view-mode-phone .quest-led,
     body.view-mode-phone #mindLevelBadge,
     body.view-mode-phone .stardust-chip-label,
     body.view-mode-phone .hw-btn .btn-txt-optional { display: none !important; }
+    body.view-mode-phone .brand-stack,
+    body.view-mode-phone .hud-metrics-col { flex-direction: row; align-items: center; gap: 4px; }
     body.view-mode-phone .audio-mobile-icon { display: inline-block; }
     body.view-mode-phone .quest-leds { gap: 4px; }
     body.view-mode-phone .quest-count { font-size: 11.5px; margin-left: 0; }
@@ -1703,6 +1742,12 @@
       width: 58px !important; height: 58px !important; right: 6px !important; top: 48px !important;
     }
     body.view-mode-phone .minimap-tag { display: none !important; }
+    body.view-mode-phone .cam-zoom-dock {
+      right: 6px !important; top: 112px !important;
+      flex-direction: column; padding: 3px; gap: 3px; border-radius: 14px;
+    }
+    body.view-mode-phone .cam-zoom-btn { width: 32px; height: 28px; border-radius: 9px; font-size: 15px; }
+    body.view-mode-phone .cam-zoom-pct { min-width: 32px; height: 20px; font-size: 10px; padding: 0 2px; }
 
     body.view-mode-phone .story-tracker {
       top: 48px !important; left: 8px !important;
@@ -1791,6 +1836,7 @@
       }
       body.view-mode-phone .touch-pad-btn { width: 38px !important; height: 38px !important; }
       body.view-mode-phone .zone-prompt { right: 98px !important; bottom: 110px !important; }
+      body.view-mode-phone .cam-zoom-pct { display: none; }
     }
 
 </style>
@@ -1813,31 +1859,31 @@
         <div class="brand-mark" title="인찬이의 마음 광주리">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14l-1.5 9h-11z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>
         </div>
-        <div class="brand-text">
+        <div class="brand-stack">
           <span class="brand-title">인찬이의 마음 광주리</span>
-          <span class="brand-sub">마음 동산</span>
+          <div class="quest-leds" title="만난 감정 손님 구슬">
+            <div class="quest-led" id="dotJoy" style="color: #f59e0b;" title="기쁨"></div>
+            <div class="quest-led" id="dotSad" style="color: #3b82f6;" title="슬픔"></div>
+            <div class="quest-led" id="dotAnger" style="color: #ef4444;" title="화"></div>
+            <div class="quest-led" id="dotFear" style="color: #a855f7;" title="두려움"></div>
+            <div class="quest-led" id="dotWorry" style="color: #10b981;" title="걱정"></div>
+            <span class="quest-count" id="questCountText">0/5</span>
+          </div>
         </div>
-        <div class="divider-v"></div>
-        <div class="quest-leds" title="만난 감정 손님 구슬">
-          <div class="quest-led" id="dotJoy" style="color: #f59e0b;" title="기쁨"></div>
-          <div class="quest-led" id="dotSad" style="color: #3b82f6;" title="슬픔"></div>
-          <div class="quest-led" id="dotAnger" style="color: #ef4444;" title="화"></div>
-          <div class="quest-led" id="dotFear" style="color: #a855f7;" title="두려움"></div>
-          <div class="quest-led" id="dotWorry" style="color: #10b981;" title="걱정"></div>
-          <span class="quest-count" id="questCountText">0/5</span>
-          <div class="divider-v" style="margin: 0 4px;"></div>
+        <div class="divider-v hud-tall-div"></div>
+        <div class="hud-metrics-col">
+          <!-- 누적 마음 점수 & 성장 단계 -->
+          <div id="mindScoreBadge" class="mind-score-badge" title="누적 마음 점수 & 성장 단계">
+            <span id="mindLevelBadge" style="background:#18181b; color:#ffffff; font-size:11.5px; font-weight:700; padding:1px 7px; border-radius:99px;">Lv.1 새싹</span>
+            <span id="mindScoreText" style="color:#18181b; font-size:13px; font-weight:800;">0점</span>
+          </div>
           <!-- 마음 조각 수집 계측기 (클릭 시 획득 방법 안내) -->
           <button type="button" id="btnStardustGuide" class="stardust-chip-btn" onclick="openStardustGuide()" title="클릭해서 마음 조각 얻는 방법 보기" aria-label="마음 조각 얻는 방법 보기">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2"><polygon points="12 2 19 12 12 22 5 12"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2"><polygon points="12 2 19 12 12 22 5 12"/></svg>
             <span class="stardust-chip-label">마음 조각</span>
-            <span id="stardustText" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:13.5px;">0/15</span>
+            <span id="stardustText" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:12.5px;">0/15</span>
             <span class="stardust-chip-help" aria-hidden="true">?</span>
           </button>
-          <!-- 누적 마음 점수 & 성장 단계 -->
-          <div id="mindScoreBadge" style="display:inline-flex; align-items:center; gap:6px; background:transparent; padding:3px 10px 3px 4px; border-radius:99px; border:1px solid rgba(24,24,27,0.16); font-weight:700;" title="누적 마음 점수 & 성장 단계">
-            <span id="mindLevelBadge" style="background:#18181b; color:#ffffff; font-size:12px; font-weight:700; padding:1px 8px; border-radius:99px;">Lv.1 새싹</span>
-            <span id="mindScoreText" style="color:#18181b; font-size:14px; font-weight:800;">0점</span>
-          </div>
         </div>
       </div>
     </div>
@@ -1959,6 +2005,12 @@
   <div class="minimap-box" title="마음 동산 레이더">
     <canvas id="minimapCanvas" width="126" height="126"></canvas>
     <span class="minimap-tag">레이더</span>
+  </div>
+  <!-- 카메라 화면 축소 · 확대 컨트롤 -->
+  <div class="cam-zoom-dock" id="camZoomDock" role="group" aria-label="화면 축소 및 확대">
+    <button type="button" class="cam-zoom-btn" id="btnCamZoomOut" title="화면 축소 (-)" aria-label="화면 축소">−</button>
+    <button type="button" class="cam-zoom-pct" id="btnCamZoomReset" title="기본 시야로 되돌리기 (100%)">100%</button>
+    <button type="button" class="cam-zoom-btn" id="btnCamZoomIn" title="화면 확대 (+)" aria-label="화면 확대">+</button>
   </div>
 
   <!-- 구역 진입 인터랙션 배너 -->
@@ -5545,7 +5597,7 @@
     const leftLeg = makeLeg(true);
     const rightLeg = makeLeg(false);
 
-    // [외곽 경기장 아이템용 3D 상태 이펙트: 얼음 큐브, 무지개 무적 오라, 아이언맨 풀 슈트]
+    // [외곽 경기장 아이템용 3D 상태 이펙트: 얼음 큐브, 무지개 무적 오라, 4종 오리지널 별빛 제트 아머]
     const playerIceBlockMesh = new THREE.Mesh(
       new THREE.BoxGeometry(1.5, 2.55, 1.5),
       new THREE.MeshStandardMaterial({ color: 0xbae6fd, emissive: 0x38bdf8, emissiveIntensity: 0.45, transparent: true, opacity: 0.56, roughness: 0.1 })
@@ -5565,60 +5617,112 @@
     playerInvincibleAura.visible = false;
     playerRig.add(playerInvincibleAura);
 
-    const playerIronManParts = [];
-    const imRedMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x7f1d1d, emissiveIntensity: 0.45, metalness: 0.55, roughness: 0.25 });
-    const imGoldMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xd97706, emissiveIntensity: 0.5, metalness: 0.65, roughness: 0.2 });
-    const imArcMat = new THREE.MeshStandardMaterial({ color: 0x67e8f9, emissive: 0x22d3ee, emissiveIntensity: 2.2, roughness: 0.1 });
-    const imFlameMat = new THREE.MeshBasicMaterial({ color: 0xfef08a, transparent: true, opacity: 0.9 });
-
-    const imHelmGroup = new THREE.Group();
-    const imHelmShell = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.88, 0.92), imRedMat);
-    const imMask = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.72, 0.12), imGoldMat); imMask.position.set(0, -0.02, 0.45);
-    const imEyeL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.09, 0.06), imArcMat); imEyeL.position.set(-0.17, 0.08, 0.5);
-    const imEyeR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.09, 0.06), imArcMat); imEyeR.position.set(0.17, 0.08, 0.5);
-    imHelmGroup.add(imHelmShell, imMask, imEyeL, imEyeR);
-    imHelmGroup.visible = false;
-    head.add(imHelmGroup);
-    playerIronManParts.push(imHelmGroup);
-
-    const imTorsoGroup = new THREE.Group();
-    const imChest = new THREE.Mesh(new THREE.BoxGeometry(1.04, 1.1, 0.64), imRedMat);
-    const imShoulder = new THREE.Mesh(new THREE.BoxGeometry(1.16, 0.28, 0.68), imGoldMat); imShoulder.position.y = 0.36;
-    const imReactorRing = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.08, 12), imArcMat);
-    imReactorRing.rotation.x = Math.PI / 2; imReactorRing.position.set(0, 0.12, 0.33);
-    imTorsoGroup.add(imChest, imShoulder, imReactorRing);
-    imTorsoGroup.visible = false;
-    torso.add(imTorsoGroup);
-    playerIronManParts.push(imTorsoGroup);
-
-    [leftArm, rightArm].forEach(armPivot => {
-      const imArm = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.92, 0.4), imRedMat);
-      imArm.position.y = -0.36;
-      const imGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.28, 0.42), imGoldMat);
-      imGauntlet.position.y = -0.68;
-      const g = new THREE.Group(); g.add(imArm, imGauntlet); g.visible = false;
-      armPivot.add(g);
-      playerIronManParts.push(g);
-    });
-    const imJetFlames = [];
-    [leftLeg, rightLeg].forEach(legPivot => {
-      const imLeg = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.84, 0.48), imRedMat);
-      imLeg.position.y = -0.41;
-      const imBoot = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.24, 0.5), imGoldMat);
-      imBoot.position.y = -0.72;
-      const jetFlame = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.72, 10), imFlameMat);
-      jetFlame.rotation.x = Math.PI; jetFlame.position.set(0, -1.16, 0);
-      const g = new THREE.Group(); g.add(imLeg, imBoot, jetFlame); g.visible = false;
-      legPivot.add(g);
-      playerIronManParts.push(g);
-      imJetFlames.push(jetFlame);
-    });
-    const playerIronManSuit = {
-      get visible() { return playerIronManParts.length > 0 && playerIronManParts.every(p => p.visible); },
-      set visible(v) { playerIronManParts.forEach(p => { p.visible = !!v; }); }
+    const JET_ARMOR_THEMES = {
+      cyber: {
+        key: 'cyber', name: '사이버 블루 아머', shortTag: '⚡ 사이버 아머',
+        primary: 0x0284c7, primaryEmissive: 0x0369a1, trim: 0xe2e8f0, trimEmissive: 0x64748b,
+        core: 0x22d3ee, flame: 0x67e8f9, hex: '#38bdf8', angularSpeed: 1.06
+      },
+      emerald: {
+        key: 'emerald', name: '에메랄드 스텔스 아머', shortTag: '🌿 스텔스 아머',
+        primary: 0x059669, primaryEmissive: 0x064e3b, trim: 0x1e293b, trimEmissive: 0x0f172a,
+        core: 0x4ade80, flame: 0x86efac, hex: '#34d399', angularSpeed: 1.15
+      },
+      cosmic: {
+        key: 'cosmic', name: '코스믹 바이올렛 아머', shortTag: '🌌 코스믹 아머',
+        primary: 0x7c3aed, primaryEmissive: 0x4c1d95, trim: 0xf1f5f9, trimEmissive: 0x94a3b8,
+        core: 0xf472b6, flame: 0xf9a8d4, hex: '#c084fc', angularSpeed: 1.12
+      },
+      solar: {
+        key: 'solar', name: '솔라 화이트 아머', shortTag: '☀️ 솔라 아머',
+        primary: 0xf8fafc, primaryEmissive: 0xcbd5e1, trim: 0xf59e0b, trimEmissive: 0xb45309,
+        core: 0x38bdf8, flame: 0xfef08a, hex: '#fbbf24', angularSpeed: 1.22
+      }
     };
+    const JET_ARMOR_KEYS = Object.keys(JET_ARMOR_THEMES);
 
-    // [하늘 비행 탈것 4종 3D 메시 — 절대로 바닥에서 다니지 않고 공중(3.4m+)에서만 비행!]
+    const playerJetArmorParts = [];
+    const jaPrimaryMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1, emissiveIntensity: 0.45, metalness: 0.58, roughness: 0.24 });
+    const jaTrimMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, emissive: 0x64748b, emissiveIntensity: 0.35, metalness: 0.65, roughness: 0.2 });
+    const jaCoreMat = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 2.3, roughness: 0.1 });
+    const jaWingMat = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 1.15, transparent: true, opacity: 0.78, side: THREE.DoubleSide });
+    const jaFlameMat = new THREE.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.92 });
+
+    function applyJetArmorTheme(variantKey) {
+      const th = JET_ARMOR_THEMES[variantKey] || JET_ARMOR_THEMES.cyber;
+      jaPrimaryMat.color.setHex(th.primary);
+      jaPrimaryMat.emissive.setHex(th.primaryEmissive);
+      jaTrimMat.color.setHex(th.trim);
+      jaTrimMat.emissive.setHex(th.trimEmissive);
+      jaCoreMat.color.setHex(th.core);
+      jaCoreMat.emissive.setHex(th.core);
+      jaWingMat.color.setHex(th.core);
+      jaWingMat.emissive.setHex(th.core);
+      jaFlameMat.color.setHex(th.flame);
+      playerJetArmorSuit.currentTheme = th.key;
+      return th;
+    }
+
+    const jaHelmGroup = new THREE.Group();
+    const jaHelmShell = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.88, 0.94), jaPrimaryMat);
+    const jaCrest = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.98), jaTrimMat); jaCrest.position.set(0, 0.46, 0);
+    const jaVisor = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.24, 0.12), jaCoreMat); jaVisor.position.set(0, 0.08, 0.47);
+    const jaEarL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.38, 0.24), jaTrimMat); jaEarL.position.set(-0.5, 0.06, 0);
+    const jaEarR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.38, 0.24), jaTrimMat); jaEarR.position.set(0.5, 0.06, 0);
+    jaHelmGroup.add(jaHelmShell, jaCrest, jaVisor, jaEarL, jaEarR);
+    jaHelmGroup.visible = false;
+    head.add(jaHelmGroup);
+    playerJetArmorParts.push(jaHelmGroup);
+
+    const jaTorsoGroup = new THREE.Group();
+    const jaChest = new THREE.Mesh(new THREE.BoxGeometry(1.06, 1.12, 0.66), jaPrimaryMat);
+    const jaShoulder = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.28, 0.7), jaTrimMat); jaShoulder.position.y = 0.38;
+    const jaCoreHex = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.09, 6), jaCoreMat);
+    jaCoreHex.rotation.x = Math.PI / 2; jaCoreHex.position.set(0, 0.14, 0.34);
+    // 등 뒤 쌍발 에어로 제트팩 + 발광 에너지 윙 2매
+    const jaJetPackL = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.16, 0.68, 10), jaTrimMat); jaJetPackL.position.set(-0.22, 0.08, -0.42);
+    const jaJetPackR = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.16, 0.68, 10), jaTrimMat); jaJetPackR.position.set(0.22, 0.08, -0.42);
+    const jaPackFlameL = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.56, 8), jaFlameMat); jaPackFlameL.rotation.x = Math.PI; jaPackFlameL.position.set(-0.22, -0.48, -0.42);
+    const jaPackFlameR = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.56, 8), jaFlameMat); jaPackFlameR.rotation.x = Math.PI; jaPackFlameR.position.set(0.22, -0.48, -0.42);
+    const jaWingL = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.28, 0.06), jaWingMat); jaWingL.position.set(-0.82, 0.22, -0.44); jaWingL.rotation.set(0.15, -0.25, 0.26);
+    const jaWingR = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.28, 0.06), jaWingMat); jaWingR.position.set(0.82, 0.22, -0.44); jaWingR.rotation.set(0.15, 0.25, -0.26);
+    jaTorsoGroup.add(jaChest, jaShoulder, jaCoreHex, jaJetPackL, jaJetPackR, jaPackFlameL, jaPackFlameR, jaWingL, jaWingR);
+    jaTorsoGroup.visible = false;
+    torso.add(jaTorsoGroup);
+    playerJetArmorParts.push(jaTorsoGroup);
+
+    const jetArmorFlames = [jaPackFlameL, jaPackFlameR];
+    [leftArm, rightArm].forEach(armPivot => {
+      const jaArm = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.92, 0.4), jaPrimaryMat);
+      jaArm.position.y = -0.36;
+      const jaGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.3, 0.44), jaTrimMat);
+      jaGauntlet.position.y = -0.68;
+      const jaPalmRing = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.04, 6, 12), jaCoreMat);
+      jaPalmRing.rotation.x = Math.PI / 2; jaPalmRing.position.y = -0.84;
+      const g = new THREE.Group(); g.add(jaArm, jaGauntlet, jaPalmRing); g.visible = false;
+      armPivot.add(g);
+      playerJetArmorParts.push(g);
+    });
+    [leftLeg, rightLeg].forEach(legPivot => {
+      const jaLeg = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.84, 0.48), jaPrimaryMat);
+      jaLeg.position.y = -0.41;
+      const jaBoot = new THREE.Mesh(new THREE.BoxGeometry(0.47, 0.25, 0.52), jaTrimMat);
+      jaBoot.position.y = -0.72;
+      const jetFlame = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.86, 10), jaFlameMat);
+      jetFlame.rotation.x = Math.PI; jetFlame.position.set(0, -1.24, 0);
+      const g = new THREE.Group(); g.add(jaLeg, jaBoot, jetFlame); g.visible = false;
+      legPivot.add(g);
+      playerJetArmorParts.push(g);
+      jetArmorFlames.push(jetFlame);
+    });
+    const playerJetArmorSuit = {
+      currentTheme: 'cyber',
+      get visible() { return playerJetArmorParts.length > 0 && playerJetArmorParts.every(p => p.visible); },
+      set visible(v) { playerJetArmorParts.forEach(p => { p.visible = !!v; }); }
+    };
+    const playerIronManSuit = playerJetArmorSuit;
+
+    // [하늘 비행 탈것 6종 3D 메시 — 절대로 바닥에서 다니지 않고 공중(3.4m+)에서만 비행!]
     // 1) 하늘 플라잉카 (접이식 시안 반중력 호버 휠 4개 + 유선형 스포츠 차체 + 유리 캐노피)
     const playerSkyCarMesh = new THREE.Group();
     const skyCarBodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1, emissiveIntensity: 0.45, metalness: 0.55, roughness: 0.25 });
@@ -5635,7 +5739,7 @@
     const skyCarHoverMat = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x06b6d4, emissiveIntensity: 1.4 });
     [[-1.08, 0.05, 0.95], [1.08, 0.05, 0.95], [-1.08, 0.05, -0.95], [1.08, 0.05, -0.95]].forEach(([wx, wy, wz]) => {
       const wheelRing = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.08, 8, 16), skyCarHoverMat);
-      wheelRing.rotation.x = Math.PI / 2; // 바퀴를 눕혀 반중력 호버 추진기로 비행!
+      wheelRing.rotation.x = Math.PI / 2;
       wheelRing.position.set(wx, wy, wz);
       playerSkyCarMesh.add(wheelRing);
       skyCarHoverWheels.push(wheelRing);
@@ -5666,25 +5770,112 @@
     playerCarpetMesh.visible = false;
     playerRig.add(playerCarpetMesh);
 
-    // 3) 미니 우주선 UFO (은빛 원반 + 투명 돔 + 8개 회전 네온 라이트)
+    // 3) 초고속 미니 UFO (은빛 원반 + 8개 회전 네온 라이트 + 하단 트랙터 빔)
     const playerUfoMesh = new THREE.Group();
-    const ufoSaucer = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.72, 0.32, 20), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.65, roughness: 0.25 }));
-    const ufoDome = new THREE.Mesh(new THREE.SphereGeometry(1.05, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.42 }));
-    ufoDome.position.y = 0.16;
-    const ufoGlowRing = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.07, 8, 24), new THREE.MeshBasicMaterial({ color: 0x22d3ee }));
+    const ufoSaucer = new THREE.Mesh(new THREE.CylinderGeometry(1.62, 1.82, 0.30, 24), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.72, roughness: 0.2 }));
+    const ufoTopTrim = new THREE.Mesh(new THREE.CylinderGeometry(1.18, 1.45, 0.14, 24), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.55, roughness: 0.25 }));
+    ufoTopTrim.position.y = 0.16;
+    const ufoDome = new THREE.Mesh(new THREE.SphereGeometry(1.05, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.44, roughness: 0.1 }));
+    ufoDome.position.y = 0.18;
+    const ufoGlowRing = new THREE.Mesh(new THREE.TorusGeometry(1.74, 0.065, 8, 28), new THREE.MeshBasicMaterial({ color: 0x22d3ee }));
     ufoGlowRing.rotation.x = Math.PI / 2;
-    playerUfoMesh.add(ufoSaucer, ufoDome, ufoGlowRing);
+    const ufoBeam = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 1.25, 2.2, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.20, side: THREE.DoubleSide }));
+    ufoBeam.position.y = -1.15;
+    playerUfoMesh.add(ufoSaucer, ufoTopTrim, ufoDome, ufoGlowRing, ufoBeam);
+    const ufoLights = [];
+    const ufoLightColors = [0x22d3ee, 0xa855f7, 0xfde047, 0x34d399];
+    for (let li = 0; li < 8; li++) {
+      const la = (li / 8) * Math.PI * 2;
+      const lm = new THREE.MeshBasicMaterial({ color: ufoLightColors[li % ufoLightColors.length] });
+      const orb = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 8), lm);
+      orb.position.set(Math.cos(la) * 1.56, 0.08, Math.sin(la) * 1.56);
+      playerUfoMesh.add(orb);
+      ufoLights.push(orb);
+    }
     playerUfoMesh.visible = false;
     playerRig.add(playerUfoMesh);
 
-    // 4) 호버 하늘 보드 (네온 시안 & 코랄 하늘 서핑보드)
+    // 4) 세련된 네온 호버 하늘 보드 (슬림 투톤 데크 + 테이퍼드 노즈/테일 + 측면 네온 레일 + 듀얼 터빈)
     const playerSkyBoardMesh = new THREE.Group();
-    const boardDeck = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.12, 2.35), new THREE.MeshStandardMaterial({ color: 0xf43f5e, emissive: 0xe11d48, emissiveIntensity: 0.55 }));
-    const boardTrim = new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.08, 2.42), new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x06b6d4, emissiveIntensity: 0.9 }));
-    boardDeck.position.y = 0.06;
-    playerSkyBoardMesh.add(boardTrim, boardDeck);
+    const sbWhiteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, emissive: 0x334155, emissiveIntensity: 0.18, metalness: 0.35, roughness: 0.22 });
+    const sbCarbonMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.65, roughness: 0.3 });
+    const sbCyanNeonMat = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x06b6d4, emissiveIntensity: 1.5, roughness: 0.15 });
+    const sbVioletNeonMat = new THREE.MeshStandardMaterial({ color: 0xc084fc, emissive: 0x9333ea, emissiveIntensity: 1.35, roughness: 0.15 });
+    const sbDeck = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.08, 1.66), sbWhiteMat);
+    sbDeck.position.y = 0.06;
+    const sbNose = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.07, 0.62), sbWhiteMat);
+    sbNose.position.set(0, 0.14, 1.02); sbNose.rotation.x = -0.24;
+    const sbNoseTip = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.22), sbCyanNeonMat);
+    sbNoseTip.position.set(0, 0.22, 1.34); sbNoseTip.rotation.x = -0.28;
+    const sbTail = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.07, 0.56), sbCarbonMat);
+    sbTail.position.set(0, 0.13, -1.0); sbTail.rotation.x = 0.26;
+    const sbCenterStripe = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.09, 1.88), sbCyanNeonMat);
+    sbCenterStripe.position.set(0, 0.068, 0.04);
+    const sbRailL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 1.72), sbCyanNeonMat);
+    sbRailL.position.set(-0.40, 0.06, 0);
+    const sbRailR = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 1.72), sbVioletNeonMat);
+    sbRailR.position.set(0.40, 0.06, 0);
+    const sbPadFront = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.03, 0.40), sbCarbonMat);
+    sbPadFront.position.set(0, 0.11, 0.44);
+    const sbPadRear = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.03, 0.40), sbCarbonMat);
+    sbPadRear.position.set(0, 0.11, -0.44);
+    playerSkyBoardMesh.add(sbDeck, sbNose, sbNoseTip, sbTail, sbCenterStripe, sbRailL, sbRailR, sbPadFront, sbPadRear);
+    const skyBoardTurbines = [];
+    [0.64, -0.64].forEach((tz, ti) => {
+      const turb = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.045, 8, 18), ti === 0 ? sbCyanNeonMat : sbVioletNeonMat);
+      turb.rotation.x = Math.PI / 2; turb.position.set(0, -0.02, tz);
+      const glow = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.38, 10), new THREE.MeshBasicMaterial({ color: ti === 0 ? 0x67e8f9 : 0xd8b4fe, transparent: true, opacity: 0.45 }));
+      glow.rotation.x = Math.PI; glow.position.set(0, -0.22, tz);
+      playerSkyBoardMesh.add(turb, glow);
+      skyBoardTurbines.push(turb);
+    });
     playerSkyBoardMesh.visible = false;
     playerRig.add(playerSkyBoardMesh);
+
+    // 5) ☁️ 황금 근두운 (10개 몽실 황금·크림 구름 + 하단 오라 링 — 100% 공공저작물)
+    const playerCloudMesh = new THREE.Group();
+    const cloudCreamMat = new THREE.MeshStandardMaterial({ color: 0xfef9c3, emissive: 0xfde047, emissiveIntensity: 0.45, roughness: 0.85 });
+    const cloudGoldMat = new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 0.55, roughness: 0.78 });
+    const cloudPuffs = [];
+    [
+      [0, 0.05, 0.1, 0.78, cloudCreamMat],
+      [-0.68, 0.02, 0.05, 0.56, cloudGoldMat],
+      [0.68, 0.02, 0.05, 0.56, cloudGoldMat],
+      [0, 0.10, 0.85, 0.58, cloudCreamMat],
+      [-0.44, 0.04, 0.62, 0.46, cloudGoldMat],
+      [0.44, 0.04, 0.62, 0.46, cloudGoldMat],
+      [0, 0.08, -0.82, 0.62, cloudGoldMat],
+      [-0.50, 0.0, -0.68, 0.48, cloudCreamMat],
+      [0.50, 0.0, -0.68, 0.48, cloudCreamMat],
+      [0, -0.05, -1.35, 0.42, cloudGoldMat]
+    ].forEach(([cx, cy, cz, cr, cmat]) => {
+      const puff = new THREE.Mesh(new THREE.SphereGeometry(cr, 12, 10), cmat);
+      puff.position.set(cx, cy, cz);
+      puff.scale.y = 0.68;
+      playerCloudMesh.add(puff);
+      cloudPuffs.push({ mesh: puff, baseScaleY: 0.68, baseY: cy, phase: cx + cz });
+    });
+    const cloudHaloRing = new THREE.Mesh(new THREE.TorusGeometry(1.25, 0.045, 8, 28), new THREE.MeshBasicMaterial({ color: 0xfef08a, transparent: true, opacity: 0.65 }));
+    cloudHaloRing.rotation.x = Math.PI / 2; cloudHaloRing.position.y = -0.18;
+    playerCloudMesh.add(cloudHaloRing);
+    playerCloudMesh.visible = false;
+    playerRig.add(playerCloudMesh);
+
+    // 6) ⚡ 하늘 축지법 (발밑 이중 회전 바람 구름 링 + 발목 질풍 에너지 링 — 4배 초고속 공중 질주)
+    const playerChukjiMesh = new THREE.Group();
+    const chukjiJadeMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.9 });
+    const chukjiGoldMat = new THREE.MeshBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.88 });
+    const chukjiOuterRing = new THREE.Mesh(new THREE.TorusGeometry(1.08, 0.055, 8, 28), chukjiJadeMat);
+    chukjiOuterRing.rotation.x = Math.PI / 2; chukjiOuterRing.position.y = 0.08;
+    const chukjiInnerRing = new THREE.Mesh(new THREE.TorusGeometry(0.72, 0.05, 8, 24), chukjiGoldMat);
+    chukjiInnerRing.rotation.x = Math.PI / 2; chukjiInnerRing.position.y = 0.14;
+    const chukjiAnkleL = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.045, 8, 18), chukjiJadeMat);
+    chukjiAnkleL.rotation.x = Math.PI / 2; chukjiAnkleL.position.set(-0.28, 0.28, 0);
+    const chukjiAnkleR = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.045, 8, 18), chukjiGoldMat);
+    chukjiAnkleR.rotation.x = Math.PI / 2; chukjiAnkleR.position.set(0.28, 0.28, 0);
+    playerChukjiMesh.add(chukjiOuterRing, chukjiInnerRing, chukjiAnkleL, chukjiAnkleR);
+    playerChukjiMesh.visible = false;
+    playerRig.add(playerChukjiMesh);
 
     // 로블록스 스타일 사각 동행 정령 3D 빌더 (BoxGeometry 전용 캐릭터)
     function buildRobloxSpiritMesh(key) {
@@ -5753,15 +5944,80 @@
     scene.add(spiritGroup);
 
     // ==========================================
-    // 6. 카메라 컨트롤 (PC 마우스 드래그 + 아이패드/스마트폰 멀티터치 & 핀치 줌 지원)
+    // 6. 카메라 컨트롤 (PC 마우스 드래그 + 아이패드/스마트폰 멀티터치 · 핀치 줌 · 축소/확대 UI)
     // ==========================================
+    const CAM_ZOOM_MIN = 4.2;
+    const CAM_ZOOM_MAX = 32.0;
+    const CAM_ZOOM_DEFAULT = 11.0;
     const camState = window.camState = {
-      yaw: 0.2, pitch: 0.35, distance: 11.0,
+      yaw: 0.2, pitch: 0.35, distance: CAM_ZOOM_DEFAULT, zoomTarget: null,
       isRightDragging: false, isPointerDown: false, dragMoved: false,
       lastX: 0, lastY: 0, camPtrId: null,
-      pinchPointers: new Map(), pinchStartDist: 0, pinchStartCamDist: 11.0,
+      pinchPointers: new Map(), pinchStartDist: 0, pinchStartCamDist: CAM_ZOOM_DEFAULT,
       targetPos: new THREE.Vector3(0, 1.8, 10)
     };
+    let lastRenderedZoomPct = -1;
+    function updateZoomBadgeUI() {
+      const pctEl = document.getElementById('btnCamZoomReset');
+      if (!pctEl) return;
+      const pct = Math.max(20, Math.min(300, Math.round((CAM_ZOOM_DEFAULT / Math.max(1, camState.distance)) * 100)));
+      if (pct !== lastRenderedZoomPct) {
+        lastRenderedZoomPct = pct;
+        pctEl.textContent = pct + '%';
+      }
+    }
+    function setCameraZoomDistance(nextDist, smooth = true) {
+      const clamped = THREE.MathUtils.clamp(Number(nextDist) || CAM_ZOOM_DEFAULT, CAM_ZOOM_MIN, CAM_ZOOM_MAX);
+      if (smooth) {
+        camState.zoomTarget = clamped;
+      } else {
+        camState.zoomTarget = null;
+        camState.distance = clamped;
+        updateZoomBadgeUI();
+      }
+      return clamped;
+    }
+    function stepCameraZoom(deltaDist) {
+      const base = (camState.zoomTarget !== null) ? camState.zoomTarget : camState.distance;
+      return setCameraZoomDistance(base + deltaDist, true);
+    }
+    function resetCameraZoom() {
+      return setCameraZoomDistance(CAM_ZOOM_DEFAULT, true);
+    }
+    window.setCameraZoomDistance = setCameraZoomDistance;
+    window.stepCameraZoom = stepCameraZoom;
+    window.resetCameraZoom = resetCameraZoom;
+
+    (function bindCameraZoomDock() {
+      let holdTimer = null;
+      const stopHold = () => { if (holdTimer) { clearInterval(holdTimer); holdTimer = null; } };
+      const bindHold = (btnId, delta) => {
+        const el = document.getElementById(btnId);
+        if (!el) return;
+        el.addEventListener('click', (e) => { e.stopPropagation(); stepCameraZoom(delta); });
+        el.addEventListener('pointerdown', (e) => {
+          e.stopPropagation();
+          stopHold();
+          holdTimer = setInterval(() => stepCameraZoom(delta), 120);
+        });
+      };
+      bindHold('btnCamZoomIn', -2.4);
+      bindHold('btnCamZoomOut', 2.8);
+      window.addEventListener('pointerup', stopHold);
+      window.addEventListener('pointercancel', stopHold);
+      const resetBtn = document.getElementById('btnCamZoomReset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', (e) => { e.stopPropagation(); resetCameraZoom(); });
+      }
+      window.addEventListener('keydown', (e) => {
+        const tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || document.body.classList.contains('modal-open')) return;
+        if (e.key === '+' || e.key === '=') { stepCameraZoom(-2.4); }
+        else if (e.key === '-' || e.key === '_') { stepCameraZoom(2.8); }
+      });
+      updateZoomBadgeUI();
+    })();
+
     function detectTouchDevice() {
       const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
       const multiTouch = (navigator.maxTouchPoints || 0) > 1 || ('ontouchstart' in window && window.innerWidth <= 1180);
@@ -5785,6 +6041,7 @@
           const pts = Array.from(camState.pinchPointers.values());
           camState.pinchStartDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) || 1;
           camState.pinchStartCamDist = camState.distance;
+          camState.zoomTarget = null;
           camState.isPointerDown = false;
           camState.camPtrId = null;
           camState.dragMoved = true;
@@ -5810,7 +6067,9 @@
           const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
           if (camState.pinchStartDist > 0 && d > 0) {
             const ratio = camState.pinchStartDist / d;
-            camState.distance = THREE.MathUtils.clamp(camState.pinchStartCamDist * ratio, 5.0, 22.0);
+            camState.zoomTarget = null;
+            camState.distance = THREE.MathUtils.clamp(camState.pinchStartCamDist * ratio, CAM_ZOOM_MIN, CAM_ZOOM_MAX);
+            updateZoomBadgeUI();
           }
           camState.dragMoved = true;
           return;
@@ -5840,7 +6099,10 @@
     window.addEventListener('pointerup', endCamPointer);
     window.addEventListener('pointercancel', endCamPointer);
     window.addEventListener('wheel', e => {
-      camState.distance = THREE.MathUtils.clamp(camState.distance + e.deltaY * 0.005, 5.0, 22.0);
+      if (document.body.classList.contains('modal-open')) return;
+      camState.zoomTarget = null;
+      camState.distance = THREE.MathUtils.clamp(camState.distance + e.deltaY * 0.007, CAM_ZOOM_MIN, CAM_ZOOM_MAX);
+      updateZoomBadgeUI();
     });
 
     // ==========================================
@@ -8050,12 +8312,16 @@
       if (isLighthousePanorama) {
         camState.yaw = -Math.PI * 0.75; // 섬 중앙 (0,0) 방향 조망에서 360도 자동 회전 시작
         camState.pitch = 0.28;
+        camState.zoomTarget = null;
         camState.distance = 22.0;
+        updateZoomBadgeUI();
         soundChime(784);
         window.dismissZonePrompt('lhDeck');
         showToast('🔭 <b>[360° 섬 전체 자동 파노라마!]</b> 카메라가 360° 회전하며 섬 전체를 보여줍니다. (드래그로 시점 조절 가능)');
       } else {
+        camState.zoomTarget = null;
         camState.distance = 11.0;
+        updateZoomBadgeUI();
         camState.pitch = 0.35;
         soundChime(523);
         syncLhMiniDock();
@@ -8261,17 +8527,22 @@
       return { x: 12, z: 22 };
     }
 
-    function buildSkyItemPickupGroup(kind) {
+    function buildSkyItemPickupGroup(kind, variantKey = null) {
       const ig = new THREE.Group();
-      if (kind === 'ironman') {
-        const pod = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.66, 0.66), new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x991b1b, emissiveIntensity: 0.7, metalness: 0.6 }));
-        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.44, 0.1), new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xd97706, emissiveIntensity: 0.7 }));
-        visor.position.z = 0.34;
-        const arc = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 12), new THREE.MeshStandardMaterial({ color: 0x67e8f9, emissive: 0x22d3ee, emissiveIntensity: 2.0 }));
-        arc.rotation.x = Math.PI / 2; arc.position.set(0, -0.05, 0.36);
-        const imTag = makeChatBubbleSprite('🦾 아이언맨 슈트');
-        imTag.sprite.scale.set(2.8, 0.85, 1); imTag.sprite.position.set(0, 1.35, 0);
-        ig.add(pod, visor, arc, imTag.sprite);
+      if (kind === 'jetarmor') {
+        const th = JET_ARMOR_THEMES[variantKey] || JET_ARMOR_THEMES[JET_ARMOR_KEYS[Math.floor(Math.random() * JET_ARMOR_KEYS.length)]];
+        const pod = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.66, 0.66), new THREE.MeshStandardMaterial({ color: th.primary, emissive: th.primaryEmissive, emissiveIntensity: 0.72, metalness: 0.6 }));
+        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.22, 0.12), new THREE.MeshStandardMaterial({ color: th.core, emissive: th.core, emissiveIntensity: 1.5 }));
+        visor.position.set(0, 0.08, 0.35);
+        const core = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 6), new THREE.MeshStandardMaterial({ color: th.core, emissive: th.core, emissiveIntensity: 2.0 }));
+        core.rotation.x = Math.PI / 2; core.position.set(0, -0.14, 0.36);
+        const wL = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.18, 0.06), new THREE.MeshStandardMaterial({ color: th.trim, emissive: th.core, emissiveIntensity: 0.8 }));
+        wL.position.set(-0.56, 0.1, -0.1); wL.rotation.z = 0.25;
+        const wR = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.18, 0.06), new THREE.MeshStandardMaterial({ color: th.trim, emissive: th.core, emissiveIntensity: 0.8 }));
+        wR.position.set(0.56, 0.1, -0.1); wR.rotation.z = -0.25;
+        const jaTag = makeChatBubbleSprite(th.shortTag);
+        jaTag.sprite.scale.set(2.8, 0.85, 1); jaTag.sprite.position.set(0, 1.38, 0);
+        ig.add(pod, visor, core, wL, wR, jaTag.sprite);
       } else if (kind === 'skycar') {
         const body = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.34, 1.45), new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x38bdf8, emissiveIntensity: 0.6 }));
         const dome = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.32, 0.72), new THREE.MeshStandardMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.75 }));
@@ -8286,17 +8557,40 @@
         tag.sprite.scale.set(2.6, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
         ig.add(trim, deck, tag.sprite);
       } else if (kind === 'ufo') {
-        const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.82, 0.22, 16), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.6 }));
-        const glass = new THREE.Mesh(new THREE.SphereGeometry(0.45, 12, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x22d3ee, emissiveIntensity: 0.6 }));
+        const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.74, 0.86, 0.22, 18), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.65 }));
+        const glass = new THREE.Mesh(new THREE.SphereGeometry(0.45, 12, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x22d3ee, emissiveIntensity: 0.75 }));
         glass.position.y = 0.1;
-        const tag = makeChatBubbleSprite('🛸 미니 UFO');
-        tag.sprite.scale.set(2.4, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
+        const tag = makeChatBubbleSprite('🛸 초고속 UFO');
+        tag.sprite.scale.set(2.6, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
         ig.add(saucer, glass, tag.sprite);
+      } else if (kind === 'cloud') {
+        const cM1 = new THREE.MeshStandardMaterial({ color: 0xfef9c3, emissive: 0xfde047, emissiveIntensity: 0.65 });
+        const cM2 = new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 0.6 });
+        const p1 = new THREE.Mesh(new THREE.SphereGeometry(0.42, 10, 8), cM1); p1.scale.y = 0.72;
+        const p2 = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 8), cM2); p2.position.set(-0.36, -0.04, 0.08); p2.scale.y = 0.72;
+        const p3 = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 8), cM2); p3.position.set(0.36, -0.04, 0.08); p3.scale.y = 0.72;
+        const p4 = new THREE.Mesh(new THREE.SphereGeometry(0.28, 10, 8), cM1); p4.position.set(0, 0.14, 0.14); p4.scale.y = 0.72;
+        const tag = makeChatBubbleSprite('☁️ 황금 근두운');
+        tag.sprite.scale.set(2.6, 0.85, 1); tag.sprite.position.set(0, 1.38, 0);
+        ig.add(p1, p2, p3, p4, tag.sprite);
+      } else if (kind === 'chukji') {
+        const rOut = new THREE.Mesh(new THREE.TorusGeometry(0.68, 0.08, 8, 22), new THREE.MeshBasicMaterial({ color: 0x34d399 }));
+        rOut.rotation.x = Math.PI / 2;
+        const rIn = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.06, 8, 18), new THREE.MeshBasicMaterial({ color: 0xfde047 }));
+        rIn.rotation.x = Math.PI / 2; rIn.position.y = 0.12;
+        const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.26, 0), new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0x34d399, emissiveIntensity: 1.3 }));
+        core.position.y = 0.24;
+        const tag = makeChatBubbleSprite('⚡ 하늘 축지법');
+        tag.sprite.scale.set(2.6, 0.85, 1); tag.sprite.position.set(0, 1.38, 0);
+        ig.add(rOut, rIn, core, tag.sprite);
       } else {
-        const bd = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.12, 1.35), new THREE.MeshStandardMaterial({ color: 0xf43f5e, emissive: 0x22d3ee, emissiveIntensity: 0.65 }));
-        const tag = makeChatBubbleSprite('🛹✨ 호버 하늘 보드');
+        const bd = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.08, 1.15), new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.4 }));
+        const bdNose = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.07, 0.36), new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x06b6d4, emissiveIntensity: 1.0 }));
+        bdNose.position.set(0, 0.06, 0.65); bdNose.rotation.x = -0.25;
+        const bdRail = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.05, 1.18), new THREE.MeshStandardMaterial({ color: 0xc084fc, emissive: 0x9333ea, emissiveIntensity: 0.9 }));
+        const tag = makeChatBubbleSprite('🛹✨ 네온 호버보드');
         tag.sprite.scale.set(2.8, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
-        ig.add(bd, tag.sprite);
+        ig.add(bdRail, bd, bdNose, tag.sprite);
       }
       const haloRing = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.055, 8, 22), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
       haloRing.rotation.x = Math.PI / 2;
@@ -8305,10 +8599,12 @@
     }
 
     const SKY_RIDE_META = {
-      skycar: { baseAlt: 4.0, label: '🚗✨ 하늘 플라잉카', color: '#38bdf8', duration: 18.0 },
-      carpet: { baseAlt: 3.5, label: '🧞 마법 양탄자', color: '#a855f7', duration: 18.0 },
-      ufo: { baseAlt: 4.4, label: '🛸 미니 UFO', color: '#22d3ee', duration: 18.0 },
-      skyboard: { baseAlt: 3.4, label: '🛹✨ 호버 하늘 보드', color: '#f43f5e', duration: 18.0 }
+      skycar: { baseAlt: 4.0, label: '🚗✨ 하늘 플라잉카', color: '#38bdf8', duration: 18.0, speedMult: 2.5 },
+      carpet: { baseAlt: 3.5, label: '🧞 마법 양탄자', color: '#a855f7', duration: 18.0, speedMult: 2.2 },
+      ufo: { baseAlt: 4.5, label: '🛸 초고속 UFO', color: '#22d3ee', duration: 18.0, speedMult: 4.3 },
+      skyboard: { baseAlt: 3.4, label: '🛹✨ 네온 호버보드', color: '#38bdf8', duration: 18.0, speedMult: 2.9 },
+      cloud: { baseAlt: 4.2, label: '☁️ 황금 근두운', color: '#facc15', duration: 20.0, speedMult: 3.1 },
+      chukji: { baseAlt: 3.6, label: '⚡ 하늘 축지법', color: '#34d399', duration: 20.0, speedMult: 4.0 }
     };
 
     function hideAllSkyRideMeshes() {
@@ -8316,12 +8612,14 @@
       if (typeof playerCarpetMesh !== 'undefined') playerCarpetMesh.visible = false;
       if (typeof playerUfoMesh !== 'undefined') playerUfoMesh.visible = false;
       if (typeof playerSkyBoardMesh !== 'undefined') playerSkyBoardMesh.visible = false;
+      if (typeof playerCloudMesh !== 'undefined') playerCloudMesh.visible = false;
+      if (typeof playerChukjiMesh !== 'undefined') playerChukjiMesh.visible = false;
     }
 
     function startSkyRide(kind) {
       const meta = SKY_RIDE_META[kind];
       if (!meta) return;
-      if (playerPhysics.ironManAutoLap) endIronManAutoLap(false);
+      if (playerPhysics.ironManAutoLap) endJetArmorAutoLap(false);
       cancelPlaygroundRide();
       if (typeof stopAutoWalk === 'function') stopAutoWalk();
       playerPhysics.slipTimer = 0;
@@ -8332,6 +8630,8 @@
       else if (kind === 'carpet') playerCarpetMesh.visible = true;
       else if (kind === 'ufo') playerUfoMesh.visible = true;
       else if (kind === 'skyboard') playerSkyBoardMesh.visible = true;
+      else if (kind === 'cloud') playerCloudMesh.visible = true;
+      else if (kind === 'chukji') playerChukjiMesh.visible = true;
 
       playerPhysics.skyRide = {
         kind,
@@ -8340,7 +8640,9 @@
         baseAlt: meta.baseAlt,
         alt: meta.baseAlt,
         label: meta.label,
-        color: meta.color
+        color: meta.color,
+        speedMult: meta.speedMult || 2.5,
+        trailTimer: 0
       };
       playerRig.position.y = Math.max(playerRig.position.y, meta.baseAlt);
       playerPhysics.velY = 0;
@@ -8348,8 +8650,19 @@
       soundObbyGoal();
       createMagicImpact(playerRig.position, meta.color);
       window.addMindScore(80, `${meta.label} 하늘 비행!`);
-      showPlayerBubble(`${meta.label} 탑승! 하늘을 둥둥 날아다니며 구경하자! ([G] 착지)`);
-      showToast(`${meta.label} <b>하늘 비행 시작!</b> 보행자 머리 위 안전 고도(${meta.baseAlt.toFixed(1)}m)에서 자유롭게 날아보세요! ([SPACE] 상승 · [G] 또는 배지 터치 착지)`);
+      if (kind === 'ufo') {
+        showPlayerBubble('🛸 “초고속 UFO 워프 가동! 쏜살같이 하늘을 가르자!”');
+        showToast('🛸 <b>초고속 UFO 워프 비행!</b> 쏜살같은 <b>4.3배</b> 속도로 마음 동산 하늘을 누벼보세요! ([SPACE] 상승 · [G]/터치 착지)');
+      } else if (kind === 'chukji') {
+        showPlayerBubble('⚡ “하늘 축지법 발동! 구름 디딤돌을 밟고 초고속 공중 산책!”');
+        showToast('⚡ <b>하늘 축지법 발동!</b> 공중 구름 발판을 밟으며 평소 <b>4배 속도</b>로 성큼성큼 질주합니다! ([SPACE] 상승 · [G]/터치 착지)');
+      } else if (kind === 'cloud') {
+        showPlayerBubble('☁️ “황금 근두운에 올라탔어! 두둥실 하늘 구경하자!”');
+        showToast('☁️ <b>황금 근두운 비행 시작!</b> 포근한 구름 꼬리를 흩날리며 자유롭게 날아보세요! ([SPACE] 상승 · [G]/터치 착지)');
+      } else {
+        showPlayerBubble(`${meta.label} 탑승! 하늘을 둥둥 날아다니며 구경하자! ([G] 착지)`);
+        showToast(`${meta.label} <b>하늘 비행 시작!</b> 보행자 머리 위 안전 고도(${meta.baseAlt.toFixed(1)}m)에서 자유롭게 날아보세요! ([SPACE] 상승 · [G]/터치 착지)`);
+      }
     }
 
     function endSkyRide(completed = false) {
@@ -8363,6 +8676,8 @@
       torso.rotation.set(0, 0, 0);
       leftArm.rotation.set(0, 0, 0);
       rightArm.rotation.set(0, 0, 0);
+      leftLeg.rotation.set(0, 0, 0);
+      rightLeg.rotation.set(0, 0, 0);
       soundChime(523);
       createMagicImpact(playerRig.position, '#fbbf24');
       showToast(`${metaLabel} <b>${completed ? '비행을 마치고 안전하게 착지했습니다!' : '운행을 마치고 내려왔습니다.'}</b>`);
@@ -8370,24 +8685,73 @@
     window.startSkyRide = startSkyRide;
     window.endSkyRide = endSkyRide;
 
+    function startJetArmorAutoLap(variantKey = null) {
+      const chosenKey = JET_ARMOR_THEMES[variantKey]
+        ? variantKey
+        : JET_ARMOR_KEYS[Math.floor(Math.random() * JET_ARMOR_KEYS.length)];
+      const theme = applyJetArmorTheme(chosenKey);
+      if (playerPhysics.skyRide) endSkyRide(false);
+      if (playerPhysics.ironManAutoLap) {
+        playerPhysics.ironManAutoLap.theme = theme;
+        playerPhysics.ironManAutoLap.angularSpeed = theme.angularSpeed;
+        soundChime(920);
+        createMagicImpact(playerRig.position, theme.hex);
+        window.addMindScore(40, `${theme.shortTag} 아머 체인지!`);
+        showPlayerBubble(`${theme.shortTag}로 즉시 체인지! 더 빠르게 날자!`);
+        showToast(`${theme.shortTag} <b>[${theme.name}] 변신 & 에너지 재충전!</b> (+40점)`);
+        return;
+      }
+      cancelPlaygroundRide();
+      if (typeof stopAutoWalk === 'function') stopAutoWalk();
+      playerPhysics.slipTimer = 0;
+      playerPhysics.freezeTimer = 0;
+      playerIceBlockMesh.visible = false;
+      playerJetArmorSuit.visible = true;
+      const curAng = Math.atan2(playerRig.position.z, playerRig.position.x);
+      const laneOff = ([-2.2, 0, 2.2])[Math.floor(Math.random() * 3)];
+      playerRig.position.y = Math.max(playerRig.position.y, 2.85);
+      playerPhysics.velY = 0;
+      playerPhysics.isGrounded = false;
+      playerPhysics.ironManAutoLap = {
+        angle: curAng,
+        traveled: 0,
+        angularSpeed: theme.angularSpeed,
+        radius: TRACK_RADIUS + laneOff,
+        elapsed: 0,
+        trailTimer: 0,
+        theme
+      };
+      soundObbyGoal();
+      createMagicImpact(playerRig.position, theme.hex);
+      createMagicImpact(playerRig.position, '#fef08a');
+      window.addMindScore(100, `${theme.shortTag} 장착!`);
+      showPlayerBubble(`${theme.shortTag} 가동! 외곽 하늘 1바퀴 초고속 완주!`);
+      showToast(`${theme.shortTag} <b>[${theme.name} 변신!]</b> 하늘을 가르며 외곽 3레인 트랙 1바퀴를 고속 비행합니다! ([G]/터치 착지)`);
+    }
+    window.startJetArmorAutoLap = startJetArmorAutoLap;
+
     const trackPowerItems = [];
     window.trackPowerItems = trackPowerItems;
     const ITEM_SCHEDULE = [
-      'banana', 'star', 'ice', 'ironman', 'banana', 'turbo',
-      'ice', 'star', 'banana', 'ironman', 'turbo', 'ice',
-      'banana', 'star', 'turbo', 'ironman', 'banana', 'ice',
-      'star', 'banana', 'turbo', 'ironman', 'ice', 'star'
+      'banana', 'star', 'jetarmor', 'ice', 'banana', 'turbo',
+      'ice', 'jetarmor', 'banana', 'star', 'turbo', 'jetarmor',
+      'banana', 'star', 'jetarmor', 'turbo', 'banana', 'ice',
+      'star', 'jetarmor', 'turbo', 'banana', 'ice', 'jetarmor'
     ];
     const bananaMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xca8a04, emissiveIntensity: 0.45, roughness: 0.35 });
     const iceItemMat = new THREE.MeshStandardMaterial({ color: 0x67e8f9, emissive: 0x06b6d4, emissiveIntensity: 0.8, transparent: true, opacity: 0.86, roughness: 0.1 });
     const starItemMat = new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 1.1, roughness: 0.2 });
     const turboItemMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0ea5e9, emissiveIntensity: 1.1, roughness: 0.2 });
 
+    let jetArmorCycleIdx = 0;
     ITEM_SCHEDULE.forEach((kind, pi) => {
       let ix, iz;
-      if (kind === 'ironman') {
+      let variantKey = null;
+      if (kind === 'jetarmor') {
         const randSpot = getRandomSkyItemSpot(false);
         ix = randSpot.x; iz = randSpot.z;
+        variantKey = JET_ARMOR_KEYS[jetArmorCycleIdx % JET_ARMOR_KEYS.length];
+        jetArmorCycleIdx += 1;
       } else {
         const ang = ((pi + 0.28) / ITEM_SCHEDULE.length) * Math.PI * 2;
         const laneOffset = ((pi % 3) - 1) * 2.2;
@@ -8397,8 +8761,8 @@
       }
       let ig;
       const baseY = (kind === 'banana') ? 0.35 : 1.3;
-      if (kind === 'ironman') {
-        ig = buildSkyItemPickupGroup('ironman');
+      if (kind === 'jetarmor') {
+        ig = buildSkyItemPickupGroup('jetarmor', variantKey);
       } else {
         ig = new THREE.Group();
         if (kind === 'banana') {
@@ -8427,17 +8791,18 @@
       }
       ig.position.set(ix, baseY, iz);
       runningTrackGroup.add(ig);
-      trackPowerItems.push({ kind, mesh: ig, x: ix, z: iz, baseY, phase: pi * 0.7, cleared: false, respawnTimer: 0, relocateOnRespawn: (kind === 'ironman') });
+      trackPowerItems.push({ kind, variantKey, parentGroup: runningTrackGroup, mesh: ig, x: ix, z: iz, baseY, phase: pi * 0.7, cleared: false, respawnTimer: 0, relocateOnRespawn: (kind === 'jetarmor') });
     });
 
-    // 맵 전역 랜덤 하늘 탈것 스폰 10개 (아이언맨 · 하늘 플라잉카 · 마법 양탄자 · 미니 UFO · 호버 하늘 보드 각 2개씩)
+    // 맵 전역 랜덤 하늘 탈것 · 제트 아머 스폰 15개 (아머 4종 추가 + UFO·호버보드·근두운·축지법·플라잉카·양탄자)
     const skyFlightSpawns = [];
-    ['ironman', 'skycar', 'carpet', 'ufo', 'skyboard', 'ironman', 'skycar', 'carpet', 'ufo', 'skyboard'].forEach((kind, si) => {
-      const spot = getRandomSkyItemSpot(si >= 8);
-      const sg = buildSkyItemPickupGroup(kind);
+    ['jetarmor', 'jetarmor', 'jetarmor', 'jetarmor', 'ufo', 'ufo', 'skyboard', 'skyboard', 'cloud', 'cloud', 'chukji', 'chukji', 'skycar', 'skycar', 'carpet'].forEach((kind, si) => {
+      const spot = getRandomSkyItemSpot(si % 5 === 0);
+      const variantKey = (kind === 'jetarmor') ? JET_ARMOR_KEYS[(jetArmorCycleIdx++) % JET_ARMOR_KEYS.length] : null;
+      const sg = buildSkyItemPickupGroup(kind, variantKey);
       sg.position.set(spot.x, 1.45, spot.z);
       worldGroup.add(sg);
-      skyFlightSpawns.push({ kind, mesh: sg, x: spot.x, z: spot.z, baseY: 1.45, phase: si * 0.9, cleared: false, respawnTimer: 0, relocateOnRespawn: true });
+      skyFlightSpawns.push({ kind, variantKey, parentGroup: worldGroup, mesh: sg, x: spot.x, z: spot.z, baseY: 1.45, phase: si * 0.9, cleared: false, respawnTimer: 0, relocateOnRespawn: true });
     });
 
     function activateTrackPowerItem(item) {
@@ -8498,35 +8863,8 @@
         window.addMindScore(40, '⚡ 터보 번개 대시!');
         showPlayerBubble('⚡ “번개처럼 빠른 터보 대시 출발!”');
         showToast('⚡ <b>[터보 번개 5초!]</b> 달리기 속도가 번개처럼 빨라집니다! (+40점)');
-      } else if (item.kind === 'ironman') {
-        if (playerPhysics.skyRide) endSkyRide(false);
-        if (playerPhysics.ironManAutoLap) {
-          soundChime(880);
-          createMagicImpact(playerRig.position, '#facc15');
-          window.addMindScore(40, '🦾 아이언맨 슈트 에너지 재충전!');
-          showToast('🦾 <b>아이언맨 슈트 에너지 재충전!</b> 계속 비행합니다! (+40점)');
-          return;
-        }
-        cancelPlaygroundRide();
-        if (typeof stopAutoWalk === 'function') stopAutoWalk();
-        playerPhysics.slipTimer = 0;
-        playerPhysics.freezeTimer = 0;
-        playerIceBlockMesh.visible = false;
-        playerIronManSuit.visible = true;
-        const curAng = Math.atan2(playerRig.position.z, playerRig.position.x);
-        playerPhysics.ironManAutoLap = {
-          angle: curAng,
-          traveled: 0,
-          angularSpeed: 0.78,
-          radius: TRACK_RADIUS,
-          elapsed: 0
-        };
-        soundObbyGoal();
-        createMagicImpact(playerRig.position, '#dc2626');
-        createMagicImpact(playerRig.position, '#facc15');
-        window.addMindScore(100, '🦾 아이언맨 슈트 장착!');
-        showPlayerBubble('🦾 “아이언맨 슈트 가동! 하늘을 날아 외곽 3레인 트랙 1바퀴 자동 완주!”');
-        showToast('🦾 <b>[아이언맨 슈트 변신!]</b> 자동으로 트랙 1바퀴를 날아 완주합니다! (해제: [G]키)');
+      } else if (item.kind === 'jetarmor') {
+        startJetArmorAutoLap(item.variantKey);
       }
     }
     window.activateTrackPowerItem = activateTrackPowerItem;
@@ -8534,7 +8872,7 @@
     worldGroup.add(runningTrackGroup);
 
     // ------------------------------------------------------------------------------
-    // [12. 닥터 스트레인지 차원 순간이동 포털 터널 3쌍(6개) — 맵 곳곳 자유 순간이동!]
+    // [12. 차원 순간이동 포털 터널 3쌍(6개) — 맵 곳곳 자유 순간이동!]
     // ------------------------------------------------------------------------------
     const portalCoreCanvas = document.createElement('canvas');
     portalCoreCanvas.width = 256; portalCoreCanvas.height = 256;
@@ -9188,10 +9526,11 @@
       }
     }
 
-    function endIronManAutoLap(completed = false) {
+    function endJetArmorAutoLap(completed = false) {
       if (!playerPhysics.ironManAutoLap) return;
+      const th = playerPhysics.ironManAutoLap.theme || JET_ARMOR_THEMES.cyber;
       playerPhysics.ironManAutoLap = null;
-      playerIronManSuit.visible = false;
+      playerJetArmorSuit.visible = false;
       torso.rotation.set(0, 0, 0);
       leftArm.rotation.set(0, 0, 0);
       rightArm.rotation.set(0, 0, 0);
@@ -9203,13 +9542,15 @@
       if (completed) {
         spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2.0, 0)));
         soundQuestComplete();
-        window.addMindScore(150, '🦾 아이언맨 슈트 1바퀴 자동 완주!');
-        showToast('🦾 <b>[아이언맨 1바퀴 완주 대성공!]</b> 하늘을 날아 외곽 트랙을 한 바퀴 멋지게 완주했습니다! (+150점)');
+        window.addMindScore(150, `${th.shortTag} 1바퀴 초고속 완주!`);
+        showToast(`${th.shortTag} <b>[1바퀴 완주 대성공!]</b> 하늘을 가르며 외곽 트랙을 멋지게 완주했습니다! (+150점)`);
       } else {
-        showToast('🦾 아이언맨 비행을 종료하고 착지했습니다.');
+        showToast(`${th.shortTag} 비행을 종료하고 안전하게 착지했습니다.`);
       }
     }
-    window.endIronManAutoLap = endIronManAutoLap;
+    const endIronManAutoLap = endJetArmorAutoLap;
+    window.endJetArmorAutoLap = endJetArmorAutoLap;
+    window.endIronManAutoLap = endJetArmorAutoLap;
 
     let timingCursorPct = 50;
     
@@ -9503,7 +9844,7 @@
         return;
       }
       if (playerPhysics.ironManAutoLap && playerPhysics.ironManAutoLap.elapsed > 0.8) {
-        endIronManAutoLap(false);
+        endJetArmorAutoLap(false);
         return;
       }
       if (!state.activeZone) { showToast('감정 손님, 로봇, 발표 무대, 설렘이, 놀이터, 등대 엘리베이터, 친구 근처에서 [G]를 눌러보세요.'); return; }
@@ -9700,7 +10041,7 @@
         }
       });
 
-      // 닥터 스트레인지 차원 포털 6개 미니맵 표시
+      // 차원 순간이동 포털 6개 미니맵 표시
       if (typeof strangePortals !== 'undefined') {
         strangePortals.forEach(pt => {
           const pxp = cx + pt.x * sc, pzp = cy + pt.z * sc;
@@ -9990,7 +10331,7 @@
         robot: { color: '#6366f1', t: '제4장 부서진 장난감 로봇 (나-전달법)', d: state.quests.robot ? '나-전달법으로 동생과 화해해 로봇을 멋지게 고쳤어요!' : (isMissionUnlocked('robot') ? '화난 마음을 비난 대신 "나-전달법"으로 표현해 로봇을 고쳐보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('robot') ? '나-전달법 대화 & 수리 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.openRobotIMessageModal() },
         stage: { color: '#e11d48', t: '제6장 학예 발표회 미니 무대', d: state.quests.stage ? '차근차근 준비해 학예 발표회를 멋지게 마쳤어요!' : (isMissionUnlocked('stage') ? '무대에 올라 지금 할 수 있는 발표 연습을 3단계로 진행해 보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('stage') ? '발표 연습하기 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.triggerStagePractice() },
         soccer: { color: '#f59e0b', t: '기쁨 축구 광장 · 양쪽 골대', d: '남쪽·북쪽 어느 골대로든 차 넣을 수 있어요! 골인 시 무지개 폭죽과 함께 기쁨 대폭발! ([G] 슛/리셋)', actText: '슛 날리기 / 공 리셋 (G)', actFn: () => window.kickOrResetSoccerBall() },
-        track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '트랙의 바나나·얼음·무적·아이언맨 슈트·터보를 모으며 8개 부스터 게이트를 돌파하세요!' : `트랙과 다양한 아이템을 자유롭게 체험할 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`, actFn: () => window.startOuterTrackDash() },
+        track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '트랙과 하늘의 제트 아머·근두운·축지법·UFO·호버보드를 모으며 8개 부스터 게이트를 돌파하세요!' : `트랙과 다양한 비행 아이템을 자유롭게 체험할 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`, actFn: () => window.startOuterTrackDash() },
         zoo: { color: '#22c55e', t: '숲속 아기 동물원', d: '토끼, 아기곰, 펭귄 친구들과 교감하며 마음을 따뜻하게 달래보세요.', actText: '동물 친구들과 교감하기 (G)', actFn: () => window.interactZooAnimals() },
         garden: { color: '#f43f5e', t: '치유의 유리온실 식물원', d: '무지개 빛 꽃향기를 깊게 들이마시며 편안하게 숨을 고르고 가벼운 발걸음을 얻어보세요.', actText: '꽃향기 치유 호흡 (G)', actFn: () => window.interactGardenBloom() },
         beach: { color: '#38bdf8', t: '치유의 물놀이 해변 & 풀장', d: '시원한 물줄기와 파라솔 쉼터에서 물보라 점프를 하며 마음의 땀을 식혀보세요.', actText: '시원한 물보라 점프 (G)', actFn: () => window.interactBeachSplash() }
@@ -10682,7 +11023,9 @@
             playerRig.position.set(-43.2, 12.26, -46.0);
             camState.yaw = -Math.PI * 0.75;
             camState.pitch = 0.30;
+            camState.zoomTarget = null;
             camState.distance = 14.5;
+            updateZoomBadgeUI();
             soundChime(880);
             spawnConfetti(new THREE.Vector3(-46, 13.5, -46));
             window.addMindScore(60, '🔭 등대 360° 전망대 도착!');
@@ -10691,7 +11034,9 @@
             playerRig.position.set(-40.2, 0.25, -46.0);
             isLighthousePanorama = false;
             dismissedPromptZone = 'lhElevator';
+            camState.zoomTarget = null;
             camState.distance = 11.0;
+            updateZoomBadgeUI();
             soundChime(523);
             showToast('🛗 1층 등대 마당에 안전하게 도착했습니다!');
           }
@@ -10762,18 +11107,30 @@
         });
       }
 
-      // [신규 11-2. 외곽 3레인 스페셜 아이템 & 맵 전역 랜덤 하늘 탈것(5종) + 차원 포털 + 블록 10분 소멸]
+      // [신규 11-2. 외곽 3레인 스페셜 아이템 & 맵 전역 랜덤 하늘 탈것 · 4종 제트 아머 + 차원 포털 + 블록 10분 소멸]
       if (typeof trackPowerItems !== 'undefined') {
         const allPickups = (typeof skyFlightSpawns !== 'undefined') ? [...trackPowerItems, ...skyFlightSpawns] : trackPowerItems;
         allPickups.forEach(pi => {
           if (pi.cleared) {
             pi.respawnTimer += dt;
-            if (pi.respawnTimer > 12.0) {
+            const respawnSec = (pi.kind === 'jetarmor') ? 7.5 : (SKY_RIDE_META[pi.kind] ? 10.0 : 12.0);
+            if (pi.respawnTimer > respawnSec) {
               if (pi.relocateOnRespawn) {
                 const nSpot = getRandomSkyItemSpot(false);
                 pi.x = nSpot.x; pi.z = nSpot.z;
-                pi.mesh.position.set(pi.x, pi.baseY, pi.z);
               }
+              if (pi.kind === 'jetarmor') {
+                const nextVar = JET_ARMOR_KEYS[Math.floor(Math.random() * JET_ARMOR_KEYS.length)];
+                pi.variantKey = nextVar;
+                const pGroup = pi.parentGroup || (pi.mesh && pi.mesh.parent);
+                if (pGroup && pi.mesh) {
+                  pGroup.remove(pi.mesh);
+                  const freshMesh = buildSkyItemPickupGroup('jetarmor', nextVar);
+                  pGroup.add(freshMesh);
+                  pi.mesh = freshMesh;
+                }
+              }
+              pi.mesh.position.set(pi.x, pi.baseY, pi.z);
               pi.cleared = false;
               pi.mesh.visible = true;
               pi.respawnTimer = 0;
@@ -10783,13 +11140,16 @@
           }
           pi.mesh.rotation.y += dt * (pi.kind === 'banana' ? 1.4 : 2.6);
           pi.mesh.position.y = pi.baseY + Math.sin(time * 3.2 + pi.phase) * (pi.kind === 'banana' ? 0.04 : 0.18);
-          if (Math.hypot(playerRig.position.x - pi.x, playerRig.position.z - pi.z) < 2.35 && playerRig.position.y < 3.6) {
+          const canTriggerPickup = playerPhysics.ironManAutoLap
+            ? (pi.kind === 'jetarmor')
+            : (!playerPhysics.skyRide);
+          if (canTriggerPickup && Math.hypot(playerRig.position.x - pi.x, playerRig.position.z - pi.z) < 2.4 && playerRig.position.y < 3.8) {
             activateTrackPowerItem(pi);
           }
         });
       }
 
-      // 닥터 스트레인지 차원 포털 회전/불티 스파크 & 순간이동 판정
+      // 차원 순간이동 포털 회전/불티 스파크 & 순간이동 판정
       if (typeof portalCooldown !== 'undefined' && portalCooldown > 0) {
         portalCooldown = Math.max(0, portalCooldown - dt);
       }
@@ -11301,10 +11661,62 @@
         if (playerPhysics.invincibleTimer <= 0) playerInvincibleAura.visible = false;
       }
 
-      // 하늘 비행 탈것 (skyRide: 고도 3.4m+ 안전 비행) / 아이언맨 / 얼음 / 바나나 미끄러짐 처리
+      // 하늘 비행 탈것 · 4종 제트 아머 전용 궤적/발판 잔상 풀 (메모리 안전)
+      if (!window.__skyTrailPool) {
+        window.__skyTrailPool = {
+          items: [],
+          ringGeo: new THREE.TorusGeometry(0.68, 0.055, 6, 18),
+          cloudGeo: new THREE.SphereGeometry(0.36, 8, 6),
+          sparkGeo: new THREE.BoxGeometry(0.22, 0.22, 0.42)
+        };
+      }
+      const _stp = window.__skyTrailPool;
+      function emitSkyTrailParticle(kind, pos, colorHex, maxLife = 0.65) {
+        if (_stp.items.length >= 45) {
+          const old = _stp.items.shift();
+          scene.remove(old.mesh);
+          old.mat.dispose();
+        }
+        const geo = kind === 'ring' ? _stp.ringGeo : (kind === 'cloud' ? _stp.cloudGeo : _stp.sparkGeo);
+        const mat = new THREE.MeshBasicMaterial({ color: colorHex, transparent: true, opacity: kind === 'ring' ? 0.85 : 0.72 });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(pos);
+        if (kind === 'ring') mesh.rotation.x = Math.PI / 2;
+        scene.add(mesh);
+        _stp.items.push({ mesh, mat, kind, life: maxLife, maxLife });
+      }
+      for (let ti = _stp.items.length - 1; ti >= 0; ti--) {
+        const tp = _stp.items[ti];
+        tp.life -= dt;
+        const frac = Math.max(0, tp.life / tp.maxLife);
+        tp.mat.opacity = frac * 0.82;
+        if (tp.kind === 'ring') {
+          const s = 1.0 + (1.0 - frac) * 0.65;
+          tp.mesh.scale.set(s, s, 1);
+          tp.mesh.position.y -= dt * 0.25;
+        } else if (tp.kind === 'cloud') {
+          const s = 0.65 + frac * 0.6;
+          tp.mesh.scale.set(s, s * 0.72, s);
+          tp.mesh.position.y += dt * 0.25;
+        } else {
+          tp.mesh.scale.setScalar(Math.max(0.1, frac));
+        }
+        if (tp.life <= 0) {
+          scene.remove(tp.mesh);
+          tp.mat.dispose();
+          _stp.items.splice(ti, 1);
+        }
+      }
+
+      const buffMultiplier = (playerPhysics.skyRide ? (playerPhysics.skyRide.speedMult || 2.5) : (playerPhysics.turboTimer > 0 ? 1.65 : (playerPhysics.invincibleTimer > 0 ? 1.55 : (playerPhysics.speedBuffTimer > 0 ? 1.25 : 1.0))));
+      const isMoving = (mx !== 0 || mz !== 0), speed = (input.shift ? 12.5 : 7.5) * buffMultiplier;
+      const canManualMove = !playerPhysics.isDancing && !playerPhysics.isMeditating && !isAutoWalking && !activeElevatorRide && !playerPhysics.ironManAutoLap && playerPhysics.freezeTimer <= 0 && playerPhysics.slipTimer <= 0;
+
+      // 하늘 비행 탈것 (skyRide: 고도 3.4m+ 안전 비행) / 제트 아머 / 얼음 / 바나나 미끄러짐 처리
       if (playerPhysics.skyRide) {
         const sr = playerPhysics.skyRide;
         sr.timer -= dt;
+        sr.trailTimer = (sr.trailTimer || 0) + dt;
         const targetAlt = Math.max(3.2, sr.alt || sr.baseAlt) + Math.sin(time * 4.5) * 0.15;
         playerRig.position.y = THREE.MathUtils.lerp(playerRig.position.y, targetAlt, 0.14);
         playerPhysics.velY = 0;
@@ -11315,32 +11727,90 @@
         } else if (sr.kind === 'carpet') {
           carpetTassels.forEach((ts, ti) => { ts.rotation.x = Math.sin(time * 9 + ti) * 0.35; });
         } else if (sr.kind === 'ufo') {
-          playerUfoMesh.rotation.y += dt * 3.2;
+          playerUfoMesh.rotation.y += dt * 5.2;
+          playerUfoMesh.rotation.x = THREE.MathUtils.lerp(playerUfoMesh.rotation.x, isMoving ? 0.14 : 0, 0.15);
+          ufoLights.forEach((orb, li) => {
+            const s = 0.85 + Math.sin(time * 14 + li * 0.9) * 0.35;
+            orb.scale.setScalar(s);
+          });
+          if (isMoving && sr.trailTimer >= 0.08) {
+            sr.trailTimer = 0;
+            emitSkyTrailParticle('ring', playerRig.position.clone().add(new THREE.Vector3(0, 0.1, 0)), 0x22d3ee, 0.52);
+          }
+        } else if (sr.kind === 'skyboard') {
+          skyBoardTurbines.forEach((tb, ti) => { tb.rotation.z += dt * (ti === 0 ? 12 : -12); });
+          torso.rotation.y = 0.38;
+          torso.rotation.z = isMoving ? -0.14 : Math.sin(time * 3.0) * 0.05;
+          leftArm.rotation.set(0, 0, -0.72);
+          rightArm.rotation.set(0, 0, 0.72);
+          leftLeg.rotation.set(0.14, 0, -0.10);
+          rightLeg.rotation.set(-0.14, 0, 0.10);
+          if (isMoving && sr.trailTimer >= 0.08) {
+            sr.trailTimer = 0;
+            emitSkyTrailParticle('spark', playerRig.position.clone().add(new THREE.Vector3(0, 0.05, 0)), 0x22d3ee, 0.48);
+          }
+        } else if (sr.kind === 'cloud') {
+          cloudPuffs.forEach(cp => {
+            cp.mesh.position.y = cp.baseY + Math.sin(time * 4.2 + cp.phase) * 0.04;
+            cp.mesh.scale.y = cp.baseScaleY + Math.sin(time * 5.0 + cp.phase) * 0.05;
+          });
+          if (isMoving && sr.trailTimer >= 0.09) {
+            sr.trailTimer = 0;
+            const cOff = new THREE.Vector3((Math.random() - 0.5) * 0.7, -0.05, (Math.random() - 0.5) * 0.7);
+            emitSkyTrailParticle('cloud', playerRig.position.clone().add(cOff), Math.random() < 0.5 ? 0xfef9c3 : 0xfde047, 0.72);
+          }
+        } else if (sr.kind === 'chukji') {
+          chukjiOuterRing.rotation.z += dt * 7.5;
+          chukjiInnerRing.rotation.z -= dt * 10.5;
+          if (isMoving) {
+            playerPhysics.walkCycle += dt * 26;
+            leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.9;
+            rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.9;
+            leftLeg.rotation.x = -Math.sin(playerPhysics.walkCycle) * 1.0;
+            rightLeg.rotation.x = Math.sin(playerPhysics.walkCycle) * 1.0;
+            torso.rotation.x = 0.18;
+            if (sr.trailTimer >= 0.11) {
+              sr.trailTimer = 0;
+              emitSkyTrailParticle('ring', playerRig.position.clone().add(new THREE.Vector3(0, 0.04, 0)), Math.random() < 0.5 ? 0x34d399 : 0xfde047, 0.62);
+            }
+          } else {
+            leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.2);
+            rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, 0, 0.2);
+            leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, 0, 0.2);
+            rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, 0, 0.2);
+            torso.rotation.x = THREE.MathUtils.lerp(torso.rotation.x, 0, 0.2);
+          }
         }
         if (sr.timer <= 0) {
           endSkyRide(true);
         }
       } else if (playerPhysics.ironManAutoLap) {
         const lap = playerPhysics.ironManAutoLap;
+        const th = lap.theme || JET_ARMOR_THEMES.cyber;
         lap.elapsed += dt;
+        lap.trailTimer = (lap.trailTimer || 0) + dt;
         lap.angle += lap.angularSpeed * dt;
         lap.traveled += lap.angularSpeed * dt;
         playerRig.position.set(
           Math.cos(lap.angle) * lap.radius,
-          2.55 + Math.sin(time * 8.0) * 0.18,
+          2.85 + Math.sin(time * 9.0) * 0.2,
           Math.sin(lap.angle) * lap.radius
         );
         playerRig.rotation.set(0, Math.atan2(-Math.sin(lap.angle), Math.cos(lap.angle)), 0);
-        torso.rotation.x = 0.28;
-        leftArm.rotation.set(0.45, 0, -0.35);
-        rightArm.rotation.set(0.45, 0, 0.35);
-        leftLeg.rotation.set(0.18, 0, 0);
-        rightLeg.rotation.set(0.18, 0, 0);
-        imJetFlames.forEach(jf => jf.scale.set(1, 0.8 + Math.sin(time * 28) * 0.35, 1));
+        torso.rotation.set(0.34, 0, 0.2);
+        leftArm.rotation.set(0.5, 0, -0.42);
+        rightArm.rotation.set(0.5, 0, 0.42);
+        leftLeg.rotation.set(0.22, 0, 0);
+        rightLeg.rotation.set(0.22, 0, 0);
+        jetArmorFlames.forEach(jf => jf.scale.set(1, 0.85 + Math.sin(time * 32) * 0.4, 1));
+        if (lap.trailTimer >= 0.055) {
+          lap.trailTimer = 0;
+          emitSkyTrailParticle('spark', playerRig.position.clone().add(new THREE.Vector3(0, 0.9, 0)), th.flame || th.core, 0.55);
+        }
         playerPhysics.isGrounded = false;
         playerPhysics.velY = 0;
         if (lap.traveled >= Math.PI * 2) {
-          endIronManAutoLap(true);
+          endJetArmorAutoLap(true);
         }
       } else if (playerPhysics.freezeTimer > 0) {
         playerPhysics.freezeTimer = Math.max(0, playerPhysics.freezeTimer - dt);
@@ -11371,7 +11841,7 @@
           statusPillEl.dataset.bound = '1';
           statusPillEl.addEventListener('click', () => {
             if (playerPhysics.skyRide) endSkyRide(false);
-            else if (playerPhysics.ironManAutoLap) endIronManAutoLap(false);
+            else if (playerPhysics.ironManAutoLap) endJetArmorAutoLap(false);
           });
         }
         let statusMsg = '';
@@ -11379,7 +11849,8 @@
           statusMsg = `${playerPhysics.skyRide.label} 비행 중 (고도 ${playerRig.position.y.toFixed(1)}m · ${playerPhysics.skyRide.timer.toFixed(1)}초 · [G]/터치 착지)`;
         } else if (playerPhysics.ironManAutoLap) {
           const pct = Math.min(100, Math.round((playerPhysics.ironManAutoLap.traveled / (Math.PI * 2)) * 100));
-          statusMsg = `🦾 아이언맨 슈트 자동 완주 중 · ${pct}% ([G]/터치 해제)`;
+          const thTag = (playerPhysics.ironManAutoLap.theme && playerPhysics.ironManAutoLap.theme.shortTag) || '⚡ 별빛 제트 아머';
+          statusMsg = `${thTag} 초고속 완주 중 · ${pct}% ([G]/터치 해제)`;
         } else if (playerPhysics.freezeTimer > 0) {
           statusMsg = `🧊 얼음 함정! ${playerPhysics.freezeTimer.toFixed(1)}초 후 해동`;
         } else if (playerPhysics.slipTimer > 0) {
@@ -11393,10 +11864,6 @@
         statusPillEl.classList.toggle('active', !!statusMsg);
       }
 
-      const buffMultiplier = (playerPhysics.skyRide ? 2.2 : (playerPhysics.turboTimer > 0 ? 1.65 : (playerPhysics.invincibleTimer > 0 ? 1.55 : (playerPhysics.speedBuffTimer > 0 ? 1.25 : 1.0))));
-      const isMoving = (mx !== 0 || mz !== 0), speed = (input.shift ? 12.5 : 7.5) * buffMultiplier;
-      const canManualMove = !playerPhysics.isDancing && !playerPhysics.isMeditating && !isAutoWalking && !activeElevatorRide && !playerPhysics.ironManAutoLap && playerPhysics.freezeTimer <= 0 && playerPhysics.slipTimer <= 0;
-
       if (isMoving && canManualMove) {
         const fwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
         const rgt = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
@@ -11405,22 +11872,24 @@
         resolveHorizontalCollisions();
         playerRig.rotation.y = THREE.MathUtils.lerp(playerRig.rotation.y, Math.atan2(dir.x, dir.z), 0.22);
 
-        playerPhysics.walkCycle += dt * (input.shift ? 18 : 11);
-        leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8;
-        if (playerPhysics.armSwingTimer <= 0) {
-          rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
-        }
-        leftLeg.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.9; rightLeg.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.9;
-        torso.position.y = 1.35 + Math.abs(Math.sin(playerPhysics.walkCycle)) * 0.1;
+        if (!playerPhysics.skyRide) {
+          playerPhysics.walkCycle += dt * (input.shift ? 18 : 11);
+          leftArm.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.8;
+          if (playerPhysics.armSwingTimer <= 0) {
+            rightArm.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.8;
+          }
+          leftLeg.rotation.x = -Math.sin(playerPhysics.walkCycle) * 0.9; rightLeg.rotation.x = Math.sin(playerPhysics.walkCycle) * 0.9;
+          torso.position.y = 1.35 + Math.abs(Math.sin(playerPhysics.walkCycle)) * 0.1;
 
-        playerPhysics.dustTimer += dt;
-        if (playerPhysics.isGrounded && playerPhysics.dustTimer > 0.16) {
-          playerPhysics.dustTimer = 0;
-          const dMesh = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.16), new THREE.MeshBasicMaterial({ color: 0xe7e5e4, transparent: true, opacity: 0.7 }));
-          dMesh.position.set(playerRig.position.x + (Math.random()-0.5)*0.4, 0.18, playerRig.position.z + (Math.random()-0.5)*0.4);
-          scene.add(dMesh); dustParticles.push({ mesh: dMesh, life: 0.45 });
+          playerPhysics.dustTimer += dt;
+          if (playerPhysics.isGrounded && playerPhysics.dustTimer > 0.16) {
+            playerPhysics.dustTimer = 0;
+            const dMesh = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.16), new THREE.MeshBasicMaterial({ color: 0xe7e5e4, transparent: true, opacity: 0.7 }));
+            dMesh.position.set(playerRig.position.x + (Math.random()-0.5)*0.4, 0.18, playerRig.position.z + (Math.random()-0.5)*0.4);
+            scene.add(dMesh); dustParticles.push({ mesh: dMesh, life: 0.45 });
+          }
         }
-      } else if (!playerPhysics.isDancing && !playerPhysics.isMeditating && !activePlaygroundRide && !activeElevatorRide && !playerPhysics.ironManAutoLap && playerPhysics.slipTimer <= 0) {
+      } else if (!playerPhysics.isDancing && !playerPhysics.isMeditating && !activePlaygroundRide && !activeElevatorRide && !playerPhysics.ironManAutoLap && !playerPhysics.skyRide && playerPhysics.slipTimer <= 0) {
         resolveHorizontalCollisions();
         leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15);
         if (playerPhysics.armSwingTimer <= 0) {
@@ -11832,10 +12301,19 @@
       if (isLighthousePanorama && !camState.isRightDragging && Math.abs(input.lookJoyX || 0) < 0.05) {
         camState.yaw += dt * 0.24;
       }
+      if (camState.zoomTarget !== null) {
+        camState.distance = THREE.MathUtils.lerp(camState.distance, camState.zoomTarget, 0.18);
+        if (Math.abs(camState.distance - camState.zoomTarget) < 0.04) {
+          camState.distance = camState.zoomTarget;
+          camState.zoomTarget = null;
+        }
+      }
+      updateZoomBadgeUI();
       const focusTarget = isLighthousePanorama
         ? playerRig.position.clone().add(new THREE.Vector3(0, 2.2, 0)).lerp(new THREE.Vector3(0, 4.2, 0), 0.28)
         : playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0));
-      camState.targetPos.lerp(focusTarget, 0.14);
+      const camLerpK = (playerPhysics.ironManAutoLap || (playerPhysics.skyRide && playerPhysics.skyRide.speedMult >= 3.5)) ? 0.48 : 0.16;
+      camState.targetPos.lerp(focusTarget, camLerpK);
       const cx = camState.targetPos.x + Math.sin(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
       const cy = camState.targetPos.y + Math.sin(camState.pitch) * camState.distance;
       const cz = camState.targetPos.z + Math.cos(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
@@ -15604,8 +16082,13 @@
         trackWidth: TRACK_WIDTH,
         laneLines: TRACK_LANE_LINES.length,
         arrowCount: trackDirectionArrows.length,
-        skySpawns: skyFlightSpawns.map(s => ({ kind: s.kind, x: Number(s.x.toFixed(1)), z: Number(s.z.toFixed(1)), cleared: s.cleared })),
-        skyRide: playerPhysics.skyRide ? { kind: playerPhysics.skyRide.kind, y: Number(playerRig.position.y.toFixed(2)), timer: Number(playerPhysics.skyRide.timer.toFixed(2)) } : null,
+        skySpawns: skyFlightSpawns.map(s => ({ kind: s.kind, variantKey: s.variantKey || null, x: Number(s.x.toFixed(1)), z: Number(s.z.toFixed(1)), cleared: s.cleared })),
+        trackArmorCount: trackPowerItems.filter(p => p.kind === 'jetarmor').length,
+        skyArmorCount: skyFlightSpawns.filter(s => s.kind === 'jetarmor').length,
+        jetArmorThemes: JET_ARMOR_KEYS,
+        skyRide: playerPhysics.skyRide ? { kind: playerPhysics.skyRide.kind, speedMult: playerPhysics.skyRide.speedMult, y: Number(playerRig.position.y.toFixed(2)), timer: Number(playerPhysics.skyRide.timer.toFixed(2)) } : null,
+        skyTrailCount: (window.__skyTrailPool && window.__skyTrailPool.items) ? window.__skyTrailPool.items.length : 0,
+        skyBoardPartCount: playerSkyBoardMesh.children.length,
         portalCount: strangePortals.length,
         portalCooldown: Number(portalCooldown.toFixed(2)),
         portals: strangePortals.map(p => ({ id: p.id, pairId: p.pairId, x: p.x, z: p.z })),
@@ -15619,7 +16102,13 @@
         gardenFlowerCount: gardenBloomingFlowers.length,
         gardenPetalCount: gardenSwirlPetals.length
       }),
+      getZoom: () => ({
+        dist: Number(camState.distance.toFixed(2)),
+        zoomTarget: camState.zoomTarget !== null ? Number(camState.zoomTarget.toFixed(2)) : null,
+        pct: document.getElementById('btnCamZoomReset')?.textContent || ''
+      }),
       activateSkyItem: (kind) => startSkyRide(kind),
+      activateJetArmor: (variantKey = null) => startJetArmorAutoLap(variantKey),
       teleportToPortal: (idx) => {
         const pt = strangePortals[idx];
         if (!pt) return;
