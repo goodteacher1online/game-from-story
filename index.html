@@ -1065,7 +1065,7 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     }
     .cust-input, .cust-select {
-      width: 100%; height: 42px; border-radius: 10px;
+      width: 100%; height: 42px; border-radius: 14px;
       background: #ffffff; border: 1px solid #d4d4d8;
       color: #18181b; font-size: 15.5px; font-weight: 700;
       padding: 0 10px; box-sizing: border-box; transition: border-color 0.15s;
@@ -1076,17 +1076,125 @@
     }
     .cust-select option { background: #ffffff; color: #18181b; text-align: center; }
 
+    /* 모던 둥근 선택창 (branded-select-styling: appearance: base-select + ::picker(select)) */
+    .soft-select {
+      border-radius: 14px;
+      cursor: pointer;
+    }
+    @supports (appearance: base-select) {
+      .cust-select,
+      .cust-select::picker(select),
+      .soft-select,
+      .soft-select::picker(select) {
+        appearance: base-select;
+      }
+      .cust-select,
+      .soft-select {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        border-radius: 14px;
+        border: 1.5px solid #e4e4e7;
+        background: #ffffff;
+        color: #18181b;
+        padding: 0 12px;
+        box-shadow: 0 2px 6px rgba(24, 24, 27, 0.04);
+        cursor: pointer;
+        transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+      }
+      .cust-select:hover,
+      .soft-select:hover {
+        border-color: #a1a1aa;
+        background: #fafaf9;
+      }
+      .cust-select:open,
+      .cust-select:focus-visible,
+      .soft-select:open,
+      .soft-select:focus-visible {
+        border-color: #18181b;
+        box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.08);
+      }
+      .cust-select::picker-icon,
+      .soft-select::picker-icon {
+        color: #71717a;
+        transition: transform 0.18s ease, color 0.18s ease;
+        flex-shrink: 0;
+      }
+      .cust-select:open::picker-icon,
+      .soft-select:open::picker-icon {
+        transform: rotate(180deg);
+        color: #18181b;
+      }
+      .cust-select::picker(select),
+      .soft-select::picker(select) {
+        margin-block: 6px;
+        padding: 6px;
+        border-radius: 16px;
+        border: 1px solid #e4e4e7;
+        background: #ffffff;
+        box-shadow: 0 14px 36px rgba(15, 23, 42, 0.14), 0 2px 8px rgba(15, 23, 42, 0.06);
+        min-width: anchor-size(width);
+        max-height: 290px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+      }
+      .cust-select option,
+      .soft-select option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border-radius: 11px;
+        color: #27272a;
+        background: transparent;
+        font-size: 14.5px;
+        font-weight: 700;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.12s ease, color 0.12s ease;
+      }
+      .cust-select option:hover,
+      .soft-select option:hover {
+        background: #f4f4f5;
+        color: #18181b;
+      }
+      .cust-select option:checked,
+      .soft-select option:checked {
+        background: #18181b;
+        color: #ffffff;
+      }
+      .cust-select option::checkmark,
+      .soft-select option::checkmark {
+        color: #fbbf24;
+        font-weight: 900;
+      }
+    }
+
     /* 프로필 불러오기 & 저장 칩 바 & 초기화·관리자 모달 스타일 */
+    #modalResetSelf, #modalAdmin { z-index: 9300; }
     .cust-profile-bar {
       display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
       background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 10px; padding: 9px 12px;
     }
     .cust-profile-hint { font-size: 14px; font-weight: 600; color: #3f3f46; flex: 1; min-width: 180px; line-height: 1.45; }
+    .cust-profile-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .cust-restore-btn {
       padding: 8px 13px; border-radius: 8px; border: 1px solid #18181b; background: #ffffff;
       color: #18181b; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.14s;
     }
     .cust-restore-btn:hover { background: #18181b; color: #ffffff; }
+    .cust-reset-btn {
+      padding: 8px 12px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2;
+      color: #b91c1c; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.14s;
+    }
+    .cust-reset-btn:hover { background: #dc2626; color: #ffffff; border-color: #dc2626; }
+    .cust-teacher-row { display: flex; justify-content: flex-end; margin-top: 4px; }
+    .cust-teacher-link {
+      background: transparent; border: none; color: #71717a; font-size: 12.5px; font-weight: 700;
+      padding: 4px 6px; border-radius: 6px; cursor: pointer; transition: color 0.14s, background 0.14s;
+    }
+    .cust-teacher-link:hover { color: #18181b; background: #f4f4f5; }
     .cust-saved-profiles-row {
       display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
       padding: 4px 2px;
@@ -1111,6 +1219,13 @@
       background: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px;
       padding: 14px 16px; font-size: 15px; color: #18181b;
     }
+    .reset-target-box {
+      margin-top: 12px; padding: 11px 13px; border-radius: 11px;
+      background: #f4f4f5; border: 1px solid #e4e4e7;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .reset-target-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .reset-pin-row { display: flex; align-items: center; gap: 10px; }
     .reset-check-row {
       display: flex; align-items: flex-start; gap: 10px; margin-top: 12px; padding: 10px 12px;
       border-radius: 10px; background: #fff7ed; border: 1px solid #fed7aa;
@@ -1172,6 +1287,17 @@
       margin-top: 12px; padding: 12px 14px; border-radius: 12px;
       background: #ffffff; border: 1px solid #e4e4e7;
     }
+    .admin-pw-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .admin-pw-badge {
+      display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px;
+      font-size: 12px; font-weight: 800; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d;
+    }
+    .admin-pw-badge.custom { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .admin-pw-all-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 9px;
+      font-size: 13.5px; font-weight: 700; color: #3f3f46; cursor: pointer;
+    }
+    .admin-pw-all-row input { width: 16px; height: 16px; accent-color: #18181b; flex-shrink: 0; }
 
     /* 동행 정령 & 테마 의상 6종 선택 그리드 (라이트 벤토 카드 & 순수 컬러 스와치 & 1줄 설명문 보장) */
     .cust-color-grid {
@@ -1512,10 +1638,11 @@
       .cust-form-row { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 7px !important; }
       .cust-field { align-items: stretch !important; }
       .cust-label { font-size: 12px !important; white-space: normal !important; text-align: left !important; align-self: flex-start !important; line-height: 1.25; }
-      .cust-input, .cust-select { height: 38px !important; font-size: 14px !important; padding: 0 6px !important; }
+      .cust-input, .cust-select { height: 38px !important; font-size: 14px !important; padding: 0 10px !important; }
       .cust-profile-bar { padding: 8px 10px !important; gap: 6px !important; }
       .cust-profile-hint { font-size: 12px !important; min-width: 0 !important; text-align: left !important; }
-      .cust-restore-btn { width: 100%; font-size: 13px !important; padding: 7px 10px !important; }
+      .cust-profile-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      .cust-restore-btn, .cust-reset-btn { width: 100%; font-size: 12.5px !important; padding: 7px 6px !important; text-align: center; }
       .cust-color-grid { grid-template-columns: 1fr !important; gap: 7px !important; }
       .cust-color-card { padding: 9px 10px !important; }
       .cust-color-text, .cust-color-sub, .cust-hat-title, .cust-hat-sub, .cust-reward-name, .cust-reward-story, .cust-reward-desc {
@@ -2039,7 +2166,7 @@
           </div>
           <div class="cust-field">
             <label class="cust-label" for="custSelectTitle">머리 위 칭호</label>
-            <select class="cust-select" id="custSelectTitle">
+            <select class="cust-select" id="custSelectTitle" name="playerTitle">
               <option value="기쁨 수호자">기쁨 수호자</option>
               <option value="슬픔 치유사">슬픔 치유사</option>
               <option value="용기 마스터">용기 마스터</option>
@@ -2065,7 +2192,10 @@
 
         <div class="cust-profile-bar" id="custProfileBar">
           <span class="cust-profile-hint" id="custProfileHint">☁️ 방(A·B·C)·이름·4자리 암호로 내 기록이 저장되어 다시 접속해도 이어할 수 있어요.</span>
-          <button type="button" class="cust-restore-btn" id="btnRestoreMyProfile">📂 내 기록 불러오기</button>
+          <div class="cust-profile-actions">
+            <button type="button" class="cust-restore-btn" id="btnRestoreMyProfile">📂 내 기록 불러오기</button>
+            <button type="button" class="cust-reset-btn" id="btnResetSelfFromEntry">🔄 내 데이터 초기화</button>
+          </div>
         </div>
         <div class="inline-error-box" id="custPinError" style="display:none; margin-top:0;"></div>
         <div class="cust-saved-profiles-row" id="custSavedProfilesRow" style="display:none;"></div>
@@ -2368,6 +2498,10 @@
         </div>
       </div>
 
+      <div class="cust-teacher-row">
+        <button type="button" class="cust-teacher-link" id="btnOpenAdminFromEntry">🔐 교사 · 관리자 모드 (암호 변경 · 방 관리)</button>
+      </div>
+
       <!-- 하단 대형 엔터 액션 버튼 -->
       <button type="button" class="cust-btn-submit" id="btnApplyCustomize">
         <span>설정한 아바타와 정령으로 월드 입장하기</span>
@@ -2611,7 +2745,7 @@
       </div>
       <div class="board-compose-wrap">
         <div class="board-compose-row">
-          <select id="boardPostEmotion" class="text-input" style="width: 135px; flex-shrink: 0;">
+          <select id="boardPostEmotion" name="boardEmotion" aria-label="감정 정령 선택" class="text-input soft-select" style="width: 135px; flex-shrink: 0;">
             <option value="joy">기쁨이</option>
             <option value="sad">슬픔이</option>
             <option value="anger">화</option>
@@ -13896,70 +14030,190 @@
       if (typeof syncWorldCollectiblesFromState === 'function') syncWorldCollectiblesFromState();
     }
 
-    function openResetSelfModal() {
+    let resetSelfContext = null;
+    function openResetSelfModal(fromCustomize = false) {
+      const isFromEntry = !!fromCustomize || !!document.getElementById('modalCustomize')?.classList.contains('open');
+      let targetRoom = normalizeRoomCodeInput(state.roomCode || 'A');
+      let targetName = state.playerName || '인찬이';
+      let targetPin = state.playerPin || '0000';
+      if (isFromEntry) {
+        targetRoom = normalizeRoomCodeInput(document.getElementById('custInputRoom')?.value || state.roomCode || 'A');
+        targetName = window.sanitizeCleanText(document.getElementById('custInputName')?.value || '', 12);
+        if (!targetName) {
+          setCustPinError('먼저 초기화할 모험가 이름을 입력해 주세요.');
+          document.getElementById('custInputName')?.focus();
+          return;
+        }
+        targetPin = String(document.getElementById('custInputPin')?.value || '').replace(/[^0-9]/g, '').slice(0, 4);
+      }
+      resetSelfContext = { fromCustomize: isFromEntry, roomCode: targetRoom, name: targetName, pin: targetPin };
+      const lbl = document.getElementById('resetSelfTargetLabel');
+      if (lbl) lbl.textContent = `방 ${targetRoom} · ${targetName}`;
+      const pinIn = document.getElementById('resetSelfPinInput');
+      if (pinIn) pinIn.value = targetPin;
       const chk = document.getElementById('chkResetSelfProfile');
       if (chk) chk.checked = false;
       const err = document.getElementById('resetSelfError');
       if (err) { err.style.display = 'none'; err.textContent = ''; }
       openModal('modalResetSelf');
+      if (!targetPin) setTimeout(() => document.getElementById('resetSelfPinInput')?.focus(), 60);
     }
 
     async function resetMyProgress(includeProfile = false) {
       const errEl = document.getElementById('resetSelfError');
       if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
-      const pin = state.playerPin || '0000';
-      const pinHash = state.playerPinHash || await computePlayerPinHash(state.roomCode, state.playerName, pin);
-      const acctKey = getProfileAccountKey(state.roomCode, state.playerName);
+      const modalOpen = !!document.getElementById('modalResetSelf')?.classList.contains('open');
+      const ctx = (modalOpen && resetSelfContext)
+        ? resetSelfContext
+        : {
+            fromCustomize: false,
+            roomCode: normalizeRoomCodeInput(state.roomCode || 'A'),
+            name: state.playerName || '인찬이',
+            pin: state.playerPin || '0000'
+          };
+      const targetRoom = normalizeRoomCodeInput(ctx.roomCode || 'A');
+      const targetName = window.sanitizeCleanText(ctx.name || '', 12) || '인찬이';
+      const rawPin = modalOpen
+        ? (document.getElementById('resetSelfPinInput')?.value || ctx.pin || '0000')
+        : (ctx.pin || '0000');
+      const pin = normalizePinInput(rawPin);
+      const pinHash = await computePlayerPinHash(targetRoom, targetName, pin);
+      const acctKey = getProfileAccountKey(targetRoom, targetName);
       const httpBase = resolveRelayHttpUrl();
-      if (httpBase && state.playerName) {
+      let serverChecked = false;
+      if (httpBase && targetName) {
         try {
-          const resp = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(state.roomCode)}/player/reset`, {
+          const resp = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(targetRoom)}/player/reset`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: state.playerName, pinHash, deleteProfile: !!includeProfile })
+            body: JSON.stringify({ name: targetName, pinHash, deleteProfile: !!includeProfile })
           });
           if (resp.status === 403) {
             const d = await resp.json().catch(() => ({}));
+            soundChime(220);
             if (errEl) { errEl.style.display = 'block'; errEl.textContent = d?.error || '암호가 일치하지 않아 초기화할 수 없습니다.'; }
             return false;
           }
+          if (resp.ok) serverChecked = true;
         } catch (_) {}
       }
+      if (!serverChecked) {
+        const localChk = lookupLocalProfile(targetRoom, targetName, pinHash);
+        if (localChk.status === 'wrong_pin') {
+          soundChime(220);
+          if (errEl) { errEl.style.display = 'block'; errEl.textContent = localChk.error || '암호가 일치하지 않아 초기화할 수 없습니다.'; }
+          return false;
+        }
+      }
 
-      clearClientLearningProgress();
+      const currentAcctKey = getProfileAccountKey(state.roomCode || 'A', state.playerName || '인찬이');
+      const matchesCurrentState = (currentAcctKey === acctKey);
+      if (matchesCurrentState || ctx.fromCustomize) {
+        clearClientLearningProgress();
+      }
 
       const map = readLocalProfilesMap();
+      let storageMatchesTarget = matchesCurrentState;
+      try {
+        const rawSt = localStorage.getItem(STORAGE_KEY);
+        if (rawSt) {
+          const parsedSt = JSON.parse(rawSt);
+          const stKey = parsedSt?.profileAccountKey || getProfileAccountKey(parsedSt?.roomCode || 'A', parsedSt?.playerName || '인찬이');
+          if (stKey === acctKey) storageMatchesTarget = true;
+        }
+      } catch (_) {}
+
       if (includeProfile) {
         delete map[acctKey];
         writeLocalProfilesMap(map);
-        state.playerName = '인찬이';
-        state.playerTitle = '마음 탐험가';
-        state.shirtColor = '#ff5800';
-        state.hatType = 'sprout';
-        state.hairStyle = 'short';
-        state.hairColor = '#1c1917';
-        state.playerPin = '0000';
-        state.playerPinHash = '';
-        state.profileAccountKey = '';
-        try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
-        updatePlayerAppearance();
+        if (storageMatchesTarget) {
+          try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+        }
+        if (matchesCurrentState || ctx.fromCustomize) {
+          state.playerName = '인찬이';
+          state.playerTitle = '마음 탐험가';
+          state.shirtColor = '#ff5800';
+          state.hatType = 'sprout';
+          state.hairStyle = 'short';
+          state.hairColor = '#1c1917';
+          state.playerPin = '0000';
+          state.playerPinHash = '';
+          state.profileAccountKey = '';
+          updatePlayerAppearance();
+        }
         if (typeof syncWorldCollectiblesFromState === 'function') syncWorldCollectiblesFromState();
         closeModal('modalResetSelf');
-        showToast('🔄 <b>내 프로필과 학습 데이터가 모두 초기화되었습니다!</b>');
-        openCustomizeStudio();
+        resetSelfContext = null;
+        renderLocalSavedProfiles();
+        syncCustModalFieldsFromState();
+        if (ctx.fromCustomize) {
+          setCustPinError(`🔄 [방 ${targetRoom} · ${targetName}] 프로필과 학습 데이터가 모두 초기화되었습니다!`, true);
+          showToast(`🔄 <b>[방 ${window.escapeHtml(targetRoom)} · ${window.escapeHtml(targetName)}]</b> 프로필과 학습 데이터가 모두 초기화되었습니다!`);
+        } else {
+          showToast('🔄 <b>내 프로필과 학습 데이터가 모두 초기화되었습니다!</b>');
+          openCustomizeStudio();
+        }
       } else {
         if (map[acctKey]) {
-          map[acctKey].data = buildPlayerSnapshot();
+          const prevData = map[acctKey].data || {};
+          map[acctKey].data = {
+            playerName: targetName,
+            playerTitle: prevData.playerTitle || state.playerTitle || '마음 탐험가',
+            roomCode: targetRoom,
+            shirtColor: prevData.shirtColor || state.shirtColor || '#ff5800',
+            hatType: prevData.hatType || state.hatType || 'sprout',
+            hairStyle: prevData.hairStyle || state.hairStyle || 'short',
+            hairColor: prevData.hairColor || state.hairColor || '#1c1917',
+            equippedRewards: { wings: false, tiara: false, flameband: false, cape: false, scarf: false },
+            curGuest: 'joy',
+            mindNote: '모든 감정 손님은 나를 도우러 온 소중한 친구예요.',
+            worryText: '',
+            breathProgress: 0,
+            quests: { joy: false, sad: false, anger: false, fear: false, worry: false, robot: false, stage: false, flutter: false, coop: false, track: false },
+            mission: { joy: 0, sad: 0, anger: 0, fear: 0, worry: 0, robot: 0, stage: 0, flutter: 0, coop: 0, track: 0 },
+            coopHelped: 0,
+            mindScore: 0,
+            mindLevel: 1,
+            stardustCount: 0,
+            collectedGemIds: [],
+            likedIds: [],
+            stampedChapters: [],
+            solvedDetectiveCases: [],
+            updatedAt: Date.now()
+          };
           map[acctKey].updatedAt = Date.now();
           writeLocalProfilesMap(map);
         }
-        saveProgress({ skipCloud: true });
+        if (matchesCurrentState) {
+          saveProgress({ skipCloud: true });
+        } else if (storageMatchesTarget) {
+          try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+        }
         closeModal('modalResetSelf');
+        resetSelfContext = null;
+        renderLocalSavedProfiles();
+        if (!(ctx.fromCustomize && !matchesCurrentState)) {
+          syncCustModalFieldsFromState();
+        }
         soundChime(523);
-        showToast('🔄 <b>내 학습 데이터가 초기화되었습니다!</b> 처음부터 다시 시작해 보세요.');
+        if (ctx.fromCustomize) {
+          setCustPinError(`🔄 [방 ${targetRoom} · ${targetName}] 학습 데이터가 초기화되었습니다! (0점 · 미션 0/10)`, true);
+          showToast(`🔄 <b>[방 ${window.escapeHtml(targetRoom)} · ${window.escapeHtml(targetName)}]</b> 학습 데이터가 초기화되었습니다!`);
+        } else {
+          showToast('🔄 <b>내 학습 데이터가 초기화되었습니다!</b> 처음부터 다시 시작해 보세요.');
+        }
       }
       return true;
     }
+
+    bindClick('btnResetSelfFromEntry', () => openResetSelfModal(true));
+    bindClick('btnOpenAdminFromEntry', () => openAdminModal());
+    document.getElementById('resetSelfPinInput')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('btnConfirmResetSelf')?.click();
+      }
+    });
 
     bindClick('btnConfirmResetSelf', async () => {
       const btn = document.getElementById('btnConfirmResetSelf');
@@ -13994,6 +14248,13 @@
       el.style.borderColor = isError ? '#fecaca' : '#86efac';
       el.style.color = isError ? '#b91c1c' : '#166534';
       el.textContent = msg;
+      try { el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (_) {}
+    }
+    function updateAdminPwBadge(isCustom) {
+      const badge = document.getElementById('adminPwStatusBadge');
+      if (!badge) return;
+      badge.classList.toggle('custom', !!isCustom);
+      badge.textContent = isCustom ? '사용자 지정 암호 적용 중' : '초기 암호 사용 중 (변경 권장)';
     }
     function lockAdminSessionUI() {
       adminSessionPw = '';
@@ -14004,8 +14265,12 @@
       if (cw) cw.value = '';
       const p1 = document.getElementById('adminNewPw1');
       const p2 = document.getElementById('adminNewPw2');
-      if (p1) p1.value = '';
-      if (p2) p2.value = '';
+      if (p1) { p1.value = ''; p1.type = 'password'; }
+      if (p2) { p2.value = ''; p2.type = 'password'; }
+      const visBtn = document.getElementById('btnToggleAdminPwVis');
+      if (visBtn) visBtn.textContent = '보기';
+      const allChk = document.getElementById('chkAdminPwAllRooms');
+      if (allChk) allChk.checked = true;
       const loginPane = document.getElementById('adminLoginPane');
       const dashPane = document.getElementById('adminDashboardPane');
       if (loginPane) loginPane.style.display = 'block';
@@ -14059,6 +14324,10 @@
       listEl.querySelectorAll('.admin-del-player-btn').forEach(btn => {
         btn.onclick = () => adminDeleteStudent(btn.dataset.key, btn.dataset.name);
       });
+      const isCustom = summary.offlineMode
+        ? !!localStorage.getItem(LOCAL_ADMIN_HASH_KEY)
+        : !!summary.hasCustomPassword;
+      updateAdminPwBadge(isCustom);
     }
 
     function buildLocalAdminSummary(roomCode) {
@@ -14220,7 +14489,10 @@
         setAdminActionMsg('새 암호와 암호 확인이 서로 일치하지 않습니다.', true);
         return;
       }
+      const applyAll = !!document.getElementById('chkAdminPwAllRooms')?.checked;
       const httpBase = resolveRelayHttpUrl();
+      let okRooms = [];
+      let skippedRooms = [];
       if (httpBase) {
         try {
           const resp = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(adminActiveRoom)}/admin/password`, {
@@ -14233,16 +14505,51 @@
             setAdminActionMsg(data?.error || '암호 변경에 실패했습니다.', true);
             return;
           }
-        } catch (_) {}
+          okRooms.push(adminActiveRoom);
+          if (applyAll) {
+            const others = ['A', 'B', 'C'].filter(r => r !== adminActiveRoom);
+            const results = await Promise.all(others.map(async (r) => {
+              try {
+                const rr = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(r)}/admin/password`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ password: adminSessionPw, newPassword: p1 })
+                });
+                const dd = await rr.json().catch(() => ({}));
+                return (rr.ok && dd?.ok) ? { room: r, ok: true } : { room: r, ok: false };
+              } catch (_) {
+                return { room: r, ok: false };
+              }
+            }));
+            results.forEach(item => {
+              if (item.ok) okRooms.push(item.room);
+              else skippedRooms.push(item.room);
+            });
+          }
+          okRooms.sort();
+        } catch (_) {
+          okRooms = applyAll ? ['A', 'B', 'C'] : [adminActiveRoom];
+        }
+      } else {
+        okRooms = applyAll ? ['A', 'B', 'C'] : [adminActiveRoom];
       }
       try {
         const newHash = await sha256Hex('inchan-admin-v1:' + p1);
         localStorage.setItem(LOCAL_ADMIN_HASH_KEY, newHash);
       } catch (_) {}
       adminSessionPw = p1;
-      document.getElementById('adminNewPw1').value = '';
-      document.getElementById('adminNewPw2').value = '';
-      setAdminActionMsg(`🔑 방 ${adminActiveRoom}의 관리자 암호가 안전하게 변경되었습니다.`);
+      const p1El = document.getElementById('adminNewPw1');
+      const p2El = document.getElementById('adminNewPw2');
+      if (p1El) { p1El.value = ''; p1El.type = 'password'; }
+      if (p2El) { p2El.value = ''; p2El.type = 'password'; }
+      const visBtn = document.getElementById('btnToggleAdminPwVis');
+      if (visBtn) visBtn.textContent = '보기';
+      updateAdminPwBadge(true);
+      if (skippedRooms.length > 0) {
+        setAdminActionMsg(`🔑 방 ${okRooms.join('·')} 관리자 암호 변경 완료 (방 ${skippedRooms.join('·')}은 기존 암호가 달라 유지됨 — 해당 방으로 로그인해 변경하세요)`);
+      } else {
+        setAdminActionMsg(`🔑 방 ${okRooms.join('·')}의 교사 관리자 암호가 안전하게 변경되었습니다.`);
+      }
       soundQuestComplete();
     }
 
@@ -14289,8 +14596,21 @@
     bindClick('btnAdminResetPlayers', () => adminResetRoom('players'));
     bindClick('btnAdminResetAll', () => adminResetRoom('all'));
     bindClick('btnAdminChangePw', () => adminChangePassword());
+    bindClick('btnToggleAdminPwVis', () => {
+      const p1 = document.getElementById('adminNewPw1');
+      const p2 = document.getElementById('adminNewPw2');
+      const btn = document.getElementById('btnToggleAdminPwVis');
+      if (!p1 || !p2) return;
+      const show = p1.type === 'password';
+      p1.type = show ? 'text' : 'password';
+      p2.type = show ? 'text' : 'password';
+      if (btn) btn.textContent = show ? '숨김' : '보기';
+    });
     document.getElementById('adminPasswordInput')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); adminVerifyAndLoad(false); }
+    });
+    document.getElementById('adminNewPw2')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); adminChangePassword(); }
     });
 
     function resolveCoopTarget(friendId) {
@@ -15703,7 +16023,7 @@
   <div class="modal-overlay" id="modalResetSelf">
     <div class="modal-sheet" style="max-width: 480px;">
       <div class="modal-header">
-        <h3 class="modal-title">🔄 내 데이터 초기화 · 다시 시작하기</h3>
+        <h3 class="modal-title">🔄 내 데이터 초기화</h3>
         <button type="button" class="btn-close" onclick="closeModal('modalResetSelf')">✕</button>
       </div>
       <div class="reset-info-box">
@@ -15713,6 +16033,16 @@
           <li><b>유지됨:</b> 교실 친구들의 기록과 실시간 마음 게시판 이야기</li>
         </ul>
       </div>
+      <div class="reset-target-box" id="resetSelfTargetBox">
+        <div class="reset-target-row">
+          <span style="font-size:13.5px; font-weight:700; color:#52525b;">초기화 대상</span>
+          <strong id="resetSelfTargetLabel" style="font-size:14.5px; color:#18181b;">방 A · 인찬이</strong>
+        </div>
+        <div class="reset-pin-row">
+          <label for="resetSelfPinInput" style="font-size:13.5px; font-weight:700; color:#3f3f46; white-space:nowrap;">내 암호 (숫자 4자리)</label>
+          <input class="text-input" id="resetSelfPinInput" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0000" style="margin-top:0; height:38px; flex:1; text-align:center; letter-spacing:3px; font-weight:800;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);" />
+        </div>
+      </div>
       <label class="reset-check-row" for="chkResetSelfProfile">
         <input type="checkbox" id="chkResetSelfProfile" />
         <span>내 이름·4자리 암호·아바타 꾸미기까지 초기화하고 새 캐릭터로 입장하기</span>
@@ -15720,7 +16050,7 @@
       <div class="inline-error-box" id="resetSelfError" style="display:none;"></div>
       <div style="display:flex; gap:10px; margin-top:16px;">
         <button type="button" class="btn-secondary-full" style="margin-top:0; flex:1;" onclick="closeModal('modalResetSelf')">취소</button>
-        <button type="button" class="btn-danger-full" id="btnConfirmResetSelf" style="flex:1.4;">내 데이터 초기화하기</button>
+        <button type="button" class="btn-danger-full" id="btnConfirmResetSelf" style="flex:1.5; white-space:nowrap;">내 데이터 초기화</button>
       </div>
     </div>
   </div>
@@ -15803,11 +16133,19 @@
         </div>
 
         <div class="admin-pw-box">
-          <div style="font-size:14.5px; font-weight:800; color:#18181b; margin-bottom:6px;">🔑 이 방 관리자 암호 변경</div>
+          <div class="admin-pw-head">
+            <div style="font-size:14.5px; font-weight:800; color:#18181b;">🔑 교사 관리자 암호 변경</div>
+            <span class="admin-pw-badge" id="adminPwStatusBadge">초기 암호 사용 중</span>
+          </div>
+          <label class="admin-pw-all-row" for="chkAdminPwAllRooms">
+            <input type="checkbox" id="chkAdminPwAllRooms" checked />
+            <span>A · B · C 모든 방에 새 암호 함께 적용</span>
+          </label>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <input class="text-input" id="adminNewPw1" type="password" maxlength="32" placeholder="새 암호 (4자 이상)" style="margin-top:0; flex:1; min-width:130px;" />
-            <input class="text-input" id="adminNewPw2" type="password" maxlength="32" placeholder="새 암호 확인" style="margin-top:0; flex:1; min-width:130px;" />
-            <button type="button" class="admin-mini-btn dark" id="btnAdminChangePw">암호 저장</button>
+            <input class="text-input" id="adminNewPw1" type="password" maxlength="32" placeholder="새 암호 (4~32자)" style="margin-top:0; flex:1; min-width:125px;" />
+            <input class="text-input" id="adminNewPw2" type="password" maxlength="32" placeholder="새 암호 확인" style="margin-top:0; flex:1; min-width:125px;" />
+            <button type="button" class="admin-mini-btn" id="btnToggleAdminPwVis" style="height:40px;">보기</button>
+            <button type="button" class="admin-mini-btn dark" id="btnAdminChangePw">암호 변경 저장</button>
           </div>
         </div>
 
