@@ -107,7 +107,7 @@
       font-size: 16px; font-weight: 600; line-height: 1.5; border: 1px solid rgba(24, 24, 27, 0.14);
       box-shadow: 0 8px 24px rgba(15, 15, 20, 0.1);
       animation: toastSlide 0.22s ease forwards;
-      text-align: center;
+      text-align: left; word-break: keep-all;
     }
     .toast b { color: #d97706; }
     @keyframes toastSlide {
@@ -177,15 +177,15 @@
       z-index: 48; opacity: 0; pointer-events: none; transition: all 0.2s ease;
       background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(16px);
       border: 1.5px solid rgba(24, 24, 27, 0.15); border-radius: 16px;
-      padding: 15px 22px; color: #18181b; text-align: center;
+      padding: 15px 22px; color: #18181b; text-align: left;
       box-shadow: 0 10px 28px rgba(15, 15, 20, 0.12); max-width: min(560px, 92vw);
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      display: flex; flex-direction: column; align-items: stretch; gap: 8px;
     }
     .zone-prompt.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-    .zp-head { display: flex; align-items: center; gap: 9px; font-size: 17.5px; font-weight: 700; color: #18181b; flex-wrap: wrap; justify-content: center; }
+    .zp-head { display: flex; align-items: center; gap: 9px; font-size: 17.5px; font-weight: 700; color: #18181b; flex-wrap: wrap; justify-content: flex-start; }
     .zp-chip { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .zp-desc { font-size: 15.5px; color: #27272a; line-height: 1.5; word-break: keep-all; }
-    .zp-btns { display: flex; gap: 8px; margin-top: 2px; flex-wrap: wrap; justify-content: center; }
+    .zp-desc { font-size: 15.5px; color: #27272a; line-height: 1.5; word-break: keep-all; text-align: left; }
+    .zp-btns { display: flex; gap: 8px; margin-top: 2px; flex-wrap: wrap; justify-content: flex-start; }
     .zp-btn {
       padding: 9px 16px; border-radius: 10px; border: 1px solid transparent; cursor: pointer;
       font-size: 15.5px; font-weight: 700; color: #fff; background: #18181b;
@@ -1192,6 +1192,7 @@
     }
     .cust-hat-sub {
       font-size: 12.5px; color: #52525b; font-weight: 500; line-height: 1.3;
+      text-align: left; word-break: keep-all;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     }
 
@@ -1252,7 +1253,7 @@
       border-radius: 16px;
       padding: 15px 28px;
       box-shadow: 0 14px 36px rgba(15, 15, 20, 0.14);
-      color: #18181b; text-align: center;
+      color: #18181b; text-align: left;
       z-index: 9500; opacity: 0; pointer-events: none;
       transition: all 0.3s ease; max-width: 90vw;
     }
@@ -1261,7 +1262,7 @@
       opacity: 1; pointer-events: auto;
     }
     .congrats-title { font-size: 24px; font-weight: 800; color: #18181b; margin-bottom: 4px; }
-    .congrats-sub { font-size: 16.5px; color: #3f3f46; line-height: 1.45; }
+    .congrats-sub { font-size: 16.5px; color: #3f3f46; line-height: 1.45; word-break: keep-all; text-align: left; }
 
     /* 대화 선택지 버튼 (라이트 모드) */
     .mom-choice-btn {
@@ -1303,6 +1304,232 @@
       }
     }
 
+    /* ============================================================
+       [화면 비율 3모드(스마트폰 9:16 · 패드 16:9 · PC 상세) + 전체화면 + 스마트폰 1열/축약 UI]
+       ============================================================ */
+    .view-mode-btn, .fs-btn { padding: 0 11px; gap: 5px; }
+    .audio-mobile-icon { display: none; }
+    @media (max-width: 1360px) {
+      .top-mission-wrap { max-width: min(360px, 29vw); }
+    }
+
+    .story-head-actions { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .story-mini-autowalk {
+      display: none; align-items: center; gap: 3px;
+      height: 25px; padding: 0 8px; border-radius: 999px;
+      background: #18181b; color: #ffffff; border: 1px solid #18181b;
+      font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+      transition: all 0.14s ease;
+    }
+    .story-mini-autowalk.walking { background: var(--nothing-red); border-color: var(--nothing-red); }
+    body.view-mode-phone .story-mini-autowalk,
+    body.view-mode-pad .story-mini-autowalk,
+    .story-tracker.collapsed .story-mini-autowalk { display: inline-flex; }
+
+    /* 첫 입장 화면: 3단계 기기 화면 모드 선택 카드 */
+    .cust-device-picker {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      margin-bottom: 14px; width: 100%;
+    }
+    .cust-device-card {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      padding: 9px 12px; border-radius: 12px;
+      background: #ffffff; border: 1.5px solid #e4e4e7; color: #3f3f46;
+      cursor: pointer; transition: all 0.15s ease; text-align: left;
+      min-width: 0; box-sizing: border-box;
+    }
+    .cust-device-card:hover { border-color: #a1a1aa; color: #18181b; background: #fafafa; }
+    .cust-device-card.active {
+      background: #18181b; border-color: #18181b; color: #ffffff;
+      box-shadow: 0 6px 16px rgba(24, 24, 27, 0.16);
+    }
+    .cust-device-card svg { flex-shrink: 0; }
+    .cust-device-card .cdc-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+    .cust-device-card .cdc-text b { font-size: 14px; font-weight: 800; color: inherit; white-space: nowrap; }
+    .cust-device-card .cdc-text span { font-size: 11.5px; font-weight: 600; opacity: 0.78; white-space: nowrap; }
+
+    body.pseudo-fullscreen {
+      position: fixed; inset: 0; width: 100vw; height: 100dvh; overflow: hidden;
+    }
+
+    /* 패드 (16:9) 균형 터치 모드 */
+    body.view-mode-pad .touch-pad-kbd { display: none !important; }
+    body.view-mode-pad .action-dock .act-btn.touch-dup { display: none !important; }
+    body.view-mode-pad .story-tracker { width: 300px; top: 66px; left: 12px; padding: 10px 12px; }
+    body.view-mode-pad .v-joy-zone,
+    body.view-mode-pad .v-look-zone { width: 102px; height: 102px; bottom: 76px; }
+    body.view-mode-pad .touch-action-pad { right: 12px; bottom: 188px; }
+    body.view-mode-pad .touch-pad-btn { width: 50px; height: 50px; }
+    body.view-mode-pad .top-mission-wrap { max-width: min(310px, 27vw); }
+    @media (max-width: 1180px) {
+      body.view-mode-pad .top-mission-wrap { display: none !important; }
+    }
+
+    /* 스마트폰 첫화면(#modalCustomize) 가독성 & 잘림 방지 (좁은 화면 또는 9:16 모드 공통) */
+    @media (max-width: 600px) {
+      .cust-device-card { flex-direction: column; text-align: center; padding: 8px 4px; gap: 3px; }
+      .cust-device-card .cdc-text { align-items: center; }
+      .cust-device-card .cdc-text b { font-size: 12.5px; }
+      .cust-device-card .cdc-text span { font-size: 10.5px; }
+      #modalCustomize { padding: 6px !important; }
+      .cust-modal-sheet {
+        width: calc(100vw - 12px) !important;
+        min-width: 0 !important;
+        max-width: 440px !important;
+        padding: 13px 13px 14px !important;
+        border-radius: 16px !important;
+        max-height: 94dvh !important;
+      }
+      .cust-modal-header { margin-bottom: 10px !important; padding-bottom: 10px !important; gap: 8px; }
+      .cust-badge-top { font-size: 9.5px; padding: 2px 7px; }
+      .cust-modal-title { font-size: 16.5px !important; white-space: normal !important; word-break: keep-all; line-height: 1.28; }
+      .cust-modal-desc { font-size: 13px !important; white-space: normal !important; word-break: keep-all; line-height: 1.38; margin-top: 2px !important; }
+      .cust-avatar-showcase {
+        grid-template-columns: 80px 1fr !important;
+        gap: 10px !important; padding: 10px !important; margin-bottom: 10px !important;
+        justify-items: stretch !important; text-align: left !important;
+      }
+      .cust-preview-stage { width: 80px !important; height: 80px !important; border-radius: 10px !important; }
+      .cust-stage-hint { display: none !important; }
+      .cust-preview-info { gap: 4px !important; }
+      .cust-preview-nametag { font-size: 16.5px !important; white-space: normal !important; word-break: keep-all; }
+      .cust-spirit-summary-title { font-size: 13.5px !important; white-space: normal !important; word-break: keep-all; }
+      .cust-spirit-summary-desc { font-size: 12px !important; white-space: normal !important; word-break: keep-all; line-height: 1.35; }
+      .cust-preview-meta-line { font-size: 11.5px !important; flex-wrap: wrap !important; white-space: normal !important; gap: 3px 6px !important; }
+      .cust-tabs-nav { margin-bottom: 10px !important; padding: 3px !important; }
+      .cust-tab-btn { font-size: 12.5px !important; padding: 7px 3px !important; }
+      .cust-form-row { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 7px !important; }
+      .cust-field { align-items: stretch !important; }
+      .cust-label { font-size: 12px !important; white-space: normal !important; text-align: left !important; align-self: flex-start !important; line-height: 1.25; }
+      .cust-input, .cust-select { height: 38px !important; font-size: 14px !important; padding: 0 6px !important; }
+      .cust-profile-bar { padding: 8px 10px !important; gap: 6px !important; }
+      .cust-profile-hint { font-size: 12px !important; min-width: 0 !important; text-align: left !important; }
+      .cust-restore-btn { width: 100%; font-size: 13px !important; padding: 7px 10px !important; }
+      .cust-color-grid { grid-template-columns: 1fr !important; gap: 7px !important; }
+      .cust-color-card { padding: 9px 10px !important; }
+      .cust-color-text, .cust-color-sub, .cust-hat-title, .cust-hat-sub, .cust-reward-name, .cust-reward-story, .cust-reward-desc {
+        white-space: normal !important; overflow: visible !important; text-overflow: clip !important; word-break: keep-all;
+      }
+      .cust-hair-grid, .cust-hat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 7px !important; }
+      .cust-reward-grid { grid-template-columns: 1fr !important; gap: 7px !important; }
+      .cust-btn-submit {
+        position: sticky; bottom: 0; z-index: 6;
+        height: 44px !important; font-size: 15px !important;
+        box-shadow: 0 -6px 14px rgba(250, 249, 245, 0.92);
+      }
+    }
+
+    /* 스마트폰 (9:16) 축약 · 1열 세로 패드 · 비중첩 HUD (기기와 무관하게 body.view-mode-phone 시 적용) */
+    body.view-mode-phone .cust-modal-sheet {
+      max-width: 440px !important;
+    }
+    body.view-mode-phone .hud-top { top: 8px; left: 8px; right: 8px; gap: 5px; }
+    body.view-mode-phone .hud-row { flex-wrap: nowrap; gap: 4px; }
+    body.view-mode-phone .module-bar {
+      padding: 4px 8px; gap: 5px; max-width: calc(100vw - 208px); overflow-x: auto;
+    }
+    body.view-mode-phone .brand-mark { width: 26px; height: 26px; }
+    body.view-mode-phone .brand-text,
+    body.view-mode-phone .module-bar > .divider-v,
+    body.view-mode-phone .quest-leds > .divider-v,
+    body.view-mode-phone .stardust-chip-label,
+    body.view-mode-phone .hw-btn .btn-txt-optional { display: none !important; }
+    body.view-mode-phone .audio-mobile-icon { display: inline-block; }
+    body.view-mode-phone .quest-led { width: 9px; height: 9px; }
+    body.view-mode-phone .quest-count { font-size: 12px; }
+    body.view-mode-phone #mindScoreBadge { padding: 2px 7px 2px 3px !important; font-size: 12px !important; }
+    body.view-mode-phone #mindLevelBadge { font-size: 10.5px !important; padding: 1px 6px !important; }
+    body.view-mode-phone #mindScoreText { font-size: 12px !important; }
+    body.view-mode-phone #stardustText { font-size: 12px !important; }
+    body.view-mode-phone .hw-btn { height: 34px; padding: 0 6.5px; font-size: 12px; gap: 3px; border-radius: 9px; }
+    body.view-mode-phone .top-mission-wrap { display: none !important; }
+
+    body.view-mode-phone .minimap-box {
+      width: 58px !important; height: 58px !important; right: 6px !important; top: 48px !important;
+    }
+    body.view-mode-phone .minimap-tag { display: none !important; }
+
+    body.view-mode-phone .story-tracker {
+      top: 48px !important; left: 8px !important;
+      width: calc(100vw - 72px) !important; max-width: 318px !important;
+      padding: 9px 10px !important; max-height: 54dvh; overflow-y: auto;
+    }
+    body.view-mode-phone .story-tracker.collapsed {
+      width: auto !important; max-width: calc(100vw - 76px) !important;
+      padding: 5px 10px !important; border-radius: 999px !important; overflow: visible;
+    }
+    body.view-mode-phone .story-tracker-title { font-size: 14px; }
+    body.view-mode-phone .story-done-badge { font-size: 11px; padding: 0 5px; }
+    body.view-mode-phone .story-tracker-toggle { font-size: 12px; padding: 2px 7px; }
+    body.view-mode-phone .story-q-title { font-size: 14.5px; }
+    body.view-mode-phone .story-q-desc { font-size: 12.5px; line-height: 1.4; }
+
+    /* 우측 액션 패드: 스마트폰 모드에서 세로 1열로 화면 가림 최소화 */
+    body.view-mode-phone .touch-action-pad {
+      grid-template-columns: 1fr !important;
+      right: 6px !important; bottom: 148px !important;
+      padding: 4px !important; gap: 4px !important; border-radius: 13px !important;
+    }
+    body.view-mode-phone .touch-pad-btn {
+      width: 44px !important; height: 44px !important;
+      border-radius: 10px !important; padding: 2px !important; gap: 1px !important;
+    }
+    body.view-mode-phone .touch-pad-btn svg { width: 16px !important; height: 16px !important; }
+    body.view-mode-phone .touch-pad-label { font-size: 10px !important; }
+    body.view-mode-phone .touch-pad-kbd { display: none !important; }
+
+    body.view-mode-phone .v-joy-zone,
+    body.view-mode-phone .v-look-zone {
+      width: 82px !important; height: 82px !important; bottom: 56px !important;
+    }
+    body.view-mode-phone .v-joy-zone { left: 8px !important; }
+    body.view-mode-phone .v-look-zone { right: 8px !important; }
+    body.view-mode-phone .v-joy-knob,
+    body.view-mode-phone .v-look-knob { width: 34px !important; height: 34px !important; }
+    body.view-mode-phone .v-joy-label { font-size: 10px !important; bottom: 4px !important; }
+
+    body.view-mode-phone .zone-prompt {
+      left: 8px !important; right: 62px !important; width: auto !important; max-width: none !important;
+      transform: translateX(0) translateY(10px) !important;
+      bottom: 146px !important; padding: 8px 11px !important;
+      border-radius: 13px !important; gap: 5px !important;
+    }
+    body.view-mode-phone .zone-prompt.visible { transform: translateX(0) translateY(0) !important; }
+    body.view-mode-phone .zp-head { font-size: 14px !important; gap: 5px !important; }
+    body.view-mode-phone .zp-desc {
+      font-size: 12.5px !important; line-height: 1.38 !important;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    body.view-mode-phone .zp-btn { font-size: 13px !important; padding: 7px 11px !important; }
+    body.view-mode-phone .zp-btn-breath { font-size: 13.5px !important; padding: 8px 12px !important; }
+    body.view-mode-phone .breath-bar-wrap { width: 100% !important; height: 38px !important; margin: 2px 0 !important; }
+    body.view-mode-phone .timing-zone::after { content: '초록 칸 터치!' !important; font-size: 12px !important; }
+
+    body.view-mode-phone .toast-box {
+      top: 86px !important; left: 8px !important; right: 72px !important;
+      transform: none !important; width: auto !important; max-width: none !important;
+      align-items: flex-start !important;
+    }
+    body.view-mode-phone .toast { font-size: 13px !important; padding: 7px 12px !important; line-height: 1.38; text-align: left !important; }
+
+    body.view-mode-phone .action-dock {
+      bottom: 6px !important; padding: 4px 6px !important; gap: 3px !important; border-radius: 12px !important;
+    }
+    body.view-mode-phone .action-dock .act-btn,
+    body.view-mode-phone .action-dock .dock-sep { display: none !important; }
+    body.view-mode-phone .mc-slot { width: 44px !important; height: 38px !important; padding: 3px 2px !important; }
+    body.view-mode-phone .mc-key { display: none !important; }
+    body.view-mode-phone .mc-label { font-size: 10.5px !important; }
+
+    @media (max-height: 520px) {
+      body.view-mode-phone .touch-action-pad {
+        grid-template-columns: repeat(2, auto) !important;
+        bottom: 110px !important;
+      }
+      body.view-mode-phone .touch-pad-btn { width: 38px !important; height: 38px !important; }
+      body.view-mode-phone .zone-prompt { right: 98px !important; bottom: 110px !important; }
+    }
+
 </style>
 </head>
 <body>
@@ -1339,7 +1566,7 @@
           <!-- 마음 조각 수집 계측기 (투명 배경 + 1px 헤어라인) -->
           <div style="display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid rgba(24,24,27,0.16); padding:3px 10px; border-radius:99px; font-size:13.5px; font-weight:700; color:#18181b;" title="월드에서 모은 마음 조각">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2"><polygon points="12 2 19 12 12 22 5 12"/></svg>
-            <span>마음 조각</span>
+            <span class="stardust-chip-label">마음 조각</span>
             <span id="stardustText" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:13.5px;">0/15</span>
           </div>
           <!-- 누적 마음 점수 & 성장 단계 -->
@@ -1365,17 +1592,26 @@
       </button>
     </div>
 
-    <!-- 우측 상단 미니멀 메뉴바: [소리] + [설정] 드롭다운 메뉴 -->
+    <!-- 우측 상단 미니멀 메뉴바: [화면비율 9:16/16:9/PC] + [전체화면] + [소리] + [설정] 드롭다운 메뉴 -->
     <div class="hud-group" style="align-items: flex-end;">
       <div class="hud-row">
+        <button type="button" class="hw-btn view-mode-btn" id="btnViewMode" onclick="window.cycleViewMode(event)" title="화면 모드 전환 (스마트폰 9:16 → 패드 16:9 → PC)">
+          <span id="viewModeIcon" style="display:inline-flex; align-items:center;"><svg width="16" height="15" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="13" rx="2"/><line x1="8" y1="18.5" x2="16" y2="18.5"/><line x1="12" y1="15" x2="12" y2="18.5"/></svg></span>
+          <span id="viewModeLabel">PC</span>
+        </button>
+        <button type="button" class="hw-btn fs-btn" id="btnFullscreen" onclick="window.toggleFullscreen(event)" title="전체화면 켜기/끄기">
+          <span id="fullscreenIcon" style="display:inline-flex; align-items:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span>
+          <span class="btn-txt-optional" id="fullscreenLabel">전체</span>
+        </button>
         <button class="hw-btn active-green" id="btnAudio" title="사운드 켜기/끄기">
           <span class="led-dot"></span>
-          <span class="audio-label">소리 ON</span>
+          <svg class="audio-mobile-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span class="audio-label btn-txt-optional">소리 ON</span>
         </button>
         <div class="top-settings-wrap" id="topSettingsWrap">
           <button type="button" class="hw-btn" id="btnTopSettings" onclick="toggleTopSettingsMenu(event)" title="설정 및 도구 메뉴">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            <span>설정</span>
+            <span class="btn-txt-optional">설정</span>
           </button>
           <div class="top-settings-menu" id="topSettingsMenu">
             <button type="button" class="settings-menu-item" id="btnCustomizeTop" onclick="closeTopSettingsMenu()">
@@ -1401,6 +1637,10 @@
             <button type="button" class="settings-menu-item" id="btnToggleTouchUI" onclick="toggleTouchControlsUI()">
               <span>터치 조이스틱</span>
               <span class="settings-menu-badge" id="touchUIBadge">켜짐</span>
+            </button>
+            <button type="button" class="settings-menu-item" id="btnSettingsFullscreen" onclick="closeTopSettingsMenu(); window.toggleFullscreen(event);">
+              <span>전체화면 전환</span>
+              <span class="settings-menu-badge" id="fsMenuBadge">켜기</span>
             </button>
             <div class="settings-menu-divider"></div>
             <button type="button" class="settings-menu-item" id="btnOpenResetSelf" onclick="closeTopSettingsMenu(); openResetSelfModal();">
@@ -1431,7 +1671,13 @@
         <span class="nothing-red-dot"></span>
         <span class="story-tracker-title">마음 미션 <span class="story-done-badge" id="storyDoneBadge">0/10</span></span>
       </div>
-      <button type="button" class="story-tracker-toggle" id="btnStoryTrackerToggle">접기</button>
+      <div class="story-head-actions">
+        <button type="button" class="story-mini-autowalk" id="btnMiniAutoWalk" onclick="event.stopPropagation(); window.toggleTopAutoWalk(event);" title="현재 미션 위치로 자동 안내">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><polygon points="10 14 15 9 13 15 10 14"/></svg>
+          <span id="btnMiniAutoWalkText">자동</span>
+        </button>
+        <button type="button" class="story-tracker-toggle" id="btnStoryTrackerToggle">접기</button>
+      </div>
     </div>
     <div class="story-tracker-body">
       <div class="story-mission-list" id="storyMissionList"></div>
@@ -1578,6 +1824,22 @@
           <p class="cust-modal-desc">오늘 내 마음 광주리에 함께할 감정 정령과 아바타 스타일을 선택하세요.</p>
         </div>
         <button type="button" class="cust-btn-close" onclick="closeModal('modalCustomize')">✕</button>
+      </div>
+
+      <!-- 화면 비율 · 기기 모드 선택 (스마트폰 9:16 / 패드 16:9 / PC 상세) -->
+      <div class="cust-device-picker" id="custDevicePicker" role="group" aria-label="화면 모드 선택">
+        <button type="button" class="cust-device-card" data-mode="phone" onclick="window.setViewMode('phone', true)">
+          <svg width="20" height="24" viewBox="0 0 20 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="1.5" width="14" height="25" rx="3"/><line x1="8" y1="23" x2="12" y2="23"/></svg>
+          <div class="cdc-text"><b>스마트폰</b><span>9:16 축약·1열</span></div>
+        </button>
+        <button type="button" class="cust-device-card" data-mode="pad" onclick="window.setViewMode('pad', true)">
+          <svg width="26" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1.5" y="2" width="25" height="16" rx="2.5"/><circle cx="24" cy="10" r="0.9" fill="currentColor"/></svg>
+          <div class="cdc-text"><b>패드·태블릿</b><span>16:9 터치균형</span></div>
+        </button>
+        <button type="button" class="cust-device-card" data-mode="pc" onclick="window.setViewMode('pc', true)">
+          <svg width="24" height="20" viewBox="0 0 26 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="22" height="14" rx="2"/><line x1="9" y1="20" x2="17" y2="20"/><line x1="13" y1="16" x2="13" y2="20"/></svg>
+          <div class="cdc-text"><b>PC 화면</b><span>전체 상세안내</span></div>
+        </button>
       </div>
 
       <!-- 세련된 라이트 쇼룸 프리뷰 스테이지 (우측 박스 카드 제거 & 깔끔한 에디토리얼 타이포그래피) -->
@@ -7638,9 +7900,16 @@
     function updateTopAutoWalkBtn() {
       const btn = document.getElementById('btnTopAutoWalk');
       const txt = document.getElementById('btnTopAutoWalkText');
-      if (!btn || !txt) return;
-      btn.classList.toggle('walking', !!isAutoWalking);
-      txt.textContent = isAutoWalking ? '안내 중지' : '자동 안내';
+      if (btn && txt) {
+        btn.classList.toggle('walking', !!isAutoWalking);
+        txt.textContent = isAutoWalking ? '안내 중지' : '자동 안내';
+      }
+      const miniBtn = document.getElementById('btnMiniAutoWalk');
+      const miniTxt = document.getElementById('btnMiniAutoWalkText');
+      if (miniBtn && miniTxt) {
+        miniBtn.classList.toggle('walking', !!isAutoWalking);
+        miniTxt.textContent = isAutoWalking ? '중지' : '자동';
+      }
     }
     window.updateTopAutoWalkBtn = updateTopAutoWalkBtn;
 
@@ -7670,6 +7939,7 @@
       if (meta) {
         isAutoWalking = true;
         updateTopAutoWalkBtn();
+        if (typeof window.setStoryTrackerCollapsed === 'function') window.setStoryTrackerCollapsed(true);
         autoWalkFollowFriend = null;
         if (key === 'coop' && typeof friendAgents !== 'undefined' && friendAgents.length > 0) {
           const targetFr = friendAgents.find(f => f.needsCoopHelp) || friendAgents[0];
@@ -7683,7 +7953,11 @@
         autoWalkAvoidSign = 1;
         autoWalkLastPos.copy(playerRig.position);
         soundQuestComplete();
-        showToast(`<b>[${meta.chapter}]</b> 방향으로 자동 안내합니다.<br><span style="font-size:13px; color:#52525b;">(조이스틱 또는 방향키를 누르면 즉시 직접 조작으로 전환됩니다)</span>`);
+        if (document.body.classList.contains('view-mode-phone')) {
+          showToast(`🧭 <b>[${meta.shortLabel}]</b> 자동 안내 중 (화면 터치 시 중지)`);
+        } else {
+          showToast(`<b>[${meta.chapter}]</b> 방향으로 자동 안내합니다.<br><span style="font-size:13px; color:#52525b;">(조이스틱 또는 방향키를 누르면 즉시 직접 조작으로 전환됩니다)</span>`);
+        }
       }
     };
 
@@ -7696,12 +7970,18 @@
       }
     };
 
-    window.toggleStoryTracker = function() {
+    window.setStoryTrackerCollapsed = function(collapsed) {
       const el = document.getElementById('storyTracker');
       const btn = document.getElementById('btnStoryTrackerToggle');
       if (!el) return;
-      el.classList.toggle('collapsed');
+      el.classList.toggle('collapsed', !!collapsed);
       if (btn) btn.textContent = el.classList.contains('collapsed') ? '펼치기' : '접기';
+    };
+
+    window.toggleStoryTracker = function() {
+      const el = document.getElementById('storyTracker');
+      if (!el) return;
+      window.setStoryTrackerCollapsed(!el.classList.contains('collapsed'));
     };
 
     function syncQuestHUD() {
@@ -10580,7 +10860,8 @@
     };
     function showToast(msg) {
       const box = document.getElementById('toastBox'), el = document.createElement('div');
-      while (box.children.length >= 2) box.removeChild(box.firstChild);
+      const maxToasts = document.body.classList.contains('view-mode-phone') ? 1 : 2;
+      while (box.children.length >= maxToasts) box.removeChild(box.firstChild);
       el.className = 'toast'; el.innerHTML = msg; box.appendChild(el);
       setTimeout(() => el.remove(), 3200);
     }
@@ -13764,6 +14045,156 @@
     window.openAdminModal = openAdminModal;
     window.closeAdminModal = closeAdminModal;
     window.handleRemoteAdminReset = handleRemoteAdminReset;
+
+    // ============================================================
+    // [스마트폰 9:16 · 패드 16:9 · PC 상세] 3단계 기기 화면 모드 & 전체화면 제어
+    // ============================================================
+    const VIEW_MODE_STORAGE_KEY = 'inchan_view_mode_v1';
+    const VIEW_MODE_META = {
+      phone: {
+        label: '9:16',
+        title: '스마트폰 모드 (9:16 축약·세로 1열)',
+        toast: '📱 <b>스마트폰 모드 (9:16)</b>: 1열 세로 버튼 & 축약 안내가 적용되었습니다.',
+        svg: '<svg width="14" height="16" viewBox="0 0 18 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><rect x="3.5" y="1.5" width="11" height="21" rx="2.5"/><line x1="7.5" y1="19" x2="10.5" y2="19"/></svg>'
+      },
+      pad: {
+        label: '16:9',
+        title: '패드·태블릿 모드 (16:9 터치 균형)',
+        toast: '📟 <b>패드 모드 (16:9)</b>: 태블릿 터치 균형 화면으로 전환되었습니다.',
+        svg: '<svg width="16" height="14" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1.5" y="2" width="21" height="14" rx="2.5"/><circle cx="20" cy="9" r="0.9" fill="currentColor"/></svg>'
+      },
+      pc: {
+        label: 'PC',
+        title: 'PC 상세 모드 (전체 키보드 안내)',
+        toast: '🖥️ <b>PC 상세 모드</b>: 전체 상세 안내 및 단축키 UI가 표시됩니다.',
+        svg: '<svg width="16" height="15" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="13" rx="2"/><line x1="8" y1="18.5" x2="16" y2="18.5"/><line x1="12" y1="15" x2="12" y2="18.5"/></svg>'
+      }
+    };
+    let currentViewMode = 'pc';
+
+    function detectRecommendedViewMode() {
+      const minDim = Math.min(window.innerWidth || 1280, window.innerHeight || 800);
+      if (window.innerWidth <= 600 || minDim <= 520) return 'phone';
+      if (detectTouchDevice() || window.innerWidth <= 1120) return 'pad';
+      return 'pc';
+    }
+
+    function updateViewModeUI(mode) {
+      const meta = VIEW_MODE_META[mode] || VIEW_MODE_META.pc;
+      const iconEl = document.getElementById('viewModeIcon');
+      const lblEl = document.getElementById('viewModeLabel');
+      const btnEl = document.getElementById('btnViewMode');
+      if (iconEl) iconEl.innerHTML = meta.svg;
+      if (lblEl) lblEl.textContent = meta.label;
+      if (btnEl) btnEl.title = `${meta.title} (클릭하여 전환)`;
+      document.querySelectorAll('#custDevicePicker .cust-device-card').forEach((card) => {
+        card.classList.toggle('active', card.dataset.mode === mode);
+      });
+    }
+
+    window.setViewMode = function(mode, userTriggered = false) {
+      const next = (mode === 'phone' || mode === 'pad' || mode === 'pc') ? mode : detectRecommendedViewMode();
+      currentViewMode = next;
+      document.body.classList.remove('view-mode-phone', 'view-mode-pad', 'view-mode-pc');
+      document.body.classList.add('view-mode-' + next);
+      updateViewModeUI(next);
+
+      if (next === 'phone') {
+        if (typeof window.setStoryTrackerCollapsed === 'function') window.setStoryTrackerCollapsed(true);
+        if (localStorage.getItem('inchan_touch_hidden') !== '1' && typeof window.toggleTouchControlsUI === 'function') {
+          window.toggleTouchControlsUI(true);
+        }
+      } else if (next === 'pad') {
+        if (localStorage.getItem('inchan_touch_hidden') !== '1' && typeof window.toggleTouchControlsUI === 'function') {
+          window.toggleTouchControlsUI(true);
+        }
+      } else if (userTriggered && next === 'pc') {
+        if (typeof window.setStoryTrackerCollapsed === 'function') window.setStoryTrackerCollapsed(false);
+      }
+
+      if (userTriggered) {
+        try { localStorage.setItem(VIEW_MODE_STORAGE_KEY, next); } catch (_) {}
+        if (typeof showToast === 'function') showToast(VIEW_MODE_META[next].toast);
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 40);
+      }
+      return next;
+    };
+
+    window.cycleViewMode = function(e) {
+      if (e) e.stopPropagation();
+      const order = ['phone', 'pad', 'pc'];
+      const idx = order.indexOf(currentViewMode);
+      const next = order[(idx + 1) % order.length];
+      initAudio();
+      soundChime(next === 'phone' ? 523 : (next === 'pad' ? 659 : 784));
+      return window.setViewMode(next, true);
+    };
+
+    window.getCurrentViewMode = function() {
+      return currentViewMode;
+    };
+
+    function updateFullscreenUI() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.body.classList.contains('pseudo-fullscreen'));
+      const btn = document.getElementById('btnFullscreen');
+      const iconEl = document.getElementById('fullscreenIcon');
+      const lblEl = document.getElementById('fullscreenLabel');
+      const badgeEl = document.getElementById('fsMenuBadge');
+      if (btn) btn.classList.toggle('active-orange', isFs);
+      if (lblEl) lblEl.textContent = isFs ? '창모드' : '전체';
+      if (badgeEl) badgeEl.textContent = isFs ? '전체 중' : '켜기';
+      if (iconEl) {
+        iconEl.innerHTML = isFs
+          ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>'
+          : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+      }
+    }
+
+    window.toggleFullscreen = async function(e) {
+      if (e) e.stopPropagation();
+      initAudio();
+      const docEl = document.documentElement;
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      try {
+        if (fsEl) {
+          if (document.exitFullscreen) await document.exitFullscreen();
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          document.body.classList.remove('pseudo-fullscreen');
+          updateFullscreenUI();
+          return;
+        }
+        const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen;
+        if (typeof req === 'function') {
+          await req.call(docEl);
+          updateFullscreenUI();
+          return;
+        }
+      } catch (_) {}
+      // iOS Safari 등 Fullscreen API 미지원/제한 시 꽉 찬 화면 폴백
+      const on = document.body.classList.toggle('pseudo-fullscreen');
+      updateFullscreenUI();
+      if (on && typeof showToast === 'function') {
+        showToast('⛶ 꽉 찬 화면 전환! (모바일 브라우저 주소창을 완전히 없애려면 공유 → <b>홈 화면에 추가</b>를 이용해 보세요)');
+      }
+    };
+
+    document.addEventListener('fullscreenchange', updateFullscreenUI);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+    updateFullscreenUI();
+
+    (function initViewModeOnLoad() {
+      let savedMode = '';
+      try { savedMode = localStorage.getItem(VIEW_MODE_STORAGE_KEY) || ''; } catch (_) {}
+      const initialMode = (savedMode === 'phone' || savedMode === 'pad' || savedMode === 'pc')
+        ? savedMode
+        : detectRecommendedViewMode();
+      window.setViewMode(initialMode, false);
+    })();
+    window.addEventListener('resize', () => {
+      let savedMode = '';
+      try { savedMode = localStorage.getItem(VIEW_MODE_STORAGE_KEY) || ''; } catch (_) {}
+      if (!savedMode) window.setViewMode(detectRecommendedViewMode(), false);
+    });
 
   </script>
 
