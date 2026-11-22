@@ -611,6 +611,26 @@
     }
     .board-filter-btn.active { background: #18181b; color: #fff; border-color: #18181b; }
     .board-list { display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 4px; }
+    .board-compose-wrap { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-hair); background: var(--bg-modal, #faf9f5); position: sticky; bottom: 0; z-index: 4; }
+    .board-compose-row { display: flex; gap: 8px; align-items: center; }
+    .board-compose-row #boardPostInput { flex: 1; min-width: 0; }
+    .mom-actions-row { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+    @media (max-width: 640px) {
+      .board-list { max-height: 150px; }
+      .board-detail-box { padding: 10px 12px; }
+      .board-compose-row { flex-wrap: wrap; gap: 6px; }
+      .board-compose-row #boardPostInput { order: -1; flex: 1 1 100%; width: 100%; }
+      .board-compose-row #boardPostEmotion { flex: 1 1 auto; width: auto !important; min-width: 110px; }
+      .board-compose-row #btnSubmitPost { flex: 0 0 auto; height: 40px; padding: 0 18px !important; }
+      #modalThreeFinger .modal-sheet { padding: 16px 14px !important; }
+      #modalThreeFinger #tfCaseTitle { font-size: 17px !important; }
+      #modalThreeFinger #tfCaseSituation { font-size: 14.5px !important; line-height: 1.5 !important; }
+      #modalThreeFinger .tf-steps-grid { gap: 6px !important; margin-bottom: 10px !important; }
+      #modalThreeFinger .tf-steps-grid > div { padding: 7px 4px !important; font-size: 12px !important; }
+      #modalThreeFinger #tfQuestionTitle { font-size: 15px !important; margin-bottom: 8px !important; }
+      .mom-actions-row { flex-direction: column; align-items: stretch; }
+      .mom-actions-row button { width: 100%; justify-content: center; }
+    }
     .board-post-item {
       display: flex; justify-content: space-between; align-items: center; gap: 12px;
       padding: 12px 14px; border-radius: 10px; background: #fff;
@@ -1514,27 +1534,42 @@
     body.view-mode-phone .cust-modal-sheet {
       max-width: 440px !important;
     }
-    body.view-mode-phone .hud-top { top: 8px; left: 8px; right: 8px; gap: 5px; }
+    body.view-mode-phone .hud-top { top: 8px; left: 8px; right: 8px; gap: 4px; }
     body.view-mode-phone .hud-row { flex-wrap: nowrap; gap: 4px; }
     body.view-mode-phone .module-bar {
-      padding: 4px 8px; gap: 5px; max-width: calc(100vw - 208px); overflow-x: auto;
+      padding: 3px 8px; gap: 5px; max-width: calc(100vw - 168px); overflow-x: visible;
     }
-    body.view-mode-phone .brand-mark { width: 26px; height: 26px; }
+    body.view-mode-phone .brand-mark,
     body.view-mode-phone .brand-text,
     body.view-mode-phone .module-bar > .divider-v,
     body.view-mode-phone .quest-leds > .divider-v,
+    body.view-mode-phone .quest-led,
+    body.view-mode-phone #mindLevelBadge,
     body.view-mode-phone .stardust-chip-label,
     body.view-mode-phone .hw-btn .btn-txt-optional { display: none !important; }
     body.view-mode-phone .audio-mobile-icon { display: inline-block; }
-    body.view-mode-phone .quest-led { width: 9px; height: 9px; }
-    body.view-mode-phone .quest-count { font-size: 12px; }
-    body.view-mode-phone #mindScoreBadge { padding: 2px 7px 2px 3px !important; font-size: 12px !important; }
-    body.view-mode-phone #mindLevelBadge { font-size: 10.5px !important; padding: 1px 6px !important; }
-    body.view-mode-phone #mindScoreText { font-size: 12px !important; }
-    body.view-mode-phone #stardustText { font-size: 12px !important; }
-    body.view-mode-phone .stardust-chip-btn { padding: 2px 7px !important; gap: 4px; font-size: 12px !important; }
+    body.view-mode-phone .quest-leds { gap: 4px; }
+    body.view-mode-phone .quest-count { font-size: 11.5px; margin-left: 0; }
+    body.view-mode-phone #mindScoreBadge { padding: 2px 6px !important; font-size: 11.5px !important; gap: 0 !important; }
+    body.view-mode-phone #mindScoreText { font-size: 11.5px !important; }
+    body.view-mode-phone #stardustText { font-size: 11.5px !important; }
+    body.view-mode-phone .stardust-chip-btn { padding: 2px 6px !important; gap: 3px; font-size: 11.5px !important; }
     body.view-mode-phone .stardust-chip-help { width: 14px; height: 14px; font-size: 10px; }
-    body.view-mode-phone .hw-btn { height: 34px; padding: 0 6.5px; font-size: 12px; gap: 3px; border-radius: 9px; }
+    body.view-mode-phone .hw-btn { height: 32px; padding: 0 6px; font-size: 11.5px; gap: 3px; border-radius: 9px; }
+    body.view-mode-phone .board-list { max-height: 150px; }
+    body.view-mode-phone .board-detail-box { padding: 10px 12px; }
+    body.view-mode-phone .board-compose-row { flex-wrap: wrap; gap: 6px; }
+    body.view-mode-phone .board-compose-row #boardPostInput { order: -1; flex: 1 1 100%; width: 100%; }
+    body.view-mode-phone .board-compose-row #boardPostEmotion { flex: 1 1 auto; width: auto !important; min-width: 110px; }
+    body.view-mode-phone .board-compose-row #btnSubmitPost { flex: 0 0 auto; height: 40px; padding: 0 18px !important; }
+    body.view-mode-phone #modalThreeFinger .modal-sheet { padding: 16px 14px !important; }
+    body.view-mode-phone #modalThreeFinger #tfCaseTitle { font-size: 17px !important; }
+    body.view-mode-phone #modalThreeFinger #tfCaseSituation { font-size: 14.5px !important; line-height: 1.5 !important; }
+    body.view-mode-phone #modalThreeFinger .tf-steps-grid { gap: 6px !important; margin-bottom: 10px !important; }
+    body.view-mode-phone #modalThreeFinger .tf-steps-grid > div { padding: 7px 4px !important; font-size: 12px !important; }
+    body.view-mode-phone #modalThreeFinger #tfQuestionTitle { font-size: 15px !important; margin-bottom: 8px !important; }
+    body.view-mode-phone .mom-actions-row { flex-direction: column; align-items: stretch; }
+    body.view-mode-phone .mom-actions-row button { width: 100%; justify-content: center; }
     body.view-mode-phone .top-mission-wrap { display: none !important; }
 
     body.view-mode-phone .minimap-box {
@@ -2574,8 +2609,8 @@
           <span id="bdHeartLabel">마음 공감하기</span> (<span id="bdHeartCount">0</span>)
         </button>
       </div>
-      <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line-hair);">
-        <div style="display: flex; gap: 8px;">
+      <div class="board-compose-wrap">
+        <div class="board-compose-row">
           <select id="boardPostEmotion" class="text-input" style="width: 135px; flex-shrink: 0;">
             <option value="joy">기쁨이</option>
             <option value="sad">슬픔이</option>
@@ -9821,7 +9856,7 @@
         robot: { color: '#6366f1', t: '제4장 부서진 장난감 로봇 (나-전달법)', d: state.quests.robot ? '나-전달법으로 동생과 화해해 로봇을 멋지게 고쳤어요!' : (isMissionUnlocked('robot') ? '화난 마음을 비난 대신 "나-전달법"으로 표현해 로봇을 고쳐보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('robot') ? '나-전달법 대화 & 수리 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.openRobotIMessageModal() },
         stage: { color: '#e11d48', t: '제6장 학예 발표회 미니 무대', d: state.quests.stage ? '차근차근 준비해 학예 발표회를 멋지게 마쳤어요!' : (isMissionUnlocked('stage') ? '무대에 올라 지금 할 수 있는 발표 연습을 3단계로 진행해 보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('stage') ? '발표 연습하기 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.triggerStagePractice() },
         soccer: { color: '#f59e0b', t: '기쁨 축구 광장 · 양쪽 골대', d: '남쪽·북쪽 어느 골대로든 차 넣을 수 있어요! 골인 시 무지개 폭죽과 함께 기쁨 대폭발! ([G] 슛/리셋)', actText: '슛 날리기 / 공 리셋 (G)', actFn: () => window.kickOrResetSoccerBall() },
-        track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '트랙의 바나나·얼음·무적·아이언맨 슈트·터보를 모으며 8개 부스터 게이트를 돌파하세요!' : `트랙과 다양한 아이템을 자유롭게 체험할 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (${getCoreStoryDoneCount()}/5 후 활성)`, actFn: () => window.startOuterTrackDash() },
+        track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '트랙의 바나나·얼음·무적·아이언맨 슈트·터보를 모으며 8개 부스터 게이트를 돌파하세요!' : `트랙과 다양한 아이템을 자유롭게 체험할 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`, actFn: () => window.startOuterTrackDash() },
         zoo: { color: '#22c55e', t: '숲속 아기 동물원', d: '토끼, 아기곰, 펭귄 친구들과 교감하며 마음을 따뜻하게 달래보세요.', actText: '동물 친구들과 교감하기 (G)', actFn: () => window.interactZooAnimals() },
         garden: { color: '#f43f5e', t: '치유의 유리온실 식물원', d: '무지개 빛 꽃향기를 깊게 들이마시며 편안하게 숨을 고르고 가벼운 발걸음을 얻어보세요.', actText: '꽃향기 치유 호흡 (G)', actFn: () => window.interactGardenBloom() },
         beach: { color: '#38bdf8', t: '치유의 물놀이 해변 & 풀장', d: '시원한 물줄기와 파라솔 쉼터에서 물보라 점프를 하며 마음의 땀을 식혀보세요.', actText: '시원한 물보라 점프 (G)', actFn: () => window.interactBeachSplash() }
@@ -9863,12 +9898,12 @@
       }
       if (foundZone === 'anger') {
         const robOpen = isMissionUnlocked('robot');
-        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = robOpen ? '#2563eb' : '#71717a'; bRob.textContent = robOpen ? '로봇 수리 & 나-전달법 (R)' : `🔒 로봇 수리 (${getCoreStoryDoneCount()}/5 후 활성)`; bRob.onclick = () => window.openRobotIMessageModal();
+        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = robOpen ? '#2563eb' : '#71717a'; bRob.textContent = robOpen ? '로봇 수리 & 나-전달법 (R)' : `🔒 로봇 수리 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`; bRob.onclick = () => window.openRobotIMessageModal();
         btnsEl.appendChild(bRob);
       }
       if (foundZone === 'worry') {
         const stgOpen = isMissionUnlocked('stage');
-        const bStg = document.createElement('button'); bStg.className = 'zp-btn'; bStg.style.background = stgOpen ? '#e11d48' : '#71717a'; bStg.textContent = stgOpen ? '학예회 발표 연습하기' : `🔒 학예 발표 (${getCoreStoryDoneCount()}/5 후 활성)`; bStg.onclick = () => window.triggerStagePractice();
+        const bStg = document.createElement('button'); bStg.className = 'zp-btn'; bStg.style.background = stgOpen ? '#e11d48' : '#71717a'; bStg.textContent = stgOpen ? '학예회 발표 연습하기' : `🔒 학예 발표 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`; bStg.onclick = () => window.triggerStagePractice();
         btnsEl.appendChild(bStg);
       }
       if (state.spirits[foundZone] && npcDefinitions.some(d => d.key === foundZone)) {
@@ -11898,6 +11933,7 @@
     });
 
     window.openModal = id => {
+      if (typeof window.closeTopSettingsMenu === 'function') window.closeTopSettingsMenu();
       const el = document.getElementById(id);
       if (el) el.classList.add('open');
       document.body.classList.add('modal-open');
@@ -14829,14 +14865,16 @@
   window.openStoryBookModal = function() {
     initAudio();
     const modal = document.getElementById('storyBookModal');
-    if (modal) {
-      modal.style.display = 'flex';
-      if (!window.filteredAlbumScenes || window.filteredAlbumScenes.length === 0) {
-        window.filteredAlbumScenes = window.albumScenes;
-      }
-      updateAlbumView();
-      renderStoryFullTextChapter(window.currentStoryChapterIdx || 0);
+    if (!modal || !document.getElementById('albumImage')) {
+      openModal('modalStory');
+      return;
     }
+    modal.style.display = 'flex';
+    if (!window.filteredAlbumScenes || window.filteredAlbumScenes.length === 0) {
+      window.filteredAlbumScenes = window.albumScenes;
+    }
+    updateAlbumView();
+    renderStoryFullTextChapter(window.currentStoryChapterIdx || 0);
   };
 
   window.closeStoryBookModal = function() {
@@ -14860,15 +14898,20 @@
   };
 
   window.updateAlbumView = function() {
+    const imgEl = document.getElementById('albumImage');
+    if (!imgEl) return;
     const list = (window.filteredAlbumScenes && window.filteredAlbumScenes.length) ? window.filteredAlbumScenes : window.albumScenes;
     if (!list || list.length === 0) return;
     if (currentAlbumIdx >= list.length) currentAlbumIdx = 0;
     const cur = list[currentAlbumIdx];
-    document.getElementById('albumImage').src = cur.path;
-    document.getElementById('albumTitle').textContent = `${cur.chapter}: ${cur.title}`;
+    imgEl.src = cur.path;
+    const titleEl = document.getElementById('albumTitle');
+    if (titleEl) titleEl.textContent = `${cur.chapter}: ${cur.title}`;
     const chNum = parseInt(cur.chapter) || 1;
-    document.getElementById('albumCaption').textContent = CHAPTER_SEL_INSIGHTS[chNum - 1] || `《인찬이의 마음 손님》 원작 마스터 일러스트`;
-    document.getElementById('albumPageText').textContent = `${currentAlbumIdx + 1} / ${list.length}`;
+    const capEl = document.getElementById('albumCaption');
+    if (capEl) capEl.textContent = CHAPTER_SEL_INSIGHTS[chNum - 1] || `《인찬이의 마음 손님》 원작 마스터 일러스트`;
+    const pageEl = document.getElementById('albumPageText');
+    if (pageEl) pageEl.textContent = `${currentAlbumIdx + 1} / ${list.length}`;
   };
 
   // ==========================================
@@ -15617,7 +15660,7 @@
       </div>
 
       <!-- 하단 액션 버튼들 -->
-      <div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">
+      <div class="mom-actions-row">
         <button type="button" onclick="doMomHug()" style="padding: 13px 22px; border-radius: 999px; background: #18181b; color: #fff; font-size: 15.5px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
           <span>🤗</span> <span>따뜻하게 안아드리기 (+마음조각 5)</span>
         </button>
