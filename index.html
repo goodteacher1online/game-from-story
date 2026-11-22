@@ -72,6 +72,48 @@
       font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
       color: var(--ink-main); font-variant-numeric: tabular-nums; margin-left: 2px;
     }
+    .stardust-chip-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent; border: 1px solid rgba(24,24,27,0.16);
+      padding: 3px 10px; border-radius: 99px; font-size: 13.5px; font-weight: 700;
+      color: #18181b; cursor: pointer; font-family: inherit; line-height: 1.3;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+    }
+    .stardust-chip-btn:hover { background: rgba(217, 119, 6, 0.12); border-color: rgba(217, 119, 6, 0.55); }
+    .stardust-chip-btn:active { transform: scale(0.97); }
+    .stardust-chip-btn:focus-visible { outline: 2px solid #d97706; outline-offset: 2px; }
+    .stardust-chip-help {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: rgba(217, 119, 6, 0.16); color: #b45309;
+      font-size: 11px; font-weight: 800; line-height: 1;
+    }
+    .sd-guide-summary {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
+      padding: 12px 14px; margin: 10px 0 14px; text-align: left; word-break: keep-all;
+    }
+    .sd-guide-counts {
+      display: flex; flex-wrap: wrap; gap: 10px 18px;
+      font-size: 14px; color: #78350f; margin-bottom: 6px;
+    }
+    .sd-guide-counts b { color: #b45309; font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+    .sd-guide-lead { font-size: 13.5px; line-height: 1.55; color: #451a03; margin: 0; text-align: left; }
+    .sd-guide-grid {
+      display: grid; grid-template-columns: 1fr; gap: 8px;
+      max-height: 50vh; overflow-y: auto; padding-right: 2px; text-align: left;
+    }
+    .sd-guide-item {
+      display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start;
+      padding: 10px 12px; border-radius: 11px; border: 1px solid #e4e4e7; background: #fafaf9;
+    }
+    .sd-guide-icon { font-size: 20px; line-height: 1.2; text-align: center; }
+    .sd-guide-title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .sd-guide-title { font-size: 14px; font-weight: 800; color: #18181b; }
+    .sd-guide-badge {
+      font-size: 11.5px; font-weight: 800; color: #b45309; background: #fef3c7;
+      border: 1px solid #fcd34d; padding: 1px 7px; border-radius: 99px; white-space: nowrap;
+    }
+    .sd-guide-desc { font-size: 12.8px; line-height: 1.48; color: #52525b; margin: 3px 0 0; word-break: keep-all; text-align: left; }
 
     /* 하드웨어 토글 버튼 (Braun 스위치 감성) */
     .hw-btn {
@@ -103,12 +145,22 @@
     }
     .toast {
       background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(12px);
-      color: #18181b; padding: 11px 20px; border-radius: 12px;
+      color: #18181b; padding: 10px 14px 10px 18px; border-radius: 12px;
       font-size: 16px; font-weight: 600; line-height: 1.5; border: 1px solid rgba(24, 24, 27, 0.14);
-      box-shadow: 0 8px 24px rgba(15, 15, 20, 0.1);
+      box-shadow: 0 8px 24px rgba(15, 15, 20, 0.12);
       animation: toastSlide 0.22s ease forwards;
       text-align: left; word-break: keep-all;
+      pointer-events: auto; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
+    .toast-body { flex: 1; min-width: 0; }
+    .toast-close {
+      flex-shrink: 0; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid rgba(24, 24, 27, 0.18); background: #f4f4f5; color: #18181b;
+      font-size: 12.5px; font-weight: 700; cursor: pointer; line-height: 1.2;
+      transition: background 0.14s, color 0.14s;
+    }
+    .toast-close:hover { background: #18181b; color: #ffffff; border-color: #18181b; }
     .toast b { color: #d97706; }
     @keyframes toastSlide {
       from { opacity: 0; transform: translateY(-6px); }
@@ -118,12 +170,13 @@
     /* 외곽 경기장 아이템 활성 상태 배지 */
     .track-status-pill {
       position: fixed; top: 124px; left: 50%; transform: translateX(-50%);
-      display: none; align-items: center; gap: 8px;
+      display: none; align-items: center; justify-content: center; gap: 8px;
       background: rgba(24, 24, 27, 0.92); color: #ffffff;
       border: 1.5px solid #fbbf24; border-radius: 999px;
       padding: 7px 18px; font-size: 15.5px; font-weight: 700;
       box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
-      z-index: 58; pointer-events: none; white-space: nowrap;
+      z-index: 58; pointer-events: auto; cursor: pointer;
+      max-width: calc(100vw - 32px); white-space: normal; text-align: center; line-height: 1.35;
     }
     .track-status-pill.active { display: inline-flex; }
 
@@ -182,7 +235,33 @@
       display: flex; flex-direction: column; align-items: stretch; gap: 8px;
     }
     .zone-prompt.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-    .zp-head { display: flex; align-items: center; gap: 9px; font-size: 17.5px; font-weight: 700; color: #18181b; flex-wrap: wrap; justify-content: flex-start; }
+    .zp-head { display: flex; align-items: center; gap: 9px; font-size: 17.5px; font-weight: 700; color: #18181b; flex-wrap: nowrap; justify-content: flex-start; }
+    .zp-title-text { flex: 1; min-width: 0; word-break: keep-all; }
+    .zp-close {
+      margin-left: auto; width: 26px; height: 26px; border-radius: 8px;
+      border: 1px solid rgba(24, 24, 27, 0.16); background: #f4f4f5; color: #3f3f46;
+      font-size: 13px; font-weight: 800; cursor: pointer; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.14s, color 0.14s;
+    }
+    .zp-close:hover { background: #18181b; color: #ffffff; border-color: #18181b; }
+    .lh-mini-dock {
+      display: none; position: fixed; left: 50%; bottom: 82px; transform: translateX(-50%);
+      z-index: 47; gap: 6px; padding: 5px 7px; border-radius: 999px;
+      background: rgba(24, 24, 27, 0.84); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+      pointer-events: auto;
+    }
+    .lh-mini-dock.visible { display: inline-flex; align-items: center; }
+    .lh-mini-btn {
+      padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.12); color: #ffffff;
+      font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+      transition: background 0.14s, transform 0.12s;
+    }
+    .lh-mini-btn:hover { background: rgba(255, 255, 255, 0.22); }
+    .lh-mini-btn.primary { background: #ffffff; color: #18181b; border-color: #ffffff; }
+    .lh-mini-btn.primary:hover { background: #fef08a; border-color: #fef08a; }
     .zp-chip { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .zp-desc { font-size: 15.5px; color: #27272a; line-height: 1.5; word-break: keep-all; text-align: left; }
     .zp-btns { display: flex; gap: 8px; margin-top: 2px; flex-wrap: wrap; justify-content: flex-start; }
@@ -838,35 +917,39 @@
       max-height: 92vh; overflow-y: auto !important;
       box-sizing: border-box; position: relative;
     }
-    .cust-modal-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 16px; padding-bottom: 14px;
+    .cust-top-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      margin-bottom: 14px; padding-bottom: 12px;
       border-bottom: 1px solid #e4e4e7;
     }
-    .cust-header-left { display: flex; flex-direction: column; gap: 4px; text-align: left; min-width: 0; }
-    .cust-badge-top {
-      display: inline-flex; align-items: center; gap: 5px; width: fit-content;
-      padding: 3px 9px; border-radius: 6px;
-      background: #f4f4f5; border: 1px solid #e4e4e7;
-      color: #52525b; font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px;
-      white-space: nowrap;
-    }
-    .cust-modal-title {
-      font-size: 22px; font-weight: 800; color: #18181b;
-      margin: 0; letter-spacing: -0.3px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .cust-modal-desc {
-      font-size: 15.5px; color: #52525b; line-height: 1.45; margin: 0;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
+    .cust-top-bar .cust-device-picker { flex: 1; min-width: 0; margin-bottom: 0; }
     .cust-btn-close {
-      width: 32px; height: 32px; border-radius: 8px;
+      width: 34px; height: 34px; border-radius: 9px;
       background: #ffffff; border: 1px solid #e4e4e7;
-      color: #52525b; font-size: 14px; cursor: pointer; transition: all 0.15s;
+      color: #52525b; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .cust-btn-close:hover { background: #18181b; color: #ffffff; border-color: #18181b; }
+
+    /* 교실 방 A / B / C 3개 선택 버튼 */
+    .room-btn-group {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%;
+    }
+    .room-pick-btn {
+      height: 44px; border-radius: 10px;
+      border: 1.5px solid #e4e4e7; background: #ffffff; color: #3f3f46;
+      font-size: 16px; font-weight: 800; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      transition: all 0.14s ease;
+    }
+    .room-pick-btn:hover { border-color: #a1a1aa; color: #18181b; background: #fafafa; }
+    .room-pick-btn.active {
+      background: #18181b; border-color: #18181b; color: #ffffff;
+      box-shadow: 0 4px 12px rgba(24, 24, 27, 0.16);
+    }
+    @media (max-width: 600px) {
+      .room-pick-btn { height: 38px !important; font-size: 14px !important; }
+    }
 
     /* 세련된 라이트 쇼룸 아바타 & 정령 프리뷰 스테이지 (우측 박스 테두리 완전 제거 & 에디토리얼 타이포그래피) */
     .cust-avatar-showcase {
@@ -1251,18 +1334,29 @@
       backdrop-filter: blur(14px);
       border: 1.5px solid #18181b;
       border-radius: 16px;
-      padding: 15px 28px;
+      padding: 14px 20px;
       box-shadow: 0 14px 36px rgba(15, 15, 20, 0.14);
       color: #18181b; text-align: left;
-      z-index: 9500; opacity: 0; pointer-events: none;
+      z-index: 100500; opacity: 0; pointer-events: none;
       transition: all 0.3s ease; max-width: 90vw;
+      display: flex; align-items: center; gap: 14px;
     }
     .congrats-banner.show {
       transform: translateX(-50%) translateY(0);
       opacity: 1; pointer-events: auto;
     }
-    .congrats-title { font-size: 24px; font-weight: 800; color: #18181b; margin-bottom: 4px; }
-    .congrats-sub { font-size: 16.5px; color: #3f3f46; line-height: 1.45; word-break: keep-all; text-align: left; }
+    .congrats-copy { flex: 1; min-width: 0; }
+    .congrats-title { font-size: 22px; font-weight: 800; color: #18181b; margin-bottom: 3px; }
+    .congrats-sub { font-size: 15.5px; color: #3f3f46; line-height: 1.45; word-break: keep-all; text-align: left; }
+    .congrats-close-btn {
+      flex-shrink: 0; padding: 7px 14px; border-radius: 999px;
+      border: 1px solid #18181b; background: #18181b; color: #ffffff;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .congrats-close-btn:hover { background: #3f3f46; }
+    body.view-mode-phone .congrats-banner { top: 86px; width: calc(100vw - 16px); max-width: calc(100vw - 16px); padding: 11px 13px; gap: 10px; }
+    body.view-mode-phone .congrats-title { font-size: 16px; }
+    body.view-mode-phone .congrats-sub { font-size: 13.5px; }
 
     /* 대화 선택지 버튼 (라이트 모드) */
     .mom-choice-btn {
@@ -1380,10 +1474,7 @@
         border-radius: 16px !important;
         max-height: 94dvh !important;
       }
-      .cust-modal-header { margin-bottom: 10px !important; padding-bottom: 10px !important; gap: 8px; }
-      .cust-badge-top { font-size: 9.5px; padding: 2px 7px; }
-      .cust-modal-title { font-size: 16.5px !important; white-space: normal !important; word-break: keep-all; line-height: 1.28; }
-      .cust-modal-desc { font-size: 13px !important; white-space: normal !important; word-break: keep-all; line-height: 1.38; margin-top: 2px !important; }
+      .cust-top-bar { margin-bottom: 10px !important; padding-bottom: 10px !important; gap: 6px !important; }
       .cust-avatar-showcase {
         grid-template-columns: 80px 1fr !important;
         gap: 10px !important; padding: 10px !important; margin-bottom: 10px !important;
@@ -1441,6 +1532,8 @@
     body.view-mode-phone #mindLevelBadge { font-size: 10.5px !important; padding: 1px 6px !important; }
     body.view-mode-phone #mindScoreText { font-size: 12px !important; }
     body.view-mode-phone #stardustText { font-size: 12px !important; }
+    body.view-mode-phone .stardust-chip-btn { padding: 2px 7px !important; gap: 4px; font-size: 12px !important; }
+    body.view-mode-phone .stardust-chip-help { width: 14px; height: 14px; font-size: 10px; }
     body.view-mode-phone .hw-btn { height: 34px; padding: 0 6.5px; font-size: 12px; gap: 3px; border-radius: 9px; }
     body.view-mode-phone .top-mission-wrap { display: none !important; }
 
@@ -1510,7 +1603,15 @@
       transform: none !important; width: auto !important; max-width: none !important;
       align-items: flex-start !important;
     }
-    body.view-mode-phone .toast { font-size: 13px !important; padding: 7px 12px !important; line-height: 1.38; text-align: left !important; }
+    body.view-mode-phone .toast { font-size: 13px !important; padding: 7px 10px 7px 12px !important; line-height: 1.38; text-align: left !important; }
+    body.view-mode-phone .track-status-pill {
+      top: 150px !important; left: 8px !important; right: 66px !important; transform: none !important;
+      width: auto !important; max-width: none !important; white-space: normal !important;
+      text-align: center !important; justify-content: center !important;
+      font-size: 12.5px !important; line-height: 1.35 !important; padding: 7px 12px !important; border-radius: 13px !important;
+    }
+    body.view-mode-phone .lh-mini-dock { bottom: 54px !important; padding: 4px 6px !important; }
+    body.view-mode-phone .lh-mini-btn { font-size: 12px !important; padding: 5px 10px !important; }
 
     body.view-mode-phone .action-dock {
       bottom: 6px !important; padding: 4px 6px !important; gap: 3px !important; border-radius: 12px !important;
@@ -1563,12 +1664,13 @@
           <div class="quest-led" id="dotWorry" style="color: #10b981;" title="걱정"></div>
           <span class="quest-count" id="questCountText">0/5</span>
           <div class="divider-v" style="margin: 0 4px;"></div>
-          <!-- 마음 조각 수집 계측기 (투명 배경 + 1px 헤어라인) -->
-          <div style="display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid rgba(24,24,27,0.16); padding:3px 10px; border-radius:99px; font-size:13.5px; font-weight:700; color:#18181b;" title="월드에서 모은 마음 조각">
+          <!-- 마음 조각 수집 계측기 (클릭 시 획득 방법 안내) -->
+          <button type="button" id="btnStardustGuide" class="stardust-chip-btn" onclick="openStardustGuide()" title="클릭해서 마음 조각 얻는 방법 보기" aria-label="마음 조각 얻는 방법 보기">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2"><polygon points="12 2 19 12 12 22 5 12"/></svg>
             <span class="stardust-chip-label">마음 조각</span>
             <span id="stardustText" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:13.5px;">0/15</span>
-          </div>
+            <span class="stardust-chip-help" aria-hidden="true">?</span>
+          </button>
           <!-- 누적 마음 점수 & 성장 단계 -->
           <div id="mindScoreBadge" style="display:inline-flex; align-items:center; gap:6px; background:transparent; padding:3px 10px 3px 4px; border-radius:99px; border:1px solid rgba(24,24,27,0.16); font-weight:700;" title="누적 마음 점수 & 성장 단계">
             <span id="mindLevelBadge" style="background:#18181b; color:#ffffff; font-size:12px; font-weight:700; padding:1px 8px; border-radius:99px;">Lv.1 새싹</span>
@@ -1701,8 +1803,9 @@
   <div class="zone-prompt" id="zonePrompt">
     <div class="zp-head">
       <span class="zp-chip" id="zpChip"></span>
-      <span id="zpTitle">구역</span>
+      <span class="zp-title-text" id="zpTitle">구역</span>
       <span class="zp-progress" id="zpProgress" style="display:none;">0/3</span>
+      <button type="button" class="zp-close" id="btnZpClose" aria-label="안내 닫기">✕</button>
     </div>
     <div class="zp-desc" id="zpDesc">안내</div>
     <div class="breath-bar-wrap" id="breathBarWrap">
@@ -1710,6 +1813,10 @@
       <div class="timing-cursor" id="timingCursor"></div>
     </div>
     <div class="zp-btns" id="zpBtns"></div>
+  </div>
+  <div class="lh-mini-dock" id="lhMiniDock" aria-label="등대 전망대 간편 제어">
+    <button type="button" class="lh-mini-btn" id="btnLhMiniPanorama" onclick="window.toggleLighthousePanorama()">🔭 파노라마</button>
+    <button type="button" class="lh-mini-btn primary" id="btnLhMiniDown" onclick="window.rideLighthouseElevator('down')">🛗 내려가기</button>
   </div>
 
   <div id="keyHints" style="display:none;"></div>
@@ -1760,8 +1867,11 @@
 
   <!-- 축하 팝업 배너 -->
   <div class="congrats-banner" id="congratsBanner">
-    <div class="congrats-title" id="congratsTitle">축하합니다</div>
-    <div class="congrats-sub" id="congratsSub">내용</div>
+    <div class="congrats-copy">
+      <div class="congrats-title" id="congratsTitle">축하합니다</div>
+      <div class="congrats-sub" id="congratsSub">내용</div>
+    </div>
+    <button type="button" class="congrats-close-btn" id="btnCongratsClose" onclick="window.hideCongratsBanner()">확인</button>
   </div>
 
   <!-- 하단 슬림 컨트롤 독: 1~6 슬롯 키캡 + F 발사 / G 대화 / B 놓기 / Space 점프 / C 심호흡 / E 춤 / Q 명상 단축키 통일 -->
@@ -1817,29 +1927,23 @@
   <!-- 모달 0: 에디토리얼 라이트 모드 캐릭터 & 동행 정령 스튜디오 -->
   <div class="modal-overlay" id="modalCustomize">
     <div class="cust-modal-sheet">
-      <div class="cust-modal-header">
-        <div class="cust-header-left">
-          <span class="cust-badge-top">CHARACTER &amp; SPIRIT STUDIO</span>
-          <h3 class="cust-modal-title">나만의 마음 아바타 &amp; 동행 정령 설정</h3>
-          <p class="cust-modal-desc">오늘 내 마음 광주리에 함께할 감정 정령과 아바타 스타일을 선택하세요.</p>
+      <!-- 상단 바: 기기 화면 모드 선택 + 닫기 버튼 -->
+      <div class="cust-top-bar">
+        <div class="cust-device-picker" id="custDevicePicker" role="group" aria-label="화면 모드 선택">
+          <button type="button" class="cust-device-card" data-mode="phone" onclick="window.setViewMode('phone', true)">
+            <svg width="20" height="24" viewBox="0 0 20 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="1.5" width="14" height="25" rx="3"/><line x1="8" y1="23" x2="12" y2="23"/></svg>
+            <div class="cdc-text"><b>스마트폰</b><span>9:16 축약·1열</span></div>
+          </button>
+          <button type="button" class="cust-device-card" data-mode="pad" onclick="window.setViewMode('pad', true)">
+            <svg width="26" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1.5" y="2" width="25" height="16" rx="2.5"/><circle cx="24" cy="10" r="0.9" fill="currentColor"/></svg>
+            <div class="cdc-text"><b>패드·태블릿</b><span>16:9 터치균형</span></div>
+          </button>
+          <button type="button" class="cust-device-card" data-mode="pc" onclick="window.setViewMode('pc', true)">
+            <svg width="24" height="20" viewBox="0 0 26 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="22" height="14" rx="2"/><line x1="9" y1="20" x2="17" y2="20"/><line x1="13" y1="16" x2="13" y2="20"/></svg>
+            <div class="cdc-text"><b>PC 화면</b><span>전체 상세안내</span></div>
+          </button>
         </div>
-        <button type="button" class="cust-btn-close" onclick="closeModal('modalCustomize')">✕</button>
-      </div>
-
-      <!-- 화면 비율 · 기기 모드 선택 (스마트폰 9:16 / 패드 16:9 / PC 상세) -->
-      <div class="cust-device-picker" id="custDevicePicker" role="group" aria-label="화면 모드 선택">
-        <button type="button" class="cust-device-card" data-mode="phone" onclick="window.setViewMode('phone', true)">
-          <svg width="20" height="24" viewBox="0 0 20 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="1.5" width="14" height="25" rx="3"/><line x1="8" y1="23" x2="12" y2="23"/></svg>
-          <div class="cdc-text"><b>스마트폰</b><span>9:16 축약·1열</span></div>
-        </button>
-        <button type="button" class="cust-device-card" data-mode="pad" onclick="window.setViewMode('pad', true)">
-          <svg width="26" height="20" viewBox="0 0 28 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1.5" y="2" width="25" height="16" rx="2.5"/><circle cx="24" cy="10" r="0.9" fill="currentColor"/></svg>
-          <div class="cdc-text"><b>패드·태블릿</b><span>16:9 터치균형</span></div>
-        </button>
-        <button type="button" class="cust-device-card" data-mode="pc" onclick="window.setViewMode('pc', true)">
-          <svg width="24" height="20" viewBox="0 0 26 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="22" height="14" rx="2"/><line x1="9" y1="20" x2="17" y2="20"/><line x1="13" y1="16" x2="13" y2="20"/></svg>
-          <div class="cdc-text"><b>PC 화면</b><span>전체 상세안내</span></div>
-        </button>
+        <button type="button" class="cust-btn-close" onclick="closeModal('modalCustomize')" aria-label="닫기">✕</button>
       </div>
 
       <!-- 세련된 라이트 쇼룸 프리뷰 스테이지 (우측 박스 카드 제거 & 깔끔한 에디토리얼 타이포그래피) -->
@@ -1914,13 +2018,18 @@
             </select>
           </div>
           <div class="cust-field">
-            <label class="cust-label" for="custInputRoom">교실 방 코드 (숫자 3자리)</label>
-            <input class="cust-input" id="custInputRoom" type="text" inputmode="numeric" pattern="[0-9]{3}" maxlength="3" placeholder="101" value="101" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);" />
+            <label class="cust-label">교실 방 선택 (A · B · C)</label>
+            <div class="room-btn-group" id="custRoomPicker" role="group" aria-label="교실 방 선택">
+              <button type="button" class="room-pick-btn active" data-room="A">A방</button>
+              <button type="button" class="room-pick-btn" data-room="B">B방</button>
+              <button type="button" class="room-pick-btn" data-room="C">C방</button>
+            </div>
+            <input type="hidden" id="custInputRoom" value="A" />
           </div>
         </div>
 
         <div class="cust-profile-bar" id="custProfileBar">
-          <span class="cust-profile-hint" id="custProfileHint">☁️ 방 코드·이름·4자리 암호로 내 기록이 저장되어 다시 접속해도 이어할 수 있어요.</span>
+          <span class="cust-profile-hint" id="custProfileHint">☁️ 방(A·B·C)·이름·4자리 암호로 내 기록이 저장되어 다시 접속해도 이어할 수 있어요.</span>
           <button type="button" class="cust-restore-btn" id="btnRestoreMyProfile">📂 내 기록 불러오기</button>
         </div>
         <div class="inline-error-box" id="custPinError" style="display:none; margin-top:0;"></div>
@@ -2280,6 +2389,89 @@
     </div>
   </div>
 
+  <!-- 모달 3-B: 마음 조각 얻는 방법 안내 -->
+  <div class="modal-overlay" id="modalStardustGuide">
+    <div class="modal-sheet" style="max-width:540px;">
+      <div class="modal-header">
+        <h3 class="modal-title">✨ 마음 조각 얻는 방법</h3>
+        <button type="button" class="btn-close" onclick="closeModal('modalStardustGuide')" aria-label="닫기">✕</button>
+      </div>
+      <div class="sd-guide-summary">
+        <div class="sd-guide-counts">
+          <span>💎 월드 보석 수집: <b id="sdGuideGemCount">0/15</b></span>
+          <span>✨ 누적 마음 조각: <b id="sdGuideTotalCount">0</b>개</span>
+        </div>
+        <p class="sd-guide-lead">상단 표시는 <b>[맵에서 주운 보석 개수/15 (누적 조각 합계)]</b>입니다. 보석을 줍거나 아래 감정 활동을 하면 마음 조각이 계속 쌓입니다!</p>
+      </div>
+      <div class="sd-guide-grid">
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">💎</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">월드 황금 다이아몬드 수집</span><span class="sd-guide-badge">+1개 · 총 15개</span></div>
+            <p class="sd-guide-desc">광장·언덕·등대 길목 등에 떠서 회전하는 황금 보석에 다가가면 자동 수집(+40점)됩니다.</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">⛏️</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">감정 광석 채굴</span><span class="sd-guide-badge">+3개</span></div>
+            <p class="sd-guide-desc">맵 곳곳의 반짝이는 감정 광석을 클릭(터치)해 채굴하면 보너스 조각을 얻습니다.</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">🏮</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">걱정 털실 모아 소원 연등 날리기</span><span class="sd-guide-badge">+10개</span></div>
+            <p class="sd-guide-desc">걱정 털실 3개를 모아 연등을 날리면 대량 획득합니다 (반복 가능).</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">🤖</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">장난감 로봇 수리 · 나-전달법</span><span class="sd-guide-badge">+6개</span></div>
+            <p class="sd-guide-desc">제4장 나-전달법 대화로 로봇을 수리하면 획득합니다.</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">💧</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">슬픔의 연못 눈물 떠나보내기</span><span class="sd-guide-badge">+5개</span></div>
+            <p class="sd-guide-desc">슬픔의 연못에서 무지개 연꽃을 피우면 획득합니다.</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">🎤</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">학예 발표회 연습 완성</span><span class="sd-guide-badge">+5개</span></div>
+            <p class="sd-guide-desc">제6장 발표 연습 3단계를 마치면 획득합니다.</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">🧺</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">친구와 광주리 같이 들기</span><span class="sd-guide-badge">+5개</span></div>
+            <p class="sd-guide-desc">NPC 친구 또는 접속한 다른 친구와 함께 광주리를 들면 획득합니다.</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">🤟</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">세 손가락 마음 탐정 해결</span><span class="sd-guide-badge">+5개</span></div>
+            <p class="sd-guide-desc">탐정 사건을 해결할 때마다 획득합니다.</p>
+          </div>
+        </div>
+        <div class="sd-guide-item">
+          <div class="sd-guide-icon">🤗</div>
+          <div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">엄마와 대화 · 따뜻하게 안아드리기</span><span class="sd-guide-badge">+5개</span></div>
+            <p class="sd-guide-desc">엄마에게 칭찬을 듣거나 안아드리면 획득합니다.</p>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn-primary-full" id="btnCloseStardustGuide" onclick="closeModal('modalStardustGuide')">확인</button>
+    </div>
+  </div>
+
   <!-- 모달 4: 동화 원작 -->
   <div class="modal-overlay" id="modalStory">
     <div class="modal-sheet">
@@ -2467,7 +2659,7 @@
       soundOn: true,
       onlineCount: 48,
       playerId: 'p_' + Math.random().toString(36).slice(2, 9),
-      roomCode: '101',
+      roomCode: 'A',
       playerName: '인찬이',
       playerTitle: '마음 탐험가',
       playerPin: '0000',
@@ -2561,12 +2753,12 @@
       return sha256PureJs(bytes);
     }
     function getProfileAccountKey(roomCode, name) {
-      const rm = String(roomCode || '101').replace(/[^0-9]/g, '').slice(0, 3).padStart(3, '0');
+      const rm = normalizeRoomCodeInput(roomCode);
       const nm = String(name || '인찬이').trim().toLowerCase().slice(0, 24);
       return `${rm}::${nm}`;
     }
     async function computePlayerPinHash(roomCode, name, pin) {
-      const rm = String(roomCode || '101').replace(/[^0-9]/g, '').slice(0, 3).padStart(3, '0');
+      const rm = normalizeRoomCodeInput(roomCode);
       const nm = String(name || '인찬이').trim().toLowerCase().slice(0, 24);
       const pn = String(pin || '0000').replace(/[^0-9]/g, '').slice(0, 4) || '0000';
       return sha256Hex(`inchan-pin-v1:${rm}:${nm}:${pn}`);
@@ -2588,7 +2780,7 @@
       return {
         playerName: state.playerName,
         playerTitle: state.playerTitle,
-        roomCode: state.roomCode || '101',
+        roomCode: normalizeRoomCodeInput(state.roomCode || 'A'),
         shirtColor: state.shirtColor,
         hatType: state.hatType,
         hairStyle: state.hairStyle || 'short',
@@ -2621,7 +2813,7 @@
       cloudSaveTimer = setTimeout(async () => {
         cloudSaveTimer = null;
         try {
-          await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(state.roomCode || '101')}/player/save`, {
+          await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(normalizeRoomCodeInput(state.roomCode || 'A'))}/player/save`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2648,7 +2840,7 @@
           const map = readLocalProfilesMap();
           map[state.profileAccountKey] = {
             key: state.profileAccountKey,
-            roomCode: state.roomCode || '101',
+            roomCode: normalizeRoomCodeInput(state.roomCode || 'A'),
             name: state.playerName || '인찬이',
             pinHash: state.playerPinHash,
             updatedAt: snap.updatedAt,
@@ -2716,7 +2908,7 @@
       if (!d || typeof d !== 'object') return;
       if (d.playerName) state.playerName = d.playerName;
       if (d.playerTitle) state.playerTitle = d.playerTitle;
-      if (d.roomCode) state.roomCode = String(d.roomCode).replace(/[^0-9]/g, '').slice(0, 3).padStart(3, '0');
+      if (d.roomCode) state.roomCode = normalizeRoomCodeInput(d.roomCode);
       if (d.shirtColor) state.shirtColor = d.shirtColor;
       if (d.hatType) state.hatType = (d.hatType === 'ahoge' ? 'sprout' : d.hatType);
       if (d.hairStyle) state.hairStyle = d.hairStyle;
@@ -2763,7 +2955,7 @@
         const d = JSON.parse(raw);
         if (d.playerName) state.playerName = d.playerName;
         if (d.playerTitle) state.playerTitle = d.playerTitle;
-        if (d.roomCode) state.roomCode = String(d.roomCode).replace(/[^0-9]/g, '').slice(0, 3).padStart(3, '0');
+        if (d.roomCode) state.roomCode = normalizeRoomCodeInput(d.roomCode);
         if (d.playerPin) state.playerPin = String(d.playerPin).replace(/[^0-9]/g, '').slice(0, 4) || '0000';
         if (d.playerPinHash) state.playerPinHash = d.playerPinHash;
         if (d.profileAccountKey) state.profileAccountKey = d.profileAccountKey;
@@ -3605,20 +3797,91 @@
     const ring2 = new THREE.Mesh(new THREE.TorusGeometry(4.4, 0.1, 8, 24), frameMat); ring2.rotation.x = Math.PI/2; ring2.position.y = 3.6;
     gardenGroup.add(ring1, ring2);
 
-    const gardenFlowerColors = [0xec4899, 0xf59e0b, 0x3b82f6, 0xa855f7, 0x10b981];
-    for (let f = 0; f < 8; f++) {
+    const gardenFlowerColors = [0xec4899, 0xf59e0b, 0x38bdf8, 0xa855f7, 0x10b981, 0xf43f5e, 0xfacc15, 0xe879f9];
+    const gardenBloomingFlowers = [];
+    const gardenDomeGlow = new THREE.PointLight(0xf472b6, 0, 14);
+    gardenDomeGlow.position.set(0, 2.8, 0);
+    gardenGroup.add(gardenDomeGlow);
+    let gardenBloomTimer = 0;
+
+    for (let f = 0; f < 9; f++) {
+      const isCenterHero = (f === 8);
       const ang = (f / 8) * Math.PI * 2;
-      const dist = 2.0 + Math.random() * 2.8;
+      const dist = isCenterHero ? 0 : (2.1 + (f % 3) * 0.95);
       const fg = new THREE.Group();
-      fg.position.set(Math.cos(ang) * dist, 0.2, Math.sin(ang) * dist);
-      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 1.4, 6), new THREE.MeshStandardMaterial({ color: 0x22c55e }));
-      stem.position.y = 0.7;
-      const petalCol = gardenFlowerColors[f % gardenFlowerColors.length];
-      const flower = new THREE.Mesh(new THREE.DodecahedronGeometry(0.42), new THREE.MeshStandardMaterial({ color: petalCol, emissive: petalCol, emissiveIntensity: 0.6 }));
-      flower.position.y = 1.45;
-      fg.add(stem, flower);
+      fg.position.set(isCenterHero ? 0 : Math.cos(ang) * dist, 0.2, isCenterHero ? 0 : Math.sin(ang) * dist);
+      const stemH = isCenterHero ? 1.85 : (1.15 + (f % 3) * 0.22);
+      const stem = new THREE.Mesh(
+        new THREE.CylinderGeometry(isCenterHero ? 0.08 : 0.055, isCenterHero ? 0.11 : 0.075, stemH, 8),
+        new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.6 })
+      );
+      stem.position.y = stemH / 2;
+      const leafL = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.14), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
+      leafL.position.set(-0.18, stemH * 0.48, 0); leafL.rotation.z = 0.45;
+      const leafR = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.14), new THREE.MeshStandardMaterial({ color: 0x16a34a }));
+      leafR.position.set(0.18, stemH * 0.62, 0); leafR.rotation.z = -0.45;
+
+      const headGroup = new THREE.Group();
+      headGroup.position.y = stemH + 0.08;
+      const petalCol = isCenterHero ? 0xf43f5e : gardenFlowerColors[f % gardenFlowerColors.length];
+      const coreMat = new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xf59e0b, emissiveIntensity: 0.55, roughness: 0.3 });
+      const core = new THREE.Mesh(new THREE.SphereGeometry(isCenterHero ? 0.26 : 0.16, 12, 12), coreMat);
+      headGroup.add(core);
+
+      const petalMat = new THREE.MeshStandardMaterial({ color: petalCol, emissive: petalCol, emissiveIntensity: 0.35, roughness: 0.3, side: THREE.DoubleSide });
+      const petalCount = isCenterHero ? 8 : 6;
+      const petalPivots = [];
+      for (let pi = 0; pi < petalCount; pi++) {
+        const pWrap = new THREE.Group();
+        pWrap.rotation.y = (pi / petalCount) * Math.PI * 2;
+        const pPivot = new THREE.Group();
+        pPivot.rotation.x = 0.34; // 평소 반쯤 오므린 꽃봉오리
+        const pLen = isCenterHero ? 0.62 : 0.38;
+        const petalMesh = new THREE.Mesh(new THREE.BoxGeometry(isCenterHero ? 0.28 : 0.19, pLen, 0.055), petalMat);
+        petalMesh.position.y = pLen / 2 + 0.04;
+        pPivot.add(petalMesh);
+        pWrap.add(pPivot);
+        headGroup.add(pWrap);
+        petalPivots.push(pPivot);
+      }
+      fg.add(stem, leafL, leafR, headGroup);
       gardenGroup.add(fg);
+      gardenBloomingFlowers.push({
+        group: fg, headGroup, coreMat, petalMat, petalPivots,
+        baseScale: isCenterHero ? 1.25 : 1.0, phase: f * 0.7
+      });
     }
+
+    // 인찬이를 휘감아 오르는 68장 3D 꽃잎 회오리 & 플로럴 아우라 링
+    const gardenSwirlPetals = [];
+    const swirlColors = [0xf472b6, 0xfb7185, 0xfde047, 0xc084fc, 0x38bdf8, 0xfef08a, 0x34d399];
+    const swirlPetalGeo = new THREE.BoxGeometry(0.24, 0.34, 0.03);
+    for (let sp = 0; sp < 68; sp++) {
+      const pMesh = new THREE.Mesh(
+        swirlPetalGeo,
+        new THREE.MeshBasicMaterial({ color: swirlColors[sp % swirlColors.length], transparent: true, opacity: 0.92, side: THREE.DoubleSide })
+      );
+      pMesh.visible = false;
+      worldGroup.add(pMesh);
+      gardenSwirlPetals.push({
+        mesh: pMesh,
+        angOffset: (sp / 68) * Math.PI * 6,
+        heightOffset: (sp / 68),
+        radiusOffset: (sp % 2 === 0 ? 0.95 : 1.75) + (sp % 5) * 0.16,
+        spinSpeed: 2.8 + (sp % 4) * 0.75
+      });
+    }
+    const gardenAuraRings = [];
+    [0xf472b6, 0xfef08a].forEach((col, ri) => {
+      const rMesh = new THREE.Mesh(
+        new THREE.TorusGeometry(1.35 + ri * 0.45, 0.055, 8, 28),
+        new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.8 })
+      );
+      rMesh.rotation.x = Math.PI / 2;
+      rMesh.visible = false;
+      worldGroup.add(rMesh);
+      gardenAuraRings.push(rMesh);
+    });
 
     const gardenSign = makeLandmarkStorySign({
       customGroup: true,
@@ -4057,42 +4320,55 @@
     elevPad.position.y = 0.12; elevPad.receiveShadow = true;
     const shaftMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.5, roughness: 0.3 });
     [[-0.95, -0.95], [0.95, -0.95], [-0.95, 0.95], [0.95, 0.95]].forEach(([sx, sz]) => {
-      const col = new THREE.Mesh(new THREE.BoxGeometry(0.12, 13.0, 0.12), shaftMat);
-      col.position.set(sx, 6.5, sz);
+      const col = new THREE.Mesh(new THREE.BoxGeometry(0.12, 16.2, 0.12), shaftMat);
+      col.position.set(sx, 8.1, sz);
       lhElevatorGroup.add(col);
     });
     const shaftGlass = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.25, 1.25, 12.4, 12, 1, true),
-      new THREE.MeshStandardMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false })
+      new THREE.CylinderGeometry(1.25, 1.25, 15.4, 12, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.14, side: THREE.DoubleSide, depthWrite: false })
     );
-    shaftGlass.position.y = 6.35;
+    shaftGlass.position.y = 7.85;
     lhElevatorGroup.add(elevPad, shaftGlass);
 
-    // 움직이는 엘리베이터 캐빈
+    // 움직이는 엘리베이터 캐빈 (높은 유리 스카이라이트 천장으로 캐릭터·네임태그 가림 ZERO)
     const lhElevatorCar = new THREE.Group();
     lhElevatorCar.position.set(0, 0.25, 0);
+    const CAR_ROOF_Y = 3.85;
     const carFloor = new THREE.Mesh(
-      new THREE.BoxGeometry(1.85, 0.18, 1.85),
+      new THREE.BoxGeometry(1.9, 0.18, 1.9),
       new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 })
     );
     const carTrim = new THREE.Mesh(
-      new THREE.BoxGeometry(1.94, 0.08, 1.94),
+      new THREE.BoxGeometry(1.98, 0.08, 1.98),
       new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xf59e0b, emissiveIntensity: 0.5 })
     );
     carTrim.position.y = 0.08;
     const carRail = new THREE.Mesh(
-      new THREE.BoxGeometry(1.82, 0.9, 1.82),
-      new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.28, roughness: 0.15 })
+      new THREE.BoxGeometry(1.86, 0.85, 1.86),
+      new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.22, roughness: 0.15, depthWrite: false })
     );
-    carRail.position.y = 0.55;
+    carRail.position.y = 0.52;
+    [[-0.9, -0.9], [0.9, -0.9], [-0.9, 0.9], [0.9, 0.9]].forEach(([px, pz]) => {
+      const cPost = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, CAR_ROOF_Y, 8), shaftMat);
+      cPost.position.set(px, CAR_ROOF_Y / 2, pz);
+      lhElevatorCar.add(cPost);
+    });
     const carRoof = new THREE.Mesh(
-      new THREE.BoxGeometry(1.9, 0.1, 1.9),
+      new THREE.BoxGeometry(1.92, 0.06, 1.92),
+      new THREE.MeshStandardMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.26, roughness: 0.1, depthWrite: false })
+    );
+    carRoof.position.y = CAR_ROOF_Y;
+    const carRoofRim = new THREE.Mesh(
+      new THREE.TorusGeometry(1.22, 0.055, 8, 24),
       new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfbbf24, emissiveIntensity: 0.7 })
     );
-    carRoof.position.y = 2.35;
-    lhElevatorCar.add(carFloor, carTrim, carRail, carRoof);
+    carRoofRim.rotation.x = Math.PI / 2;
+    carRoofRim.rotation.z = Math.PI / 4;
+    carRoofRim.position.y = CAR_ROOF_Y;
+    lhElevatorCar.add(carFloor, carTrim, carRail, carRoof, carRoofRim);
     const elevSign = makeChatBubbleSprite('🛗 등대 전망 엘리베이터 [G]');
-    elevSign.sprite.position.set(0, 3.15, 0);
+    elevSign.sprite.position.set(0, 4.55, 0);
     lhElevatorGroup.add(lhElevatorCar, elevSign.sprite);
     lighthouseGroup.add(lhElevatorGroup);
 
@@ -5173,6 +5449,74 @@
       set visible(v) { playerIronManParts.forEach(p => { p.visible = !!v; }); }
     };
 
+    // [하늘 비행 탈것 4종 3D 메시 — 절대로 바닥에서 다니지 않고 공중(3.4m+)에서만 비행!]
+    // 1) 하늘 플라잉카 (접이식 시안 반중력 호버 휠 4개 + 유선형 스포츠 차체 + 유리 캐노피)
+    const playerSkyCarMesh = new THREE.Group();
+    const skyCarBodyMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1, emissiveIntensity: 0.45, metalness: 0.55, roughness: 0.25 });
+    const skyCarChassis = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.52, 3.05), skyCarBodyMat);
+    skyCarChassis.position.y = 0.25;
+    const skyCarHood = new THREE.Mesh(new THREE.BoxGeometry(1.56, 0.26, 0.95), new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.4, roughness: 0.25 }));
+    skyCarHood.position.set(0, 0.48, 0.85);
+    const skyCarCanopy = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.62, 1.35), new THREE.MeshStandardMaterial({ color: 0xbae6fd, transparent: true, opacity: 0.58, roughness: 0.1 }));
+    skyCarCanopy.position.set(0, 0.78, -0.05);
+    const skyCarWing = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.12, 0.36), new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xd97706, emissiveIntensity: 0.5 }));
+    skyCarWing.position.set(0, 0.72, -1.42);
+    playerSkyCarMesh.add(skyCarChassis, skyCarHood, skyCarCanopy, skyCarWing);
+    const skyCarHoverWheels = [];
+    const skyCarHoverMat = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x06b6d4, emissiveIntensity: 1.4 });
+    [[-1.08, 0.05, 0.95], [1.08, 0.05, 0.95], [-1.08, 0.05, -0.95], [1.08, 0.05, -0.95]].forEach(([wx, wy, wz]) => {
+      const wheelRing = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.08, 8, 16), skyCarHoverMat);
+      wheelRing.rotation.x = Math.PI / 2; // 바퀴를 눕혀 반중력 호버 추진기로 비행!
+      wheelRing.position.set(wx, wy, wz);
+      playerSkyCarMesh.add(wheelRing);
+      skyCarHoverWheels.push(wheelRing);
+    });
+    const skyCarJets = [];
+    [-0.45, 0.45].forEach(jx => {
+      const jMesh = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.85, 8), new THREE.MeshBasicMaterial({ color: 0x67e8f9 }));
+      jMesh.rotation.x = -Math.PI / 2; jMesh.position.set(jx, 0.25, -1.9);
+      playerSkyCarMesh.add(jMesh);
+      skyCarJets.push(jMesh);
+    });
+    playerSkyCarMesh.visible = false;
+    playerRig.add(playerSkyCarMesh);
+
+    // 2) 마법 양탄자 (보라-황금 양탄자 + 펄럭이는 황금 술 4개)
+    const playerCarpetMesh = new THREE.Group();
+    const carpetDeck = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.12, 2.75), new THREE.MeshStandardMaterial({ color: 0x7c3aed, emissive: 0x6d28d9, emissiveIntensity: 0.5, roughness: 0.55 }));
+    const carpetBorder = new THREE.Mesh(new THREE.BoxGeometry(2.02, 0.08, 2.86), new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xd97706, emissiveIntensity: 0.6 }));
+    carpetDeck.position.y = 0.08;
+    playerCarpetMesh.add(carpetBorder, carpetDeck);
+    const carpetTassels = [];
+    [[-0.95, 0.05, 1.4], [0.95, 0.05, 1.4], [-0.95, 0.05, -1.4], [0.95, 0.05, -1.4]].forEach(([tx, ty, tz]) => {
+      const tMesh = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.34, 6), new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 0.8 }));
+      tMesh.position.set(tx, ty, tz);
+      playerCarpetMesh.add(tMesh);
+      carpetTassels.push(tMesh);
+    });
+    playerCarpetMesh.visible = false;
+    playerRig.add(playerCarpetMesh);
+
+    // 3) 미니 우주선 UFO (은빛 원반 + 투명 돔 + 8개 회전 네온 라이트)
+    const playerUfoMesh = new THREE.Group();
+    const ufoSaucer = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.72, 0.32, 20), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.65, roughness: 0.25 }));
+    const ufoDome = new THREE.Mesh(new THREE.SphereGeometry(1.05, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.42 }));
+    ufoDome.position.y = 0.16;
+    const ufoGlowRing = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.07, 8, 24), new THREE.MeshBasicMaterial({ color: 0x22d3ee }));
+    ufoGlowRing.rotation.x = Math.PI / 2;
+    playerUfoMesh.add(ufoSaucer, ufoDome, ufoGlowRing);
+    playerUfoMesh.visible = false;
+    playerRig.add(playerUfoMesh);
+
+    // 4) 호버 하늘 보드 (네온 시안 & 코랄 하늘 서핑보드)
+    const playerSkyBoardMesh = new THREE.Group();
+    const boardDeck = new THREE.Mesh(new THREE.BoxGeometry(0.86, 0.12, 2.35), new THREE.MeshStandardMaterial({ color: 0xf43f5e, emissive: 0xe11d48, emissiveIntensity: 0.55 }));
+    const boardTrim = new THREE.Mesh(new THREE.BoxGeometry(0.96, 0.08, 2.42), new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x06b6d4, emissiveIntensity: 0.9 }));
+    boardDeck.position.y = 0.06;
+    playerSkyBoardMesh.add(boardTrim, boardDeck);
+    playerSkyBoardMesh.visible = false;
+    playerRig.add(playerSkyBoardMesh);
+
     // 로블록스 스타일 사각 동행 정령 3D 빌더 (BoxGeometry 전용 캐릭터)
     function buildRobloxSpiritMesh(key) {
       const sp = state.spirits[key] || state.spirits.joy;
@@ -5413,12 +5757,19 @@
       jumpRings.push({ mesh: rMesh, life: 0.42, maxLife: 0.42 });
     }
 
+    let congratsBannerTimer = null;
+    window.hideCongratsBanner = function() {
+      if (congratsBannerTimer) { clearTimeout(congratsBannerTimer); congratsBannerTimer = null; }
+      document.getElementById('congratsBanner')?.classList.remove('show');
+    };
     function showCongratsBanner(title, sub) {
       const banner = document.getElementById('congratsBanner');
+      if (!banner) return;
+      if (congratsBannerTimer) clearTimeout(congratsBannerTimer);
       document.getElementById('congratsTitle').textContent = title;
       document.getElementById('congratsSub').textContent = sub;
       banner.classList.add('show');
-      setTimeout(() => banner.classList.remove('show'), 3800);
+      congratsBannerTimer = setTimeout(() => window.hideCongratsBanner(), 4800);
     }
 
     let lastBlockSlot = 1;
@@ -5481,8 +5832,34 @@
       }
     }
 
+    // 설치 블록 10분 유효시간(TTL) & 먼지 소멸 시스템
+    const BLOCK_TTL_MS = 10 * 60 * 1000;
+    const blockDustParticles = [];
+    const blockDustGeo = new THREE.BoxGeometry(0.22, 0.22, 0.22);
+    function dissolveBlockIntoDust(bInfo) {
+      if (!bInfo) return;
+      const idx = placedBlocks.indexOf(bInfo);
+      if (idx !== -1) placedBlocks.splice(idx, 1);
+      if (bInfo.mesh) worldGroup.remove(bInfo.mesh);
+      if (bInfo.hitBox) worldGroup.remove(bInfo.hitBox);
+      const colHex = (blockMaterials[bInfo.type] || blockMaterials[1]).color.getHex();
+      for (let di = 0; di < 12; di++) {
+        const dMat = new THREE.MeshBasicMaterial({ color: di % 2 === 0 ? colHex : 0xe7e5e4, transparent: true, opacity: 0.88 });
+        const dm = new THREE.Mesh(blockDustGeo, dMat);
+        dm.position.set(bInfo.x + (Math.random() - 0.5) * 0.7, bInfo.y + (Math.random() - 0.5) * 0.6, bInfo.z + (Math.random() - 0.5) * 0.7);
+        worldGroup.add(dm);
+        blockDustParticles.push({
+          mesh: dm, mat: dMat,
+          vx: (Math.random() - 0.5) * 1.4,
+          vy: 1.1 + Math.random() * 1.6,
+          vz: (Math.random() - 0.5) * 1.4,
+          life: 1.1, maxLife: 1.1
+        });
+      }
+    }
+
     // 외부(멀티플레이어 탭) 또는 로컬에서 블록 생성 및 비행 착지 애니메이션
-    function spawnBlockWithAnim(bx, by, bz, slotType, fromPos) {
+    function spawnBlockWithAnim(bx, by, bz, slotType, fromPos, createdAt) {
       bx = Math.round(bx);
       by = Math.max(0.5, Math.round(by - 0.5) + 0.5);
       bz = Math.round(bz);
@@ -5510,7 +5887,8 @@
       hitBox.position.set(bx, by, bz);
       worldGroup.add(hitBox);
 
-      const blockObj = { mesh: bMesh, hitBox, x: bx, y: by, z: bz, type: slotType };
+      const blockTs = (typeof createdAt === 'number' && Number.isFinite(createdAt) && createdAt > 0) ? createdAt : Date.now();
+      const blockObj = { mesh: bMesh, hitBox, x: bx, y: by, z: bz, type: slotType, createdAt: blockTs };
       hitBox.userData.blockObj = blockObj;
       placedBlocks.push(blockObj);
 
@@ -5650,7 +6028,8 @@
       const handWorldPos = new THREE.Vector3();
       rightArm.getWorldPosition(handWorldPos);
 
-      spawnBlockWithAnim(bx, by, bz, buildSlot, handWorldPos);
+      const blockCreatedAt = Date.now();
+      spawnBlockWithAnim(bx, by, bz, buildSlot, handWorldPos, blockCreatedAt);
       resolveHorizontalCollisions();
       soundBlockPlace();
       createMagicImpact(new THREE.Vector3(bx, by, bz), blockMaterials[buildSlot].color.getHex());
@@ -5668,14 +6047,14 @@
         }
       } else {
         const blockNames = ['기쁨 블록', '슬픔 블록', '용기 블록', '평온 블록'];
-        showToast(`🧱 <b>[${blockNames[buildSlot-1]} 설치! (${bx}, ${bz}, 높이 ${by + 0.5}m)]</b> 옆면/윗면을 클릭해 모양을 만들고 점프(SPACE)로 올라가 보세요!`);
+        showToast(`🧱 <b>[${blockNames[buildSlot-1]} 설치! (${bx}, ${bz}, 높이 ${by + 0.5}m)]</b> 점프(SPACE)로 올라가 보세요! <small>(10분 후 먼지처럼 사라집니다)</small>`);
       }
 
       if (typeof worldChannel !== 'undefined' && worldChannel) {
-        worldChannel.postMessage({ type: 'mp_block_place', x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName });
+        worldChannel.postMessage({ type: 'mp_block_place', x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName, createdAt: blockCreatedAt });
       }
       if (window.mpConnected && mpActions?.sendBlkPut) {
-        mpActions.sendBlkPut({ x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName });
+        mpActions.sendBlkPut({ x: bx, y: by, z: bz, slot: buildSlot, from: state.playerName, createdAt: blockCreatedAt });
       }
       return { bx, by, bz };
     }
@@ -6094,8 +6473,10 @@
       pushOutBox(14.0, -46.0, 3.8, 0.65, 2.0);    // 덕분에 블록 조형물 본체
       pushOutCircle(-7.5, 48.0, 1.55, 2.6);       // 장난감 로봇 단상
       pushOutCircle(0, -10.5, 1.65, 2.6);         // 코랄핑크 설렘이 단상
-      pushOutCircle(52 - 2.2, 24, 0.25, 2.3);     // 축구 골대 좌측 포스트
-      pushOutCircle(52 + 2.2, 24, 0.25, 2.3);     // 축구 골대 우측 포스트
+      pushOutCircle(52 - 2.2, 24, 0.25, 2.3);     // 남쪽 축구 골대 좌측 포스트
+      pushOutCircle(52 + 2.2, 24, 0.25, 2.3);     // 남쪽 축구 골대 우측 포스트
+      pushOutCircle(52 - 2.2, 9.0, 0.25, 2.3);    // 북쪽 축구 골대 좌측 포스트
+      pushOutCircle(52 + 2.2, 9.0, 0.25, 2.3);    // 북쪽 축구 골대 우측 포스트
       // 6) 숲속 나무 48그루 기둥 (두꺼운 기둥 반경 0.75m로 확실한 충돌 차단!)
       if (typeof trees !== 'undefined') {
         for (let i = 0; i < trees.length; i++) {
@@ -6682,37 +7063,103 @@
       worldGroup.add(fp);
     });
 
-    const soccerGoalGroup = new THREE.Group();
+    function buildSoccerGoal(signLabel, accentHex) {
+      const g = new THREE.Group();
+      const goalMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.28 });
+      const postL = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 2.25, 12), goalMat);
+      postL.position.set(-2.2, 1.12, 0);
+      const postR = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 2.25, 12), goalMat);
+      postR.position.set(2.2, 1.12, 0);
+      const crossBar = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 4.5, 12), goalMat);
+      crossBar.rotation.z = Math.PI / 2; crossBar.position.set(0, 2.24, 0);
+      const ledMat = new THREE.MeshStandardMaterial({ color: accentHex, emissive: accentHex, emissiveIntensity: 0.55, roughness: 0.2 });
+      const ledStrip = new THREE.Mesh(new THREE.BoxGeometry(4.42, 0.11, 0.11), ledMat);
+      ledStrip.position.set(0, 2.32, 0);
+      const netMat = new THREE.MeshBasicMaterial({ color: 0xe2e8f0, wireframe: true, transparent: true, opacity: 0.68 });
+      const netMesh = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.2, 1.4), netMat);
+      netMesh.position.set(0, 1.1, 0.7);
+      const goalSign = makeChatBubbleSprite(signLabel);
+      goalSign.sprite.position.set(0, 3.25, 0);
+      g.add(postL, postR, crossBar, ledStrip, netMesh, goalSign.sprite);
+      return { group: g, ledMat, netMesh, sign: goalSign, baseColor: accentHex };
+    }
+
+    const southGoalObj = buildSoccerGoal('⚽ 남쪽 기쁨 골대', 0xfbbf24);
+    const soccerGoalGroup = southGoalObj.group;
     soccerGoalGroup.position.set(52, 0, 24);
-
-    // 골대 흰색 기둥 프레임 (좌, 우, 상단 바)
-    const goalMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
-    const postL = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 12), goalMat);
-    postL.position.set(-2.2, 1.1, 0);
-    const postR = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 12), goalMat);
-    postR.position.set(2.2, 1.1, 0);
-    const crossBar = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4.48, 12), goalMat);
-    crossBar.rotation.z = Math.PI / 2; crossBar.position.set(0, 2.2, 0);
-
-    // 그물망 (반투명 체크)
-    const netMat = new THREE.MeshBasicMaterial({ color: 0xe2e8f0, wireframe: true, transparent: true, opacity: 0.65 });
-    const netMesh = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.2, 1.4), netMat);
-    netMesh.position.set(0, 1.1, 0.7);
-
-    // 골대 안내 깃발
-    const goalSign = makeChatBubbleSprite('⚽ 기쁨 축구 골대');
-    goalSign.sprite.position.set(0, 3.2, 0);
-
-    soccerGoalGroup.add(postL, postR, crossBar, netMesh, goalSign.sprite);
     worldGroup.add(soccerGoalGroup);
 
-    // 굴러가는 3D 축구공 (축구장 중앙 스팟 (52, 0.42, 15)에 배치)
+    const northGoalObj = buildSoccerGoal('⚽ 북쪽 기쁨 골대', 0x38bdf8);
+    const soccerGoalNorth = northGoalObj.group;
+    soccerGoalNorth.position.set(52, 0, 9.0);
+    soccerGoalNorth.rotation.y = Math.PI;
+    worldGroup.add(soccerGoalNorth);
+
+    // 골인 3D 기쁨 대폭발 연출 (무지개 불꽃 90개 + 3단 쇼크웨이브 링 + 거대 GOOOOAL 배너)
+    const soccerGoalFireworks = [];
+    const goalShockRings = [];
+    let soccerGoalCelebTimer = 0;
+    let soccerGoalCelebSide = 'south';
+    const goalBannerSprite = makeChatBubbleSprite('⚽ GOOOOAL! 🎉 기쁨 대폭발!');
+    goalBannerSprite.sprite.scale.set(6.8, 2.1, 1);
+    goalBannerSprite.sprite.visible = false;
+    worldGroup.add(goalBannerSprite.sprite);
+
+    const fwGeo = new THREE.OctahedronGeometry(0.18, 0);
+    const fwColors = [0xfef08a, 0xf59e0b, 0xec4899, 0x22c55e, 0x38bdf8, 0xa855f7, 0xffffff];
+    function triggerSoccerGoalCelebration(side, goalPos) {
+      soccerGoalCelebSide = side;
+      soccerGoalCelebTimer = 3.4;
+      const origin = goalPos.clone().add(new THREE.Vector3(0, 1.4, 0));
+      goalBannerSprite.sprite.position.set(52, 3.8, side === 'north' ? 9.0 : 24.0);
+      goalBannerSprite.sprite.visible = true;
+
+      for (let i = 0; i < 90; i++) {
+        const mat = new THREE.MeshBasicMaterial({ color: fwColors[i % fwColors.length], transparent: true, opacity: 1.0 });
+        const fm = new THREE.Mesh(fwGeo, mat);
+        fm.position.copy(origin);
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.random() * Math.PI * 0.72;
+        const spd = 4.5 + Math.random() * 11.0;
+        const vel = new THREE.Vector3(
+          Math.sin(phi) * Math.cos(theta) * spd,
+          Math.cos(phi) * spd * 0.95 + 3.2,
+          Math.sin(phi) * Math.sin(theta) * spd
+        );
+        worldGroup.add(fm);
+        soccerGoalFireworks.push({ mesh: fm, mat, vel, life: 1.3 + Math.random() * 1.1, maxLife: 2.2 });
+      }
+      [0xfef08a, 0xec4899, 0x22c55e].forEach((rCol, ri) => {
+        const rMat = new THREE.MeshBasicMaterial({ color: rCol, transparent: true, opacity: 0.92, side: THREE.DoubleSide });
+        const rMesh = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.95, 28), rMat);
+        rMesh.rotation.x = -Math.PI / 2;
+        rMesh.position.set(origin.x, 0.22 + ri * 0.18, origin.z);
+        worldGroup.add(rMesh);
+        goalShockRings.push({ mesh: rMesh, mat: rMat, delay: ri * 0.16, age: 0, maxAge: 1.4 });
+      });
+
+      playerPhysics.velY = Math.max(playerPhysics.velY || 0, 10.5);
+      playerPhysics.isGrounded = false;
+      soundObbyGoal();
+      spawnConfetti(origin);
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2.0, 0)));
+      spawnConfetti(new THREE.Vector3(52, 2.2, 16.5));
+      friendAgents.forEach(fr => {
+        if (Math.hypot(fr.group.position.x - 52, fr.group.position.z - 16.5) < 28) fr.danceTimer = 3.5;
+      });
+      showPlayerBubble('⚽ “와아!! GOOOOAL!! 기쁨이 폭죽처럼 터졌어!!”');
+      showCongratsBanner(`⚽ GOOOOAL! (${side === 'north' ? '북쪽' : '남쪽'} 골대 득점!)`, '환상적인 기쁨 슛이 터졌습니다! 무지개 폭죽과 함께 환호해 보세요! (+80점)');
+      showToast(`⚽ <b>GOOOOAL! 기쁨 대폭발!</b> ${side === 'north' ? '북쪽' : '남쪽'} 골대에 멋지게 골인했습니다! (+80점)`);
+      window.addMindScore(80, '⚽ 기쁨 축구 골인 세리머니!');
+    }
+
+    // 굴러가는 3D 축구공 (축구장 중앙 스팟 (52, 0.42, 16.5)에 배치)
     const soccerBall = {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.42, 16, 16),
         new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, emissive: 0xfef08a, emissiveIntensity: 0.25 })
       ),
-      pos: new THREE.Vector3(52, 0.42, 15),
+      pos: new THREE.Vector3(52, 0.42, 16.5),
       vel: new THREE.Vector3(0, 0, 0),
       rotX: 0, rotZ: 0,
       respawnTimer: 0,
@@ -7323,14 +7770,19 @@
 
     window.interactGardenBloom = function() {
       initAudio();
-      soundChime(587);
-      setTimeout(() => soundChime(880), 110);
+      [523, 659, 784, 988, 1175].forEach((freq, i) => {
+        setTimeout(() => soundChime(freq), i * 85);
+      });
+      gardenBloomTimer = 4.8;
       playerPhysics.speedBuffTimer = Math.max(playerPhysics.speedBuffTimer || 0, 10.0);
-      createMagicImpact(new THREE.Vector3(-26, 1.5, 26), '#f43f5e');
-      createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '#34d399');
-      showPlayerBubble('🌺 “유리온실 무지개 꽃향기를 깊게 들이마시니 마음이 환해졌어!”');
-      showToast('🌺 <b>[유리온실 꽃향기 치유!]</b> 꽃향기를 맡으며 숨을 고르고 가뿐한 발걸음을 얻었습니다! (+60점)');
-      window.addMindScore(60, '🌺 유리온실 꽃향기 힐링');
+      const bloomCenter = new THREE.Vector3(-26, 1.6, 26);
+      createMagicImpact(bloomCenter, '#f43f5e');
+      createMagicImpact(bloomCenter.clone().add(new THREE.Vector3(0, 1.2, 0)), '#fef08a');
+      createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 1.2, 0)), '#ec4899');
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
+      showPlayerBubble('🌺 “우와! 온실 꽃들이 활짝 피어나고 꽃잎이 나를 감싸 안아줘요!”');
+      showToast('🌺 <b>[꽃향기 치유 만개!]</b> 유리온실 꽃들이 활짝 피어나고 꽃잎 회오리가 마음을 따뜻하게 감싸줍니다! (+60점)');
+      window.addMindScore(60, '🌺 유리온실 꽃향기 만개 힐링');
     };
 
     window.interactBeachSplash = function() {
@@ -7350,22 +7802,25 @@
       initAudio();
       if (typeof soccerBall === 'undefined') return;
       const dist = playerRig.position.distanceTo(soccerBall.pos);
-      if (dist < 5.5) {
-        const goalDir = new THREE.Vector3(52 - soccerBall.pos.x, 0, 24.4 - soccerBall.pos.z).normalize();
-        soccerBall.vel.set(goalDir.x * 21.0, 4.6, goalDir.z * 21.0);
+      if (dist < 6.0) {
+        const faceZ = Math.cos(playerRig.rotation.y);
+        const shootNorth = (soccerBall.pos.z < 16.5 && faceZ <= 0.25) || (faceZ < -0.2);
+        const targetZ = shootNorth ? 8.6 : 24.4;
+        const goalDir = new THREE.Vector3(52 - soccerBall.pos.x, 0, targetZ - soccerBall.pos.z).normalize();
+        soccerBall.vel.set(goalDir.x * 22.0, 4.8, goalDir.z * 22.0);
         soccerBall.kickCooldown = 0.28;
         playerRig.rotation.y = Math.atan2(goalDir.x, goalDir.z);
         triggerArmSwing(soccerBall.pos.x, soccerBall.pos.z);
         soundJump(true);
         createMagicImpact(soccerBall.pos, '#f59e0b');
-        showToast('⚽ <b>초강력 기쁨 슛!</b> 축구공이 골대까지 쭉 뻗어나갑니다!');
+        showToast(`⚽ <b>초강력 기쁨 슛!</b> 축구공이 ${shootNorth ? '북쪽' : '남쪽'} 골대를 향해 쭉 뻗어나갑니다!`);
       } else {
-        soccerBall.pos.set(52, 0.42, 15);
+        soccerBall.pos.set(52, 0.42, 16.5);
         soccerBall.vel.set(0, 0, 0);
         soccerBall.justScored = false;
         soundChime(523);
         createMagicImpact(soccerBall.pos, '#f59e0b');
-        showToast('⚽ <b>축구공을 중앙(52, 15)으로 불러왔습니다!</b> 공 가까이에서 차거나 [G]로 슛해보세요.');
+        showToast('⚽ <b>축구공을 중앙(52, 16.5)으로 불러왔습니다!</b> 양쪽 골대 중 원하는 곳으로 슛해보세요.');
       }
     };
 
@@ -7373,6 +7828,28 @@
     let activeElevatorRide = null; // { dir: 'up' | 'down', elapsed: 0, duration: 2.6 }
     let lhElevatorY = 0.25;
     let isLighthousePanorama = false;
+    let dismissedPromptZone = null;
+
+    function syncLhMiniDock() {
+      const dock = document.getElementById('lhMiniDock');
+      if (!dock) return;
+      const showDock = (state.activeZone === 'lhDeck' && !activeElevatorRide && (isLighthousePanorama || dismissedPromptZone === 'lhDeck'));
+      dock.classList.toggle('visible', !!showDock);
+      const panBtn = document.getElementById('btnLhMiniPanorama');
+      if (panBtn) panBtn.textContent = isLighthousePanorama ? '🔭 기본 시점' : '🔭 파노라마';
+    }
+
+    window.dismissZonePrompt = function(zoneKey) {
+      dismissedPromptZone = zoneKey || state.activeZone || lastPromptZone || null;
+      document.getElementById('zonePrompt')?.classList.remove('visible');
+      lastPromptZone = null;
+      lastPromptSig = '';
+      syncLhMiniDock();
+    };
+    document.getElementById('btnZpClose')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.dismissZonePrompt();
+    });
 
     window.rideLighthouseElevator = function(forceDir) {
       initAudio();
@@ -7381,6 +7858,8 @@
       const dir = (forceDir === 'up' || forceDir === 'down')
         ? forceDir
         : (playerRig.position.y >= 6.0 ? 'down' : 'up');
+      isLighthousePanorama = false;
+      window.dismissZonePrompt(state.activeZone || (dir === 'up' ? 'lhElevator' : 'lhDeck'));
       activeElevatorRide = { dir, elapsed: 0, duration: 2.5 };
       lhElevatorY = (dir === 'up') ? 0.25 : 12.25;
       lhElevatorCar.position.y = lhElevatorY;
@@ -7388,6 +7867,7 @@
       playerPhysics.velY = 0;
       playerPhysics.isGrounded = true;
       playerPhysics.jumpCount = 0;
+      syncLhMiniDock();
       soundChime(dir === 'up' ? 523 : 659);
       createMagicImpact(new THREE.Vector3(-41.9, lhElevatorY + 0.5, -46.0), '#38bdf8');
       showToast(dir === 'up'
@@ -7399,15 +7879,17 @@
       initAudio();
       isLighthousePanorama = !isLighthousePanorama;
       if (isLighthousePanorama) {
-        camState.yaw = -Math.PI * 0.75; // 섬 중앙 (0,0) 방향 조망
-        camState.pitch = 0.36;
-        camState.distance = 19.5;
+        camState.yaw = -Math.PI * 0.75; // 섬 중앙 (0,0) 방향 조망에서 360도 자동 회전 시작
+        camState.pitch = 0.28;
+        camState.distance = 22.0;
         soundChime(784);
-        showToast('🔭 <b>[360° 섬 전체 조망 뷰!]</b> 화면을 드래그해 섬 구석구석을 한눈에 감상해 보세요.');
+        window.dismissZonePrompt('lhDeck');
+        showToast('🔭 <b>[360° 섬 전체 자동 파노라마!]</b> 카메라가 360° 회전하며 섬 전체를 보여줍니다. (드래그로 시점 조절 가능)');
       } else {
         camState.distance = 11.0;
         camState.pitch = 0.35;
         soundChime(523);
+        syncLhMiniDock();
         showToast('🔭 기본 카메라 시점으로 돌아왔습니다.');
       }
     };
@@ -7427,14 +7909,15 @@
     };
 
     // ------------------------------------------------------------------------------
-    // [11. 맵 최외곽 육상 달리기 트랙 & 스피드 대시 레이스 게임 (R = 91.5m 최외곽 둘레길)]
+    // [11. 맵 최외곽 3레인 육상 달리기 트랙 & 진행 방향 화살표 (R = 91.5m, 폭 6.9m)]
     // ------------------------------------------------------------------------------
     const runningTrackGroup = new THREE.Group();
     const TRACK_RADIUS = 91.5;
-    const TRACK_WIDTH = 4.6;
+    const TRACK_WIDTH = 6.9;
     window.TRACK_RADIUS = TRACK_RADIUS;
+    window.TRACK_WIDTH = TRACK_WIDTH;
 
-    // 1) 코랄 브릭 레드 육상 트랙 바닥 링 (반경 89.2m ~ 93.8m)
+    // 1) 넓은 3레인 코랄 브릭 레드 트랙 바닥 링 (반경 88.05m ~ 94.95m)
     const trackSurface = new THREE.Mesh(
       new THREE.RingGeometry(TRACK_RADIUS - TRACK_WIDTH / 2, TRACK_RADIUS + TRACK_WIDTH / 2, 96),
       new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.72, side: THREE.DoubleSide })
@@ -7444,19 +7927,55 @@
     trackSurface.receiveShadow = true;
     runningTrackGroup.add(trackSurface);
 
-    // 2) 트랙 안쪽·중앙·바깥쪽 화이트 레인 라인 3줄
-    [TRACK_RADIUS - 2.1, TRACK_RADIUS, TRACK_RADIUS + 2.1].forEach((rLine, lIdx) => {
+    // 2) 트랙 3줄(3레인)을 나누는 4개의 흰색 차선 라인
+    const TRACK_LANE_LINES = [TRACK_RADIUS - 3.3, TRACK_RADIUS - 1.1, TRACK_RADIUS + 1.1, TRACK_RADIUS + 3.3];
+    TRACK_LANE_LINES.forEach((rLine, lIdx) => {
+      const isOuterEdge = (lIdx === 0 || lIdx === TRACK_LANE_LINES.length - 1);
       const lineRing = new THREE.Mesh(
-        new THREE.RingGeometry(rLine - 0.07, rLine + 0.07, 96),
-        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: lIdx === 1 ? 0.55 : 0.88, side: THREE.DoubleSide })
+        new THREE.RingGeometry(rLine - 0.08, rLine + 0.08, 96),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: isOuterEdge ? 0.92 : 0.72, side: THREE.DoubleSide })
       );
       lineRing.rotation.x = -Math.PI / 2;
       lineRing.position.y = 0.055;
       runningTrackGroup.add(lineRing);
     });
 
-    // 2-1) 섬 최외곽 안전 야광 가드레일 (반경 95.8m) — 추락 보호 + 서킷 비주얼
-    const GUARD_RADIUS = 95.8;
+    // 2-0) 달리는 진행 방향 표시 바닥 화살표(>>>) 24개 + 가드레일 방향 표지판 8개
+    const arrowCanvas = document.createElement('canvas');
+    arrowCanvas.width = 128; arrowCanvas.height = 192;
+    const actx = arrowCanvas.getContext('2d');
+    actx.clearRect(0, 0, 128, 192);
+    [18, 72, 126].forEach((oy, idx) => {
+      actx.fillStyle = idx === 0 ? '#fef08a' : (idx === 1 ? '#ffffff' : 'rgba(255,255,255,0.72)');
+      actx.beginPath();
+      actx.moveTo(64, oy);
+      actx.lineTo(116, oy + 46);
+      actx.lineTo(94, oy + 46);
+      actx.lineTo(64, oy + 20);
+      actx.lineTo(34, oy + 46);
+      actx.lineTo(12, oy + 46);
+      actx.closePath();
+      actx.fill();
+    });
+    const arrowTex = new THREE.CanvasTexture(arrowCanvas);
+    arrowTex.colorSpace = THREE.SRGBColorSpace;
+    const arrowMat = new THREE.MeshBasicMaterial({ map: arrowTex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+    const trackDirectionArrows = [];
+    for (let ai = 0; ai < 24; ai++) {
+      const aAng = (ai / 24) * Math.PI * 2;
+      const laneR = TRACK_RADIUS + ((ai % 3) - 1) * 2.2;
+      const ag = new THREE.Group();
+      ag.position.set(Math.cos(aAng) * laneR, 0.068, Math.sin(aAng) * laneR);
+      ag.rotation.y = Math.atan2(-Math.sin(aAng), Math.cos(aAng));
+      const aPlane = new THREE.Mesh(new THREE.PlaneGeometry(1.75, 2.7), arrowMat);
+      aPlane.rotation.set(-Math.PI / 2, 0, Math.PI);
+      ag.add(aPlane);
+      runningTrackGroup.add(ag);
+      trackDirectionArrows.push(ag);
+    }
+
+    // 2-1) 섬 최외곽 안전 야광 가드레일 (반경 96.4m) — 추락 보호 + 서킷 비주얼
+    const GUARD_RADIUS = 96.4;
     const railMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, emissive: 0x38bdf8, emissiveIntensity: 0.35, roughness: 0.3 });
     const postMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.5 });
     [0.65, 1.15].forEach(ry => {
@@ -7471,22 +7990,28 @@
       const pMesh = new THREE.Mesh(postGeo, postMat);
       pMesh.position.set(Math.cos(pAng) * GUARD_RADIUS, 0.68, Math.sin(pAng) * GUARD_RADIUS);
       runningTrackGroup.add(pMesh);
+      if (pi % 6 === 0) {
+        const dirSign = makeChatBubbleSprite('➡️ 달리는 방향');
+        dirSign.sprite.scale.set(2.4, 0.72, 1);
+        dirSign.sprite.position.set(Math.cos(pAng) * GUARD_RADIUS, 1.9, Math.sin(pAng) * GUARD_RADIUS);
+        runningTrackGroup.add(dirSign.sprite);
+      }
     }
 
-    // 3) 남동쪽 최외곽 트랙 스타트/골인 아치 게이트 (각도 Math.PI * 0.25 -> x: 64.7, z: 64.7)
+    // 3) 남동쪽 3레인 트랙 스타트/골인 아치 게이트 (각도 Math.PI * 0.25 -> x: 64.7, z: 64.7)
     const startArchAngle = Math.PI * 0.25;
     const startArchGroup = new THREE.Group();
     startArchGroup.position.set(Math.cos(startArchAngle) * TRACK_RADIUS, 0, Math.sin(startArchAngle) * TRACK_RADIUS);
     startArchGroup.rotation.y = -startArchAngle;
     const archPillarMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xd97706, emissiveIntensity: 0.4, roughness: 0.3 });
-    const archColL = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.3, 4.4, 12), archPillarMat);
-    archColL.position.set(-2.55, 2.2, 0);
-    const archColR = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.3, 4.4, 12), archPillarMat);
-    archColR.position.set(2.55, 2.2, 0);
-    const archBanner = new THREE.Mesh(new THREE.BoxGeometry(5.6, 0.8, 0.38), new THREE.MeshStandardMaterial({ color: 0x18181b }));
-    archBanner.position.set(0, 4.3, 0);
-    const archSign = makeChatBubbleSprite('🏁 최외곽 슈퍼 달리기 트랙 START / FINISH (부스터 발판을 밟아 1바퀴 완주!)');
-    archSign.sprite.position.set(0, 5.4, 0);
+    const archColL = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.3, 4.6, 12), archPillarMat);
+    archColL.position.set(-3.75, 2.3, 0);
+    const archColR = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.3, 4.6, 12), archPillarMat);
+    archColR.position.set(3.75, 2.3, 0);
+    const archBanner = new THREE.Mesh(new THREE.BoxGeometry(8.0, 0.85, 0.4), new THREE.MeshStandardMaterial({ color: 0x18181b }));
+    archBanner.position.set(0, 4.5, 0);
+    const archSign = makeChatBubbleSprite('🏁 3레인 슈퍼 달리기 트랙 START / FINISH · 화살표 방향으로 질주!');
+    archSign.sprite.position.set(0, 5.6, 0);
     startArchGroup.add(archColL, archColR, archBanner, archSign.sprite);
     runningTrackGroup.add(startArchGroup);
 
@@ -7507,11 +8032,11 @@
       const padMat = new THREE.MeshStandardMaterial({
         color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.9, roughness: 0.2
       });
-      const padBox = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.08, 3.2), padMat);
+      const padBox = new THREE.Mesh(new THREE.BoxGeometry(3.8, 0.08, 3.8), padMat);
       bGroup.add(padBox);
 
       const gateRing = new THREE.Mesh(
-        new THREE.TorusGeometry(2.15, 0.11, 10, 24, Math.PI),
+        new THREE.TorusGeometry(3.4, 0.12, 10, 28, Math.PI),
         new THREE.MeshStandardMaterial({ color: 0xfde047, emissive: 0xf59e0b, emissiveIntensity: 1.0 })
       );
       gateRing.position.y = 0.1;
@@ -7545,7 +8070,137 @@
       trackCoins.push({ mesh: cm, x: cx, z: cz, cleared: false, respawnTimer: 0 });
     }
 
-    // 6) 외곽 경기장 스페셜 아이템 24개 (바나나 껍질 · 얼음 · 무지개 무적 별 · 아이언맨 슈트 · 터보 번개)
+    // 6) 외곽 3레인 경기장 스페셜 아이템 & 맵 전역 랜덤 하늘 탈것 스폰
+    function getRandomSkyItemSpot(preferTrack = false) {
+      for (let attempt = 0; attempt < 30; attempt++) {
+        if (preferTrack) {
+          const rAng = Math.random() * Math.PI * 2;
+          const laneOff = ([-2.2, 0, 2.2])[Math.floor(Math.random() * 3)];
+          const rr = TRACK_RADIUS + laneOff;
+          return { x: Math.cos(rAng) * rr, z: Math.sin(rAng) * rr };
+        }
+        const rAng = Math.random() * Math.PI * 2;
+        const rr = 14 + Math.random() * 79.5;
+        const rx = Math.cos(rAng) * rr;
+        const rz = Math.sin(rAng) * rr;
+        // 연못(-36,0), 트램펄린(50,-8), 등대(-46,-46) 등 중심 장애물 회피
+        if (Math.hypot(rx - (-36), rz) < 9.5) continue;
+        if (Math.hypot(rx - (-46), rz - (-46)) < 9.5) continue;
+        if (Math.hypot(rx - 50, rz - (-8)) < 6.0) continue;
+        return { x: rx, z: rz };
+      }
+      return { x: 12, z: 22 };
+    }
+
+    function buildSkyItemPickupGroup(kind) {
+      const ig = new THREE.Group();
+      if (kind === 'ironman') {
+        const pod = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.66, 0.66), new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x991b1b, emissiveIntensity: 0.7, metalness: 0.6 }));
+        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.44, 0.1), new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xd97706, emissiveIntensity: 0.7 }));
+        visor.position.z = 0.34;
+        const arc = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 12), new THREE.MeshStandardMaterial({ color: 0x67e8f9, emissive: 0x22d3ee, emissiveIntensity: 2.0 }));
+        arc.rotation.x = Math.PI / 2; arc.position.set(0, -0.05, 0.36);
+        const imTag = makeChatBubbleSprite('🦾 아이언맨 슈트');
+        imTag.sprite.scale.set(2.8, 0.85, 1); imTag.sprite.position.set(0, 1.35, 0);
+        ig.add(pod, visor, arc, imTag.sprite);
+      } else if (kind === 'skycar') {
+        const body = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.34, 1.45), new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x38bdf8, emissiveIntensity: 0.6 }));
+        const dome = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.32, 0.72), new THREE.MeshStandardMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.75 }));
+        dome.position.y = 0.28;
+        const tag = makeChatBubbleSprite('🚗✨ 하늘 플라잉카');
+        tag.sprite.scale.set(2.8, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
+        ig.add(body, dome, tag.sprite);
+      } else if (kind === 'carpet') {
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.1, 1.55), new THREE.MeshStandardMaterial({ color: 0x7c3aed, emissive: 0xa855f7, emissiveIntensity: 0.7 }));
+        const trim = new THREE.Mesh(new THREE.BoxGeometry(1.24, 0.06, 1.64), new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xf59e0b, emissiveIntensity: 0.8 }));
+        const tag = makeChatBubbleSprite('🧞 마법 양탄자');
+        tag.sprite.scale.set(2.6, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
+        ig.add(trim, deck, tag.sprite);
+      } else if (kind === 'ufo') {
+        const saucer = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.82, 0.22, 16), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.6 }));
+        const glass = new THREE.Mesh(new THREE.SphereGeometry(0.45, 12, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x22d3ee, emissiveIntensity: 0.6 }));
+        glass.position.y = 0.1;
+        const tag = makeChatBubbleSprite('🛸 미니 UFO');
+        tag.sprite.scale.set(2.4, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
+        ig.add(saucer, glass, tag.sprite);
+      } else {
+        const bd = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.12, 1.35), new THREE.MeshStandardMaterial({ color: 0xf43f5e, emissive: 0x22d3ee, emissiveIntensity: 0.65 }));
+        const tag = makeChatBubbleSprite('🛹✨ 호버 하늘 보드');
+        tag.sprite.scale.set(2.8, 0.85, 1); tag.sprite.position.set(0, 1.35, 0);
+        ig.add(bd, tag.sprite);
+      }
+      const haloRing = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.055, 8, 22), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+      haloRing.rotation.x = Math.PI / 2;
+      ig.add(haloRing);
+      return ig;
+    }
+
+    const SKY_RIDE_META = {
+      skycar: { baseAlt: 4.0, label: '🚗✨ 하늘 플라잉카', color: '#38bdf8', duration: 18.0 },
+      carpet: { baseAlt: 3.5, label: '🧞 마법 양탄자', color: '#a855f7', duration: 18.0 },
+      ufo: { baseAlt: 4.4, label: '🛸 미니 UFO', color: '#22d3ee', duration: 18.0 },
+      skyboard: { baseAlt: 3.4, label: '🛹✨ 호버 하늘 보드', color: '#f43f5e', duration: 18.0 }
+    };
+
+    function hideAllSkyRideMeshes() {
+      if (typeof playerSkyCarMesh !== 'undefined') playerSkyCarMesh.visible = false;
+      if (typeof playerCarpetMesh !== 'undefined') playerCarpetMesh.visible = false;
+      if (typeof playerUfoMesh !== 'undefined') playerUfoMesh.visible = false;
+      if (typeof playerSkyBoardMesh !== 'undefined') playerSkyBoardMesh.visible = false;
+    }
+
+    function startSkyRide(kind) {
+      const meta = SKY_RIDE_META[kind];
+      if (!meta) return;
+      if (playerPhysics.ironManAutoLap) endIronManAutoLap(false);
+      cancelPlaygroundRide();
+      if (typeof stopAutoWalk === 'function') stopAutoWalk();
+      playerPhysics.slipTimer = 0;
+      playerPhysics.freezeTimer = 0;
+      playerIceBlockMesh.visible = false;
+      hideAllSkyRideMeshes();
+      if (kind === 'skycar') playerSkyCarMesh.visible = true;
+      else if (kind === 'carpet') playerCarpetMesh.visible = true;
+      else if (kind === 'ufo') playerUfoMesh.visible = true;
+      else if (kind === 'skyboard') playerSkyBoardMesh.visible = true;
+
+      playerPhysics.skyRide = {
+        kind,
+        timer: meta.duration,
+        maxTimer: meta.duration,
+        baseAlt: meta.baseAlt,
+        alt: meta.baseAlt,
+        label: meta.label,
+        color: meta.color
+      };
+      playerRig.position.y = Math.max(playerRig.position.y, meta.baseAlt);
+      playerPhysics.velY = 0;
+      playerPhysics.isGrounded = false;
+      soundObbyGoal();
+      createMagicImpact(playerRig.position, meta.color);
+      window.addMindScore(80, `${meta.label} 하늘 비행!`);
+      showPlayerBubble(`${meta.label} 탑승! 하늘을 둥둥 날아다니며 구경하자! ([G] 착지)`);
+      showToast(`${meta.label} <b>하늘 비행 시작!</b> 보행자 머리 위 안전 고도(${meta.baseAlt.toFixed(1)}m)에서 자유롭게 날아보세요! ([SPACE] 상승 · [G] 또는 배지 터치 착지)`);
+    }
+
+    function endSkyRide(completed = false) {
+      if (!playerPhysics.skyRide) return;
+      const metaLabel = playerPhysics.skyRide.label;
+      playerPhysics.skyRide = null;
+      hideAllSkyRideMeshes();
+      playerRig.position.y = getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y);
+      playerPhysics.velY = 0;
+      playerPhysics.isGrounded = true;
+      torso.rotation.set(0, 0, 0);
+      leftArm.rotation.set(0, 0, 0);
+      rightArm.rotation.set(0, 0, 0);
+      soundChime(523);
+      createMagicImpact(playerRig.position, '#fbbf24');
+      showToast(`${metaLabel} <b>${completed ? '비행을 마치고 안전하게 착지했습니다!' : '운행을 마치고 내려왔습니다.'}</b>`);
+    }
+    window.startSkyRide = startSkyRide;
+    window.endSkyRide = endSkyRide;
+
     const trackPowerItems = [];
     window.trackPowerItems = trackPowerItems;
     const ITEM_SCHEDULE = [
@@ -7560,50 +8215,60 @@
     const turboItemMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0ea5e9, emissiveIntensity: 1.1, roughness: 0.2 });
 
     ITEM_SCHEDULE.forEach((kind, pi) => {
-      const ang = ((pi + 0.28) / ITEM_SCHEDULE.length) * Math.PI * 2;
-      const laneOffset = (kind === 'ironman') ? 0 : ((pi % 3) - 1) * 1.45;
-      const rItem = TRACK_RADIUS + laneOffset;
-      const ix = Math.cos(ang) * rItem;
-      const iz = Math.sin(ang) * rItem;
-      const ig = new THREE.Group();
-      const baseY = (kind === 'banana') ? 0.35 : 1.3;
-      ig.position.set(ix, baseY, iz);
-
-      if (kind === 'banana') {
-        const ring = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.72, 18), new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.65, side: THREE.DoubleSide }));
-        ring.rotation.x = -Math.PI / 2; ring.position.y = -0.24;
-        const peel1 = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.12, 0.22), bananaMat); peel1.rotation.y = 0.4; peel1.rotation.z = 0.22;
-        const peel2 = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.12, 0.22), bananaMat); peel2.rotation.y = -0.8; peel2.rotation.z = -0.22;
-        const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 0.26, 8), bananaMat); stem.position.y = 0.16;
-        ig.add(ring, peel1, peel2, stem);
-      } else if (kind === 'ice') {
-        const crystal = new THREE.Mesh(new THREE.OctahedronGeometry(0.56, 0), iceItemMat);
-        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.68, 0.05, 8, 20), new THREE.MeshBasicMaterial({ color: 0xa5f3fc }));
-        halo.rotation.x = Math.PI / 2;
-        ig.add(crystal, halo);
-      } else if (kind === 'star') {
-        const starBody = new THREE.Mesh(new THREE.OctahedronGeometry(0.52, 1), starItemMat);
-        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.06, 8, 24), new THREE.MeshBasicMaterial({ color: 0xec4899 }));
-        halo.rotation.x = Math.PI / 3;
-        ig.add(starBody, halo);
-      } else if (kind === 'ironman') {
-        const pod = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.66, 0.66), new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x991b1b, emissiveIntensity: 0.7, metalness: 0.6 }));
-        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.44, 0.1), new THREE.MeshStandardMaterial({ color: 0xfacc15, emissive: 0xd97706, emissiveIntensity: 0.7 }));
-        visor.position.z = 0.34;
-        const arc = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.12, 12), new THREE.MeshStandardMaterial({ color: 0x67e8f9, emissive: 0x22d3ee, emissiveIntensity: 2.0 }));
-        arc.rotation.x = Math.PI / 2; arc.position.set(0, -0.05, 0.36);
-        const imTag = makeChatBubbleSprite('🦾 아이언맨 슈트');
-        imTag.sprite.scale.set(2.8, 0.85, 1);
-        imTag.sprite.position.set(0, 1.35, 0);
-        ig.add(pod, visor, arc, imTag.sprite);
+      let ix, iz;
+      if (kind === 'ironman') {
+        const randSpot = getRandomSkyItemSpot(false);
+        ix = randSpot.x; iz = randSpot.z;
       } else {
-        const bolt1 = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.62, 0.16), turboItemMat); bolt1.rotation.z = -0.35; bolt1.position.set(0.08, 0.15, 0);
-        const bolt2 = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.62, 0.16), turboItemMat); bolt2.rotation.z = -0.35; bolt2.position.set(-0.08, -0.18, 0);
-        const tRing = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.05, 8, 20), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
-        ig.add(bolt1, bolt2, tRing);
+        const ang = ((pi + 0.28) / ITEM_SCHEDULE.length) * Math.PI * 2;
+        const laneOffset = ((pi % 3) - 1) * 2.2;
+        const rItem = TRACK_RADIUS + laneOffset;
+        ix = Math.cos(ang) * rItem;
+        iz = Math.sin(ang) * rItem;
       }
+      let ig;
+      const baseY = (kind === 'banana') ? 0.35 : 1.3;
+      if (kind === 'ironman') {
+        ig = buildSkyItemPickupGroup('ironman');
+      } else {
+        ig = new THREE.Group();
+        if (kind === 'banana') {
+          const ring = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.72, 18), new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.65, side: THREE.DoubleSide }));
+          ring.rotation.x = -Math.PI / 2; ring.position.y = -0.24;
+          const peel1 = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.12, 0.22), bananaMat); peel1.rotation.y = 0.4; peel1.rotation.z = 0.22;
+          const peel2 = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.12, 0.22), bananaMat); peel2.rotation.y = -0.8; peel2.rotation.z = -0.22;
+          const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 0.26, 8), bananaMat); stem.position.y = 0.16;
+          ig.add(ring, peel1, peel2, stem);
+        } else if (kind === 'ice') {
+          const crystal = new THREE.Mesh(new THREE.OctahedronGeometry(0.56, 0), iceItemMat);
+          const halo = new THREE.Mesh(new THREE.TorusGeometry(0.68, 0.05, 8, 20), new THREE.MeshBasicMaterial({ color: 0xa5f3fc }));
+          halo.rotation.x = Math.PI / 2;
+          ig.add(crystal, halo);
+        } else if (kind === 'star') {
+          const starBody = new THREE.Mesh(new THREE.OctahedronGeometry(0.52, 1), starItemMat);
+          const halo = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.06, 8, 24), new THREE.MeshBasicMaterial({ color: 0xec4899 }));
+          halo.rotation.x = Math.PI / 3;
+          ig.add(starBody, halo);
+        } else {
+          const bolt1 = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.62, 0.16), turboItemMat); bolt1.rotation.z = -0.35; bolt1.position.set(0.08, 0.15, 0);
+          const bolt2 = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.62, 0.16), turboItemMat); bolt2.rotation.z = -0.35; bolt2.position.set(-0.08, -0.18, 0);
+          const tRing = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.05, 8, 20), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+          ig.add(bolt1, bolt2, tRing);
+        }
+      }
+      ig.position.set(ix, baseY, iz);
       runningTrackGroup.add(ig);
-      trackPowerItems.push({ kind, mesh: ig, x: ix, z: iz, baseY, phase: pi * 0.7, cleared: false, respawnTimer: 0 });
+      trackPowerItems.push({ kind, mesh: ig, x: ix, z: iz, baseY, phase: pi * 0.7, cleared: false, respawnTimer: 0, relocateOnRespawn: (kind === 'ironman') });
+    });
+
+    // 맵 전역 랜덤 하늘 탈것 스폰 10개 (아이언맨 · 하늘 플라잉카 · 마법 양탄자 · 미니 UFO · 호버 하늘 보드 각 2개씩)
+    const skyFlightSpawns = [];
+    ['ironman', 'skycar', 'carpet', 'ufo', 'skyboard', 'ironman', 'skycar', 'carpet', 'ufo', 'skyboard'].forEach((kind, si) => {
+      const spot = getRandomSkyItemSpot(si >= 8);
+      const sg = buildSkyItemPickupGroup(kind);
+      sg.position.set(spot.x, 1.45, spot.z);
+      worldGroup.add(sg);
+      skyFlightSpawns.push({ kind, mesh: sg, x: spot.x, z: spot.z, baseY: 1.45, phase: si * 0.9, cleared: false, respawnTimer: 0, relocateOnRespawn: true });
     });
 
     function activateTrackPowerItem(item) {
@@ -7612,7 +8277,11 @@
       item.mesh.visible = false;
       item.respawnTimer = 0;
 
-      const isImmune = (playerPhysics.invincibleTimer > 0 || !!playerPhysics.ironManAutoLap);
+      if (SKY_RIDE_META[item.kind]) {
+        startSkyRide(item.kind);
+        return;
+      }
+      const isImmune = (playerPhysics.invincibleTimer > 0 || !!playerPhysics.ironManAutoLap || !!playerPhysics.skyRide);
       if (item.kind === 'banana') {
         if (isImmune) {
           soundChime(880);
@@ -7661,6 +8330,7 @@
         showPlayerBubble('⚡ “번개처럼 빠른 터보 대시 출발!”');
         showToast('⚡ <b>[터보 번개 5초!]</b> 달리기 속도가 번개처럼 빨라집니다! (+40점)');
       } else if (item.kind === 'ironman') {
+        if (playerPhysics.skyRide) endSkyRide(false);
         if (playerPhysics.ironManAutoLap) {
           soundChime(880);
           createMagicImpact(playerRig.position, '#facc15');
@@ -7686,13 +8356,102 @@
         createMagicImpact(playerRig.position, '#dc2626');
         createMagicImpact(playerRig.position, '#facc15');
         window.addMindScore(100, '🦾 아이언맨 슈트 장착!');
-        showPlayerBubble('🦾 “아이언맨 슈트 가동! 하늘을 날아 외곽 트랙 1바퀴 자동 완주!”');
+        showPlayerBubble('🦾 “아이언맨 슈트 가동! 하늘을 날아 외곽 3레인 트랙 1바퀴 자동 완주!”');
         showToast('🦾 <b>[아이언맨 슈트 변신!]</b> 자동으로 트랙 1바퀴를 날아 완주합니다! (해제: [G]키)');
       }
     }
     window.activateTrackPowerItem = activateTrackPowerItem;
 
     worldGroup.add(runningTrackGroup);
+
+    // ------------------------------------------------------------------------------
+    // [12. 닥터 스트레인지 차원 순간이동 포털 터널 3쌍(6개) — 맵 곳곳 자유 순간이동!]
+    // ------------------------------------------------------------------------------
+    const portalCoreCanvas = document.createElement('canvas');
+    portalCoreCanvas.width = 256; portalCoreCanvas.height = 256;
+    const pCtx = portalCoreCanvas.getContext('2d');
+    const pGrad = pCtx.createRadialGradient(128, 128, 10, 128, 128, 126);
+    pGrad.addColorStop(0, 'rgba(255,255,255,0.92)');
+    pGrad.addColorStop(0.35, 'rgba(251,191,36,0.72)');
+    pGrad.addColorStop(0.75, 'rgba(234,88,12,0.45)');
+    pGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    pCtx.fillStyle = pGrad;
+    pCtx.fillRect(0, 0, 256, 256);
+    const portalCoreTex = new THREE.CanvasTexture(portalCoreCanvas);
+    portalCoreTex.colorSpace = THREE.SRGBColorSpace;
+
+    const strangePortals = [];
+    const PORTAL_DEFS = [
+      { id: 0, pairId: 1, x: 16, z: -6, yaw: 0.4, color: 0xf97316, label: '🌀 황금 포털 ↔ 등대·해변' },
+      { id: 1, pairId: 0, x: -42, z: -32, yaw: -0.7, color: 0xf97316, label: '🌀 황금 포털 ↔ 중앙 광장' },
+      { id: 2, pairId: 3, x: -16, z: 42, yaw: 0.2, color: 0x10b981, label: '🌀 에메랄드 포털 ↔ 독서·벤치' },
+      { id: 3, pairId: 2, x: 34, z: -28, yaw: -0.5, color: 0x10b981, label: '🌀 에메랄드 포털 ↔ 로봇·모닥불' },
+      { id: 4, pairId: 5, x: 40, z: 14, yaw: 0.6, color: 0xa855f7, label: '🌀 별빛 포털 ↔ 식물원·동물원' },
+      { id: 5, pairId: 4, x: -24, z: 10, yaw: -0.4, color: 0xa855f7, label: '🌀 별빛 포털 ↔ 축구·놀이터' }
+    ];
+    PORTAL_DEFS.forEach((pd) => {
+      const pg = new THREE.Group();
+      pg.position.set(pd.x, 0, pd.z);
+      pg.rotation.y = pd.yaw;
+
+      const outerRing = new THREE.Mesh(
+        new THREE.TorusGeometry(1.65, 0.13, 10, 32),
+        new THREE.MeshStandardMaterial({ color: pd.color, emissive: pd.color, emissiveIntensity: 1.5, roughness: 0.2 })
+      );
+      outerRing.position.y = 2.05;
+      const innerRing = new THREE.Mesh(
+        new THREE.TorusGeometry(1.32, 0.08, 8, 28),
+        new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfbbf24, emissiveIntensity: 1.4 })
+      );
+      innerRing.position.y = 2.05;
+      const vortexCore = new THREE.Mesh(
+        new THREE.CircleGeometry(1.32, 24),
+        new THREE.MeshBasicMaterial({ map: portalCoreTex, color: pd.color, transparent: true, opacity: 0.68, side: THREE.DoubleSide, depthWrite: false })
+      );
+      vortexCore.position.y = 2.05;
+      const basePad = new THREE.Mesh(
+        new THREE.RingGeometry(0.95, 1.55, 24),
+        new THREE.MeshBasicMaterial({ color: pd.color, transparent: true, opacity: 0.65, side: THREE.DoubleSide })
+      );
+      basePad.rotation.x = -Math.PI / 2; basePad.position.y = 0.07;
+
+      const sparks = [];
+      const sparkMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+      const sparkGeo = new THREE.BoxGeometry(0.14, 0.14, 0.14);
+      for (let si = 0; si < 12; si++) {
+        const sm = new THREE.Mesh(sparkGeo, sparkMat);
+        pg.add(sm);
+        sparks.push({ mesh: sm, phase: (si / 12) * Math.PI * 2 });
+      }
+
+      const pSign = makeChatBubbleSprite(pd.label);
+      pSign.sprite.scale.set(3.2, 0.92, 1);
+      pSign.sprite.position.set(0, 4.15, 0);
+      pg.add(basePad, outerRing, innerRing, vortexCore, pSign.sprite);
+      worldGroup.add(pg);
+      strangePortals.push({ ...pd, group: pg, outerRing, innerRing, vortexCore, sparks });
+    });
+    let portalCooldown = 0;
+
+    function triggerPortalWarp(srcPortal) {
+      const dest = strangePortals.find(p => p.id === srcPortal.pairId);
+      if (!dest) return;
+      portalCooldown = 2.8;
+      const exitOut = new THREE.Vector3(Math.sin(dest.yaw), 0, Math.cos(dest.yaw)).normalize();
+      const destX = dest.x + exitOut.x * 3.0;
+      const destZ = dest.z + exitOut.z * 3.0;
+      createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 1.2, 0)), srcPortal.color);
+      playerRig.position.x = destX;
+      playerRig.position.z = destZ;
+      if (!playerPhysics.skyRide) {
+        playerRig.position.y = getGroundHeight(destX, destZ, 0.2);
+      }
+      playerRig.rotation.y = dest.yaw;
+      createMagicImpact(new THREE.Vector3(destX, playerRig.position.y + 1.2, destZ), dest.color);
+      soundObbyGoal();
+      showPlayerBubble('🌀 “슈우웅— 차원 포털을 타고 단숨에 순간이동!”');
+      showToast(`🌀 <b>[차원 순간이동!]</b> ${window.escapeHtml(srcPortal.label.replace('🌀 ', ''))} 구역으로 이동했습니다!`);
+    }
 
     // ------------------------------------------------------------------------------
     // [9. 동화 제9장 협동: 친구들의 '무거워진 마음 광주리' 도움 요청 링 초기화]
@@ -8065,7 +8824,7 @@
       isDancing: false, danceTimer: 0, isMeditating: false,
       walkCycle: 0, blinkTimer: 0, dustTimer: 0, armSwingTimer: 0, speedBuffTimer: 0,
       slipTimer: 0, slipDir: new THREE.Vector3(0, 0, 1),
-      freezeTimer: 0, invincibleTimer: 0, turboTimer: 0, ironManAutoLap: null
+      freezeTimer: 0, invincibleTimer: 0, turboTimer: 0, ironManAutoLap: null, skyRide: null
     };
 
     window.addEventListener('keydown', e => {
@@ -8133,6 +8892,15 @@
         let obj = fHits[0].object;
         while (obj && !obj.userData.friendId) obj = obj.parent;
         if (obj && obj.userData.friendId) return { type: 'friend', id: obj.userData.friendId };
+      }
+      if (typeof remotePlayers !== 'undefined' && remotePlayers.size > 0) {
+        const peerMeshes = Array.from(remotePlayers.values()).map(r => r.group);
+        const pHits = raycaster.intersectObjects(peerMeshes, true);
+        if (pHits.length > 0 && pHits[0].distance < 24) {
+          let obj = pHits[0].object;
+          while (obj && !obj.userData.remotePeerId) obj = obj.parent;
+          if (obj && obj.userData.remotePeerId) return { type: 'peer', id: obj.userData.remotePeerId };
+        }
       }
       return null;
     }
@@ -8212,6 +8980,7 @@
           }
         }
         else if (hit?.type === 'friend') openFriendModal(hit.id);
+        else if (hit?.type === 'peer') openFriendModal('peer:' + hit.id);
         else {
           if (currentHotbarSlot >= 1 && currentHotbarSlot <= 4) {
             // 1~4번 블록이 선택된 상태에서 바닥이나 블록 옆/위를 클릭(터치)하면 즉시 블록 쌓기!
@@ -8229,6 +8998,12 @@
 
     function doJump() {
       if (playerPhysics.freezeTimer > 0 || activeElevatorRide || playerPhysics.ironManAutoLap) return;
+      if (playerPhysics.skyRide) {
+        playerPhysics.skyRide.alt = Math.min(12.5, (playerPhysics.skyRide.alt || playerPhysics.skyRide.baseAlt) + 2.0);
+        soundJump(true);
+        createMagicImpact(playerRig.position, playerPhysics.skyRide.color);
+        return;
+      }
       cancelPlaygroundRide();
       if (playerPhysics.jumpCount < playerPhysics.maxJumps) {
         const isDouble = (playerPhysics.jumpCount >= 1);
@@ -8482,7 +9257,7 @@
             if (!state.quests.anger) {
               checkQuestCollect('anger', '평온의 불꽃 단지 획득', '쉼터에 맞춘 3번의 깊은 심호흡으로 뜨거운 화를 따뜻한 온기로 바꿨습니다.');
             }
-            lastPromptZone = null;
+            window.dismissZonePrompt('anger');
             setTimeout(() => {
               state.mission.anger = 0;
               if (typeof campfireLight !== 'undefined') campfireLight.color.set(0xf97316);
@@ -8508,11 +9283,13 @@
     }
 
     window.openFriendModal = function openFriendModal(friendId) {
-      const fr = friendAgents.find(f => f.id === friendId);
-      if (!fr) return;
-      state.activeFriendId = friendId;
-      document.getElementById('friendModalTitle').textContent = `${fr.name} · 마음 나누기`;
-      document.getElementById('friendModalDesc').innerHTML = fr.story;
+      const target = resolveCoopTarget(friendId);
+      if (!target) return;
+      state.activeFriendId = target.id;
+      document.getElementById('friendModalTitle').textContent = target.isPeer
+        ? `${target.name} · 친구와 함께하기`
+        : `${target.name} · 마음 나누기`;
+      document.getElementById('friendModalDesc').innerHTML = target.story;
       openModal('modalFriend');
     }
 
@@ -8552,6 +9329,10 @@
     }
 
     function interactCurrentZone() {
+      if (playerPhysics.skyRide) {
+        endSkyRide(false);
+        return;
+      }
       if (playerPhysics.ironManAutoLap && playerPhysics.ironManAutoLap.elapsed > 0.8) {
         endIronManAutoLap(false);
         return;
@@ -8579,7 +9360,10 @@
           return;
         }
       }
-      if (state.activeZone.startsWith('friend:')) { openFriendModal(state.activeZone.split(':')[1]); return; }
+      if (state.activeZone.startsWith('friend:') || state.activeZone.startsWith('peer:')) {
+        openFriendModal(state.activeZone.startsWith('peer:') ? state.activeZone : state.activeZone.split(':')[1]);
+        return;
+      }
       openNpcDialogue(state.activeZone);
     }
 
@@ -8747,6 +9531,16 @@
         }
       });
 
+      // 닥터 스트레인지 차원 포털 6개 미니맵 표시
+      if (typeof strangePortals !== 'undefined') {
+        strangePortals.forEach(pt => {
+          const pxp = cx + pt.x * sc, pzp = cy + pt.z * sc;
+          mmCtx.strokeStyle = '#' + pt.color.toString(16).padStart(6, '0');
+          mmCtx.lineWidth = 1.6;
+          mmCtx.beginPath(); mmCtx.arc(pxp, pzp, 3.3, 0, Math.PI * 2); mmCtx.stroke();
+        });
+      }
+
       // 플레이어 위치 & 시선 방향 황금 화살표
       const px = cx + playerRig.position.x * sc, pz = cy + playerRig.position.z * sc;
       const rotY = playerRig.rotation.y;
@@ -8800,7 +9594,7 @@
       if (btnTouchMagic) btnTouchMagic.classList.toggle('ctx-highlight', zone === 'fear');
       const interactZones = new Set(['board', 'mom', 'flutter', 'robot', 'stage', 'soccer', 'track', 'zoo', 'garden', 'beach', 'playground', 'library', 'worry', 'sad', 'lhElevator', 'lhDeck']);
       if (btnTouchInteract) {
-        btnTouchInteract.classList.toggle('ctx-highlight', !!zone && (interactZones.has(zone) || zone.startsWith('friend:')));
+        btnTouchInteract.classList.toggle('ctx-highlight', !!zone && (interactZones.has(zone) || zone.startsWith('friend:') || zone.startsWith('peer:')));
       }
     }
 
@@ -8827,8 +9621,8 @@
       // 온화한 엄마 NPC 근접 감지 (14, 12)
       const distToMom = Math.hypot(px - 14, pz - 12);
       if (!foundZone && distToMom < 5.2) foundZone = 'mom';
-      // 축구 광장 근접 감지 (52, 19.5 — 골대와 공 모두 커버)
-      if (!foundZone && Math.hypot(px - 52, pz - 19.5) < 9.5) foundZone = 'soccer';
+      // 축구 광장 근접 감지 (52, 16.5 — 남·북 양쪽 골대와 중앙 공 모두 커버)
+      if (!foundZone && Math.hypot(px - 52, pz - 16.5) < 11.5) foundZone = 'soccer';
       // 4대 힐링 테마파크 근접 감지 (놀이터, 독서대, 동물원, 식물원, 해변)
       if (!foundZone && Math.hypot(px - 28, pz - 22) < 8.5) foundZone = 'playground';
       if (!foundZone && Math.hypot(px - 22, pz - (-24)) < 7.8) foundZone = 'library';
@@ -8841,35 +9635,63 @@
         const d = Math.hypot(px - fr.group.position.x, pz - fr.group.position.z);
         if (d < bestFriendDist) { bestFriendDist = d; nearFriend = fr; }
       }
-      // 협동 도움 요청 중인 친구는 최우선, 일반 친구는 고정 체험 구역 침범 방지(<1.8m 밀착 시에만 전환)
-      if (nearFriend && !['lhDeck', 'lhElevator'].includes(foundZone) && (!foundZone || nearFriend.needsCoopHelp || bestFriendDist < 1.8)) {
-        foundZone = 'friend:' + nearFriend.id;
+      let nearPeer = null, bestPeerDist = 4.5;
+      if (typeof remotePlayers !== 'undefined' && remotePlayers.size > 0) {
+        for (const r of remotePlayers.values()) {
+          if (!r?.group) continue;
+          const d = Math.hypot(px - r.group.position.x, pz - r.group.position.z);
+          if (d < bestPeerDist) { bestPeerDist = d; nearPeer = r; }
+        }
+      }
+      if (!['lhDeck', 'lhElevator'].includes(foundZone)) {
+        if (nearPeer && (!nearFriend || (!nearFriend.needsCoopHelp && bestPeerDist <= bestFriendDist)) && (!foundZone || bestPeerDist < 2.6)) {
+          foundZone = 'peer:' + nearPeer.peerId;
+        } else if (nearFriend && (!foundZone || nearFriend.needsCoopHelp || bestFriendDist < 1.8)) {
+          foundZone = 'friend:' + nearFriend.id;
+        }
       }
 
       state.activeZone = foundZone;
       syncZoneActionHighlight(foundZone);
       const box = document.getElementById('zonePrompt');
-      if (!foundZone) {
-        if (lastPromptZone !== null) {
+      if (dismissedPromptZone && dismissedPromptZone !== foundZone) {
+        dismissedPromptZone = null;
+      }
+      if (!foundZone || activeElevatorRide || isLighthousePanorama || coopBeamTimer > 0 || playerPhysics.isDancing || (dismissedPromptZone && dismissedPromptZone === foundZone)) {
+        if (lastPromptZone !== null || box.classList.contains('visible')) {
           box.classList.remove('visible');
           lastPromptZone = null;
           lastPromptSig = '';
         }
+        syncLhMiniDock();
         return;
       }
+      syncLhMiniDock();
 
       const progEl = document.getElementById('zpProgress');
-      const progTxt = !foundZone.startsWith('friend:') && !['board','mom','playground','library','soccer','zoo','garden','beach','lhElevator','lhDeck'].includes(foundZone)
+      const progTxt = !foundZone.startsWith('friend:') && !foundZone.startsWith('peer:') && !['board','mom','playground','library','soccer','zoo','garden','beach','lhElevator','lhDeck'].includes(foundZone)
         ? getZoneProgressText(foundZone) : '';
       if (progEl) {
         progEl.textContent = progTxt;
         progEl.style.display = progTxt ? 'inline-block' : 'none';
       }
 
-      const sig = foundZone + '|' + (state.mission[foundZone] || 0) + '|' + (state.quests[foundZone] ? 1 : 0) + '|' + (foundZone.startsWith('friend:') ? (nearFriend?.needsCoopHelp ? 1 : 0) : 0);
+      const sig = foundZone + '|' + (state.mission[foundZone] || 0) + '|' + (state.quests[foundZone] ? 1 : 0) + '|' + (foundZone.startsWith('friend:') ? (nearFriend?.needsCoopHelp ? 1 : 0) : (foundZone.startsWith('peer:') ? 1 : 0));
       if (lastPromptZone === foundZone && lastPromptSig === sig) return;
       lastPromptZone = foundZone;
       lastPromptSig = sig;
+
+      const zpBtnsRoot = document.getElementById('zpBtns');
+      if (zpBtnsRoot && !zpBtnsRoot.dataset.autoDismissBound) {
+        zpBtnsRoot.dataset.autoDismissBound = '1';
+        zpBtnsRoot.addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          // 화 구역 3회 리듬 연습(0~2/3)은 게이지를 유지하고, 완료되거나 다른 모든 구역 버튼은 클릭 즉시 창 닫기
+          if (btn.id === 'zpBreathCBtn' && (state.mission.anger || 0) < 3) return;
+          if (state.activeZone) window.dismissZonePrompt(state.activeZone);
+        });
+      }
 
       if (foundZone === 'playground') {
         document.getElementById('zpChip').style.background = '#fbbf24';
@@ -8941,6 +9763,23 @@
         return;
       }
 
+      if (foundZone.startsWith('peer:')) {
+        const rPeer = remotePlayers.get(foundZone.slice(5));
+        if (!rPeer) { box.classList.remove('visible'); lastPromptZone = null; return; }
+        const pName = rPeer.prof?.name || '접속 중인 친구';
+        document.getElementById('zpChip').style.background = '#22c55e';
+        document.getElementById('zpTitle').textContent = `🟢 ${pName}님과 만났어요!`;
+        document.getElementById('zpDesc').textContent = `${pName}님과 함께 마음 광주리를 들어올리거나 신바람 춤을 추어 보세요.`;
+        document.getElementById('breathBarWrap').classList.remove('active');
+        const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
+        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '🧺 광주리 같이 들기'; b1.onclick = () => window.quickRescueFriendBasket('peer:' + rPeer.peerId);
+        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '💃 함께 춤추기'; b2.onclick = () => window.danceWithTarget('peer:' + rPeer.peerId);
+        const b3 = document.createElement('button'); b3.className = 'zp-btn secondary'; b3.textContent = '친구 메뉴 (G)'; b3.onclick = () => openFriendModal('peer:' + rPeer.peerId);
+        btnsEl.appendChild(b1); btnsEl.appendChild(b2); btnsEl.appendChild(b3);
+        box.classList.add('visible');
+        return;
+      }
+
       if (foundZone.startsWith('friend:')) {
         const fr = friendAgents.find(f => f.id === foundZone.split(':')[1]);
         const coopOpen = isMissionUnlocked('coop');
@@ -8950,15 +9789,15 @@
           : `${fr.name} (동행 친구)`;
         document.getElementById('zpDesc').textContent = (fr.needsCoopHelp && coopOpen)
           ? `“오늘 한꺼번에 많은 감정 손님이 찾아와서 광주리가 무거워… 같이 들어줄래?”`
-          : (coopOpen ? `${fr.name}와(과) 이야기를 나누거나 마음 광주리를 같이 들어줄 수 있어요.` : `${fr.name}와(과) 이야기를 나눌 수 있어요. (제9장 협동 미션: 5대 감정 해결 후 활성화 ${getCoreStoryDoneCount()}/5)`);
+          : `${fr.name}와(과) 마음 광주리를 함께 들어올리거나 신나게 춤출 수 있어요.`;
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '친구와 함께하기 (G)'; b1.onclick = () => openFriendModal(fr.id);
         const b2 = document.createElement('button'); b2.className = 'zp-btn secondary';
-        b2.textContent = coopOpen ? '🧺 즉시 광주리 같이 들기 (+250점)' : `🔒 협동 미션 (${getCoreStoryDoneCount()}/5 후 활성)`;
+        b2.textContent = coopOpen ? '🧺 광주리 같이 들기 (+250점)' : '🧺 광주리 같이 들기';
         b2.onclick = () => window.quickRescueFriendBasket(fr.id);
-        btnsEl.appendChild(b1);
-        btnsEl.appendChild(b2);
+        const b3 = document.createElement('button'); b3.className = 'zp-btn secondary'; b3.textContent = '💃 함께 춤추기'; b3.onclick = () => window.danceWithTarget(fr.id);
+        btnsEl.appendChild(b1); btnsEl.appendChild(b2); btnsEl.appendChild(b3);
         box.classList.add('visible');
         return;
       }
@@ -8981,7 +9820,7 @@
         } },
         robot: { color: '#6366f1', t: '제4장 부서진 장난감 로봇 (나-전달법)', d: state.quests.robot ? '나-전달법으로 동생과 화해해 로봇을 멋지게 고쳤어요!' : (isMissionUnlocked('robot') ? '화난 마음을 비난 대신 "나-전달법"으로 표현해 로봇을 고쳐보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('robot') ? '나-전달법 대화 & 수리 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.openRobotIMessageModal() },
         stage: { color: '#e11d48', t: '제6장 학예 발표회 미니 무대', d: state.quests.stage ? '차근차근 준비해 학예 발표회를 멋지게 마쳤어요!' : (isMissionUnlocked('stage') ? '무대에 올라 지금 할 수 있는 발표 연습을 3단계로 진행해 보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('stage') ? '발표 연습하기 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.triggerStagePractice() },
-        soccer: { color: '#f59e0b', t: '기쁨 축구 광장 & 골대', d: '축구공 가까이에서 발로 차면 골대까지 쭉 뻗어나갑니다! [G]키로도 슛을 날릴 수 있어요.', actText: '슛 날리기 / 공 리셋 (G)', actFn: () => window.kickOrResetSoccerBall() },
+        soccer: { color: '#f59e0b', t: '기쁨 축구 광장 · 양쪽 골대', d: '남쪽·북쪽 어느 골대로든 차 넣을 수 있어요! 골인 시 무지개 폭죽과 함께 기쁨 대폭발! ([G] 슛/리셋)', actText: '슛 날리기 / 공 리셋 (G)', actFn: () => window.kickOrResetSoccerBall() },
         track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '트랙의 바나나·얼음·무적·아이언맨 슈트·터보를 모으며 8개 부스터 게이트를 돌파하세요!' : `트랙과 다양한 아이템을 자유롭게 체험할 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (${getCoreStoryDoneCount()}/5 후 활성)`, actFn: () => window.startOuterTrackDash() },
         zoo: { color: '#22c55e', t: '숲속 아기 동물원', d: '토끼, 아기곰, 펭귄 친구들과 교감하며 마음을 따뜻하게 달래보세요.', actText: '동물 친구들과 교감하기 (G)', actFn: () => window.interactZooAnimals() },
         garden: { color: '#f43f5e', t: '치유의 유리온실 식물원', d: '무지개 빛 꽃향기를 깊게 들이마시며 편안하게 숨을 고르고 가벼운 발걸음을 얻어보세요.', actText: '꽃향기 치유 호흡 (G)', actFn: () => window.interactGardenBloom() },
@@ -9089,6 +9928,14 @@
     window.updateStardustCountUI = function() {
       const stEl = document.getElementById('stardustText');
       if (stEl) stEl.textContent = `${collectedStardust}/15 (${state.stardustCount || 0})`;
+    };
+    window.openStardustGuide = function() {
+      const gemEl = document.getElementById('sdGuideGemCount');
+      const totEl = document.getElementById('sdGuideTotalCount');
+      if (gemEl) gemEl.textContent = `${collectedStardust}/15`;
+      if (totEl) totEl.textContent = `${state.stardustCount || 0}`;
+      if (typeof soundChime === 'function') soundChime(620);
+      openModal('modalStardustGuide');
     };
     const stardustCoords = [
       [2, 1.2, 4], [-4, 1.2, 6], [8, 1.5, -4], [-8, 2.0, -12],
@@ -9370,7 +10217,7 @@
       skyStarMat.opacity = state.timeOfDay === 'night' ? 0.9 : (state.timeOfDay === 'sunset' ? 0.45 : 0.05);
       waterMesh.position.y = 0.22 + Math.sin(time * 2.2) * 0.035;
 
-      // [신규 1. 축구공 물리 이동 & 쭉 뻗는 강슛 · 골인 판정]
+      // [신규 1. 축구공 물리 이동 & 양쪽 골대 쭉 뻗는 강슛 · 화려한 기쁨 골인 연출]
       if (typeof soccerBall !== 'undefined' && soccerBall.mesh) {
         soccerBall.kickCooldown = Math.max(0, (soccerBall.kickCooldown || 0) - dt);
         const dPlayerToBall = Math.hypot(playerRig.position.x - soccerBall.pos.x, playerRig.position.z - soccerBall.pos.z);
@@ -9379,11 +10226,12 @@
           const kickDir = new THREE.Vector3(soccerBall.pos.x - playerRig.position.x, 0, soccerBall.pos.z - playerRig.position.z);
           if (kickDir.lengthSq() < 0.0001) kickDir.set(Math.sin(playerRig.rotation.y), 0, Math.cos(playerRig.rotation.y));
           kickDir.normalize();
-          const toGoal = new THREE.Vector3(52 - soccerBall.pos.x, 0, 24.4 - soccerBall.pos.z).normalize();
+          const targetGoalZ = kickDir.z < 0 ? 8.6 : 24.4;
+          const toGoal = new THREE.Vector3(52 - soccerBall.pos.x, 0, targetGoalZ - soccerBall.pos.z).normalize();
           if (kickDir.dot(toGoal) > 0.25) {
             kickDir.lerp(toGoal, 0.38).normalize();
           }
-          soccerBall.vel.set(kickDir.x * 18.5, 4.2, kickDir.z * 18.5);
+          soccerBall.vel.set(kickDir.x * 19.5, 4.3, kickDir.z * 19.5);
           soundJump(true);
           createMagicImpact(soccerBall.pos, '#f59e0b');
         }
@@ -9410,27 +10258,111 @@
         soccerBall.mesh.rotation.x += soccerBall.vel.z * dt * 2.5;
         soccerBall.mesh.rotation.z -= soccerBall.vel.x * dt * 2.5;
 
-        // 골대(52, 24) 골인 판정 (가로 +-2.2, 세로 z: 23.0~25.5)
-        if (Math.abs(soccerBall.pos.x - 52) < 2.2 && soccerBall.pos.z > 23.0 && soccerBall.pos.z < 25.5 && soccerBall.pos.y < 2.3) {
+        // 남쪽 골대(52, 24) 또는 북쪽 골대(52, 9) 골인 판정
+        const hitSouthGoal = (Math.abs(soccerBall.pos.x - 52) < 2.2 && soccerBall.pos.z > 23.0 && soccerBall.pos.z < 25.8 && soccerBall.pos.y < 2.35);
+        const hitNorthGoal = (Math.abs(soccerBall.pos.x - 52) < 2.2 && soccerBall.pos.z < 10.0 && soccerBall.pos.z > 7.2 && soccerBall.pos.y < 2.35);
+        if (hitSouthGoal || hitNorthGoal) {
           if (!soccerBall.justScored) {
             soccerBall.justScored = true;
-            soundChime(523); setTimeout(() => soundChime(659), 100); setTimeout(() => soundChime(784), 200); setTimeout(() => soundChime(1046), 300);
-            createMagicImpact(soccerBall.pos, '#22c55e');
-            spawnConfetti(soccerBall.pos.clone().add(new THREE.Vector3(0, 1.4, 0)));
-            showToast('⚽ <b>GOOOOAL! 기쁨의 골인!</b> 축구공을 차서 멋지게 득점했습니다! (+50점)');
-            window.addMindScore(50, '기쁨 축구 골인');
+            triggerSoccerGoalCelebration(hitNorthGoal ? 'north' : 'south', soccerBall.pos.clone());
             setTimeout(() => {
-              soccerBall.pos.set(52, 0.42, 15);
+              soccerBall.pos.set(52, 0.42, 16.5);
               soccerBall.vel.set(0, 0, 0);
               soccerBall.justScored = false;
-            }, 3000);
+            }, 3200);
           }
-        } else if (Math.hypot(soccerBall.pos.x - 52, soccerBall.pos.z - 16.5) > 18.5) {
-          soccerBall.pos.set(52, 0.42, 15);
+        } else if (Math.hypot(soccerBall.pos.x - 52, soccerBall.pos.z - 16.5) > 20.5) {
+          soccerBall.pos.set(52, 0.42, 16.5);
           soccerBall.vel.set(0, 0, 0);
           soccerBall.justScored = false;
           createMagicImpact(soccerBall.pos, '#f59e0b');
         }
+      }
+
+      // [골인 폭죽 · 쇼크웨이브 링 · 골대 LED 점멸 · 그물 출렁임 업데이트]
+      if (typeof soccerGoalCelebTimer !== 'undefined' && soccerGoalCelebTimer > 0) {
+        soccerGoalCelebTimer -= dt;
+        const gObj = (soccerGoalCelebSide === 'north') ? northGoalObj : southGoalObj;
+        const rainbowCol = new THREE.Color().setHSL((time * 2.5) % 1, 0.95, 0.6);
+        gObj.ledMat.color.copy(rainbowCol);
+        gObj.ledMat.emissive.copy(rainbowCol);
+        gObj.ledMat.emissiveIntensity = 1.6;
+        gObj.netMesh.scale.z = 1.0 + Math.sin(time * 24) * 0.24;
+        goalBannerSprite.sprite.position.y = 3.8 + Math.abs(Math.sin(time * 7.5)) * 0.65;
+        if (soccerGoalCelebTimer <= 0) {
+          gObj.ledMat.color.setHex(gObj.baseColor);
+          gObj.ledMat.emissive.setHex(gObj.baseColor);
+          gObj.ledMat.emissiveIntensity = 0.55;
+          gObj.netMesh.scale.z = 1.0;
+          goalBannerSprite.sprite.visible = false;
+        }
+      }
+      for (let fi = soccerGoalFireworks.length - 1; fi >= 0; fi--) {
+        const fw = soccerGoalFireworks[fi];
+        fw.life -= dt;
+        fw.vel.y -= 9.5 * dt;
+        fw.mesh.position.addScaledVector(fw.vel, dt);
+        fw.mesh.rotation.x += dt * 7; fw.mesh.rotation.y += dt * 8;
+        const a = Math.max(0, fw.life / fw.maxLife);
+        fw.mat.opacity = a;
+        fw.mesh.scale.setScalar(Math.max(0.05, a * 1.4));
+        if (fw.life <= 0) {
+          worldGroup.remove(fw.mesh); fw.mat.dispose();
+          soccerGoalFireworks.splice(fi, 1);
+        }
+      }
+      for (let ri = goalShockRings.length - 1; ri >= 0; ri--) {
+        const sr = goalShockRings[ri];
+        sr.age += dt;
+        if (sr.age < sr.delay) continue;
+        const p = (sr.age - sr.delay) / sr.maxAge;
+        sr.mesh.scale.setScalar(1 + p * 8.5);
+        sr.mat.opacity = Math.max(0, (1 - p) * 0.92);
+        if (p >= 1) {
+          worldGroup.remove(sr.mesh); sr.mesh.geometry.dispose(); sr.mat.dispose();
+          goalShockRings.splice(ri, 1);
+        }
+      }
+
+      // [꽃향기 치유: 온실 9송이 만개 애니메이션 + 인찬이를 휘감아 오르는 68장 꽃잎 회오리]
+      if (typeof gardenBloomingFlowers !== 'undefined') {
+        const blooming = gardenBloomTimer > 0;
+        if (blooming) gardenBloomTimer = Math.max(0, gardenBloomTimer - dt);
+        const targetOpen = blooming ? 1.28 : 0.34;
+        gardenBloomingFlowers.forEach((fl) => {
+          const wobble = blooming ? Math.sin(time * 5.0 + fl.phase) * 0.08 : Math.sin(time * 1.8 + fl.phase) * 0.03;
+          fl.petalPivots.forEach((pv, pi) => {
+            pv.rotation.x = THREE.MathUtils.lerp(pv.rotation.x, targetOpen + wobble + (pi % 2) * 0.04, 0.1);
+          });
+          const sTarget = blooming ? fl.baseScale * (1.28 + Math.sin(time * 6 + fl.phase) * 0.06) : fl.baseScale;
+          fl.headGroup.scale.setScalar(THREE.MathUtils.lerp(fl.headGroup.scale.x, sTarget, 0.1));
+          fl.headGroup.rotation.y += dt * (blooming ? 1.6 : 0.25);
+          fl.coreMat.emissiveIntensity = blooming ? 1.55 + Math.sin(time * 8 + fl.phase) * 0.35 : 0.55;
+          fl.petalMat.emissiveIntensity = blooming ? 0.95 : 0.35;
+        });
+        gardenDomeGlow.intensity = THREE.MathUtils.lerp(gardenDomeGlow.intensity, blooming ? 3.2 : 0, 0.12);
+
+        const swirlActive = blooming;
+        gardenSwirlPetals.forEach((pt, idx) => {
+          pt.mesh.visible = swirlActive;
+          if (!swirlActive) return;
+          const prog = ((time * 0.42 + pt.heightOffset) % 1);
+          const ang = pt.angOffset + time * pt.spinSpeed + prog * Math.PI * 2.4;
+          const rad = pt.radiusOffset * (0.75 + Math.sin(prog * Math.PI) * 0.55);
+          pt.mesh.position.set(
+            playerRig.position.x + Math.cos(ang) * rad,
+            0.25 + prog * 4.5,
+            playerRig.position.z + Math.sin(ang) * rad
+          );
+          pt.mesh.rotation.set(time * 4.5 + idx, ang, time * 3.2 + idx * 0.5);
+        });
+        gardenAuraRings.forEach((ar, ri) => {
+          ar.visible = swirlActive;
+          if (!swirlActive) return;
+          const lift = ((time * 0.65 + ri * 0.5) % 1) * 3.6;
+          ar.position.set(playerRig.position.x, 0.25 + lift, playerRig.position.z);
+          ar.rotation.z = time * (ri === 0 ? 2.4 : -2.1);
+        });
       }
 
       // [신규 2. 슬픔 눈물 파란 별 & 햇살 빔 애니메이션]
@@ -9589,11 +10521,13 @@
           } else {
             playerRig.position.set(-40.2, 0.25, -46.0);
             isLighthousePanorama = false;
+            dismissedPromptZone = 'lhElevator';
             camState.distance = 11.0;
             soundChime(523);
             showToast('🛗 1층 등대 마당에 안전하게 도착했습니다!');
           }
           lastPromptZone = null;
+          syncLhMiniDock();
         }
       }
 
@@ -9659,24 +10593,79 @@
         });
       }
 
-      // [신규 11-2. 외곽 경기장 스페셜 아이템 24개 애니메이션 & 획득 판정]
+      // [신규 11-2. 외곽 3레인 스페셜 아이템 & 맵 전역 랜덤 하늘 탈것(5종) + 차원 포털 + 블록 10분 소멸]
       if (typeof trackPowerItems !== 'undefined') {
-        trackPowerItems.forEach(pi => {
+        const allPickups = (typeof skyFlightSpawns !== 'undefined') ? [...trackPowerItems, ...skyFlightSpawns] : trackPowerItems;
+        allPickups.forEach(pi => {
           if (pi.cleared) {
             pi.respawnTimer += dt;
             if (pi.respawnTimer > 12.0) {
+              if (pi.relocateOnRespawn) {
+                const nSpot = getRandomSkyItemSpot(false);
+                pi.x = nSpot.x; pi.z = nSpot.z;
+                pi.mesh.position.set(pi.x, pi.baseY, pi.z);
+              }
               pi.cleared = false;
               pi.mesh.visible = true;
               pi.respawnTimer = 0;
+              createMagicImpact(pi.mesh.position, '#38bdf8');
             }
             return;
           }
           pi.mesh.rotation.y += dt * (pi.kind === 'banana' ? 1.4 : 2.6);
           pi.mesh.position.y = pi.baseY + Math.sin(time * 3.2 + pi.phase) * (pi.kind === 'banana' ? 0.04 : 0.18);
-          if (Math.hypot(playerRig.position.x - pi.x, playerRig.position.z - pi.z) < 2.35) {
+          if (Math.hypot(playerRig.position.x - pi.x, playerRig.position.z - pi.z) < 2.35 && playerRig.position.y < 3.6) {
             activateTrackPowerItem(pi);
           }
         });
+      }
+
+      // 닥터 스트레인지 차원 포털 회전/불티 스파크 & 순간이동 판정
+      if (typeof portalCooldown !== 'undefined' && portalCooldown > 0) {
+        portalCooldown = Math.max(0, portalCooldown - dt);
+      }
+      if (typeof strangePortals !== 'undefined') {
+        strangePortals.forEach((pt, idx) => {
+          pt.outerRing.rotation.z += dt * 1.8;
+          pt.innerRing.rotation.z -= dt * 2.5;
+          pt.vortexCore.rotation.z -= dt * 3.0;
+          pt.sparks.forEach(sp => {
+            const sa = sp.phase + time * 4.5 + idx;
+            const sr = 1.48 + Math.sin(time * 12 + sp.phase) * 0.14;
+            sp.mesh.position.set(Math.cos(sa) * sr, 2.05 + Math.sin(sa) * sr, Math.sin(time * 8 + sp.phase) * 0.12);
+          });
+          if (portalCooldown <= 0 && !activeElevatorRide && !playerPhysics.ironManAutoLap) {
+            if (Math.hypot(playerRig.position.x - pt.x, playerRig.position.z - pt.z) < 1.95) {
+              triggerPortalWarp(pt);
+            }
+          }
+        });
+      }
+
+      // 블록 10분 TTL(유효시간) 만료 자동 청소 & 먼지 흩날림 파티클 업데이트
+      if (placedBlocks.length > 0) {
+        const nowEpoch = Date.now();
+        for (let bi = placedBlocks.length - 1; bi >= 0; bi--) {
+          const blk = placedBlocks[bi];
+          if (typeof blk.createdAt === 'number' && (nowEpoch - blk.createdAt) >= BLOCK_TTL_MS) {
+            dissolveBlockIntoDust(blk);
+          }
+        }
+      }
+      for (let di = blockDustParticles.length - 1; di >= 0; di--) {
+        const dp = blockDustParticles[di];
+        dp.life -= dt;
+        dp.mesh.position.x += dp.vx * dt;
+        dp.mesh.position.y += dp.vy * dt;
+        dp.mesh.position.z += dp.vz * dt;
+        dp.mesh.rotation.x += dt * 4; dp.mesh.rotation.y += dt * 4;
+        const a = Math.max(0, dp.life / dp.maxLife);
+        dp.mat.opacity = a * 0.88;
+        dp.mesh.scale.setScalar(Math.max(0.05, a));
+        if (dp.life <= 0) {
+          worldGroup.remove(dp.mesh); dp.mat.dispose();
+          blockDustParticles.splice(di, 1);
+        }
       }
 
       // [신규 9. 제9장 무거워진 마음 광주리 협동 요청 주기적 순환]
@@ -9897,6 +10886,10 @@
         rightArm.rotation.x = -1.1;
       } else {
         coopBeam.visible = false;
+        if (coopBeamTarget) {
+          coopBeamTarget.position.y = 0;
+          coopBeamTarget = null;
+        }
         if (typeof window.coopSharedBasket !== 'undefined' && window.coopSharedBasket) {
           window.coopSharedBasket.visible = false;
         }
@@ -10139,8 +11132,26 @@
         if (playerPhysics.invincibleTimer <= 0) playerInvincibleAura.visible = false;
       }
 
-      // 아이언맨 자동 1바퀴 비행 / 얼음 / 바나나 미끄러짐 처리
-      if (playerPhysics.ironManAutoLap) {
+      // 하늘 비행 탈것 (skyRide: 고도 3.4m+ 안전 비행) / 아이언맨 / 얼음 / 바나나 미끄러짐 처리
+      if (playerPhysics.skyRide) {
+        const sr = playerPhysics.skyRide;
+        sr.timer -= dt;
+        const targetAlt = Math.max(3.2, sr.alt || sr.baseAlt) + Math.sin(time * 4.5) * 0.15;
+        playerRig.position.y = THREE.MathUtils.lerp(playerRig.position.y, targetAlt, 0.14);
+        playerPhysics.velY = 0;
+        playerPhysics.isGrounded = false;
+        if (sr.kind === 'skycar') {
+          skyCarHoverWheels.forEach(w => { w.rotation.z += dt * 8; });
+          skyCarJets.forEach(j => j.scale.set(1, 0.85 + Math.sin(time * 26) * 0.3, 1));
+        } else if (sr.kind === 'carpet') {
+          carpetTassels.forEach((ts, ti) => { ts.rotation.x = Math.sin(time * 9 + ti) * 0.35; });
+        } else if (sr.kind === 'ufo') {
+          playerUfoMesh.rotation.y += dt * 3.2;
+        }
+        if (sr.timer <= 0) {
+          endSkyRide(true);
+        }
+      } else if (playerPhysics.ironManAutoLap) {
         const lap = playerPhysics.ironManAutoLap;
         lap.elapsed += dt;
         lap.angle += lap.angularSpeed * dt;
@@ -10184,13 +11195,22 @@
         }
       }
 
-      // 외곽 트랙 스페셜 아이템 상태 HUD 배지 갱신
+      // 외곽 트랙 스페셜 아이템 & 하늘 탈것 상태 HUD 배지 갱신 (탭하여 즉시 착지)
       const statusPillEl = document.getElementById('trackStatusPill');
       if (statusPillEl) {
+        if (!statusPillEl.dataset.bound) {
+          statusPillEl.dataset.bound = '1';
+          statusPillEl.addEventListener('click', () => {
+            if (playerPhysics.skyRide) endSkyRide(false);
+            else if (playerPhysics.ironManAutoLap) endIronManAutoLap(false);
+          });
+        }
         let statusMsg = '';
-        if (playerPhysics.ironManAutoLap) {
+        if (playerPhysics.skyRide) {
+          statusMsg = `${playerPhysics.skyRide.label} 비행 중 (고도 ${playerRig.position.y.toFixed(1)}m · ${playerPhysics.skyRide.timer.toFixed(1)}초 · [G]/터치 착지)`;
+        } else if (playerPhysics.ironManAutoLap) {
           const pct = Math.min(100, Math.round((playerPhysics.ironManAutoLap.traveled / (Math.PI * 2)) * 100));
-          statusMsg = `🦾 아이언맨 슈트 자동 완주 중 · ${pct}% ([G] 해제)`;
+          statusMsg = `🦾 아이언맨 슈트 자동 완주 중 · ${pct}% ([G]/터치 해제)`;
         } else if (playerPhysics.freezeTimer > 0) {
           statusMsg = `🧊 얼음 함정! ${playerPhysics.freezeTimer.toFixed(1)}초 후 해동`;
         } else if (playerPhysics.slipTimer > 0) {
@@ -10204,7 +11224,7 @@
         statusPillEl.classList.toggle('active', !!statusMsg);
       }
 
-      const buffMultiplier = (playerPhysics.turboTimer > 0 ? 1.65 : (playerPhysics.invincibleTimer > 0 ? 1.55 : (playerPhysics.speedBuffTimer > 0 ? 1.25 : 1.0)));
+      const buffMultiplier = (playerPhysics.skyRide ? 2.2 : (playerPhysics.turboTimer > 0 ? 1.65 : (playerPhysics.invincibleTimer > 0 ? 1.55 : (playerPhysics.speedBuffTimer > 0 ? 1.25 : 1.0))));
       const isMoving = (mx !== 0 || mz !== 0), speed = (input.shift ? 12.5 : 7.5) * buffMultiplier;
       const canManualMove = !playerPhysics.isDancing && !playerPhysics.isMeditating && !isAutoWalking && !activeElevatorRide && !playerPhysics.ironManAutoLap && playerPhysics.freezeTimer <= 0 && playerPhysics.slipTimer <= 0;
 
@@ -10429,7 +11449,7 @@
         }
       });
 
-      if (!activePlaygroundRide && !activeElevatorRide && !playerPhysics.ironManAutoLap) {
+      if (!activePlaygroundRide && !activeElevatorRide && !playerPhysics.ironManAutoLap && !playerPhysics.skyRide) {
         const groundY = getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y);
         if (!playerPhysics.isGrounded) {
           playerPhysics.velY -= 26.0 * dt;
@@ -10471,8 +11491,8 @@
         if (playerPhysics.blinkTimer > 3.65) { eyeL.scale.y = 1; eyeR.scale.y = 1; playerPhysics.blinkTimer = 0; }
       }
       const _distMaxR = Math.hypot(playerRig.position.x, playerRig.position.z);
-      if (_distMaxR > 94.8) {
-        const _clampK = 94.8 / _distMaxR;
+      if (_distMaxR > 95.5) {
+        const _clampK = 95.5 / _distMaxR;
         playerRig.position.x *= _clampK;
         playerRig.position.z *= _clampK;
       }
@@ -10481,9 +11501,35 @@
       if (remotePlayers.size > 0) {
         remotePlayers.forEach(r => {
           const rPos = r.targetPos;
-          if (rPos) {
+          if (r.coopTimer > 0) r.coopTimer -= dt;
+          if (r.danceTimer > 0) r.danceTimer -= dt;
+          const inCoopWithMe = (coopBeamTimer > 0 && coopBeamTarget === r.group) || (r.coopTimer > 0);
+          if (inCoopWithMe) {
+            if (rPos) {
+              r.group.position.x = THREE.MathUtils.lerp(r.group.position.x, rPos.x, 0.12);
+              r.group.position.z = THREE.MathUtils.lerp(r.group.position.z, rPos.z, 0.12);
+            }
+            if (coopBeamTimer <= 0 || coopBeamTarget !== r.group) {
+              r.group.position.y = Math.abs(Math.sin(time * 9.5)) * 0.85;
+              r.group.rotation.y = Math.atan2(playerRig.position.x - r.group.position.x, playerRig.position.z - r.group.position.z);
+            }
+            r.armL.rotation.x = -1.1; r.armR.rotation.x = -1.1;
+            r.armL.rotation.z = 0; r.armR.rotation.z = 0;
+          } else if (r.danceTimer > 0 || rPos?.isDancing) {
+            if (rPos) {
+              r.group.position.x = THREE.MathUtils.lerp(r.group.position.x, rPos.x, 0.22);
+              r.group.position.z = THREE.MathUtils.lerp(r.group.position.z, rPos.z, 0.22);
+            }
+            r.group.rotation.y += dt * 6;
+            r.group.position.y = Math.abs(Math.sin(time * 10)) * 0.35;
+            r.armL.rotation.z = Math.sin(time * 10) * 1.1;
+            r.armR.rotation.z = -Math.sin(time * 10) * 1.1;
+            r.armL.rotation.x = 0; r.armR.rotation.x = 0;
+          } else if (rPos) {
             r.group.position.lerp(new THREE.Vector3(rPos.x, rPos.y, rPos.z), 0.22);
             r.group.rotation.y = THREE.MathUtils.lerp(r.group.rotation.y, rPos.rotY || 0, 0.22);
+            r.armL.rotation.z = THREE.MathUtils.lerp(r.armL.rotation.z, 0, 0.15);
+            r.armR.rotation.z = THREE.MathUtils.lerp(r.armR.rotation.z, 0, 0.15);
             if (rPos.isMoving) {
               r.walkCycle = (r.walkCycle || 0) + dt * 12;
               r.legL.rotation.x = Math.sin(r.walkCycle) * 0.8;
@@ -10614,12 +11660,19 @@
       const targetSpirit = playerRig.position.clone().add(new THREE.Vector3(Math.cos(time * 2.5) * 1.8, 2.5 + Math.sin(time * 3.5) * 0.25, Math.sin(time * 2.5) * 1.8));
       spiritGroup.position.lerp(targetSpirit, 0.12); spiritGroup.rotation.y = time * 2.5;
 
-      camState.targetPos.lerp(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)), 0.14);
+      if (isLighthousePanorama && !camState.isRightDragging && Math.abs(input.lookJoyX || 0) < 0.05) {
+        camState.yaw += dt * 0.24;
+      }
+      const focusTarget = isLighthousePanorama
+        ? playerRig.position.clone().add(new THREE.Vector3(0, 2.2, 0)).lerp(new THREE.Vector3(0, 4.2, 0), 0.28)
+        : playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+      camState.targetPos.lerp(focusTarget, 0.14);
       const cx = camState.targetPos.x + Math.sin(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
       const cy = camState.targetPos.y + Math.sin(camState.pitch) * camState.distance;
       const cz = camState.targetPos.z + Math.cos(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
       camera.position.set(cx, Math.max(cy, 0.6), cz); camera.lookAt(camState.targetPos);
-      camera.fov = THREE.MathUtils.lerp(camera.fov, input.shift && isMoving ? 57 : 50, 0.1);
+      const targetFov = isLighthousePanorama ? 62 : (input.shift && isMoving ? 57 : 50);
+      camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.1);
       camera.updateProjectionMatrix();
 
       
@@ -10860,10 +11913,16 @@
     };
     function showToast(msg) {
       const box = document.getElementById('toastBox'), el = document.createElement('div');
-      const maxToasts = document.body.classList.contains('view-mode-phone') ? 1 : 2;
+      const isPhoneMode = document.body.classList.contains('view-mode-phone');
+      const maxToasts = isPhoneMode ? 1 : 2;
       while (box.children.length >= maxToasts) box.removeChild(box.firstChild);
-      el.className = 'toast'; el.innerHTML = msg; box.appendChild(el);
-      setTimeout(() => el.remove(), 3200);
+      el.className = 'toast';
+      el.innerHTML = `<div class="toast-body">${msg}</div><button type="button" class="toast-close" aria-label="알림 닫기">확인</button>`;
+      const dismiss = () => { if (el.parentNode) el.remove(); };
+      el.querySelector('.toast-close')?.addEventListener('click', (e) => { e.stopPropagation(); dismiss(); });
+      el.addEventListener('click', dismiss);
+      box.appendChild(el);
+      setTimeout(dismiss, isPhoneMode ? 5200 : 3600);
     }
 
     const bindClick = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
@@ -11860,8 +12919,8 @@
     // ==========================================
     const DEFAULT_RELAY_URL = 'wss://classroom-relay.classroom-relay.workers.dev';
     const urlParams = new URLSearchParams(window.location.search);
-    const rawUrlRoom = (urlParams.get('room') || state.roomCode || '101').replace(/[^0-9]/g, '').slice(0, 3);
-    state.roomCode = rawUrlRoom.length === 3 ? rawUrlRoom : '101';
+    const rawUrlRoom = normalizeRoomCodeInput(urlParams.get('room') || state.roomCode || 'A');
+    state.roomCode = rawUrlRoom;
     let worldChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('inchan_mind_world_' + state.roomCode) : null;
     window.mpConnected = false;
     window.playroomConnected = false;
@@ -11873,6 +12932,7 @@
     let mpReconnectAttempt = 0;
     let mpNotifiedOnce = false;
     const MP_RECONNECT_DELAYS_MS = [1500, 3000, 6000, 12000];
+    let myMpPeerId = null;
     const remotePlayers = new Map();
     Object.defineProperty(window, '__mpState', {
       configurable: true,
@@ -11945,6 +13005,7 @@
 
       const prof = sanitizeRemoteProfile(profile);
       const rg = new THREE.Group();
+      rg.userData.remotePeerId = peerId;
       rg.position.set(0, 0, 10);
 
       const rShirt = new THREE.MeshStandardMaterial({ color: prof.shirtColor || '#3b82f6', roughness: 0.45 });
@@ -11999,6 +13060,7 @@
         peerId, group: rg, torso: rTorso, head: rHead, shirtMat: rShirt,
         armL: rArmL, armR: rArmR, legL: rLegL, legR: rLegR,
         tagObj: rTagObj, chatObj: rChatObj, chatTimer: 0, walkCycle: 0,
+        danceTimer: 0, coopTimer: 0,
         targetPos: { x: 0, y: 0, z: 10, rotY: 0, isMoving: false, isDancing: false },
         prof
       };
@@ -12024,8 +13086,10 @@
 
     function applyRemoteBlockPut(data, silent) {
       if (!data || typeof data.x !== 'number' || typeof data.y !== 'number' || typeof data.z !== 'number') return;
+      const createdAt = (typeof data.createdAt === 'number' && Number.isFinite(data.createdAt)) ? data.createdAt : Date.now();
+      if (Date.now() - createdAt >= BLOCK_TTL_MS) return;
       if (!placedBlocks.some(b => b.x === data.x && Math.abs(b.y - data.y) < 0.5 && b.z === data.z)) {
-        spawnBlockWithAnim(data.x, data.y, data.z, data.slot || 1);
+        spawnBlockWithAnim(data.x, data.y, data.z, data.slot || 1, null, createdAt);
         if (!silent) appendChatLog(data.from || '친구', `새로운 감정 블록을 놓았습니다! (${data.x}, ${data.z})`, true);
       }
     }
@@ -12179,6 +13243,7 @@
 
         switch (msg.t) {
           case 'welcome': {
+            if (msg.id) myMpPeerId = msg.id;
             if (Array.isArray(msg.peers)) {
               msg.peers.forEach(p => {
                 if (!p || !p.id) return;
@@ -12229,10 +13294,14 @@
             break;
           case 'cheer':
             if (msg.d) {
-              const safeFrom = window.sanitizeCleanText(msg.d.from || '친구', 14);
-              const safeTo = window.sanitizeCleanText(msg.d.to || '친구', 14);
-              const safeMsg = window.sanitizeCleanText(msg.d.msg || '', 50);
-              showToast(`💖 <b>${window.escapeHtml(safeFrom)}</b>님이 <b>${window.escapeHtml(safeTo)}</b>님과 마음을 나누었습니다: ${window.escapeHtml(safeMsg)}`);
+              if (typeof handleIncomingCoopEvent === 'function') {
+                handleIncomingCoopEvent(msg.d, msg.id);
+              } else {
+                const safeFrom = window.sanitizeCleanText(msg.d.from || '친구', 14);
+                const safeTo = window.sanitizeCleanText(msg.d.to || '친구', 14);
+                const safeMsg = window.sanitizeCleanText(msg.d.msg || '', 50);
+                showToast(`💖 <b>${window.escapeHtml(safeFrom)}</b>님이 <b>${window.escapeHtml(safeTo)}</b>님과 마음을 나누었습니다: ${window.escapeHtml(safeMsg)}`);
+              }
             }
             break;
           case 'leave':
@@ -12313,9 +13382,33 @@
 
     let custInputsBound = false;
     function normalizeRoomCodeInput(raw) {
-      const digits = String(raw || '').replace(/[^0-9]/g, '').slice(0, 3);
-      return digits.length === 3 ? digits : (digits ? digits.padStart(3, '0') : '101');
+      const ch = String(raw || '').toUpperCase().replace(/[^ABC]/g, '').slice(0, 1);
+      return (ch === 'A' || ch === 'B' || ch === 'C') ? ch : 'A';
     }
+    function syncRoomPickerUI(pickerId, inputId, val) {
+      const room = normalizeRoomCodeInput(val);
+      const inp = document.getElementById(inputId);
+      if (inp) inp.value = room;
+      document.querySelectorAll(`#${pickerId} .room-pick-btn`).forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.room === room);
+      });
+      return room;
+    }
+    function bindRoomPicker(pickerId, inputId) {
+      const picker = document.getElementById(pickerId);
+      if (!picker || picker.dataset.bound) return;
+      picker.dataset.bound = '1';
+      picker.querySelectorAll('.room-pick-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          syncRoomPickerUI(pickerId, inputId, btn.dataset.room);
+          if (pickerId === 'custRoomPicker') setCustPinError('');
+        });
+      });
+    }
+    bindRoomPicker('custRoomPicker', 'custInputRoom');
+    bindRoomPicker('adminRoomPicker', 'adminRoomInput');
+    syncRoomPickerUI('custRoomPicker', 'custInputRoom', state.roomCode);
+    syncRoomPickerUI('adminRoomPicker', 'adminRoomInput', state.roomCode);
     function normalizePinInput(raw) {
       const digits = String(raw || '').replace(/[^0-9]/g, '').slice(0, 4);
       return digits || '0000';
@@ -12357,7 +13450,7 @@
           const rmEl = document.getElementById('custInputRoom');
           const pinEl = document.getElementById('custInputPin');
           if (nmEl) nmEl.value = rec.name;
-          if (rmEl) rmEl.value = rec.roomCode;
+          syncRoomPickerUI('custRoomPicker', 'custInputRoom', rec.roomCode);
           if (pinEl) {
             pinEl.value = (state.profileAccountKey === rec.key && state.playerPin) ? state.playerPin : '';
             pinEl.focus();
@@ -12403,7 +13496,7 @@
       const ttEl = document.getElementById('custSelectTitle');
       const pinEl = document.getElementById('custInputPin');
       if (nmEl) nmEl.value = state.playerName || '인찬이';
-      if (rmEl) rmEl.value = normalizeRoomCodeInput(state.roomCode || '101');
+      syncRoomPickerUI('custRoomPicker', 'custInputRoom', state.roomCode || 'A');
       if (ttEl) ttEl.value = state.playerTitle || '마음 탐험가';
       if (pinEl) pinEl.value = state.playerPin || '0000';
       document.querySelectorAll('#custColorRow .cust-color-card').forEach(sw => {
@@ -12716,7 +13809,8 @@
         if (d.type === 'board_sync' && d.post) {
           applyRemoteBoardPost(d.post, false, '다른 탭의 친구');
         } else if (d.type === 'coop_cheer') {
-          showToast(`<b>${window.escapeHtml(d.from)}</b>님이 <b>${window.escapeHtml(d.to)}</b>님과 마음을 나누었습니다: ${window.escapeHtml(window.sanitizeCleanText(d.msg, 50))}`);
+          if (typeof handleIncomingCoopEvent === 'function') handleIncomingCoopEvent(d, d.fromPeerId || null);
+          else showToast(`<b>${window.escapeHtml(d.from)}</b>님이 <b>${window.escapeHtml(d.to)}</b>님과 마음을 나누었습니다: ${window.escapeHtml(window.sanitizeCleanText(d.msg, 50))}`);
         } else if (d.type === 'mp_block_place') {
           applyRemoteBlockPut(d, true);
         } else if (d.type === 'mp_block_mine') {
@@ -12885,8 +13979,8 @@
     }
     function openAdminModal() {
       lockAdminSessionUI();
-      const rmIn = document.getElementById('adminRoomInput');
-      if (rmIn) rmIn.value = normalizeRoomCodeInput(state.roomCode || '101');
+      bindRoomPicker('adminRoomPicker', 'adminRoomInput');
+      syncRoomPickerUI('adminRoomPicker', 'adminRoomInput', state.roomCode || 'A');
       openModal('modalAdmin');
       setTimeout(() => document.getElementById('adminPasswordInput')?.focus(), 80);
     }
@@ -13163,27 +14257,43 @@
       if (e.key === 'Enter') { e.preventDefault(); adminVerifyAndLoad(false); }
     });
 
-    window.quickRescueFriendBasket = function(friendId) {
-      initAudio();
-      if (!isMissionUnlocked('coop')) {
-        soundChime(220);
-        showToast(`🔒 <b>[제9장 협동 · 마음 광주리 같이 들기]</b><br>먼저 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
-        return;
+    function resolveCoopTarget(friendId) {
+      const key = friendId || state.activeFriendId;
+      if (typeof key === 'string' && key.startsWith('peer:')) {
+        const pId = key.slice(5);
+        const r = remotePlayers.get(pId);
+        if (!r) return null;
+        const nm = r.prof?.name || '접속 중인 친구';
+        return {
+          isPeer: true,
+          id: 'peer:' + pId,
+          peerId: pId,
+          name: nm,
+          title: r.prof?.title || '접속 친구',
+          group: r.group,
+          chatObj: r.chatObj,
+          ref: r,
+          needsCoopHelp: true,
+          story: `지금 같은 방에서 함께 탐험 중인 <b>${window.escapeHtml(nm)}</b>님이에요! 함께 마음 광주리를 들어주거나 기쁨의 춤을 추어 보세요.`
+        };
       }
-      const fr = friendAgents.find(f => f.id === friendId) || friendAgents.find(f => f.id === state.activeFriendId) || friendAgents[0];
-      if (!fr) return;
+      const fr = friendAgents.find(f => f.id === key) || friendAgents.find(f => f.id === state.activeFriendId) || friendAgents[0];
+      if (!fr) return null;
+      return {
+        isPeer: false,
+        id: fr.id,
+        peerId: null,
+        name: fr.name,
+        title: fr.title || '동행 친구',
+        group: fr.group,
+        chatObj: fr.chatObj,
+        ref: fr,
+        needsCoopHelp: !!fr.needsCoopHelp,
+        story: fr.story || ''
+      };
+    }
 
-      // 인찬이와 친구가 황금 광주리를 사이에 두고 마주 서서 함께 점프!
-      const dirToPlayer = playerRig.position.clone().sub(fr.group.position);
-      if (dirToPlayer.length() > 2.4 || dirToPlayer.length() < 0.8) {
-        const norm = dirToPlayer.length() > 0.05 ? dirToPlayer.normalize() : new THREE.Vector3(0, 0, 1);
-        playerRig.position.x = fr.group.position.x + norm.x * 1.75;
-        playerRig.position.z = fr.group.position.z + norm.z * 1.75;
-      }
-      playerRig.rotation.y = Math.atan2(fr.group.position.x - playerRig.position.x, fr.group.position.z - playerRig.position.z);
-      fr.group.rotation.y = Math.atan2(playerRig.position.x - fr.group.position.x, playerRig.position.z - fr.group.position.z);
-
-      // 두 사람 한가운데에 3D 공동 황금 마음 광주리 즉시 생성 및 표시
+    function ensureSharedBasketGroup() {
       if (typeof window.coopSharedBasket === 'undefined' || !window.coopSharedBasket) {
         const sbGroup = new THREE.Group();
         const sbBody = new THREE.Mesh(
@@ -13205,98 +14315,188 @@
         worldGroup.add(sbGroup);
         window.coopSharedBasket = sbGroup;
       }
-      const midPos = playerRig.position.clone().lerp(fr.group.position, 0.5);
-      window.coopSharedBasket.visible = true;
-      window.coopSharedBasket.position.set(midPos.x, 1.25, midPos.z);
+      return window.coopSharedBasket;
+    }
 
-      coopBeamTarget = fr.group;
+    function playSharedBasketSceneWithTarget(target) {
+      if (!target || !target.group) return;
+      const dirToPlayer = playerRig.position.clone().sub(target.group.position);
+      if (dirToPlayer.length() > 2.4 || dirToPlayer.length() < 0.8) {
+        const norm = dirToPlayer.length() > 0.05 ? dirToPlayer.normalize() : new THREE.Vector3(0, 0, 1);
+        playerRig.position.x = target.group.position.x + norm.x * 1.75;
+        playerRig.position.z = target.group.position.z + norm.z * 1.75;
+      }
+      playerRig.rotation.y = Math.atan2(target.group.position.x - playerRig.position.x, target.group.position.z - playerRig.position.z);
+      target.group.rotation.y = Math.atan2(playerRig.position.x - target.group.position.x, playerRig.position.z - target.group.position.z);
+
+      const sb = ensureSharedBasketGroup();
+      const midPos = playerRig.position.clone().lerp(target.group.position, 0.5);
+      sb.visible = true;
+      sb.position.set(midPos.x, 1.25, midPos.z);
+
+      coopBeamTarget = target.group;
       coopBeamTimer = 3.8;
+      if (target.isPeer && target.ref) {
+        target.ref.coopTimer = 3.8;
+      } else if (target.ref) {
+        target.ref.needsCoopHelp = false;
+        if (target.ref.heavyBasketRing) target.ref.heavyBasketRing.visible = false;
+        target.ref.danceTimer = 3.8;
+      }
       playerPhysics.velY = 9.5;
       playerPhysics.isGrounded = false;
       soundJump(true);
 
-      state.coopHelped += 1;
-      const wasHeavy = !!fr.needsCoopHelp;
-      fr.needsCoopHelp = false;
-      if (fr.heavyBasketRing) fr.heavyBasketRing.visible = false;
-      fr.danceTimer = 3.8;
-      if (typeof window.completeExtraMission === 'function') window.completeExtraMission('coop', '협동의 우정 배지');
       if (typeof showPlayerBubble === 'function') {
-        showPlayerBubble(`🧺 “영차영차! ${fr.name}야, 광주리를 사이에 두고 같이 점프하며 들어올리자!”`);
+        showPlayerBubble(`🧺 “영차영차! ${target.name}님과 광주리를 같이 점프해 들어올리자!”`);
       }
-      if (fr.chatObj) {
-        drawChatBubbleCanvas(fr.chatObj.ctx, `“영차! 같이 점프하며 들어주니까 광주리가 깃털처럼 가벼워졌어! 💖”`, '#fbbf24');
-        fr.chatObj.tex.needsUpdate = true;
-        fr.chatObj.sprite.visible = true;
-        fr.chatTimer = 6.0;
+      if (target.chatObj) {
+        drawChatBubbleCanvas(target.chatObj.ctx, `“영차! 같이 들어주니까 광주리가 깃털처럼 가벼워졌어! 💖”`, '#fbbf24');
+        target.chatObj.tex.needsUpdate = true;
+        target.chatObj.sprite.visible = true;
+        if (target.ref) target.ref.chatTimer = 6.0;
       }
-      const pts = wasHeavy ? 300 : 250;
-      window.addMindScore(pts, `🧺 제9장 ${fr.name}와(과) 광주리 함께 점프해 들기!`);
+      soundQuestComplete();
+      spawnConfetti(midPos.clone().add(new THREE.Vector3(0, 1.8, 0)));
+      createMagicImpact(midPos, '#fbbf24');
+    }
+
+    function handleIncomingCoopEvent(data, senderPeerId) {
+      if (!data) return;
+      const safeFrom = window.sanitizeCleanText(data.from || '친구', 14);
+      const safeTo = window.sanitizeCleanText(data.to || '친구', 14);
+      const safeMsg = window.sanitizeCleanText(data.msg || '', 50);
+      const isForMe = (data.targetPeerId && myMpPeerId && data.targetPeerId === myMpPeerId)
+        || (safeTo && state.playerName && safeTo === state.playerName);
+      const fromKey = senderPeerId || data.fromPeerId;
+      const sender = (fromKey && remotePlayers.get(fromKey))
+        || Array.from(remotePlayers.values()).find(r => r.prof?.name === safeFrom);
+
+      if (isForMe && sender && data.kind === 'basket') {
+        const senderTarget = { isPeer: true, id: 'peer:' + sender.peerId, peerId: sender.peerId, name: safeFrom, group: sender.group, chatObj: sender.chatObj, ref: sender };
+        playSharedBasketSceneWithTarget(senderTarget);
+        if (isMissionUnlocked('coop') && typeof window.completeExtraMission === 'function') {
+          window.completeExtraMission('coop', '협동의 우정 배지');
+        }
+        window.addMindScore(isMissionUnlocked('coop') ? 250 : 80, `🧺 ${safeFrom}님과 광주리 함께 들기!`);
+        showToast(`🧺 <b>${window.escapeHtml(safeFrom)}</b>님이 나와 함께 마음 광주리를 들어주었습니다!`);
+        return;
+      }
+      if (isForMe && sender && data.kind === 'dance') {
+        sender.danceTimer = 4.2;
+        doDance();
+        spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
+        showToast(`💃 <b>${window.escapeHtml(safeFrom)}</b>님이 나와 함께 기쁨의 춤을 춥니다!`);
+        return;
+      }
+      showToast(`💖 <b>${window.escapeHtml(safeFrom)}</b>님이 <b>${window.escapeHtml(safeTo)}</b>님과 마음을 나누었습니다: ${window.escapeHtml(safeMsg)}`);
+    }
+
+    window.quickRescueFriendBasket = function(friendId) {
+      initAudio();
+      closeModal('modalFriend');
+      if (typeof window.dismissZonePrompt === 'function') window.dismissZonePrompt(state.activeZone);
+
+      const target = resolveCoopTarget(friendId);
+      if (!target) return;
+
+      const wasHeavy = !target.isPeer && !!target.needsCoopHelp;
+      playSharedBasketSceneWithTarget(target);
+
+      const unlocked = isMissionUnlocked('coop');
+      state.coopHelped += 1;
+      if (unlocked && typeof window.completeExtraMission === 'function') {
+        window.completeExtraMission('coop', '협동의 우정 배지');
+      }
+      const pts = unlocked ? (wasHeavy ? 300 : 250) : 80;
+      window.addMindScore(pts, `🧺 ${target.name}와(과) 광주리 함께 들기!`);
       state.stardustCount = (state.stardustCount || 0) + 5;
       saveProgress();
       if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
-      soundQuestComplete();
-      spawnConfetti(fr.group.position.clone().lerp(playerRig.position, 0.5).add(new THREE.Vector3(0, 1.8, 0)));
-      createMagicImpact(fr.group.position.clone().lerp(playerRig.position, 0.5), '#fbbf24');
-      closeModal('modalFriend');
-      lastPromptZone = null;
-      showToast(`🧺 <b>[제9장 협동 점프 성공!] ${fr.name}</b>와(과) 마음 광주리를 사이에 두고 함께 점프하며 가볍게 들어올렸습니다! (+${pts}점 · 총 협력 ${state.coopHelped}회)`);
+
+      showToast(unlocked
+        ? `🧺 <b>[제9장 협동 점프 성공!] ${window.escapeHtml(target.name)}</b>님과 마음 광주리를 함께 들어올렸습니다! (+${pts}점 · 총 협력 ${state.coopHelped}회)`
+        : `🧺 <b>${window.escapeHtml(target.name)}</b>님과 마음 광주리를 함께 들어올렸습니다! (+${pts}점 · 제9장 배지는 5대 감정 해결 후 완료됩니다)`);
       const rescueMsg = '광주리를 함께 점프하며 들어주었어요!';
-      if (worldChannel) worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: rescueMsg });
-      if (window.mpConnected && mpActions?.sendCheer) {
-        mpActions.sendCheer({ from: state.playerName, to: fr.name, msg: rescueMsg });
+      const payload = { kind: 'basket', from: state.playerName, fromPeerId: myMpPeerId, to: target.name, targetPeerId: target.peerId, msg: rescueMsg };
+      if (worldChannel) worldChannel.postMessage({ type: 'coop_cheer', ...payload });
+      if (window.mpConnected && mpActions?.sendCheer) mpActions.sendCheer(payload);
+    };
+
+    window.danceWithTarget = function(friendId) {
+      initAudio();
+      closeModal('modalFriend');
+      if (typeof window.dismissZonePrompt === 'function') window.dismissZonePrompt(state.activeZone);
+
+      const target = resolveCoopTarget(friendId);
+      if (!target) return;
+      if (target.group) {
+        playerRig.rotation.y = Math.atan2(target.group.position.x - playerRig.position.x, target.group.position.z - playerRig.position.z);
+        target.group.rotation.y = Math.atan2(playerRig.position.x - target.group.position.x, playerRig.position.z - target.group.position.z);
       }
+      if (target.ref) target.ref.danceTimer = 4.2;
+      if (target.chatObj) {
+        drawChatBubbleCanvas(target.chatObj.ctx, `“신난다! ${state.playerName}님과 함께 춤추니 기분이 최고야! 💃”`, '#ec4899');
+        target.chatObj.tex.needsUpdate = true;
+        target.chatObj.sprite.visible = true;
+        if (target.ref) target.ref.chatTimer = 4.5;
+      }
+      doDance();
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
+      showToast(`💃 <b>${window.escapeHtml(target.name)}</b>님과 함께 기쁨의 춤을 춥니다!`);
+      const payload = { kind: 'dance', from: state.playerName, fromPeerId: myMpPeerId, to: target.name, targetPeerId: target.peerId, msg: '함께 기쁨의 춤을 추어요!' };
+      if (worldChannel) worldChannel.postMessage({ type: 'coop_cheer', ...payload });
+      if (window.mpConnected && mpActions?.sendCheer) mpActions.sendCheer(payload);
     };
 
     bindClick('btnHelpBasket', () => {
       window.quickRescueFriendBasket(state.activeFriendId);
     });
     bindClick('btnDanceTogether', () => {
-      const fr = friendAgents.find(f => f.id === state.activeFriendId);
-      if (!fr) return;
-      fr.danceTimer = 4.0; doDance(); closeModal('modalFriend');
-      showToast(`<b>${fr.name}</b>와(과) 함께 기쁨의 춤을 춥니다!`);
+      window.danceWithTarget(state.activeFriendId);
     });
     bindClick('btnSendCheer', () => {
-      const fr = friendAgents.find(f => f.id === state.activeFriendId);
+      const target = resolveCoopTarget(state.activeFriendId);
       const msg = window.sanitizeCleanText(document.getElementById('inputFriendCheer').value, 50);
-      if (!fr || !msg) { showToast('응원 메시지를 입력해 주세요.'); return; }
+      if (!target || !msg) { showToast('응원 메시지를 입력해 주세요.'); return; }
 
       // 1. 마음 게시판에 기록
       const newPost = {
         id: Date.now(), author: state.playerName, emotion: 'joy', time: '방금 전',
-        title: `[응원] ${fr.name}에게: ${msg.slice(0, 18)}`,
-        body: `${fr.name}에게 보내는 마음 응원 — "${msg}"`,
+        title: `[응원] ${target.name}에게: ${msg.slice(0, 18)}`,
+        body: `${target.name}에게 보내는 마음 응원 — "${msg}"`,
         insight: '9장 마음 나누기: 친구의 이야기에 귀 기울이고 응원하면 광주리가 훨씬 가벼워집니다.',
         likes: 1
       };
       state.boardPosts.unshift(newPost);
       document.getElementById('inputFriendCheer').value = '';
       saveProgress(); updateScreenCanvas(); closeModal('modalFriend'); soundChime(659);
+      if (typeof window.dismissZonePrompt === 'function') window.dismissZonePrompt(state.activeZone);
 
       if (typeof showPlayerBubble === 'function') {
-        showPlayerBubble(`💖 ${fr.name}에게: "${msg}"`);
+        showPlayerBubble(`💖 ${target.name}에게: "${msg}"`);
       }
 
-      if (fr && fr.chatObj) {
+      if (target.chatObj) {
         const reply = `“고마워 ${state.playerName}아! 네 따뜻한 응원 덕분에 마음이 정말 든든해졌어! 💖”`;
-        drawChatBubbleCanvas(fr.chatObj.ctx, reply, '#ec4899');
-        fr.chatObj.tex.needsUpdate = true;
-        fr.chatObj.sprite.visible = true;
-        fr.chatTimer = 5.5;
+        drawChatBubbleCanvas(target.chatObj.ctx, reply, '#ec4899');
+        target.chatObj.tex.needsUpdate = true;
+        target.chatObj.sprite.visible = true;
+        if (target.ref) target.ref.chatTimer = 5.5;
       }
-      createMagicImpact(fr.group.position, '#ec4899');
+      if (target.group) createMagicImpact(target.group.position, '#ec4899');
       createMagicImpact(playerRig.position, '#fbbf24');
-      window.addMindScore(50, `${fr.name}에게 마음 응원 보내기`);
+      window.addMindScore(50, `${target.name}에게 마음 응원 보내기`);
 
-      showToast(`💖 <b>${fr.name}</b>에게 응원 메시지를 전달하고 마음 게시판에 기록했습니다! (+50점)`);
+      showToast(`💖 <b>${window.escapeHtml(target.name)}</b>에게 응원 메시지를 전달하고 마음 게시판에 기록했습니다! (+50점)`);
+      const cheerPayload = { from: state.playerName, fromPeerId: myMpPeerId, to: target.name, targetPeerId: target.peerId, msg: msg };
       if (worldChannel) {
         worldChannel.postMessage({ type: 'board_sync', post: newPost });
-        worldChannel.postMessage({ type: 'coop_cheer', from: state.playerName, to: fr.name, msg: msg });
+        worldChannel.postMessage({ type: 'coop_cheer', ...cheerPayload });
       }
       if (window.mpConnected && mpActions) {
         mpActions.sendBrd?.({ post: newPost });
-        mpActions.sendCheer?.({ from: state.playerName, to: fr.name, msg: msg });
+        mpActions.sendCheer?.(cheerPayload);
       }
     });
 
@@ -14026,11 +15226,79 @@
       get: () => ({
         lhElevatorY: Number(lhElevatorY.toFixed(2)),
         carY: Number(lhElevatorCar.position.y.toFixed(2)),
+        carRoofY: Number(CAR_ROOF_Y.toFixed(2)),
+        camYaw: Number(camState.yaw.toFixed(3)),
         activeRide: activeElevatorRide ? { dir: activeElevatorRide.dir, elapsed: Number(activeElevatorRide.elapsed.toFixed(2)) } : null,
         playerY: Number(playerRig.position.y.toFixed(2)),
-        activeZone: state.activeZone
+        activeZone: state.activeZone,
+        isLighthousePanorama,
+        dismissedPromptZone,
+        lhMiniDockVisible: !!document.getElementById('lhMiniDock')?.classList.contains('visible')
       })
     });
+    window.__worldExtrasDebug = {
+      status: () => ({
+        trackWidth: TRACK_WIDTH,
+        laneLines: TRACK_LANE_LINES.length,
+        arrowCount: trackDirectionArrows.length,
+        skySpawns: skyFlightSpawns.map(s => ({ kind: s.kind, x: Number(s.x.toFixed(1)), z: Number(s.z.toFixed(1)), cleared: s.cleared })),
+        skyRide: playerPhysics.skyRide ? { kind: playerPhysics.skyRide.kind, y: Number(playerRig.position.y.toFixed(2)), timer: Number(playerPhysics.skyRide.timer.toFixed(2)) } : null,
+        portalCount: strangePortals.length,
+        portalCooldown: Number(portalCooldown.toFixed(2)),
+        portals: strangePortals.map(p => ({ id: p.id, pairId: p.pairId, x: p.x, z: p.z })),
+        blockTtlMs: BLOCK_TTL_MS,
+        placedBlockCount: placedBlocks.length,
+        blockDustCount: blockDustParticles.length,
+        goalCount: 2,
+        goalCelebrationTimer: Number(soccerGoalCelebTimer.toFixed(2)),
+        fireworkCount: soccerGoalFireworks.length,
+        gardenBloomTimer: Number(gardenBloomTimer.toFixed(2)),
+        gardenFlowerCount: gardenBloomingFlowers.length,
+        gardenPetalCount: gardenSwirlPetals.length
+      }),
+      activateSkyItem: (kind) => startSkyRide(kind),
+      teleportToPortal: (idx) => {
+        const pt = strangePortals[idx];
+        if (!pt) return;
+        portalCooldown = 0;
+        playerRig.position.set(pt.x, 0.2, pt.z);
+      },
+      expireAllBlocksNow: () => {
+        const past = Date.now() - BLOCK_TTL_MS - 1000;
+        placedBlocks.forEach(b => { b.createdAt = past; });
+      },
+      triggerTestGoal: (side = 'north') => {
+        soccerBall.justScored = false;
+        soccerBall.pos.set(52, 0.5, side === 'north' ? 9.0 : 24.0);
+        soccerBall.vel.set(0, 0, 0);
+      }
+    };
+    window.__coopDebug = {
+      status: () => ({
+        coopBeamTimer: Number((coopBeamTimer || 0).toFixed(2)),
+        sharedBasketVisible: !!window.coopSharedBasket?.visible,
+        isDancing: !!playerPhysics.isDancing,
+        activeZone: state.activeZone,
+        dismissedPromptZone,
+        zonePromptVisible: !!document.getElementById('zonePrompt')?.classList.contains('visible'),
+        modalFriendOpen: !!document.getElementById('modalFriend')?.classList.contains('open'),
+        remotePeerCount: remotePlayers.size,
+        peers: Array.from(remotePlayers.values()).map(r => ({
+          peerId: r.peerId,
+          name: r.prof?.name,
+          coopTimer: Number((r.coopTimer || 0).toFixed(2)),
+          danceTimer: Number((r.danceTimer || 0).toFixed(2)),
+          y: Number(r.group.position.y.toFixed(2))
+        }))
+      }),
+      spawnTestPeer: (peerId, name, x, z) => {
+        const r = createRemoteAvatar(peerId, { name, title: '같은 방 친구', shirtColor: '#10b981', hatType: 'sprout' });
+        r.group.position.set(x, 0, z);
+        r.targetPos = { x, y: 0, z, rotY: 0, isMoving: false, isDancing: false };
+        return r.peerId;
+      },
+      removeTestPeer: (peerId) => removeRemoteAvatar(peerId)
+    };
     window.renderStoryMissionTracker = renderStoryMissionTracker;
     window.renderTrophyCard = renderTrophyCard;
     window.captureRobloxAvatarPortrait = captureRobloxAvatarPortrait;
@@ -14361,7 +15629,7 @@
   </div>
 
   <!-- 플로팅 마음 점수 & 콤보 팝업 컨테이너 (라이트 모드) -->
-  <div id="floatingScoreWrap" style="position:fixed; top:68px; left:50%; transform:translateX(-50%); pointer-events:none; z-index:99999; display:flex; flex-direction:column; align-items:center; gap:4px;"></div>
+  <div id="floatingScoreWrap" style="position:fixed; top:44px; left:50%; transform:translateX(-50%); pointer-events:none; z-index:9400; display:flex; flex-direction:column; align-items:center; gap:4px; max-width:calc(100vw - 16px);"></div>
   <style>
     @keyframes floatScoreUp {
       0% { opacity: 0; transform: translateY(10px) scale(0.92); }
@@ -14432,8 +15700,13 @@
         </p>
         <div class="admin-login-grid">
           <div>
-            <label class="field-label" for="adminRoomInput">관리할 교실 방 코드 (3자리)</label>
-            <input class="text-input" id="adminRoomInput" type="text" inputmode="numeric" maxlength="3" placeholder="101" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);" />
+            <label class="field-label">관리할 교실 방 선택 (A · B · C)</label>
+            <div class="room-btn-group" id="adminRoomPicker" role="group" aria-label="관리할 교실 방 선택">
+              <button type="button" class="room-pick-btn active" data-room="A">A방</button>
+              <button type="button" class="room-pick-btn" data-room="B">B방</button>
+              <button type="button" class="room-pick-btn" data-room="C">C방</button>
+            </div>
+            <input type="hidden" id="adminRoomInput" value="A" />
           </div>
           <div>
             <label class="field-label" for="adminPasswordInput">관리자 암호</label>
@@ -14447,7 +15720,7 @@
       <!-- 인증 후 대시보드 -->
       <div id="adminDashboardPane" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
-          <span class="admin-room-pill" id="adminActiveRoomLabel">방 101 관리 중</span>
+          <span class="admin-room-pill" id="adminActiveRoomLabel">방 A 관리 중</span>
           <div style="display:flex; gap:8px;">
             <button type="button" class="admin-mini-btn" id="btnAdminRefresh">↻ 새로고침</button>
             <button type="button" class="admin-mini-btn" id="btnAdminLock">🔒 잠금</button>
