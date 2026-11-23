@@ -1282,6 +1282,15 @@
       display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 999px;
       background: #18181b; color: #ffffff; font-size: 13.5px; font-weight: 800;
     }
+    .admin-dash-room-tabs {
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .admin-dash-room-btn {
+      padding: 4px 9px; border-radius: 7px; border: 1px solid #d4d4d8; background: #ffffff;
+      color: #3f3f46; font-size: 12.5px; font-weight: 800; cursor: pointer; transition: all 0.14s;
+    }
+    .admin-dash-room-btn:hover { background: #f4f4f5; border-color: #18181b; color: #18181b; }
+    .admin-dash-room-btn.active { background: #18181b; color: #ffffff; border-color: #18181b; }
     .admin-mini-btn {
       padding: 6px 12px; border-radius: 8px; border: 1px solid #d4d4d8; background: #ffffff;
       color: #18181b; font-size: 13.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
@@ -1331,11 +1340,13 @@
       font-size: 12px; font-weight: 800; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d;
     }
     .admin-pw-badge.custom { background: #dcfce7; color: #166534; border-color: #86efac; }
-    .admin-pw-all-row {
+    .admin-pw-all-row, .admin-reset-all-row {
       display: flex; align-items: center; gap: 8px; margin-bottom: 9px;
       font-size: 13.5px; font-weight: 700; color: #3f3f46; cursor: pointer;
     }
-    .admin-pw-all-row input { width: 16px; height: 16px; accent-color: #18181b; flex-shrink: 0; }
+    .admin-pw-all-row input, .admin-reset-all-row input { width: 16px; height: 16px; accent-color: #18181b; flex-shrink: 0; }
+    .admin-reset-all-row { color: #7f1d1d; }
+    .admin-reset-all-row input { accent-color: #dc2626; }
 
     /* 동행 정령 & 테마 의상 6종 선택 그리드 (라이트 벤토 카드 & 순수 컬러 스와치 & 1줄 설명문 보장) */
     .cust-color-grid {
@@ -2213,8 +2224,8 @@
             <input class="cust-input" id="custInputName" type="text" maxlength="12" placeholder="인찬이" />
           </div>
           <div class="cust-field">
-            <label class="cust-label" for="custInputPin">내 암호 (숫자 4자리)</label>
-            <input class="cust-input" id="custInputPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0000 (기억할 숫자)" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);" />
+            <label class="cust-label" id="custPinLabel" for="custInputPin">내 암호 (숫자 4자리)</label>
+            <input class="cust-input" id="custInputPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0000 (기억할 숫자)" />
           </div>
           <div class="cust-field">
             <label class="cust-label" for="custSelectTitle">머리 위 칭호</label>
@@ -14098,6 +14109,7 @@
           const rmEl = document.getElementById('custInputRoom');
           const pinEl = document.getElementById('custInputPin');
           if (nmEl) nmEl.value = rec.name;
+          syncCustPinInputMode();
           syncRoomPickerUI('custRoomPicker', 'custInputRoom', rec.roomCode);
           if (pinEl) {
             pinEl.value = (state.profileAccountKey === rec.key && state.playerPin) ? state.playerPin : '';
@@ -14138,7 +14150,56 @@
       }
       return { status: 'ok_found', record: rec };
     }
+    let custWasAdminEntry = false;
+    function isAdminEntryName(rawName) {
+      return String(rawName || '').trim().toLowerCase() === 'admin';
+    }
+    function syncCustPinInputMode() {
+      const nmEl = document.getElementById('custInputName');
+      const pinEl = document.getElementById('custInputPin');
+      const pinLbl = document.getElementById('custPinLabel');
+      const hintEl = document.getElementById('custProfileHint');
+      const submitSpan = document.querySelector('#btnApplyCustomize span');
+      const adminMode = isAdminEntryName(nmEl?.value);
+      if (adminMode) {
+        if (pinLbl) pinLbl.textContent = '관리자 암호';
+        if (pinEl) {
+          pinEl.inputMode = 'text';
+          pinEl.removeAttribute('pattern');
+          pinEl.maxLength = 32;
+          pinEl.placeholder = '관리자 암호 입력';
+          if (!custWasAdminEntry) {
+            const cur = String(pinEl.value || '');
+            if (cur === '0000' || cur === (state.playerPin || '0000')) {
+              pinEl.value = '';
+            }
+          }
+        }
+        custWasAdminEntry = true;
+        if (hintEl) hintEl.textContent = '🔐 관리자 계정 감지 — 관리자 암호를 입력하고 입장하면 모든 방의 데이터를 초기화·관리할 수 있습니다.';
+        if (submitSpan) submitSpan.textContent = '🔐 관리자 모드로 입장하기';
+      } else {
+        if (custWasAdminEntry) {
+          custWasAdminEntry = false;
+          if (pinEl) {
+            const cleaned = String(pinEl.value || '').replace(/[^0-9]/g, '').slice(0, 4);
+            pinEl.value = cleaned || state.playerPin || '0000';
+          }
+        }
+        if (pinLbl) pinLbl.textContent = '내 암호 (숫자 4자리)';
+        if (pinEl) {
+          pinEl.inputMode = 'numeric';
+          pinEl.setAttribute('pattern', '[0-9]{4}');
+          pinEl.maxLength = 4;
+          pinEl.placeholder = '0000 (기억할 숫자)';
+        }
+        if (hintEl) hintEl.textContent = '☁️ 방(A·B·C)·이름·4자리 암호로 내 기록이 저장되어 다시 접속해도 이어할 수 있어요.';
+        if (submitSpan) submitSpan.textContent = '설정한 아바타와 정령으로 월드 입장하기';
+      }
+    }
+
     function syncCustModalFieldsFromState() {
+      custWasAdminEntry = false;
       const nmEl = document.getElementById('custInputName');
       const rmEl = document.getElementById('custInputRoom');
       const ttEl = document.getElementById('custSelectTitle');
@@ -14179,6 +14240,7 @@
           desc.innerHTML = isUnlocked ? (state.equippedRewards[rk] ? '✅ 착용 중' : '클릭하여 착용') : '🔒 미션 완료 시 해제';
         }
       });
+      syncCustPinInputMode();
       updateAvatarShowcase();
     }
 
@@ -14191,6 +14253,7 @@
       if (!custInputsBound) {
         custInputsBound = true;
         document.getElementById('custInputName')?.addEventListener('input', () => {
+          syncCustPinInputMode();
           setCustPinError('');
           updateAvatarShowcase();
         });
@@ -14199,8 +14262,18 @@
           updateAvatarShowcase();
           updatePlayerAppearance();
         });
-        document.getElementById('custInputPin')?.addEventListener('input', () => {
+        document.getElementById('custInputPin')?.addEventListener('input', (e) => {
+          if (!isAdminEntryName(document.getElementById('custInputName')?.value)) {
+            const cleaned = String(e.target.value || '').replace(/[^0-9]/g, '').slice(0, 4);
+            if (e.target.value !== cleaned) e.target.value = cleaned;
+          }
           setCustPinError('');
+        });
+        document.getElementById('custInputPin')?.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('btnApplyCustomize')?.click();
+          }
         });
       }
 
@@ -14213,6 +14286,10 @@
 
     bindClick('btnRestoreMyProfile', async () => {
       initAudio();
+      if (isAdminEntryName(document.getElementById('custInputName')?.value)) {
+        setCustPinError('관리자 계정은 하단 [관리자 모드로 입장하기] 버튼으로 입장해 주세요.');
+        return;
+      }
       const nm = window.sanitizeCleanText(document.getElementById('custInputName')?.value || '', 12);
       const rm = normalizeRoomCodeInput(document.getElementById('custInputRoom')?.value);
       const pin = normalizePinInput(document.getElementById('custInputPin')?.value);
@@ -14346,6 +14423,30 @@
       if (btnSubmit) btnSubmit.disabled = true;
       try {
         setCustPinError('');
+        const rawEntryName = String(document.getElementById('custInputName')?.value || '').trim();
+        if (isAdminEntryName(rawEntryName)) {
+          const rm = normalizeRoomCodeInput(document.getElementById('custInputRoom')?.value);
+          const pinEl = document.getElementById('custInputPin');
+          const rawPw = String(pinEl?.value || '').trim();
+          if (!rawPw) {
+            soundChime(220);
+            setCustPinError('관리자 암호를 입력해 주세요.');
+            pinEl?.focus();
+            return;
+          }
+          const res = await verifyAdminCredentials(rm, rawPw);
+          if (!res.ok) {
+            soundChime(220);
+            setCustPinError(res.error || '관리자 암호가 올바르지 않습니다.');
+            pinEl?.focus();
+            return;
+          }
+          if (pinEl) pinEl.value = '';
+          setCustPinError('');
+          openAdminModalUnlocked(rm, rawPw, res.summary);
+          soundQuestComplete();
+          return;
+        }
         const nm = window.sanitizeCleanText(document.getElementById('custInputName').value, 12) || state.playerName || '인찬이';
         const rm = normalizeRoomCodeInput(document.getElementById('custInputRoom')?.value);
         const tt = document.getElementById('custSelectTitle').value || '마음 탐험가';
@@ -14684,7 +14785,13 @@
       return true;
     }
 
-    bindClick('btnResetSelfFromEntry', () => openResetSelfModal(true));
+    bindClick('btnResetSelfFromEntry', () => {
+      if (isAdminEntryName(document.getElementById('custInputName')?.value)) {
+        setCustPinError('관리자 계정에서는 [관리자 모드로 입장하기]로 입장하여 전체 데이터를 초기화해 주세요.');
+        return;
+      }
+      openResetSelfModal(true);
+    });
     bindClick('btnOpenAdminFromEntry', () => openAdminModal());
     document.getElementById('resetSelfPinInput')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -14708,7 +14815,7 @@
     let adminSessionPw = '';
     let adminActiveRoom = '';
     const LOCAL_ADMIN_HASH_KEY = 'inchan_local_admin_hash_v1';
-    const DEFAULT_LOCAL_ADMIN_HASH = '560cbe33f0fdc605032f72af1dfe584bc15223162acd58567f36846ff1d5a525';
+    const DEFAULT_LOCAL_ADMIN_HASH = '93046ab96a3e1b460a46a037eb9f320a661193e9fb41800244c495ae751f3d96';
 
     function setAdminLoginError(msg) {
       const el = document.getElementById('adminLoginError');
@@ -14734,6 +14841,12 @@
       badge.classList.toggle('custom', !!isCustom);
       badge.textContent = isCustom ? '사용자 지정 암호 적용 중' : '초기 암호 사용 중 (변경 권장)';
     }
+    function syncAdminDashRoomTabs(roomCode) {
+      const rm = normalizeRoomCodeInput(roomCode || adminActiveRoom || 'A');
+      document.querySelectorAll('#adminDashRoomPicker .admin-dash-room-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.room === rm);
+      });
+    }
     function lockAdminSessionUI() {
       adminSessionPw = '';
       adminActiveRoom = '';
@@ -14747,8 +14860,10 @@
       if (p2) { p2.value = ''; p2.type = 'password'; }
       const visBtn = document.getElementById('btnToggleAdminPwVis');
       if (visBtn) visBtn.textContent = '보기';
-      const allChk = document.getElementById('chkAdminPwAllRooms');
-      if (allChk) allChk.checked = true;
+      const allPwChk = document.getElementById('chkAdminPwAllRooms');
+      if (allPwChk) allPwChk.checked = true;
+      const allResetChk = document.getElementById('chkAdminResetAllRooms');
+      if (allResetChk) allResetChk.checked = true;
       const loginPane = document.getElementById('adminLoginPane');
       const dashPane = document.getElementById('adminDashboardPane');
       if (loginPane) loginPane.style.display = 'block';
@@ -14763,6 +14878,19 @@
       openModal('modalAdmin');
       setTimeout(() => document.getElementById('adminPasswordInput')?.focus(), 80);
     }
+    function openAdminModalUnlocked(roomCode, pw, summary) {
+      lockAdminSessionUI();
+      adminSessionPw = pw;
+      adminActiveRoom = normalizeRoomCodeInput(roomCode);
+      bindRoomPicker('adminRoomPicker', 'adminRoomInput');
+      syncRoomPickerUI('adminRoomPicker', 'adminRoomInput', adminActiveRoom);
+      const loginPane = document.getElementById('adminLoginPane');
+      const dashPane = document.getElementById('adminDashboardPane');
+      if (loginPane) loginPane.style.display = 'none';
+      if (dashPane) dashPane.style.display = 'block';
+      renderAdminDashboard(summary || buildLocalAdminSummary(adminActiveRoom));
+      openModal('modalAdmin');
+    }
     function closeAdminModal() {
       lockAdminSessionUI();
       closeModal('modalAdmin');
@@ -14771,6 +14899,11 @@
     function renderAdminDashboard(summary) {
       const lbl = document.getElementById('adminActiveRoomLabel');
       if (lbl) lbl.textContent = summary.offlineMode ? `방 ${summary.room} (오프라인 로컬 관리)` : `방 ${summary.room} 실시간 서버 연결`;
+      syncAdminDashRoomTabs(summary.room || adminActiveRoom);
+      const isCustom = summary.offlineMode
+        ? !!localStorage.getItem(LOCAL_ADMIN_HASH_KEY)
+        : !!summary.hasCustomPassword;
+      updateAdminPwBadge(isCustom);
       const sOn = document.getElementById('adminStatOnline');
       const sPl = document.getElementById('adminStatPlayers');
       const sBd = document.getElementById('adminStatBoard');
@@ -14802,10 +14935,6 @@
       listEl.querySelectorAll('.admin-del-player-btn').forEach(btn => {
         btn.onclick = () => adminDeleteStudent(btn.dataset.key, btn.dataset.name);
       });
-      const isCustom = summary.offlineMode
-        ? !!localStorage.getItem(LOCAL_ADMIN_HASH_KEY)
-        : !!summary.hasCustomPassword;
-      updateAdminPwBadge(isCustom);
     }
 
     function buildLocalAdminSummary(roomCode) {
@@ -14834,6 +14963,37 @@
       };
     }
 
+    async function verifyAdminCredentials(roomCode, pw) {
+      const rm = normalizeRoomCodeInput(roomCode);
+      if (!pw) {
+        return { ok: false, error: '관리자 암호를 입력해 주세요.' };
+      }
+      const httpBase = resolveRelayHttpUrl();
+      if (httpBase) {
+        try {
+          const resp = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(rm)}/admin/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pw })
+          });
+          const data = await resp.json().catch(() => ({}));
+          if (resp.status === 401) {
+            return { ok: false, error: data?.error || '관리자 암호가 올바르지 않습니다.' };
+          }
+          if (resp.ok && data?.ok) {
+            return { ok: true, summary: data };
+          }
+        } catch (_) {}
+      }
+      // 오프라인 폴백 검증
+      const localExpected = localStorage.getItem(LOCAL_ADMIN_HASH_KEY) || DEFAULT_LOCAL_ADMIN_HASH;
+      const inputHash = await sha256Hex('inchan-admin-v1:' + pw);
+      if (inputHash !== localExpected) {
+        return { ok: false, error: '관리자 암호가 올바르지 않습니다.' };
+      }
+      return { ok: true, summary: buildLocalAdminSummary(rm) };
+    }
+
     async function adminVerifyAndLoad(isRefresh = false) {
       setAdminLoginError('');
       if (!isRefresh) setAdminActionMsg('');
@@ -14843,49 +15003,39 @@
       const pw = isRefresh
         ? adminSessionPw
         : String(document.getElementById('adminPasswordInput')?.value || '');
-      if (!pw) {
-        setAdminLoginError('관리자 암호를 입력해 주세요.');
-        return;
-      }
-      const httpBase = resolveRelayHttpUrl();
-      if (httpBase) {
-        try {
-          const resp = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(roomCode)}/admin/verify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password: pw })
-          });
-          const data = await resp.json().catch(() => ({}));
-          if (resp.status === 401) {
-            soundChime(220);
-            setAdminLoginError(data?.error || '관리자 암호가 올바르지 않습니다.');
-            return;
-          }
-          if (resp.ok && data?.ok) {
-            adminSessionPw = pw;
-            adminActiveRoom = roomCode;
-            document.getElementById('adminLoginPane').style.display = 'none';
-            document.getElementById('adminDashboardPane').style.display = 'block';
-            renderAdminDashboard(data);
-            if (!isRefresh) soundQuestComplete();
-            return;
-          }
-        } catch (_) {}
-      }
-      // 오프라인 폴백 검증
-      const localExpected = localStorage.getItem(LOCAL_ADMIN_HASH_KEY) || DEFAULT_LOCAL_ADMIN_HASH;
-      const inputHash = await sha256Hex('inchan-admin-v1:' + pw);
-      if (inputHash !== localExpected) {
+      const res = await verifyAdminCredentials(roomCode, pw);
+      if (!res.ok) {
         soundChime(220);
-        setAdminLoginError('관리자 암호가 올바르지 않습니다.');
+        if (isRefresh) setAdminActionMsg(res.error || '관리자 인증을 다시 확인해 주세요.', true);
+        else setAdminLoginError(res.error || '관리자 암호가 올바르지 않습니다.');
         return;
       }
       adminSessionPw = pw;
       adminActiveRoom = roomCode;
       document.getElementById('adminLoginPane').style.display = 'none';
       document.getElementById('adminDashboardPane').style.display = 'block';
-      renderAdminDashboard(buildLocalAdminSummary(roomCode));
+      renderAdminDashboard(res.summary);
       if (!isRefresh) soundQuestComplete();
+    }
+
+    async function adminSwitchRoom(targetRoom) {
+      if (!adminSessionPw) return;
+      const nextRoom = normalizeRoomCodeInput(targetRoom);
+      if (nextRoom === adminActiveRoom) {
+        await adminVerifyAndLoad(true);
+        return;
+      }
+      const res = await verifyAdminCredentials(nextRoom, adminSessionPw);
+      if (!res.ok) {
+        soundChime(220);
+        setAdminActionMsg(`방 ${nextRoom}은 현재 암호로 열 수 없습니다. (방별 암호가 다르면 🔒 잠금 후 해당 방으로 로그인하세요)`, true);
+        return;
+      }
+      adminActiveRoom = nextRoom;
+      syncRoomPickerUI('adminRoomPicker', 'adminRoomInput', nextRoom);
+      renderAdminDashboard(res.summary);
+      setAdminActionMsg('');
+      soundChime(587);
     }
 
     async function adminDeleteStudent(targetKey, displayName) {
@@ -14907,7 +15057,12 @@
       if (adminActiveRoom === state.roomCode) {
         handleRemoteAdminReset('player', targetKey);
         if (worldChannel) worldChannel.postMessage({ type: 'admin_reset', scope: 'player', targetKey });
+      } else {
+        const map = readLocalProfilesMap();
+        delete map[`${adminActiveRoom}::${targetKey}`];
+        writeLocalProfilesMap(map);
       }
+      if (typeof renderLocalSavedProfiles === 'function') renderLocalSavedProfiles();
       renderAdminDashboard(serverSummary || buildLocalAdminSummary(adminActiveRoom));
       setAdminActionMsg(`✅ [${displayName}] 학생의 저장 기록을 삭제했습니다.`);
       soundChime(587);
@@ -14923,8 +15078,11 @@
           return;
         }
       }
+      const resetAllRooms = (scope === 'all') && !!document.getElementById('chkAdminResetAllRooms')?.checked;
       const httpBase = resolveRelayHttpUrl();
       let serverSummary = null;
+      let okRooms = [];
+      let skippedRooms = [];
       if (httpBase) {
         try {
           const resp = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(adminActiveRoom)}/admin/reset`, {
@@ -14936,22 +15094,68 @@
           if (resp.status === 401) { setAdminActionMsg(data?.error || '관리자 인증이 만료되었습니다.', true); return; }
           if (!resp.ok || !data?.ok) { setAdminActionMsg(data?.error || '초기화 요청 실패', true); return; }
           serverSummary = data;
-        } catch (_) {}
+          okRooms.push(adminActiveRoom);
+          if (resetAllRooms) {
+            const others = ['A', 'B', 'C'].filter(r => r !== adminActiveRoom);
+            const results = await Promise.all(others.map(async (r) => {
+              try {
+                const rr = await fetch(`${httpBase}/api/inchan/room-${encodeURIComponent(r)}/admin/reset`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ password: adminSessionPw, scope: 'all' })
+                });
+                const dd = await rr.json().catch(() => ({}));
+                return (rr.ok && dd?.ok) ? { room: r, ok: true } : { room: r, ok: false };
+              } catch (_) {
+                return { room: r, ok: false };
+              }
+            }));
+            results.forEach(item => {
+              if (item.ok) okRooms.push(item.room);
+              else skippedRooms.push(item.room);
+            });
+          }
+          okRooms.sort();
+        } catch (_) {
+          okRooms = resetAllRooms ? ['A', 'B', 'C'] : [adminActiveRoom];
+        }
+      } else {
+        okRooms = resetAllRooms ? ['A', 'B', 'C'] : [adminActiveRoom];
       }
-      if (adminActiveRoom === state.roomCode) {
+
+      if (resetAllRooms) {
+        writeLocalProfilesMap({});
+        try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+        handleRemoteAdminReset('all');
+        if (worldChannel) worldChannel.postMessage({ type: 'admin_reset', scope: 'all' });
+      } else if (adminActiveRoom === state.roomCode) {
         handleRemoteAdminReset(scope);
         if (worldChannel) worldChannel.postMessage({ type: 'admin_reset', scope });
+      } else if (scope === 'players' || scope === 'all') {
+        const map = readLocalProfilesMap();
+        Object.keys(map).forEach(k => { if (map[k]?.roomCode === adminActiveRoom) delete map[k]; });
+        writeLocalProfilesMap(map);
       }
+      if (typeof renderLocalSavedProfiles === 'function') renderLocalSavedProfiles();
+
       const cw = document.getElementById('adminConfirmWord');
       if (cw) cw.value = '';
       renderAdminDashboard(serverSummary || buildLocalAdminSummary(adminActiveRoom));
-      const scopeLabels = {
-        all: '모든 데이터(학생 기록·블록·게시판)',
-        blocks: '설치된 모든 블록',
-        board: '실시간 마음 게시판',
-        players: '저장된 모든 학생 기록'
-      };
-      setAdminActionMsg(`✅ 방 ${adminActiveRoom}의 [${scopeLabels[scope] || scope}]가 완전히 초기화되었습니다.`);
+      if (resetAllRooms) {
+        if (skippedRooms.length > 0) {
+          setAdminActionMsg(`✅ 방 ${okRooms.join('·')} 전체 초기화 완료 (방 ${skippedRooms.join('·')}은 관리자 암호가 달라 유지됨)`);
+        } else {
+          setAdminActionMsg(`✅ 방 ${okRooms.join('·')}의 모든 데이터(학생 기록·블록·게시판·이 기기 저장 기록)가 완전히 초기화되었습니다.`);
+        }
+      } else {
+        const scopeLabels = {
+          all: '모든 데이터(학생 기록·블록·게시판)',
+          blocks: '설치된 모든 블록',
+          board: '실시간 마음 게시판',
+          players: '저장된 모든 학생 기록'
+        };
+        setAdminActionMsg(`✅ 방 ${adminActiveRoom}의 [${scopeLabels[scope] || scope}]가 완전히 초기화되었습니다.`);
+      }
       soundQuestComplete();
     }
 
@@ -15069,6 +15273,9 @@
     bindClick('btnAdminUnlock', () => adminVerifyAndLoad(false));
     bindClick('btnAdminRefresh', () => adminVerifyAndLoad(true));
     bindClick('btnAdminLock', () => lockAdminSessionUI());
+    document.querySelectorAll('#adminDashRoomPicker .admin-dash-room-btn').forEach(btn => {
+      btn.addEventListener('click', () => adminSwitchRoom(btn.dataset.room));
+    });
     bindClick('btnAdminResetBlocks', () => adminResetRoom('blocks'));
     bindClick('btnAdminResetBoard', () => adminResetRoom('board'));
     bindClick('btnAdminResetPlayers', () => adminResetRoom('players'));
@@ -16582,7 +16789,14 @@
       <!-- 인증 후 대시보드 -->
       <div id="adminDashboardPane" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
-          <span class="admin-room-pill" id="adminActiveRoomLabel">방 A 관리 중</span>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span class="admin-room-pill" id="adminActiveRoomLabel">방 A 관리 중</span>
+            <div class="admin-dash-room-tabs" id="adminDashRoomPicker" role="group" aria-label="관리 방 빠른 전환">
+              <button type="button" class="admin-dash-room-btn active" data-room="A">A방</button>
+              <button type="button" class="admin-dash-room-btn" data-room="B">B방</button>
+              <button type="button" class="admin-dash-room-btn" data-room="C">C방</button>
+            </div>
+          </div>
           <div style="display:flex; gap:8px;">
             <button type="button" class="admin-mini-btn" id="btnAdminRefresh">↻ 새로고침</button>
             <button type="button" class="admin-mini-btn" id="btnAdminLock">🔒 잠금</button>
@@ -16611,10 +16825,14 @@
         </div>
 
         <div class="admin-danger-box">
-          <div style="font-size:15px; font-weight:800; color:#991b1b;">⚠️ 이 방의 모든 데이터 완전 초기화</div>
-          <p style="font-size:14px; color:#7f1d1d; margin:4px 0 10px 0; line-height:1.5;">
+          <div style="font-size:15px; font-weight:800; color:#991b1b;">⚠️ 모든 데이터 완전 초기화</div>
+          <p style="font-size:14px; color:#7f1d1d; margin:4px 0 8px 0; line-height:1.5;">
             저장된 모든 학생 기록·설치 블록·게시판 글이 서버와 접속 중인 학생 화면에서 즉시 초기화됩니다. (관리자 암호는 유지)
           </p>
+          <label class="admin-reset-all-row" for="chkAdminResetAllRooms">
+            <input type="checkbox" id="chkAdminResetAllRooms" checked />
+            <span>A · B · C 모든 방 + 이 기기 저장 기록까지 함께 완전 초기화</span>
+          </label>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <input class="text-input" id="adminConfirmWord" type="text" maxlength="10" placeholder="확인 단어 '초기화' 입력" style="flex:1; min-width:160px; margin-top:0;" />
             <button type="button" class="btn-danger-full" id="btnAdminResetAll" style="width:auto; padding:0 16px; margin-top:0;">💥 모든 데이터 완전 초기화</button>
