@@ -174,18 +174,42 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 외곽 경기장 아이템 활성 상태 배지 */
+    /* 외곽 경기장 아이템 활성 상태 배지 (탑승 중이 아닐 때만 표시) */
     .track-status-pill {
-      position: fixed; top: 124px; left: 50%; transform: translateX(-50%);
+      position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%);
       display: none; align-items: center; justify-content: center; gap: 8px;
       background: rgba(24, 24, 27, 0.92); color: #ffffff;
       border: 1.5px solid #fbbf24; border-radius: 999px;
       padding: 7px 18px; font-size: 15.5px; font-weight: 700;
       box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
-      z-index: 58; pointer-events: auto; cursor: pointer;
+      z-index: 82; pointer-events: auto; cursor: pointer;
       max-width: calc(100vw - 32px); white-space: normal; text-align: center; line-height: 1.35;
     }
     .track-status-pill.active { display: inline-flex; }
+
+    /* 하늘 탈것 · 제트 슈트 · 놀이기구 탑승 시 상시 하차 안내 바 */
+    .ride-control-bar {
+      position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%);
+      z-index: 86; pointer-events: auto;
+      display: none; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+      background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(12px); color: #ffffff;
+      border: 1.5px solid rgba(251, 191, 36, 0.88); border-radius: 16px;
+      padding: 9px 14px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+      max-width: calc(100vw - 24px);
+    }
+    .ride-control-bar.active { display: inline-flex; }
+    .ride-ctrl-info { font-size: 14.5px; font-weight: 800; color: #ffffff; white-space: nowrap; }
+    .ride-ctrl-keys { font-size: 13px; font-weight: 700; color: #fde68a; white-space: nowrap; }
+    .ride-dismount-btn {
+      background: #ef4444; color: #ffffff; border: none; border-radius: 10px;
+      padding: 7px 14px; font-size: 14px; font-weight: 800; cursor: pointer;
+      white-space: nowrap; touch-action: manipulation; transition: background 0.14s, transform 0.12s;
+    }
+    .ride-dismount-btn:hover { background: #dc2626; transform: translateY(-1px); }
+    .act-btn.dismount-active {
+      background: #dc2626 !important; color: #ffffff !important; border-color: #dc2626 !important;
+    }
+    .act-btn.dismount-active .kbd { color: #ffffff !important; border-color: rgba(255, 255, 255, 0.55) !important; }
 
     /* 상단 중앙 한 줄 미션 안내 배너 + [자동 안내] 버튼 */
     .top-mission-wrap {
@@ -299,11 +323,11 @@
     }
 
     .breath-bar-wrap {
-      width: 400px; max-width: 88vw; height: 48px; border-radius: 24px;
+      width: 100%; max-width: 100%; height: 44px; border-radius: 22px;
       background: #f4f4f5;
       position: relative; overflow: hidden; display: none;
       border: 2px solid #d4d4d8;
-      margin: 6px 0; cursor: pointer; touch-action: manipulation;
+      margin: 4px 0; cursor: pointer; touch-action: manipulation;
       transition: box-shadow 0.15s, border-color 0.15s;
     }
     .breath-bar-wrap.active { display: flex; align-items: center; }
@@ -312,27 +336,32 @@
       box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.28);
     }
     .timing-zone {
-      position: absolute; left: 35%; width: 30%; top: 0; bottom: 0;
+      position: absolute; left: 34%; width: 32%; top: 0; bottom: 0;
       background: #dcfce7;
       border-left: 2.5px solid #16a34a; border-right: 2.5px solid #16a34a;
     }
     .breath-bar-wrap.in-sweetspot .timing-zone { background: #bbf7d0; }
     .timing-zone::after {
-      content: '초록 칸에서 [C] 누르기!'; position: absolute; top: 50%; left: 50%;
+      content: '초록 존 [C]'; position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       white-space: nowrap !important;
-      font-size: 14.5px; font-weight: 800; color: #14532d;
+      max-width: calc(100% - 6px); overflow: hidden; text-overflow: ellipsis;
+      font-size: 13px; font-weight: 800; color: #14532d;
       pointer-events: none; z-index: 3;
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
     }
     .timing-cursor {
-      position: absolute; top: 4px; bottom: 4px; width: 26px; border-radius: 99px;
+      position: absolute; top: 3px; bottom: 3px; width: 16px; border-radius: 99px;
       background: #18181b;
       left: 0%; transform: translateX(-50%);
-      border: 2.5px solid #ffffff; z-index: 2;
+      border: 2.5px solid #ffffff; z-index: 4;
       box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+      transition: background 0.12s, box-shadow 0.12s;
     }
-    .breath-bar-wrap.in-sweetspot .timing-cursor { background: #16a34a; }
+    .breath-bar-wrap.in-sweetspot .timing-cursor {
+      background: #16a34a;
+      box-shadow: 0 0 12px rgba(22, 163, 74, 0.7);
+    }
     .zp-progress {
       font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700;
       color: #18181b; background: #f4f4f5; padding: 3px 10px; border-radius: 7px;
@@ -954,6 +983,16 @@
       .zp-head { font-size: 15px; }
       .zp-desc { font-size: 13.5px; }
       .zp-btn { font-size: 13.5px; padding: 8px 10px; }
+      .breath-bar-wrap { width: 100%; max-width: 100%; height: 40px; margin: 2px 0; }
+      .timing-zone::after { content: '초록 존'; font-size: 11.5px; }
+      .ride-control-bar {
+        bottom: 180px; left: 10px; right: 70px; transform: none;
+        width: auto; max-width: none; padding: 7px 10px; gap: 6px;
+      }
+      .ride-ctrl-info { font-size: 13px; white-space: normal; text-align: center; }
+      .ride-ctrl-keys { font-size: 11.5px; }
+      .ride-dismount-btn { font-size: 12.5px; padding: 6px 11px; }
+      .track-status-pill { bottom: 180px; top: auto; font-size: 13px; padding: 6px 12px; }
     }
 
     /* 채팅 패널 영구 비활성화 (교실 바른말 보호 & 화면 개방) */
@@ -1813,8 +1852,8 @@
     }
     body.view-mode-phone .zp-btn { font-size: 13px !important; padding: 7px 11px !important; }
     body.view-mode-phone .zp-btn-breath { font-size: 13.5px !important; padding: 8px 12px !important; }
-    body.view-mode-phone .breath-bar-wrap { width: 100% !important; height: 38px !important; margin: 2px 0 !important; }
-    body.view-mode-phone .timing-zone::after { content: '초록 칸 터치!' !important; font-size: 12px !important; }
+    body.view-mode-phone .breath-bar-wrap { width: 100% !important; max-width: 100% !important; height: 40px !important; margin: 2px 0 !important; }
+    body.view-mode-phone .timing-zone::after { content: '초록 존' !important; font-size: 11.5px !important; }
 
     body.view-mode-phone .toast-box {
       top: 86px !important; left: 8px !important; right: 72px !important;
@@ -1822,12 +1861,17 @@
       align-items: flex-start !important;
     }
     body.view-mode-phone .toast { font-size: 13px !important; padding: 7px 10px 7px 12px !important; line-height: 1.38; text-align: left !important; }
-    body.view-mode-phone .track-status-pill {
-      top: 150px !important; left: 8px !important; right: 66px !important; transform: none !important;
+    body.view-mode-phone .track-status-pill,
+    body.view-mode-phone .ride-control-bar {
+      top: auto !important; bottom: 148px !important; left: 8px !important; right: 66px !important; transform: none !important;
       width: auto !important; max-width: none !important; white-space: normal !important;
       text-align: center !important; justify-content: center !important;
-      font-size: 12.5px !important; line-height: 1.35 !important; padding: 7px 12px !important; border-radius: 13px !important;
+      font-size: 12.5px !important; line-height: 1.35 !important; padding: 7px 11px !important; border-radius: 13px !important;
+      gap: 6px !important;
     }
+    body.view-mode-phone .ride-ctrl-info { font-size: 12.5px !important; white-space: normal !important; }
+    body.view-mode-phone .ride-ctrl-keys { font-size: 11.5px !important; white-space: normal !important; }
+    body.view-mode-phone .ride-dismount-btn { font-size: 12.5px !important; padding: 6px 11px !important; }
     body.view-mode-phone .lh-mini-dock { bottom: 54px !important; padding: 4px 6px !important; }
     body.view-mode-phone .lh-mini-btn { font-size: 12px !important; padding: 5px 10px !important; }
 
@@ -1984,6 +2028,11 @@
 
   <div class="toast-box" id="toastBox"></div>
   <div class="track-status-pill" id="trackStatusPill"></div>
+  <div class="ride-control-bar" id="rideControlBar" role="region" aria-label="탑승 조작 및 내리기 안내">
+    <span class="ride-ctrl-info" id="rideCtrlInfo"></span>
+    <span class="ride-ctrl-keys" id="rideCtrlKeys"></span>
+    <button type="button" class="ride-dismount-btn" id="btnRideDismount">내리기 (G / X)</button>
+  </div>
 
   <!-- 좌측 상단: Dieter Rams / Nothing Design 클릭형 미션 계측기 -->
   <div class="story-tracker" id="storyTracker">
@@ -3797,7 +3846,7 @@
       ctx.fillText('인찬이 마음 미션 장소에 도착했습니다! ✨', 480, 188);
 
       const tex = new THREE.CanvasTexture(sc);
-      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: true }));
       sp.scale.set(9.4, 2.35, 1);
       sp.position.set(meta.x, meta.key === 'fear' ? 15.6 : 5.2, meta.z);
       if (!meta.customGroup) {
@@ -4191,14 +4240,26 @@
     playFloor.position.y = 0.11; playFloor.receiveShadow = true;
     playGroup.add(playFloor);
 
-    // 미끄럼틀
+    // 미끄럼틀 (사다리 + 안전 난간 + 가드레일 포함)
     const slideGroup = new THREE.Group(); slideGroup.position.set(-3.5, 0, -1.5);
     const sLadderMat = new THREE.MeshStandardMaterial({ color: 0xef4444 });
-    const sPlateMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.2 });
-    const sTower = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.2, 1.6), sLadderMat); sTower.position.y = 1.1;
-    const sSlide = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.15, 4.5), sPlateMat);
-    sSlide.position.set(0, 1.1, 2.2); sSlide.rotation.x = 0.48;
-    slideGroup.add(sTower, sSlide);
+    const sPlateMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.22 });
+    const sRailMat = new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.3 });
+    const sTower = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.6, 1.6), sLadderMat); sTower.position.y = 1.3; sTower.castShadow = true;
+    const sTopRailL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.65, 1.55), sRailMat); sTopRailL.position.set(-0.74, 2.92, 0);
+    const sTopRailR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.65, 1.55), sRailMat); sTopRailR.position.set(0.74, 2.92, 0);
+    [0.5, 0.95, 1.4, 1.85, 2.3].forEach(ry => {
+      const rung = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.95, 8), new THREE.MeshStandardMaterial({ color: 0xfef08a }));
+      rung.rotation.z = Math.PI / 2;
+      rung.position.set(0, ry, -0.84);
+      slideGroup.add(rung);
+    });
+    const sSlide = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.16, 4.8), sPlateMat);
+    sSlide.position.set(0, 1.48, 2.45); sSlide.rotation.x = 0.44; sSlide.castShadow = true;
+    const sSideL = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.26, 4.8), sRailMat); sSideL.position.set(-0.72, 0.15, 0);
+    const sSideR = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.26, 4.8), sRailMat); sSideR.position.set(0.72, 0.15, 0);
+    sSlide.add(sSideL, sSideR);
+    slideGroup.add(sTower, sTopRailL, sTopRailR, sSlide);
     playGroup.add(slideGroup);
 
     // 시소 (좌석 + 손잡이 포함)
@@ -4223,16 +4284,38 @@
     seesawGroup.add(basePillar, seePlank);
     playGroup.add(seesawGroup);
 
-    // 그네
+    // 그네 (캐릭터보다 훨씬 높은 5.4m 대형 A자 프레임 + 쇠사슬 + 좌석 2개)
     const swingGroup = new THREE.Group(); swingGroup.position.set(0.5, 0, 3.2);
-    const swFrameMat = new THREE.MeshStandardMaterial({ color: 0x8b5cf6, metalness: 0.4 });
-    const swBeam = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.18, 0.18), swFrameMat); swBeam.position.y = 3.2;
-    const swPole1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3.4, 8), swFrameMat); swPole1.position.set(-2.0, 1.6, 0); swPole1.rotation.z = 0.15;
-    const swPole2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3.4, 8), swFrameMat); swPole2.position.set(2.0, 1.6, 0); swPole2.rotation.z = -0.15;
-    const seatMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e });
-    const swSeat1 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.08, 0.35), seatMat); swSeat1.position.set(-0.9, 0.65, 0);
-    const swSeat2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.08, 0.35), seatMat); swSeat2.position.set(0.9, 0.65, 0);
-    swingGroup.add(swBeam, swPole1, swPole2, swSeat1, swSeat2);
+    const swFrameMat = new THREE.MeshStandardMaterial({ color: 0x8b5cf6, metalness: 0.45, roughness: 0.35 });
+    const swCapMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.4, roughness: 0.3 });
+    const swChainMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.75, roughness: 0.25 });
+    const SWING_BEAM_Y = 5.4;
+    const SWING_PIVOT_Y = 5.32;
+    const SWING_ROPE_LEN = 4.42;
+    const swBeam = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.24, 0.24), swFrameMat); swBeam.position.y = SWING_BEAM_Y; swBeam.castShadow = true;
+    const swBraceL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 1.35), swCapMat); swBraceL.position.set(-2.25, 2.0, 0);
+    const swBraceR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 1.35), swCapMat); swBraceR.position.set(2.25, 2.0, 0);
+    const swLegFL = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 5.75, 10), swFrameMat); swLegFL.position.set(-2.25, 2.75, 0.52); swLegFL.rotation.x = 0.18; swLegFL.castShadow = true;
+    const swLegBL = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 5.75, 10), swFrameMat); swLegBL.position.set(-2.25, 2.75, -0.52); swLegBL.rotation.x = -0.18; swLegBL.castShadow = true;
+    const swLegFR = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 5.75, 10), swFrameMat); swLegFR.position.set(2.25, 2.75, 0.52); swLegFR.rotation.x = 0.18; swLegFR.castShadow = true;
+    const swLegBR = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 5.75, 10), swFrameMat); swLegBR.position.set(2.25, 2.75, -0.52); swLegBR.rotation.x = -0.18; swLegBR.castShadow = true;
+    const seatMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.38 });
+    function makeSwingPendulum(offsetX) {
+      const pivot = new THREE.Group();
+      pivot.position.set(offsetX, SWING_PIVOT_Y, 0);
+      const cL = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, SWING_ROPE_LEN, 8), swChainMat);
+      cL.position.set(-0.46, -SWING_ROPE_LEN / 2, 0);
+      const cR = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, SWING_ROPE_LEN, 8), swChainMat);
+      cR.position.set(0.46, -SWING_ROPE_LEN / 2, 0);
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(1.04, 0.10, 0.46), seatMat);
+      seat.position.set(0, -SWING_ROPE_LEN, 0);
+      seat.castShadow = true;
+      pivot.add(cL, cR, seat);
+      return { pivot, seat };
+    }
+    const { pivot: swPivot1, seat: swSeat1 } = makeSwingPendulum(-1.0);
+    const { pivot: swPivot2, seat: swSeat2 } = makeSwingPendulum(1.0);
+    swingGroup.add(swBeam, swBraceL, swBraceR, swLegFL, swLegBL, swLegFR, swLegBR, swPivot1, swPivot2);
     playGroup.add(swingGroup);
 
     const playSign = makeLandmarkStorySign({
@@ -6904,12 +6987,14 @@
       pushOutBox(20.2, -23.5, 0.62, 0.55, 0.62); // 좌측 소파 의자
       pushOutBox(22.0, -23.5, 0.62, 0.55, 0.62); // 중앙 소파 의자
       pushOutBox(23.8, -23.5, 0.62, 0.55, 0.62); // 우측 소파 의자
-      // 5-3) 신나는 테마 놀이터 (28, 22): 미끄럼틀 타워, 시소, 그네 프레임 기둥 충돌 판정
-      pushOutBox(24.5, 20.5, 0.88, 0.88, 2.1);   // 미끄럼틀 빨간 타워
-      pushOutBox(24.5, 22.7, 0.75, 2.15, 1.15);  // 미끄럼틀 노란 슬라이드 측면
+      // 5-3) 신나는 테마 놀이터 (28, 22): 미끄럼틀 타워, 시소, 그네 A자 프레임 다리 충돌 판정
+      pushOutBox(24.5, 20.5, 0.88, 0.88, 2.65);  // 미끄럼틀 빨간 타워
+      pushOutBox(24.5, 22.9, 0.78, 2.35, 1.35);  // 미끄럼틀 노란 슬라이드 측면
       pushOutBox(31.0, 21.0, 0.42, 2.05, 0.78);  // 시소 판자 & 중심 기둥
-      pushOutCircle(26.5, 25.2, 0.32, 3.4);      // 그네 좌측 기둥
-      pushOutCircle(30.5, 25.2, 0.32, 3.4);      // 그네 우측 기둥
+      pushOutCircle(26.25, 24.3, 0.28, 5.5);     // 그네 좌측 뒷다리
+      pushOutCircle(26.25, 26.1, 0.28, 5.5);     // 그네 좌측 앞다리
+      pushOutCircle(30.75, 24.3, 0.28, 5.5);     // 그네 우측 뒷다리
+      pushOutCircle(30.75, 26.1, 0.28, 5.5);     // 그네 우측 앞다리
       // 5-4) 아기 동물원 건초더미 (-18, -22) & 물놀이 풀장 파라솔 & 덕분에 조형물 & 로봇 & 설렘이 단상
       pushOutBox(-20.5, -20.0, 0.85, 0.75, 1.15); // 동물원 건초더미
       pushOutBox(14.0, -46.0, 3.8, 0.65, 2.0);    // 덕분에 블록 조형물 본체
@@ -8130,29 +8215,40 @@
     // ------------------------------------------------------------------------------
     let activePlaygroundRide = null; // { type: 'slide' | 'seesaw' | 'swing' | 'chair', timer: 0, elapsed: 0, lastSign: 1 }
 
-    function cancelPlaygroundRide() {
+    function cancelPlaygroundRide(showMsg = false) {
       if (!activePlaygroundRide) return;
       activePlaygroundRide = null;
       if (typeof seePlank !== 'undefined') seePlank.rotation.set(0, 0, 0);
-      if (typeof swSeat1 !== 'undefined') swSeat1.position.set(-0.9, 0.65, 0);
+      if (typeof swPivot1 !== 'undefined') swPivot1.rotation.set(0, 0, 0);
       leftArm.rotation.set(0, 0, 0);
       rightArm.rotation.set(0, 0, 0);
       leftLeg.rotation.set(0, 0, 0);
       rightLeg.rotation.set(0, 0, 0);
       torso.rotation.set(0, 0, 0);
       torso.position.y = 1.35;
-      playerRig.rotation.x = 0;
+      playerRig.rotation.set(0, playerRig.rotation.y, 0);
+      playerRig.position.y = getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y);
+      playerPhysics.velY = 0;
+      playerPhysics.isGrounded = true;
+      if (showMsg) {
+        soundChime(523);
+        showToast('놀이기구에서 안전하게 내려왔습니다.');
+      }
     }
 
     window.ridePlaygroundSlide = function() {
       initAudio();
       soundJump(true);
-      activePlaygroundRide = { type: 'slide', timer: 2.4 };
-      playerRig.position.set(24.5, 2.35, 20.5);
-      playerRig.rotation.y = 0; // 남쪽(+Z) 슬라이드 아래를 바라봄
+      activePlaygroundRide = { type: 'slide', timer: 2.4, elapsed: 0 };
+      playerRig.position.set(24.5, 2.49 - 0.56, 20.99);
+      playerRig.rotation.set(0, 0, 0);
+      torso.position.y = 1.16;
+      torso.rotation.set(-0.22, 0, 0);
+      leftLeg.rotation.set(-Math.PI / 2 + 0.44, 0, 0.08);
+      rightLeg.rotation.set(-Math.PI / 2 + 0.44, 0, -0.08);
       createMagicImpact(playerRig.position, '#facc15');
-      showPlayerBubble('🛝 “야호! 미끄럼틀 꼭대기에서 슝— 신나게 내려간다!”');
-      showToast('🛝 <b>[놀이터 미끄럼틀 타기!]</b> 미끄럼틀을 타고 바람을 가르며 내려갑니다! (+80점)');
+      showPlayerBubble('🛝 “야호! 미끄럼틀에 앉아서 슝— 신나게 내려간다!”');
+      showToast('🛝 <b>[놀이터 미끄럼틀 타기!]</b> 미끄럼틀에 앉아 바람을 가르며 내려갑니다! ([G]/[X] 내리기 · +80점)');
       window.addMindScore(80, '🛝 놀이터 미끄럼틀 타기');
     };
 
@@ -8171,12 +8267,18 @@
     window.ridePlaygroundSwing = function() {
       initAudio();
       soundChime(659);
-      activePlaygroundRide = { type: 'swing', timer: 4.2 };
-      playerRig.position.set(27.6, 0.85, 25.2);
-      playerRig.rotation.y = 0;
+      activePlaygroundRide = { type: 'swing', timer: 8.0, elapsed: 0 };
+      playerRig.position.set(27.5, 0.90 - 0.56, 25.2);
+      playerRig.rotation.set(0, 0, 0);
+      torso.position.y = 1.16;
+      torso.rotation.set(-0.08, 0, 0);
+      leftLeg.rotation.set(-Math.PI / 2 + 0.22, 0, 0);
+      rightLeg.rotation.set(-Math.PI / 2 + 0.22, 0, 0);
+      leftArm.rotation.set(-1.85, 0, -0.32);
+      rightArm.rotation.set(-1.85, 0, 0.32);
       createMagicImpact(playerRig.position, '#f43f5e');
-      showPlayerBubble('🎠 “구름까지 닿을 듯이 그네가 앞뒤로 시원하게 흔들려!”');
-      showToast('🎠 <b>[놀이터 그네 타기!]</b> 그네에 앉아 시원한 바람을 맞으며 앞뒤로 날아오릅니다! (+80점)');
+      showPlayerBubble('🎠 “높은 그네에 앉아 하늘까지 시원하게 날아올라요!”');
+      showToast('🎠 <b>[놀이터 그네 타기!]</b> 높은 그네에 앉아 앞뒤로 시원하게 흔들립니다! ([G]/[X] 내리기 · +80점)');
       window.addMindScore(80, '🎠 놀이터 그네 타기');
     };
 
@@ -8538,6 +8640,16 @@
       return { x: 12, z: 22 };
     }
 
+    function getTrackSuitSpot(idx = -1, total = 10) {
+      const laneOffsets = [-3.6, -2.2, 0, 2.2];
+      const baseAngle = (idx >= 0 && total > 0)
+        ? ((idx + 0.35 + (Math.random() - 0.5) * 0.35) / total) * Math.PI * 2
+        : Math.random() * Math.PI * 2;
+      const laneOff = laneOffsets[Math.floor(Math.random() * laneOffsets.length)];
+      const r = TRACK_RADIUS + laneOff;
+      return { x: Math.cos(baseAngle) * r, z: Math.sin(baseAngle) * r };
+    }
+
     function buildSkyItemPickupGroup(kind, variantKey = null) {
       const ig = new THREE.Group();
       if (kind === 'jetarmor') {
@@ -8662,17 +8774,17 @@
       createMagicImpact(playerRig.position, meta.color);
       window.addMindScore(80, `${meta.label} 하늘 비행!`);
       if (kind === 'ufo') {
-        showPlayerBubble('🛸 “초고속 UFO 워프 가동! 쏜살같이 하늘을 가르자!”');
-        showToast('🛸 <b>초고속 UFO 워프 비행!</b> 쏜살같은 <b>4.3배</b> 속도로 마음 동산 하늘을 누벼보세요! ([SPACE] 상승 · [G]/터치 착지)');
+        showPlayerBubble('🛸 “초고속 UFO 워프 가동! ([G]/[X] 언제든 내리기)”');
+        showToast('🛸 <b>초고속 UFO 워프 비행!</b> <b>4.3배</b> 속도로 날아보세요! ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)');
       } else if (kind === 'chukji') {
-        showPlayerBubble('⚡ “하늘 축지법 발동! 구름 디딤돌을 밟고 초고속 공중 산책!”');
-        showToast('⚡ <b>하늘 축지법 발동!</b> 공중 구름 발판을 밟으며 평소 <b>4배 속도</b>로 성큼성큼 질주합니다! ([SPACE] 상승 · [G]/터치 착지)');
+        showPlayerBubble('⚡ “하늘 축지법 발동! ([G]/[X] 언제든 내리기)”');
+        showToast('⚡ <b>하늘 축지법 발동!</b> 평소 <b>4배 속도</b>로 성큼성큼 날아갑니다! ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)');
       } else if (kind === 'cloud') {
-        showPlayerBubble('☁️ “황금 근두운에 올라탔어! 두둥실 하늘 구경하자!”');
-        showToast('☁️ <b>황금 근두운 비행 시작!</b> 포근한 구름 꼬리를 흩날리며 자유롭게 날아보세요! ([SPACE] 상승 · [G]/터치 착지)');
+        showPlayerBubble('☁️ “황금 근두운에 올라탔어! ([G]/[X] 언제든 내리기)”');
+        showToast('☁️ <b>황금 근두운 비행 시작!</b> 자유롭게 날아보세요! ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)');
       } else {
-        showPlayerBubble(`${meta.label} 탑승! 하늘을 둥둥 날아다니며 구경하자! ([G] 착지)`);
-        showToast(`${meta.label} <b>하늘 비행 시작!</b> 보행자 머리 위 안전 고도(${meta.baseAlt.toFixed(1)}m)에서 자유롭게 날아보세요! ([SPACE] 상승 · [G]/터치 착지)`);
+        showPlayerBubble(`${meta.label} 탑승! ([G] 또는 [X] 키로 언제든 내릴 수 있어요)`);
+        showToast(`${meta.label} <b>하늘 비행 시작!</b> 고도 ${meta.baseAlt.toFixed(1)}m 비행 중 ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)`);
       }
     }
 
@@ -8696,6 +8808,14 @@
     window.startSkyRide = startSkyRide;
     window.endSkyRide = endSkyRide;
 
+    function dismountActiveRide() {
+      if (playerPhysics.skyRide) { endSkyRide(false); return true; }
+      if (playerPhysics.ironManAutoLap) { endJetArmorAutoLap(false); return true; }
+      if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) { cancelPlaygroundRide(true); return true; }
+      return false;
+    }
+    window.dismountActiveRide = dismountActiveRide;
+
     function startJetArmorAutoLap(variantKey = null) {
       const chosenKey = JET_ARMOR_THEMES[variantKey]
         ? variantKey
@@ -8709,7 +8829,7 @@
         createMagicImpact(playerRig.position, theme.hex);
         window.addMindScore(40, `${theme.shortTag} 아머 체인지!`);
         showPlayerBubble(`${theme.shortTag}로 즉시 체인지! 더 빠르게 날자!`);
-        showToast(`${theme.shortTag} <b>[${theme.name}] 변신 & 에너지 재충전!</b> (+40점)`);
+        showToast(`${theme.shortTag} <b>[${theme.name}] 변신 & 에너지 재충전!</b> ([G]·[X]·터치 언제든 내리기 · +40점)`);
         return;
       }
       cancelPlaygroundRide();
@@ -8736,8 +8856,8 @@
       createMagicImpact(playerRig.position, theme.hex);
       createMagicImpact(playerRig.position, '#fef08a');
       window.addMindScore(100, `${theme.shortTag} 장착!`);
-      showPlayerBubble(`${theme.shortTag} 가동! 외곽 하늘 1바퀴 초고속 완주!`);
-      showToast(`${theme.shortTag} <b>[${theme.name} 변신!]</b> 하늘을 가르며 외곽 3레인 트랙 1바퀴를 고속 비행합니다! ([G]/터치 착지)`);
+      showPlayerBubble(`${theme.shortTag} 가동! ([G]/[X] 언제든 착지)`);
+      showToast(`${theme.shortTag} <b>[${theme.name} 변신!]</b> 외곽 3레인 트랙 1바퀴를 고속 비행합니다! ([G]·[X]·터치 언제든 내리기)`);
     }
     window.startJetArmorAutoLap = startJetArmorAutoLap;
 
@@ -8759,7 +8879,7 @@
       let ix, iz;
       let variantKey = null;
       if (kind === 'jetarmor') {
-        const randSpot = getRandomSkyItemSpot(false);
+        const randSpot = getTrackSuitSpot(jetArmorCycleIdx, 10);
         ix = randSpot.x; iz = randSpot.z;
         variantKey = JET_ARMOR_KEYS[jetArmorCycleIdx % JET_ARMOR_KEYS.length];
         jetArmorCycleIdx += 1;
@@ -8805,11 +8925,13 @@
       trackPowerItems.push({ kind, variantKey, parentGroup: runningTrackGroup, mesh: ig, x: ix, z: iz, baseY, phase: pi * 0.7, cleared: false, respawnTimer: 0, relocateOnRespawn: (kind === 'jetarmor') });
     });
 
-    // 맵 전역 랜덤 하늘 탈것 · 제트 아머 스폰 15개 (아머 4종 추가 + UFO·호버보드·근두운·축지법·플라잉카·양탄자)
+    // 트랙 주변 제트 슈트 4개 추가(총 10개 모두 최외곽 트랙 주변 배치) + 맵 전역 하늘 탈것 11개 스폰
     const skyFlightSpawns = [];
+    window.skyFlightSpawns = skyFlightSpawns;
     ['jetarmor', 'jetarmor', 'jetarmor', 'jetarmor', 'ufo', 'ufo', 'skyboard', 'skyboard', 'cloud', 'cloud', 'chukji', 'chukji', 'skycar', 'skycar', 'carpet'].forEach((kind, si) => {
-      const spot = getRandomSkyItemSpot(si % 5 === 0);
-      const variantKey = (kind === 'jetarmor') ? JET_ARMOR_KEYS[(jetArmorCycleIdx++) % JET_ARMOR_KEYS.length] : null;
+      const isSuit = (kind === 'jetarmor');
+      const spot = isSuit ? getTrackSuitSpot(jetArmorCycleIdx, 10) : getRandomSkyItemSpot(si % 5 === 0);
+      const variantKey = isSuit ? JET_ARMOR_KEYS[(jetArmorCycleIdx++) % JET_ARMOR_KEYS.length] : null;
       const sg = buildSkyItemPickupGroup(kind, variantKey);
       sg.position.set(spot.x, 1.45, spot.z);
       worldGroup.add(sg);
@@ -9360,6 +9482,8 @@
       if (k === 'e') doDance();
       if (k === 'q') doMeditate();
       if (k === 'g') interactCurrentZone();
+      if (k === 'x') { if (dismountActiveRide()) return; }
+      if (e.key === 'Escape' && !document.querySelector('.modal-overlay.open')) { if (dismountActiveRide()) return; }
       if (k === 'm') { if (typeof window.openThreeFingerModal === 'function') window.openThreeFingerModal(); }
       if (k === 'r') { if (typeof window.openRobotIMessageModal === 'function') window.openRobotIMessageModal(); }
       if (['1','2','3','4','5','6'].includes(k)) {
@@ -9766,7 +9890,7 @@
       initAudio(); soundChime(396);
       const distFire = Math.hypot(playerRig.position.x, playerRig.position.z - 52);
       if (distFire < 9.5) {
-        const isTimingHit = (timingCursorPct >= 36 && timingCursorPct <= 64);
+        const isTimingHit = (timingCursorPct >= 34 && timingCursorPct <= 66);
         if (typeof triggerDeepBreathCoolFire === 'function') triggerDeepBreathCoolFire(isTimingHit);
         if (isTimingHit) {
           state.mission.anger = Math.min(3, (state.mission.anger || 0) + 1);
@@ -9850,14 +9974,7 @@
     }
 
     function interactCurrentZone() {
-      if (playerPhysics.skyRide) {
-        endSkyRide(false);
-        return;
-      }
-      if (playerPhysics.ironManAutoLap && playerPhysics.ironManAutoLap.elapsed > 0.8) {
-        endJetArmorAutoLap(false);
-        return;
-      }
+      if (dismountActiveRide()) return;
       if (!state.activeZone) { showToast('감정 손님, 로봇, 발표 무대, 설렘이, 놀이터, 등대 엘리베이터, 친구 근처에서 [G]를 눌러보세요.'); return; }
       if (state.activeZone === 'lhElevator' || state.activeZone === 'lhDeck') { window.rideLighthouseElevator(); return; }
       if (state.activeZone === 'board') { openBoardModal(); return; }
@@ -10178,7 +10295,7 @@
       if (dismissedPromptZone && dismissedPromptZone !== foundZone) {
         dismissedPromptZone = null;
       }
-      if (!foundZone || activeElevatorRide || isLighthousePanorama || coopBeamTimer > 0 || playerPhysics.isDancing || (dismissedPromptZone && dismissedPromptZone === foundZone)) {
+      if (!foundZone || activeElevatorRide || isLighthousePanorama || coopBeamTimer > 0 || playerPhysics.isDancing || playerPhysics.skyRide || playerPhysics.ironManAutoLap || activePlaygroundRide || (dismissedPromptZone && dismissedPromptZone === foundZone)) {
         if (lastPromptZone !== null || box.classList.contains('visible')) {
           box.classList.remove('visible');
           lastPromptZone = null;
@@ -10327,7 +10444,7 @@
         board: { color: '#ff5800', t: '실시간 마음 게시판', d: '친구들이 남긴 마음 이야기를 읽고 내 감정도 공유해 보세요!', actText: '게시판 열기 (G)', actFn: openBoardModal },
         joy: { t: '기쁨의 트램펄린 & 축구 광장', d: state.quests.joy ? '기쁨 구슬 획득 완료! 축구공도 골대에 차 넣어보세요!' : '트램펄린과 2단 점프로 공중의 황금 링 3개를 통과하세요!' },
         sad: { t: '슬픔의 치유 연못', d: '연못에 치유의 눈물 구슬을 흘려보내면 8송이 연꽃과 22m 무지개 분수, 파란 별빛이 피어오릅니다!', actText: '치유의 눈물 떠나보내기', actFn: () => triggerSadRitual() },
-        anger: { t: '화의 캠프파이어 · 호흡 맞춤 구역', d: '커서가 가운데 초록 칸에 올 때 키보드 [C] 키를 누르거나 초록 버튼(또는 게이지)을 터치하세요!', actText: '호흡 맞추기 (C)', actFn: () => doBreatheWind() },
+        anger: { t: '화의 캠프파이어 · 호흡 맞춤 구역', d: '커서가 가운데 초록 존에 올 때 [C] 키를 누르거나 게이지·초록 버튼을 누르세요!', actText: '호흡 맞추기 (C)', actFn: () => doBreatheWind() },
         fear: { t: '두려움의 수호 등대', d: state.quests.fear ? '등대 빛이 용기를 비추고 있어요! 전망대 엘리베이터도 타보세요!' : `움직이는 어둠 그림자 ${fearShadows.length}개에 [F] 키로 별빛 마법을 쏘거나 엘리베이터로 전망대에 올라가세요!`, actText: '별빛 마법 (F)', actFn: shootMagicBullet },
         lhElevator: { color: '#38bdf8', t: '등대 유리 전망 엘리베이터', d: '투명 유리 엘리베이터를 타고 12m 위 등대 360° 전망대로 올라가 섬 전체를 한눈에 내려다보세요!', actText: '🛗 전망대 엘리베이터 올라가기 (G)', actFn: () => window.rideLighthouseElevator('up') },
         lhDeck: { color: '#fbbf24', t: '등대 360° 전망대 (꼭대기)', d: '탁 트인 등대 꼭대기 전망대입니다! 섬 전경을 둘러보거나 엘리베이터로 내려갈 수 있어요.', actText: '🛗 엘리베이터로 내려가기 (G)', actFn: () => window.rideLighthouseElevator('down') },
@@ -10360,7 +10477,7 @@
         if (foundZone === 'anger') {
           b1.id = 'zpBreathCBtn';
           b1.className = 'zp-btn zp-btn-breath';
-          b1.innerHTML = '<span class="zp-btn-kbd">C</span> <span>호흡 맞추기 · 터치 가능</span>';
+          b1.innerHTML = '<span class="zp-btn-kbd">C</span><span>호흡 맞추기</span>';
         } else {
           b1.className = 'zp-btn';
           b1.textContent = g.actText;
@@ -10384,7 +10501,7 @@
       }
       if (foundZone === 'anger') {
         const robOpen = isMissionUnlocked('robot');
-        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = robOpen ? '#2563eb' : '#71717a'; bRob.textContent = robOpen ? '로봇 수리 & 나-전달법 (R)' : `🔒 로봇 수리 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`; bRob.onclick = () => window.openRobotIMessageModal();
+        const bRob = document.createElement('button'); bRob.className = 'zp-btn'; bRob.style.background = robOpen ? '#2563eb' : '#71717a'; bRob.textContent = robOpen ? '로봇 수리 (R)' : `🔒 로봇 수리 (${getCoreStoryDoneCount()}/5)`; bRob.onclick = () => window.openRobotIMessageModal();
         btnsEl.appendChild(bRob);
       }
       if (foundZone === 'worry') {
@@ -10961,14 +11078,20 @@
         const rType = activePlaygroundRide.type;
         if (rType === 'slide') {
           const prog = 1.0 - Math.max(0, activePlaygroundRide.timer / 2.4);
-          playerRig.position.x = 24.5;
-          playerRig.position.z = 20.5 + prog * 4.8;
-          playerRig.position.y = Math.max(0, 2.35 * (1 - prog));
-          playerRig.rotation.y = 0;
-          leftArm.rotation.z = 0.85; rightArm.rotation.z = -0.85;
+          const s = prog * 0.55 + prog * prog * 0.45;
+          const slideZ = THREE.MathUtils.lerp(20.99, 24.97, s);
+          const surfaceY = THREE.MathUtils.lerp(2.49, 0.62, s);
+          playerRig.position.set(24.5, surfaceY - 0.56, slideZ);
+          playerRig.rotation.set(0, 0, 0);
+          torso.position.y = 1.16;
+          torso.rotation.set(-0.22, 0, 0);
+          leftLeg.rotation.set(-Math.PI / 2 + 0.44, 0, 0.08);
+          rightLeg.rotation.set(-Math.PI / 2 + 0.44, 0, -0.08);
+          leftArm.rotation.set(-0.45, 0, 0.65);
+          rightArm.rotation.set(-0.45, 0, -0.65);
           if (activePlaygroundRide.timer <= 0) {
             cancelPlaygroundRide();
-            playerPhysics.velY = 9.5; playerPhysics.isGrounded = false;
+            playerPhysics.velY = 7.5; playerPhysics.isGrounded = false;
             soundJump(true);
             createMagicImpact(playerRig.position, '#fde047');
           }
@@ -10998,14 +11121,21 @@
           }
           if (activePlaygroundRide.timer <= 0) cancelPlaygroundRide();
         } else if (rType === 'swing') {
-          const swWave = Math.sin(time * 4.2);
-          if (typeof swSeat1 !== 'undefined') {
-            swSeat1.position.z = swWave * 1.15;
-            swSeat1.position.y = 0.65 + Math.abs(swWave) * 0.45;
+          activePlaygroundRide.elapsed = (activePlaygroundRide.elapsed || 0) + dt;
+          const swAngle = Math.sin(activePlaygroundRide.elapsed * 3.1) * 0.56;
+          if (typeof swPivot1 !== 'undefined') {
+            swPivot1.rotation.x = -swAngle;
           }
-          playerRig.position.set(27.6, 0.82 + Math.abs(swWave) * 0.45, 25.2 + swWave * 1.15);
-          playerRig.rotation.y = 0;
-          leftArm.rotation.x = -0.6; rightArm.rotation.x = -0.6;
+          const seatWorldY = SWING_PIVOT_Y - SWING_ROPE_LEN * Math.cos(swAngle);
+          const seatWorldZ = 25.2 + SWING_ROPE_LEN * Math.sin(swAngle);
+          playerRig.position.set(27.5, seatWorldY - 0.56, seatWorldZ);
+          playerRig.rotation.set(-swAngle * 0.65, 0, 0);
+          torso.position.y = 1.16;
+          torso.rotation.set(-0.08, 0, 0);
+          leftLeg.rotation.set(-Math.PI / 2 + 0.22 + swAngle * 0.35, 0, 0);
+          rightLeg.rotation.set(-Math.PI / 2 + 0.22 + swAngle * 0.35, 0, 0);
+          leftArm.rotation.set(-1.85, 0, -0.32);
+          rightArm.rotation.set(-1.85, 0, 0.32);
           if (activePlaygroundRide.timer <= 0) cancelPlaygroundRide();
         } else if (rType === 'chair') {
           playerRig.position.set(22.0, 0.68, -23.5);
@@ -11127,7 +11257,7 @@
             const respawnSec = (pi.kind === 'jetarmor') ? 7.5 : (SKY_RIDE_META[pi.kind] ? 10.0 : 12.0);
             if (pi.respawnTimer > respawnSec) {
               if (pi.relocateOnRespawn) {
-                const nSpot = getRandomSkyItemSpot(false);
+                const nSpot = (pi.kind === 'jetarmor') ? getTrackSuitSpot() : getRandomSkyItemSpot(false);
                 pi.x = nSpot.x; pi.z = nSpot.z;
               }
               if (pi.kind === 'jetarmor') {
@@ -11454,9 +11584,9 @@
         seePlank.rotation.z = 0;
         seePlank.rotation.x = Math.sin(time * 2.0) * 0.16;
       }
-      if (typeof swSeat1 !== 'undefined' && (!activePlaygroundRide || activePlaygroundRide.type !== 'swing')) {
-        swSeat1.position.z = Math.sin(time * 2.2) * 0.65;
-        swSeat2.position.z = -Math.sin(time * 2.2) * 0.65;
+      if (typeof swPivot1 !== 'undefined' && (!activePlaygroundRide || activePlaygroundRide.type !== 'swing')) {
+        swPivot1.rotation.x = Math.sin(time * 2.0) * 0.14;
+        swPivot2.rotation.x = -Math.sin(time * 2.0) * 0.14;
       }
       if (typeof heartMesh !== 'undefined') {
         heartMesh.rotation.y += dt * 1.5;
@@ -11469,7 +11599,7 @@
         timingCursorPct = 50 + Math.sin(time * 3.0) * 48;
         const curEl = document.getElementById('timingCursor');
         if (curEl) curEl.style.left = `${timingCursorPct.toFixed(1)}%`;
-        const inSweet = (timingCursorPct >= 36 && timingCursorPct <= 64);
+        const inSweet = (timingCursorPct >= 34 && timingCursorPct <= 66);
         if (breathWrapEl) breathWrapEl.classList.toggle('in-sweetspot', inSweet);
         const zpBreathBtn = document.getElementById('zpBreathCBtn');
         if (zpBreathBtn) zpBreathBtn.classList.toggle('pulse-ready', inSweet);
@@ -11845,31 +11975,67 @@
         }
       }
 
-      // 외곽 트랙 스페셜 아이템 & 하늘 탈것 상태 HUD 배지 갱신 (탭하여 즉시 착지)
+      // 하늘 탈것 · 제트 슈트 · 놀이기구 상시 하차 안내 HUD + 상태 배지 갱신
+      const isRidingAny = !!(playerPhysics.skyRide || playerPhysics.ironManAutoLap || (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide));
+      const rideBarEl = document.getElementById('rideControlBar');
+      const rideInfoEl = document.getElementById('rideCtrlInfo');
+      const rideKeysEl = document.getElementById('rideCtrlKeys');
+      const btnDismount = document.getElementById('btnRideDismount');
+      if (btnDismount && !btnDismount.dataset.bound) {
+        btnDismount.dataset.bound = '1';
+        btnDismount.addEventListener('click', () => dismountActiveRide());
+      }
+      if (rideBarEl) {
+        if (playerPhysics.skyRide) {
+          const sr = playerPhysics.skyRide;
+          if (rideInfoEl) rideInfoEl.textContent = `${sr.label} · 고도 ${playerRig.position.y.toFixed(1)}m · ${Math.max(0, sr.timer).toFixed(1)}초`;
+          if (rideKeysEl) rideKeysEl.textContent = '[Space] 상승 · [G] / [X] / [ESC] 내리기';
+        } else if (playerPhysics.ironManAutoLap) {
+          const lap = playerPhysics.ironManAutoLap;
+          const pct = Math.min(100, Math.round((lap.traveled / (Math.PI * 2)) * 100));
+          const thTag = (lap.theme && lap.theme.shortTag) || '⚡ 별빛 제트 슈트';
+          if (rideInfoEl) rideInfoEl.textContent = `${thTag} 비행 중 · ${pct}%`;
+          if (rideKeysEl) rideKeysEl.textContent = '[G] / [X] / [ESC] 언제든 착지';
+        } else if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) {
+          const rideLabels = { slide: '🛝 미끄럼틀', seesaw: '⚖️ 시소', swing: '🎠 그네', chair: '📚 독서대 의자' };
+          if (rideInfoEl) rideInfoEl.textContent = `${rideLabels[activePlaygroundRide.type] || '🎡 놀이기구'} 이용 중`;
+          if (rideKeysEl) rideKeysEl.textContent = '[G] / [X] / [Space] 내리기';
+        }
+        rideBarEl.classList.toggle('active', isRidingAny);
+      }
+      const dockInteractBtn = document.getElementById('btnInteractAction');
+      if (dockInteractBtn && dockInteractBtn.dataset.rideMode !== (isRidingAny ? '1' : '0')) {
+        dockInteractBtn.dataset.rideMode = isRidingAny ? '1' : '0';
+        dockInteractBtn.classList.toggle('dismount-active', isRidingAny);
+        dockInteractBtn.innerHTML = isRidingAny
+          ? '<span class="kbd">G</span><span>내리기</span>'
+          : '<span class="kbd">G</span><span>대화·체험</span>';
+      }
+      const touchInteractBtn = document.getElementById('btnTouchInteract');
+      if (touchInteractBtn && touchInteractBtn.dataset.rideMode !== (isRidingAny ? '1' : '0')) {
+        touchInteractBtn.dataset.rideMode = isRidingAny ? '1' : '0';
+        const lbl = touchInteractBtn.querySelector('.touch-pad-label');
+        if (lbl) lbl.textContent = isRidingAny ? '내리기' : '체험';
+        touchInteractBtn.classList.toggle('ctx-highlight', isRidingAny);
+      }
+
       const statusPillEl = document.getElementById('trackStatusPill');
       if (statusPillEl) {
         if (!statusPillEl.dataset.bound) {
           statusPillEl.dataset.bound = '1';
-          statusPillEl.addEventListener('click', () => {
-            if (playerPhysics.skyRide) endSkyRide(false);
-            else if (playerPhysics.ironManAutoLap) endJetArmorAutoLap(false);
-          });
+          statusPillEl.addEventListener('click', () => dismountActiveRide());
         }
         let statusMsg = '';
-        if (playerPhysics.skyRide) {
-          statusMsg = `${playerPhysics.skyRide.label} 비행 중 (고도 ${playerRig.position.y.toFixed(1)}m · ${playerPhysics.skyRide.timer.toFixed(1)}초 · [G]/터치 착지)`;
-        } else if (playerPhysics.ironManAutoLap) {
-          const pct = Math.min(100, Math.round((playerPhysics.ironManAutoLap.traveled / (Math.PI * 2)) * 100));
-          const thTag = (playerPhysics.ironManAutoLap.theme && playerPhysics.ironManAutoLap.theme.shortTag) || '⚡ 별빛 제트 아머';
-          statusMsg = `${thTag} 초고속 완주 중 · ${pct}% ([G]/터치 해제)`;
-        } else if (playerPhysics.freezeTimer > 0) {
-          statusMsg = `🧊 얼음 함정! ${playerPhysics.freezeTimer.toFixed(1)}초 후 해동`;
-        } else if (playerPhysics.slipTimer > 0) {
-          statusMsg = `🍌 바나나 미끄덩! ${playerPhysics.slipTimer.toFixed(1)}초`;
-        } else if (playerPhysics.invincibleTimer > 0) {
-          statusMsg = `⭐ 무지개 무적 파워 · ${playerPhysics.invincibleTimer.toFixed(1)}초`;
-        } else if (playerPhysics.turboTimer > 0) {
-          statusMsg = `⚡ 터보 번개 대시 · ${playerPhysics.turboTimer.toFixed(1)}초`;
+        if (!isRidingAny) {
+          if (playerPhysics.freezeTimer > 0) {
+            statusMsg = `🧊 얼음 함정! ${playerPhysics.freezeTimer.toFixed(1)}초 후 해동`;
+          } else if (playerPhysics.slipTimer > 0) {
+            statusMsg = `🍌 바나나 미끄덩! ${playerPhysics.slipTimer.toFixed(1)}초`;
+          } else if (playerPhysics.invincibleTimer > 0) {
+            statusMsg = `⭐ 무지개 무적 파워 · ${playerPhysics.invincibleTimer.toFixed(1)}초`;
+          } else if (playerPhysics.turboTimer > 0) {
+            statusMsg = `⚡ 터보 번개 대시 · ${playerPhysics.turboTimer.toFixed(1)}초`;
+          }
         }
         statusPillEl.textContent = statusMsg;
         statusPillEl.classList.toggle('active', !!statusMsg);
@@ -12458,10 +12624,15 @@
         pet.group.rotation.y = time * 2.2;
       });
 
-      // [5대 랜드마크 대형 스토리 입간판 부유 & 플레이어 발밑 3D 황금 길안내 화살표 업데이트]
+      // [5대 랜드마크 대형 스토리 입간판 부유 & 근접 시 시야 가림 방지 자동 숨김 + 발밑 길안내 도트]
+      const _tmpSignPos = landmarkStorySigns._tmpPos || (landmarkStorySigns._tmpPos = new THREE.Vector3());
       landmarkStorySigns.forEach((ls, idx) => {
         ls.sprite.position.y = ls.baseY + Math.sin(time * 2.2 + idx) * 0.28;
-        ls.sprite.visible = !state.quests[ls.key];
+        ls.sprite.getWorldPosition(_tmpSignPos);
+        const dPlayer = Math.hypot(_tmpSignPos.x - playerRig.position.x, _tmpSignPos.z - playerRig.position.z);
+        const dCam = camera.position.distanceTo(_tmpSignPos);
+        const tooClose = (dPlayer < 10.5 || dCam < 11.5);
+        ls.sprite.visible = !state.quests[ls.key] && !tooClose;
       });
       const guidedMeta = storyQuestMeta.find(m => m.key === activeGuidedQuestKey && !state.quests[m.key] && isMissionUnlocked(m.key))
         || storyQuestMeta.find(m => !state.quests[m.key] && isMissionUnlocked(m.key));
