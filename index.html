@@ -10697,6 +10697,7 @@
     // [온화한 엄마 상호작용 시스템: 대화 선택지, 3D 포옹, 하트 버스트, 치유 보상]
     // ============================================================
     let momHugTimer = 0;
+    let isCinematicHugging = false;
     const momBurstHearts = [];
 
     
@@ -10894,26 +10895,65 @@
 
     window.doMomHug = function() {
       initAudio();
+
+      // 1. [스마트폰·패드·PC 뷰포트 시야 확보] 화면을 가리는 대화 모달 즉각 닫기
+      closeModal('modalMom');
+
+      // 2. [캐릭터 위치 및 시선 정렬] 플레이어를 엄마(14, 12) 정면에 마주보도록 정렬
+      const groundY = (typeof getGroundHeight === 'function')
+        ? getGroundHeight(14.0, 13.05, playerRig.position.y)
+        : playerRig.position.y;
+      playerRig.position.set(14.0, groundY, 13.05);
+      playerRig.rotation.set(0, Math.PI, 0); // 엄마를 똑바로 마주봄
+      if (typeof playerPhysics !== 'undefined') {
+        playerPhysics.velX = 0; playerPhysics.velZ = 0; playerPhysics.velY = 0;
+      }
+
+      // 3. [시네마틱 포옹 가동] 4초간 카메라 클로즈업 + 상호 포옹 3D 애니메이션
+      momHugTimer = 4.0;
+      isCinematicHugging = true;
+
+      // 4. [오디오 & 하트 버스트 파티클]
       soundMomHug();
-      momHugTimer = 3.5; // 3.5초간 포옹 모션
       spawnHugHeartBurst();
+
+      // 5. [두근두근 심장 박동 햅틱 피드백] 쿵-쾅 리듬 3회 반복
+      triggerHaptic('heavy');
+      setTimeout(() => triggerHaptic('medium'), 180);
+      setTimeout(() => { triggerHaptic('heavy'); setTimeout(() => triggerHaptic('medium'), 180); }, 1300);
+      setTimeout(() => { triggerHaptic('heavy'); setTimeout(() => triggerHaptic('medium'), 180); }, 2600);
+
       const name = state.playerName || '인찬이';
       const vocative = typeof getKoreanVocative === 'function' ? getKoreanVocative(name) : (name + '아');
-      const topic = typeof getKoreanTopic === 'function' ? getKoreanTopic(name) : (name + '는');
       const childTitle = typeof getMomChildTitle === 'function' ? getMomChildTitle(state.hairStyle) : '착한 아이';
 
       const escName = window.escapeHtml(name);
       const escVocative = window.escapeHtml(vocative);
       const escChildTitle = window.escapeHtml(childTitle);
 
-      const txtEl = document.getElementById('momSpeechText');
-      if (txtEl) {
-        txtEl.innerHTML = `“언제든 이리 오렴! 우리 사랑하는 ${escChildTitle} <b>${escVocative}</b>, 넌 세상에서 가장 귀하고 소중한 보물이란다. 포근한 엄마 품에서 편안하게 쉬렴~”`;
-      }
+      // 6. [보상 저장]
       state.stardustCount = (state.stardustCount || 0) + 5;
       saveProgress();
-      showToast(`🤗 엄마의 따뜻한 품에서 ${escName}의 마음에 깊은 위로와 안식이 찾아왔습니다! (별빛가루 +5)`);
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
+
+      // 7. [행동 우선 감상 후 안내 텀 연출] 4초간 포옹 감상 후 따뜻한 마무리 축복 안내 팝업
+      setTimeout(() => {
+        isCinematicHugging = false;
+        soundMomVoice();
+        soundChime(659);
+        triggerHaptic('success');
+
+        if (typeof window.spawnFloatingScore === 'function') {
+          window.spawnFloatingScore('별빛가루 +5 ✨', '#fbbf24', 'heart');
+        }
+        showToast(`🤗 엄마의 포근한 품에서 ${escName}의 마음에 깊은 평화와 사랑이 깃들었습니다! (+별빛가루 5)`);
+
+        const txtEl = document.getElementById('momSpeechText');
+        if (txtEl) {
+          txtEl.innerHTML = `“언제든 이리 오렴! 우리 사랑하는 ${escChildTitle} <b>${escVocative}</b>, 넌 세상에서 가장 귀하고 소중한 보물이란다. 포근한 엄마 품에서 편안하게 쉬렴~”`;
+        }
+        openModal('modalMom');
+      }, 4000);
     };
 
     function soundMomVoice() {
@@ -12154,7 +12194,7 @@
         statusPillEl.classList.toggle('active', !!statusMsg);
       }
 
-      if (isMoving && canManualMove) {
+      if (isMoving && canManualMove && !isCinematicHugging) {
         const fwd = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
         const rgt = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), camState.yaw);
         const dir = new THREE.Vector3().addScaledVector(fwd, -mz).addScaledVector(rgt, mx).normalize();
@@ -12181,12 +12221,24 @@
         }
       } else if (!playerPhysics.isDancing && !playerPhysics.isMeditating && !activePlaygroundRide && !activeElevatorRide && !playerPhysics.ironManAutoLap && !playerPhysics.skyRide && playerPhysics.slipTimer <= 0) {
         resolveHorizontalCollisions();
-        leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15);
-        if (playerPhysics.armSwingTimer <= 0) {
-          rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, 0, 0.15);
+        if (momHugTimer > 0) {
+          // [인찬이 따뜻한 상호 포옹 3D 애니메이션]
+          // 양팔을 앞으로 뻗어 엄마를 감싸 안고, 상체를 기대며 편안한 표정 짓기
+          leftArm.rotation.set(-1.25, 0.22, 0.45);
+          rightArm.rotation.set(-1.25, -0.22, -0.45);
+          leftLeg.rotation.set(0, 0, 0);
+          rightLeg.rotation.set(0, 0, 0);
+          torso.rotation.x = 0.08;
+          torso.position.y = 1.35;
+          head.rotation.x = -0.08;
+        } else {
+          leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15);
+          if (playerPhysics.armSwingTimer <= 0) {
+            rightArm.rotation.x = THREE.MathUtils.lerp(rightArm.rotation.x, 0, 0.15);
+          }
+          leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, 0, 0.15); rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, 0, 0.15);
+          torso.position.y = 1.35 + Math.sin(time * 2.5) * 0.025;
         }
-        leftLeg.rotation.x = THREE.MathUtils.lerp(leftLeg.rotation.x, 0, 0.15); rightLeg.rotation.x = THREE.MathUtils.lerp(rightLeg.rotation.x, 0, 0.15);
-        torso.position.y = 1.35 + Math.sin(time * 2.5) * 0.025;
       }
 
       // 블록 설치 / 채굴 시 캐릭터 오른팔 스윙 & 상체 숙임 액션 애니메이션
@@ -12599,16 +12651,28 @@
         }
       }
       updateZoomBadgeUI();
-      const focusTarget = isLighthousePanorama
-        ? playerRig.position.clone().add(new THREE.Vector3(0, 2.2, 0)).lerp(new THREE.Vector3(0, 4.2, 0), 0.28)
-        : playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0));
-      const camLerpK = (playerPhysics.ironManAutoLap || (playerPhysics.skyRide && playerPhysics.skyRide.speedMult >= 3.5)) ? 0.48 : 0.16;
-      camState.targetPos.lerp(focusTarget, camLerpK);
-      const cx = camState.targetPos.x + Math.sin(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
-      const cy = camState.targetPos.y + Math.sin(camState.pitch) * camState.distance;
-      const cz = camState.targetPos.z + Math.cos(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
-      camera.position.set(cx, Math.max(cy, 0.6), cz); camera.lookAt(camState.targetPos);
-      const targetFov = isLighthousePanorama ? 62 : (input.shift && isMoving ? 57 : 50);
+      let targetFov = 50;
+      if (momHugTimer > 0) {
+        // [시네마틱 포옹 카메라 연출: 스마트폰·패드·PC 최적화]
+        // 엄마(14, 12)와 인찬이(14, 13.05) 포옹 중심부를 따뜻하게 클로즈업
+        const hugCenter = new THREE.Vector3(14.0, 1.35, 12.52);
+        camState.targetPos.lerp(hugCenter, 0.14);
+        const hugCamPos = new THREE.Vector3(11.85, 1.85, 13.85);
+        camera.position.lerp(hugCamPos, 0.12);
+        camera.lookAt(camState.targetPos);
+        targetFov = 46; // 따스하고 집중도 높은 시네마틱 화각
+      } else {
+        const focusTarget = isLighthousePanorama
+          ? playerRig.position.clone().add(new THREE.Vector3(0, 2.2, 0)).lerp(new THREE.Vector3(0, 4.2, 0), 0.28)
+          : playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+        const camLerpK = (playerPhysics.ironManAutoLap || (playerPhysics.skyRide && playerPhysics.skyRide.speedMult >= 3.5)) ? 0.48 : 0.16;
+        camState.targetPos.lerp(focusTarget, camLerpK);
+        const cx = camState.targetPos.x + Math.sin(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
+        const cy = camState.targetPos.y + Math.sin(camState.pitch) * camState.distance;
+        const cz = camState.targetPos.z + Math.cos(camState.yaw) * Math.cos(camState.pitch) * camState.distance;
+        camera.position.set(cx, Math.max(cy, 0.6), cz); camera.lookAt(camState.targetPos);
+        targetFov = isLighthousePanorama ? 62 : (input.shift && isMoving ? 57 : 50);
+      }
       camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.1);
       camera.updateProjectionMatrix();
 
@@ -12618,7 +12682,10 @@
         const distToMom = Math.hypot(playerRig.position.x - 14, playerRig.position.z - 12);
         
         // 인찬이가 가까이 오면 부드럽게 인찬이를 향해 몸체와 머리 회전
-        if (distToMom < 6.8) {
+        if (momHugTimer > 0) {
+          momGroup.rotation.y = 0; // 정면(남쪽)으로 인찬이를 마주봄
+          momHead.rotation.x = 0.12; // 인찬이를 다정하게 내려다봄
+        } else if (distToMom < 6.8) {
           const targetAngle = Math.atan2(playerRig.position.x - 14, playerRig.position.z - 12);
           momGroup.rotation.y += (targetAngle - momGroup.rotation.y) * 0.08;
           momHead.rotation.x = Math.sin(time * 2.0) * 0.05 + 0.08; // 따뜻하게 고개 끄덕임
@@ -12630,11 +12697,11 @@
         // 포옹 상태 모션 or 평소 손인사 모션
         if (momHugTimer > 0) {
           momHugTimer -= dt;
-          // 포옹: 양팔을 인찬이 쪽으로 활짝 뻗어 감싸 안음
-          momRightArmPivot.rotation.z = 0.5;
-          momRightArmPivot.rotation.x = -1.2;
-          momArmL.rotation.z = -0.5;
-          momArmL.rotation.x = -1.2;
+          // 포옹: 양팔을 인찬이 어깨와 등 뒤로 활짝 뻗어 꼭 감싸 안음
+          momRightArmPivot.rotation.z = 0.55;
+          momRightArmPivot.rotation.x = -1.25;
+          momArmL.rotation.z = -0.55;
+          momArmL.rotation.x = -1.25;
         } else {
           // 평소: 오른팔로 부드럽게 손을 흔들며 맞이
           momRightArmPivot.rotation.z = Math.sin(time * 3.5) * 0.35 - 0.7;
@@ -17021,7 +17088,7 @@
       <!-- 하단 액션 버튼들 -->
       <div class="mom-actions-row">
         <button type="button" onclick="doMomHug()" style="padding: 13px 22px; border-radius: 999px; background: #18181b; color: #fff; font-size: 15.5px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-          <span>🤗</span> <span>따뜻하게 안아드리기 (+마음조각 5)</span>
+          <span>🤗</span> <span>따뜻하게 안아드리기 (+별빛가루 5 ✨)</span>
         </button>
         <button type="button" onclick="closeModal('modalMom')" style="padding: 13px 20px; border-radius: 999px; background: #ffffff; color: #3f3f46; font-size: 15.5px; font-weight: 700; border: 1px solid #e4e2dd; cursor: pointer;">
           고마워요, 엄마!
