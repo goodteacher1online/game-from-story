@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>인찬이의 마음 광주리 — SEL 3D 오픈월드</title>
   <link rel="icon" href="data:," />
   <style>
@@ -10,6 +10,12 @@
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
     :root {
+      /* 스마트폰 · 패드 Safe Area Insets (노치, 다이내믹 아일랜드, 홈 인디케이터 대응) */
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+
       --bg-surface: rgba(246, 245, 240, 0.92);
       --bg-solid: #f6f5f0;
       --bg-card: #ffffff;
@@ -23,11 +29,18 @@
       --shadow-clean: 0 8px 28px rgba(15, 15, 20, 0.12);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+    * {
+      box-sizing: border-box; margin: 0; padding: 0;
+      user-select: none; -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
     body, html {
       width: 100%; height: 100%; overflow: hidden;
       font-family: 'GangwonEdu Modu', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       background: #141418; color: var(--ink-main);
+      touch-action: manipulation;
     }
     canvas#webgl { display: block; width: 100vw; height: 100vh; outline: none; touch-action: none; }
 
@@ -35,7 +48,10 @@
        Dieter Rams Minimalist HUD (강원교육모두 고가독성 크기 적용)
        ========================================= */
     .hud-top {
-      position: fixed; top: 14px; left: 16px; right: 16px;
+      position: fixed;
+      top: max(14px, calc(var(--safe-top) + 8px));
+      left: max(16px, calc(var(--safe-left) + 8px));
+      right: max(16px, calc(var(--safe-right) + 8px));
       display: flex; justify-content: space-between; align-items: flex-start;
       pointer-events: none; z-index: 90; gap: 10px;
     }
@@ -369,7 +385,9 @@
 
     /* 하단 슬림 컨트롤 독 (Dieter Rams / Nothing Design 단축키 키캡 통일) */
     .action-dock {
-      position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+      position: fixed;
+      bottom: max(14px, calc(var(--safe-bottom) + 8px));
+      left: 50%; transform: translateX(-50%);
       display: flex; align-items: center; gap: 5px; padding: 6px 10px;
       background: rgba(250, 249, 245, 0.94); backdrop-filter: blur(18px);
       border: 1px solid rgba(24, 24, 27, 0.14); border-radius: 14px;
@@ -484,7 +502,9 @@
 
     /* 패드(태블릿) & 스마트폰 겸용 듀얼 조이스틱 (좌: 이동 / 우: 시점) + 우측 직관 액션 패드 */
     .v-joy-zone, .v-look-zone {
-      position: fixed; bottom: 84px; width: 108px; height: 108px;
+      position: fixed;
+      bottom: max(84px, calc(var(--safe-bottom) + 70px));
+      width: 108px; height: 108px;
       border-radius: 50%; background: rgba(250, 249, 245, 0.9);
       background-image: radial-gradient(rgba(24, 24, 27, 0.08) 1px, transparent 1px);
       background-size: 8px 8px;
@@ -494,8 +514,8 @@
       box-shadow: 0 8px 22px rgba(15, 15, 20, 0.12);
       user-select: none;
     }
-    .v-joy-zone { left: 18px; }
-    .v-look-zone { right: 18px; }
+    .v-joy-zone { left: max(18px, calc(var(--safe-left) + 10px)); }
+    .v-look-zone { right: max(18px, calc(var(--safe-right) + 10px)); }
     .v-joy-zone::before, .v-look-zone::before {
       content: ''; position: absolute; inset: 12px; border-radius: 50%;
       border: 1px dashed rgba(24, 24, 27, 0.16); pointer-events: none;
@@ -943,41 +963,41 @@
 
     /* 태블릿·스마트폰 반응형 HUD 정렬 (.story-tracker 선언 이후 배치하여 우선순위 보장) */
     @media (max-width: 900px) {
-      .minimap-box { width: 88px; height: 88px; right: 12px; top: 66px; }
-      .cam-zoom-dock { right: 12px; top: 172px; }
-      .v-joy-zone, .v-look-zone { width: 96px; height: 96px; bottom: 78px; }
-      .v-joy-zone { left: 12px; }
-      .v-look-zone { right: 12px; }
+      .minimap-box { width: 88px; height: 88px; right: max(12px, calc(var(--safe-right) + 6px)); top: max(66px, calc(var(--safe-top) + 58px)); }
+      .cam-zoom-dock { right: max(12px, calc(var(--safe-right) + 6px)); top: max(172px, calc(var(--safe-top) + 160px)); }
+      .v-joy-zone, .v-look-zone { width: 96px; height: 96px; bottom: max(78px, calc(var(--safe-bottom) + 64px)); }
+      .v-joy-zone { left: max(12px, calc(var(--safe-left) + 6px)); }
+      .v-look-zone { right: max(12px, calc(var(--safe-right) + 6px)); }
       .v-joy-knob, .v-look-knob { width: 40px; height: 40px; }
-      .touch-action-pad { right: 12px; bottom: 186px; gap: 5px; padding: 6px; }
+      .touch-action-pad { right: max(12px, calc(var(--safe-right) + 6px)); bottom: max(186px, calc(var(--safe-bottom) + 166px)); gap: 5px; padding: 6px; }
       .touch-pad-btn { width: 46px; height: 46px; }
       .touch-pad-btn svg { width: 16px; height: 16px; }
-      .story-tracker { width: calc(100vw - 122px); max-width: 312px; left: 12px; top: 78px; padding: 10px 11px; }
+      .story-tracker { width: calc(100vw - 122px); max-width: 312px; left: max(12px, calc(var(--safe-left) + 6px)); top: max(78px, calc(var(--safe-top) + 68px)); padding: 10px 11px; }
       .zone-prompt { max-width: min(500px, calc(100vw - 24px)); padding: 12px 16px; }
     }
     @media (max-width: 600px) {
-      .hud-top { top: 10px; left: 10px; right: 10px; gap: 6px; }
+      .hud-top { top: max(10px, calc(var(--safe-top) + 4px)); left: max(10px, calc(var(--safe-left) + 4px)); right: max(10px, calc(var(--safe-right) + 4px)); gap: 6px; }
       .hud-row { flex-wrap: nowrap; gap: 4px; }
       .module-bar { max-width: calc(100vw - 194px); overflow-x: auto; padding: 5px 9px; gap: 6px; }
       .brand-title { font-size: 14px; }
       .hw-btn { height: 36px; padding: 0 9px; font-size: 13px; gap: 4px; }
-      .minimap-box { width: 78px; height: 78px; right: 10px; top: 56px; }
-      .cam-zoom-dock { right: 10px; top: 152px; padding: 3px; gap: 2px; }
+      .minimap-box { width: 78px; height: 78px; right: max(10px, calc(var(--safe-right) + 4px)); top: max(56px, calc(var(--safe-top) + 48px)); }
+      .cam-zoom-dock { right: max(10px, calc(var(--safe-right) + 4px)); top: max(152px, calc(var(--safe-top) + 140px)); padding: 3px; gap: 2px; }
       .cam-zoom-btn { width: 25px; height: 25px; font-size: 14px; }
       .cam-zoom-pct { min-width: 36px; font-size: 10.5px; }
-      .story-tracker { width: calc(100vw - 104px); max-width: 288px; left: 10px; top: 74px; padding: 8px 10px; }
+      .story-tracker { width: calc(100vw - 104px); max-width: 288px; left: max(10px, calc(var(--safe-left) + 4px)); top: max(74px, calc(var(--safe-top) + 64px)); padding: 8px 10px; }
       .story-q-title { font-size: 15px; }
       .story-q-desc { font-size: 13.5px; }
-      .v-joy-zone, .v-look-zone { width: 92px; height: 92px; bottom: 76px; }
-      .v-joy-zone { left: 10px; }
-      .v-look-zone { right: 10px; }
-      .touch-action-pad { right: 10px; bottom: 180px; gap: 4px; padding: 5px; }
+      .v-joy-zone, .v-look-zone { width: 92px; height: 92px; bottom: max(76px, calc(var(--safe-bottom) + 60px)); }
+      .v-joy-zone { left: max(10px, calc(var(--safe-left) + 4px)); }
+      .v-look-zone { right: max(10px, calc(var(--safe-right) + 4px)); }
+      .touch-action-pad { right: max(10px, calc(var(--safe-right) + 4px)); bottom: max(180px, calc(var(--safe-bottom) + 160px)); gap: 4px; padding: 5px; }
       .touch-pad-btn { width: 44px; height: 44px; }
       .touch-pad-label { font-size: 10.5px; }
       .zone-prompt {
-        left: 10px; transform: translateX(0) translateY(10px);
+        left: max(10px, calc(var(--safe-left) + 4px)); transform: translateX(0) translateY(10px);
         width: calc(100vw - 150px); max-width: calc(100vw - 150px);
-        padding: 10px 12px; bottom: 180px;
+        padding: 10px 12px; bottom: max(180px, calc(var(--safe-bottom) + 160px));
       }
       .zone-prompt.visible { transform: translateX(0) translateY(0); }
       .zp-head { font-size: 15px; }
@@ -986,13 +1006,13 @@
       .breath-bar-wrap { width: 100%; max-width: 100%; height: 40px; margin: 2px 0; }
       .timing-zone::after { content: '초록 존'; font-size: 11.5px; }
       .ride-control-bar {
-        bottom: 180px; left: 10px; right: 70px; transform: none;
+        bottom: max(180px, calc(var(--safe-bottom) + 160px)); left: max(10px, calc(var(--safe-left) + 4px)); right: max(70px, calc(var(--safe-right) + 60px)); transform: none;
         width: auto; max-width: none; padding: 7px 10px; gap: 6px;
       }
       .ride-ctrl-info { font-size: 13px; white-space: normal; text-align: center; }
       .ride-ctrl-keys { font-size: 11.5px; }
       .ride-dismount-btn { font-size: 12.5px; padding: 6px 11px; }
-      .track-status-pill { bottom: 180px; top: auto; font-size: 13px; padding: 6px 12px; }
+      .track-status-pill { bottom: max(180px, calc(var(--safe-bottom) + 160px)); top: auto; font-size: 13px; padding: 6px 12px; }
     }
 
     /* 채팅 패널 영구 비활성화 (교실 바른말 보호 & 화면 개방) */
@@ -1683,10 +1703,12 @@
     /* 패드 (16:9) 균형 터치 모드 */
     body.view-mode-pad .touch-pad-kbd { display: none !important; }
     body.view-mode-pad .action-dock .act-btn.touch-dup { display: none !important; }
-    body.view-mode-pad .story-tracker { width: 300px; top: 80px; left: 12px; padding: 10px 12px; }
+    body.view-mode-pad .story-tracker { width: 300px; top: max(80px, calc(var(--safe-top) + 68px)); left: max(12px, calc(var(--safe-left) + 8px)); padding: 10px 12px; }
     body.view-mode-pad .v-joy-zone,
-    body.view-mode-pad .v-look-zone { width: 102px; height: 102px; bottom: 76px; }
-    body.view-mode-pad .touch-action-pad { right: 12px; bottom: 188px; }
+    body.view-mode-pad .v-look-zone { width: 102px; height: 102px; bottom: max(76px, calc(var(--safe-bottom) + 64px)); }
+    body.view-mode-pad .v-joy-zone { left: max(16px, calc(var(--safe-left) + 8px)) !important; }
+    body.view-mode-pad .v-look-zone { right: max(16px, calc(var(--safe-right) + 8px)) !important; }
+    body.view-mode-pad .touch-action-pad { right: max(12px, calc(var(--safe-right) + 8px)); bottom: max(188px, calc(var(--safe-bottom) + 168px)); }
     body.view-mode-pad .touch-pad-btn { width: 50px; height: 50px; }
     body.view-mode-pad .top-mission-wrap { max-width: min(310px, 27vw); }
     @media (max-width: 1180px) {
@@ -1789,18 +1811,18 @@
     body.view-mode-phone .top-mission-wrap { display: none !important; }
 
     body.view-mode-phone .minimap-box {
-      width: 58px !important; height: 58px !important; right: 6px !important; top: 48px !important;
+      width: 58px !important; height: 58px !important; right: max(6px, calc(var(--safe-right) + 4px)) !important; top: max(48px, calc(var(--safe-top) + 40px)) !important;
     }
     body.view-mode-phone .minimap-tag { display: none !important; }
     body.view-mode-phone .cam-zoom-dock {
-      right: 6px !important; top: 112px !important;
+      right: max(6px, calc(var(--safe-right) + 4px)) !important; top: max(112px, calc(var(--safe-top) + 104px)) !important;
       flex-direction: column; padding: 3px; gap: 3px; border-radius: 14px;
     }
     body.view-mode-phone .cam-zoom-btn { width: 32px; height: 28px; border-radius: 9px; font-size: 15px; }
     body.view-mode-phone .cam-zoom-pct { min-width: 32px; height: 20px; font-size: 10px; padding: 0 2px; }
 
     body.view-mode-phone .story-tracker {
-      top: 48px !important; left: 8px !important;
+      top: max(48px, calc(var(--safe-top) + 40px)) !important; left: max(8px, calc(var(--safe-left) + 4px)) !important;
       width: calc(100vw - 72px) !important; max-width: 318px !important;
       padding: 9px 10px !important; max-height: 54dvh; overflow-y: auto;
     }
@@ -1817,7 +1839,7 @@
     /* 우측 액션 패드: 스마트폰 모드에서 세로 1열로 화면 가림 최소화 */
     body.view-mode-phone .touch-action-pad {
       grid-template-columns: 1fr !important;
-      right: 6px !important; bottom: 148px !important;
+      right: max(6px, calc(var(--safe-right) + 4px)) !important; bottom: max(148px, calc(var(--safe-bottom) + 138px)) !important;
       padding: 4px !important; gap: 4px !important; border-radius: 13px !important;
     }
     body.view-mode-phone .touch-pad-btn {
@@ -1830,18 +1852,18 @@
 
     body.view-mode-phone .v-joy-zone,
     body.view-mode-phone .v-look-zone {
-      width: 82px !important; height: 82px !important; bottom: 56px !important;
+      width: 82px !important; height: 82px !important; bottom: max(56px, calc(var(--safe-bottom) + 46px)) !important;
     }
-    body.view-mode-phone .v-joy-zone { left: 8px !important; }
-    body.view-mode-phone .v-look-zone { right: 8px !important; }
+    body.view-mode-phone .v-joy-zone { left: max(8px, calc(var(--safe-left) + 4px)) !important; }
+    body.view-mode-phone .v-look-zone { right: max(8px, calc(var(--safe-right) + 4px)) !important; }
     body.view-mode-phone .v-joy-knob,
     body.view-mode-phone .v-look-knob { width: 34px !important; height: 34px !important; }
     body.view-mode-phone .v-joy-label { font-size: 10px !important; bottom: 4px !important; }
 
     body.view-mode-phone .zone-prompt {
-      left: 8px !important; right: 62px !important; width: auto !important; max-width: none !important;
+      left: max(8px, calc(var(--safe-left) + 4px)) !important; right: max(62px, calc(var(--safe-right) + 56px)) !important; width: auto !important; max-width: none !important;
       transform: translateX(0) translateY(10px) !important;
-      bottom: 146px !important; padding: 8px 11px !important;
+      bottom: max(146px, calc(var(--safe-bottom) + 136px)) !important; padding: 8px 11px !important;
       border-radius: 13px !important; gap: 5px !important;
     }
     body.view-mode-phone .zone-prompt.visible { transform: translateX(0) translateY(0) !important; }
@@ -1856,14 +1878,14 @@
     body.view-mode-phone .timing-zone::after { content: '초록 존' !important; font-size: 11.5px !important; }
 
     body.view-mode-phone .toast-box {
-      top: 86px !important; left: 8px !important; right: 72px !important;
+      top: max(86px, calc(var(--safe-top) + 78px)) !important; left: max(8px, calc(var(--safe-left) + 4px)) !important; right: max(72px, calc(var(--safe-right) + 66px)) !important;
       transform: none !important; width: auto !important; max-width: none !important;
       align-items: flex-start !important;
     }
     body.view-mode-phone .toast { font-size: 13px !important; padding: 7px 10px 7px 12px !important; line-height: 1.38; text-align: left !important; }
     body.view-mode-phone .track-status-pill,
     body.view-mode-phone .ride-control-bar {
-      top: auto !important; bottom: 148px !important; left: 8px !important; right: 66px !important; transform: none !important;
+      top: auto !important; bottom: max(148px, calc(var(--safe-bottom) + 138px)) !important; left: max(8px, calc(var(--safe-left) + 4px)) !important; right: max(66px, calc(var(--safe-right) + 60px)) !important; transform: none !important;
       width: auto !important; max-width: none !important; white-space: normal !important;
       text-align: center !important; justify-content: center !important;
       font-size: 12.5px !important; line-height: 1.35 !important; padding: 7px 11px !important; border-radius: 13px !important;
@@ -1872,11 +1894,11 @@
     body.view-mode-phone .ride-ctrl-info { font-size: 12.5px !important; white-space: normal !important; }
     body.view-mode-phone .ride-ctrl-keys { font-size: 11.5px !important; white-space: normal !important; }
     body.view-mode-phone .ride-dismount-btn { font-size: 12.5px !important; padding: 6px 11px !important; }
-    body.view-mode-phone .lh-mini-dock { bottom: 54px !important; padding: 4px 6px !important; }
+    body.view-mode-phone .lh-mini-dock { bottom: max(54px, calc(var(--safe-bottom) + 46px)) !important; padding: 4px 6px !important; }
     body.view-mode-phone .lh-mini-btn { font-size: 12px !important; padding: 5px 10px !important; }
 
     body.view-mode-phone .action-dock {
-      bottom: 6px !important; padding: 4px 6px !important; gap: 3px !important; border-radius: 12px !important;
+      bottom: max(6px, calc(var(--safe-bottom) + 4px)) !important; padding: 4px 6px !important; gap: 3px !important; border-radius: 12px !important;
     }
     body.view-mode-phone .action-dock .act-btn,
     body.view-mode-phone .action-dock .dock-sep { display: none !important; }
@@ -3259,10 +3281,16 @@
         if (typeof d.coopHelped === 'number') state.coopHelped = d.coopHelped;
         if (Array.isArray(d.boardPosts) && d.boardPosts.length) state.boardPosts = d.boardPosts;
         if (Array.isArray(d.likedIds)) state.likedIds = d.likedIds;
-        if (typeof d.mindScore === 'number') state.mindScore = d.mindScore;
-        if (typeof d.mindLevel === 'number') state.mindLevel = d.mindLevel;
-        if (typeof d.stardustCount === 'number') state.stardustCount = d.stardustCount;
-        if (Array.isArray(d.collectedGemIds)) state.collectedGemIds = d.collectedGemIds;
+        if (typeof d.mindScore === 'number' && Number.isFinite(d.mindScore)) {
+          state.mindScore = Math.max(0, Math.min(9999999, Math.floor(d.mindScore)));
+        }
+        if (typeof d.mindLevel === 'number' && Number.isFinite(d.mindLevel)) {
+          state.mindLevel = Math.max(1, Math.min(99, Math.floor(d.mindLevel)));
+        }
+        if (typeof d.stardustCount === 'number' && Number.isFinite(d.stardustCount)) {
+          state.stardustCount = Math.max(0, Math.min(99999, Math.floor(d.stardustCount)));
+        }
+        if (Array.isArray(d.collectedGemIds)) state.collectedGemIds = d.collectedGemIds.filter(id => typeof id === 'number' && Number.isFinite(id));
       } catch (e) {}
     }
     loadProgress();
@@ -10757,6 +10785,10 @@
       const vocative = typeof getKoreanVocative === 'function' ? getKoreanVocative(name) : (name + '아');
       const childTitle = typeof getMomChildTitle === 'function' ? getMomChildTitle(state.hairStyle) : '착한 아이';
 
+      const escName = window.escapeHtml(name);
+      const escVocative = window.escapeHtml(vocative);
+      const escChildTitle = window.escapeHtml(childTitle);
+
       // 상단 모달 헤더 부제목 업데이트
       const subTitleEl = document.getElementById('momModalSub');
       if (subTitleEl) {
@@ -10766,7 +10798,7 @@
 
       const txtEl = document.getElementById('momSpeechText');
       if (txtEl) {
-        txtEl.innerHTML = `“우리 사랑하는 ${childTitle} <b>${vocative}</b>! 오늘 마음 광주리 여행은 어땠니? 기쁨, 슬픔, 화, 두려움, 걱정... 어떤 감정이든 엄마에게 편하게 털어놓으렴.”`;
+        txtEl.innerHTML = `“우리 사랑하는 ${escChildTitle} <b>${escVocative}</b>! 오늘 마음 광주리 여행은 어땠니? 기쁨, 슬픔, 화, 두려움, 걱정... 어떤 감정이든 엄마에게 편하게 털어놓으렴.”`;
       }
       openModal('modalMom');
     };
@@ -10779,24 +10811,31 @@
       const topic = typeof getKoreanTopic === 'function' ? getKoreanTopic(name) : (name + '는');
       const subject = typeof getKoreanSubject === 'function' ? getKoreanSubject(name) : (name + '이가');
       const childTitle = typeof getMomChildTitle === 'function' ? getMomChildTitle(state.hairStyle) : '착한 아이';
+
+      const escName = window.escapeHtml(name);
+      const escVocative = window.escapeHtml(vocative);
+      const escTopic = window.escapeHtml(topic);
+      const escSubject = window.escapeHtml(subject);
+      const escChildTitle = window.escapeHtml(childTitle);
+
       const txtEl = document.getElementById('momSpeechText');
       if (!txtEl) return;
 
-        if (type === 1) {
-        txtEl.innerHTML = `“정말 대견하고 자랑스럽구나, 우리 ${childTitle} <b>${name}</b>! 모든 감정 손님은 너를 지켜주고 돕는 소중한 친구란다. ${subject}의 마음 광주리가 사랑과 지혜로 가득 차올랐네! 엄마가 늘 응원할게!”`;
+      if (type === 1) {
+        txtEl.innerHTML = `“정말 대견하고 자랑스럽구나, 우리 ${escChildTitle} <b>${escName}</b>! 모든 감정 손님은 너를 지켜주고 돕는 소중한 친구란다. ${escSubject}의 마음 광주리가 사랑과 지혜로 가득 차올랐네! 엄마가 늘 응원할게!”`;
         soundChime(659);
         spawnHugHeartBurst();
-        showToast(`🌸 엄마의 칭찬으로 ${name}의 마음 광주리가 환하게 빛납니다! (별빛가루 +5)`);
+        showToast(`🌸 엄마의 칭찬으로 ${escName}의 마음 광주리가 환하게 빛납니다! (별빛가루 +5)`);
         state.stardustCount = (state.stardustCount || 0) + 5;
         saveProgress();
         if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
       } else if (type === 2) {
-        txtEl.innerHTML = `“그랬구나.. 우리 ${childTitle} <b>${name}</b> 마음이 많이 아리고 슬펐겠네. 소중한 것을 잃었을 때 눈물이 나는 건 아주 자연스럽고 예쁜 감정이란다. 눈물은 마음의 먼지를 씻어주는 촉촉한 비와 같아. 엄마가 꼭 안아줄게.”`;
+        txtEl.innerHTML = `“그랬구나.. 우리 ${escChildTitle} <b>${escName}</b> 마음이 많이 아리고 슬펐겠네. 소중한 것을 잃었을 때 눈물이 나는 건 아주 자연스럽고 예쁜 감정이란다. 눈물은 마음의 먼지를 씻어주는 촉촉한 비와 같아. 엄마가 꼭 안아줄게.”`;
         soundChime(523);
         spawnHugHeartBurst();
         showToast('💧 슬픔을 털어놓자 엄마의 온기로 마음이 평온해집니다.');
       } else if (type === 3) {
-        txtEl.innerHTML = `“화가 불쑥 치밀어 올랐구나! 화는 우리 ${childTitle} <b>${name}</b> 안의 소중한 가치를 지키고 싶은 용기의 또 다른 얼굴이란다. 심호흡을 깊게 세 번 쉬며 마음의 쉼터를 지어보자. 언제나 엄마가 네 편이란다.”`;
+        txtEl.innerHTML = `“화가 불쑥 치밀어 올랐구나! 화는 우리 ${escChildTitle} <b>${escName}</b> 안의 소중한 가치를 지키고 싶은 용기의 또 다른 얼굴이란다. 심호흡을 깊게 세 번 쉬며 마음의 쉼터를 지어보자. 언제나 엄마가 네 편이란다.”`;
         soundChime(440);
         showToast('🔥 엄마의 위로로 화의 불꽃이 따뜻한 온기로 바뀝니다.');
       } else if (type === 4) {
@@ -10814,13 +10853,17 @@
       const topic = typeof getKoreanTopic === 'function' ? getKoreanTopic(name) : (name + '는');
       const childTitle = typeof getMomChildTitle === 'function' ? getMomChildTitle(state.hairStyle) : '착한 아이';
 
+      const escName = window.escapeHtml(name);
+      const escVocative = window.escapeHtml(vocative);
+      const escChildTitle = window.escapeHtml(childTitle);
+
       const txtEl = document.getElementById('momSpeechText');
       if (txtEl) {
-        txtEl.innerHTML = `“언제든 이리 오렴! 우리 사랑하는 ${childTitle} <b>${vocative}</b>, 넌 세상에서 가장 귀하고 소중한 보물이란다. 포근한 엄마 품에서 편안하게 쉬렴~”`;
+        txtEl.innerHTML = `“언제든 이리 오렴! 우리 사랑하는 ${escChildTitle} <b>${escVocative}</b>, 넌 세상에서 가장 귀하고 소중한 보물이란다. 포근한 엄마 품에서 편안하게 쉬렴~”`;
       }
       state.stardustCount = (state.stardustCount || 0) + 5;
       saveProgress();
-      showToast(`🤗 엄마의 따뜻한 품에서 ${name}의 마음에 깊은 위로와 안식이 찾아왔습니다! (별빛가루 +5)`);
+      showToast(`🤗 엄마의 따뜻한 품에서 ${escName}의 마음에 깊은 위로와 안식이 찾아왔습니다! (별빛가루 +5)`);
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
     };
 
@@ -14988,6 +15031,32 @@
     const LOCAL_ADMIN_HASH_KEY = 'inchan_local_admin_hash_v1';
     const DEFAULT_LOCAL_ADMIN_HASH = '93046ab96a3e1b460a46a037eb9f320a661193e9fb41800244c495ae751f3d96';
 
+    let adminFailedAttempts = 0;
+    let adminLockoutUntil = 0;
+    let adminLockoutTimer = null;
+
+    function startAdminLockoutTimer() {
+      if (adminLockoutTimer) clearInterval(adminLockoutTimer);
+      const updateLockout = () => {
+        const now = Date.now();
+        if (adminLockoutUntil <= now) {
+          clearInterval(adminLockoutTimer);
+          adminLockoutTimer = null;
+          adminFailedAttempts = 0;
+          setAdminLoginError('');
+          const pwIn = document.getElementById('adminPasswordInput');
+          if (pwIn) pwIn.disabled = false;
+          return;
+        }
+        const remainSec = Math.ceil((adminLockoutUntil - now) / 1000);
+        setAdminLoginError(`보안을 위해 관리자 로그인이 일시 잠겼습니다. (${remainSec}초 후 다시 시도)`);
+        const pwIn = document.getElementById('adminPasswordInput');
+        if (pwIn) pwIn.disabled = true;
+      };
+      updateLockout();
+      adminLockoutTimer = setInterval(updateLockout, 1000);
+    }
+
     function setAdminLoginError(msg) {
       const el = document.getElementById('adminLoginError');
       if (!el) return;
@@ -15022,7 +15091,10 @@
       adminSessionPw = '';
       adminActiveRoom = '';
       const pwIn = document.getElementById('adminPasswordInput');
-      if (pwIn) pwIn.value = '';
+      if (pwIn) {
+        pwIn.value = '';
+        if (adminLockoutUntil <= Date.now()) pwIn.disabled = false;
+      }
       const cw = document.getElementById('adminConfirmWord');
       if (cw) cw.value = '';
       const p1 = document.getElementById('adminNewPw1');
@@ -15039,7 +15111,7 @@
       const dashPane = document.getElementById('adminDashboardPane');
       if (loginPane) loginPane.style.display = 'block';
       if (dashPane) dashPane.style.display = 'none';
-      setAdminLoginError('');
+      if (adminLockoutUntil <= Date.now()) setAdminLoginError('');
       setAdminActionMsg('');
     }
     function openAdminModal() {
@@ -15047,7 +15119,11 @@
       bindRoomPicker('adminRoomPicker', 'adminRoomInput');
       syncRoomPickerUI('adminRoomPicker', 'adminRoomInput', state.roomCode || 'A');
       openModal('modalAdmin');
-      setTimeout(() => document.getElementById('adminPasswordInput')?.focus(), 80);
+      if (adminLockoutUntil > Date.now()) {
+        startAdminLockoutTimer();
+      } else {
+        setTimeout(() => document.getElementById('adminPasswordInput')?.focus(), 80);
+      }
     }
     function openAdminModalUnlocked(roomCode, pw, summary) {
       lockAdminSessionUI();
@@ -15166,6 +15242,12 @@
     }
 
     async function adminVerifyAndLoad(isRefresh = false) {
+      const now = Date.now();
+      if (adminLockoutUntil > now) {
+        soundChime(220);
+        startAdminLockoutTimer();
+        return;
+      }
       setAdminLoginError('');
       if (!isRefresh) setAdminActionMsg('');
       const roomCode = isRefresh
@@ -15177,10 +15259,21 @@
       const res = await verifyAdminCredentials(roomCode, pw);
       if (!res.ok) {
         soundChime(220);
-        if (isRefresh) setAdminActionMsg(res.error || '관리자 인증을 다시 확인해 주세요.', true);
-        else setAdminLoginError(res.error || '관리자 암호가 올바르지 않습니다.');
+        if (isRefresh) {
+          setAdminActionMsg(res.error || '관리자 인증을 다시 확인해 주세요.', true);
+        } else {
+          adminFailedAttempts++;
+          if (adminFailedAttempts >= 5) {
+            adminLockoutUntil = Date.now() + 30000;
+            startAdminLockoutTimer();
+          } else {
+            const remain = 5 - adminFailedAttempts;
+            setAdminLoginError(`${res.error || '관리자 암호가 올바르지 않습니다.'} (연속 실패 시 30초 잠금, 남은 기회: ${remain}회)`);
+          }
+        }
         return;
       }
+      adminFailedAttempts = 0;
       adminSessionPw = pw;
       adminActiveRoom = roomCode;
       document.getElementById('adminLoginPane').style.display = 'none';
@@ -15188,6 +15281,8 @@
       renderAdminDashboard(res.summary);
       if (!isRefresh) soundQuestComplete();
     }
+    window.adminVerifyAndLoad = adminVerifyAndLoad;
+    window.openAdminModal = openAdminModal;
 
     async function adminSwitchRoom(targetRoom) {
       if (!adminSessionPw) return;
@@ -15825,9 +15920,16 @@
       showToast('실시간 마음 게시판과 3D 전광판에 내 글이 게시되었습니다!');
     });
 
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight); composer.setSize(window.innerWidth, window.innerHeight);
+    function handleScreenResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      composer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', handleScreenResize);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(handleScreenResize, 100);
+      setTimeout(handleScreenResize, 350);
     });
 
     syncQuestHUD(); selectGuestSpirit(state.curGuest); updateScreenCanvas(); animate();
