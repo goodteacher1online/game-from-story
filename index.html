@@ -1916,6 +1916,35 @@
       body.view-mode-phone .cam-zoom-pct { display: none; }
     }
 
+    /* ============================================================
+       [수석 디자이너] 마이크로 인터랙션, 초소형 화면 & 접근성 고도화
+       ============================================================ */
+    .act-btn:active, .touch-pad-btn:active, .zp-btn:active,
+    .ride-dismount-btn:active, .hw-btn:active, .admin-mini-btn:active,
+    .cam-zoom-btn:active, .cust-tab-btn:active {
+      transform: scale(0.95);
+      transition: transform 0.08s ease;
+    }
+
+    button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
+      outline: 2px solid var(--ink-main);
+      outline-offset: 2px;
+    }
+
+    /* 초소형 스마트폰 (화면 폭 <= 375px: iPhone SE, 갤럭시 Z 플립 커버 등) */
+    @media (max-width: 375px) {
+      .hud-top { gap: 3px !important; }
+      .module-bar { padding: 3px 5px !important; gap: 4px !important; }
+      .stardust-chip-btn { padding: 1px 4px !important; font-size: 11px !important; }
+      .story-tracker { width: calc(100vw - 80px) !important; padding: 7px 8px !important; }
+      .v-joy-zone, .v-look-zone { width: 74px !important; height: 74px !important; }
+      .touch-action-pad { bottom: max(140px, calc(var(--safe-bottom) + 128px)) !important; }
+      .touch-pad-btn { width: 40px !important; height: 40px !important; }
+      .zone-prompt { bottom: max(138px, calc(var(--safe-bottom) + 126px)) !important; }
+      .action-dock { gap: 2px !important; padding: 3px 4px !important; }
+      .mc-slot { width: 38px !important; height: 34px !important; }
+    }
+
 </style>
 </head>
 <body>
@@ -6262,17 +6291,35 @@
       osc.connect(gain); gain.connect(audioCtx.destination);
       osc.start(); osc.stop(audioCtx.currentTime + dur + 0.02);
     }
-    function soundJump(isDouble = false) { playTone(isDouble ? 420 : 250, isDouble ? 880 : 600, 0.22, isDouble ? 'triangle' : 'sine', 0.22); }
+    function soundJump(isDouble = false) {
+      playTone(isDouble ? 420 : 250, isDouble ? 880 : 600, 0.22, isDouble ? 'triangle' : 'sine', 0.22);
+      if (typeof triggerHaptic === 'function') triggerHaptic(isDouble ? 'medium' : 'light');
+    }
     function soundMagic() { playTone(700, 1200, 0.25, 'sine', 0.18); }
     function soundChime(f = 528) { playTone(f, f, 1.5, 'triangle', 0.18); }
-    function soundQuestComplete() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => soundChime(f), i * 110)); }
+    function soundQuestComplete() {
+      [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => soundChime(f), i * 110));
+      if (typeof triggerHaptic === 'function') triggerHaptic('success');
+    }
 
     // ==========================================
     
-    function soundBlockPlace() { playTone(160, 240, 0.09, 'triangle', 0.22); }
-    function soundBlockMine() { playTone(340, 120, 0.12, 'sawtooth', 0.24); }
-    function soundObbyGoal() { [587, 740, 880, 1174, 1480].forEach((f, i) => setTimeout(() => soundChime(f), i * 95)); }
-    function soundBasketLevelUp() { [440, 554, 659, 880, 1108, 1318].forEach((f, i) => setTimeout(() => playTone(f, f*1.2, 0.35, 'triangle', 0.28), i * 115)); }
+    function soundBlockPlace() {
+      playTone(160, 240, 0.09, 'triangle', 0.22);
+      if (typeof triggerHaptic === 'function') triggerHaptic('light');
+    }
+    function soundBlockMine() {
+      playTone(340, 120, 0.12, 'sawtooth', 0.24);
+      if (typeof triggerHaptic === 'function') triggerHaptic('light');
+    }
+    function soundObbyGoal() {
+      [587, 740, 880, 1174, 1480].forEach((f, i) => setTimeout(() => soundChime(f), i * 95));
+      if (typeof triggerHaptic === 'function') triggerHaptic('success');
+    }
+    function soundBasketLevelUp() {
+      [440, 554, 659, 880, 1108, 1318].forEach((f, i) => setTimeout(() => playTone(f, f*1.2, 0.35, 'triangle', 0.28), i * 115));
+      if (typeof triggerHaptic === 'function') triggerHaptic('heavy');
+    }
 
     // 컨페티(축하 꽃가루 폭죽) 시스템
     const confettiParticles = [];
@@ -8837,10 +8884,12 @@
     window.endSkyRide = endSkyRide;
 
     function dismountActiveRide() {
-      if (playerPhysics.skyRide) { endSkyRide(false); return true; }
-      if (playerPhysics.ironManAutoLap) { endJetArmorAutoLap(false); return true; }
-      if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) { cancelPlaygroundRide(true); return true; }
-      return false;
+      let res = false;
+      if (playerPhysics.skyRide) { endSkyRide(false); res = true; }
+      else if (playerPhysics.ironManAutoLap) { endJetArmorAutoLap(false); res = true; }
+      else if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) { cancelPlaygroundRide(true); res = true; }
+      if (res && typeof triggerHaptic === 'function') triggerHaptic('medium');
+      return res;
     }
     window.dismountActiveRide = dismountActiveRide;
 
@@ -10875,9 +10924,30 @@
 
     let lastPlayroomSyncTime = 0;
     let lastPosSyncKey = '';
+    let isAppHidden = false;
+
+    function triggerHaptic(type = 'light') {
+      if (typeof navigator === 'undefined' || !navigator.vibrate) return;
+      try {
+        if (type === 'light') navigator.vibrate(10);
+        else if (type === 'medium') navigator.vibrate(22);
+        else if (type === 'success') navigator.vibrate([15, 45, 20]);
+        else if (type === 'heavy') navigator.vibrate(40);
+      } catch (_) {}
+    }
+    window.triggerHaptic = triggerHaptic;
+
+    document.addEventListener('visibilitychange', () => {
+      isAppHidden = document.hidden;
+      if (!isAppHidden) {
+        // 백그라운드 복귀 시 clock 델타 폭증(물리 튕김) 방지 리셋
+        clock.getDelta();
+      }
+    });
 
     function animate() {
       requestAnimationFrame(animate);
+      if (isAppHidden) return; // 탭/앱 비활성화 시 렌더링 스킵 -> 배터리 절전 및 발열 원천 차단
       const dt = Math.min(clock.getDelta(), 0.1), time = clock.getElapsedTime();
       // avatarMixer removed
 
