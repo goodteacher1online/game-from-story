@@ -2031,7 +2031,7 @@
   <div class="ride-control-bar" id="rideControlBar" role="region" aria-label="탑승 조작 및 내리기 안내">
     <span class="ride-ctrl-info" id="rideCtrlInfo"></span>
     <span class="ride-ctrl-keys" id="rideCtrlKeys"></span>
-    <button type="button" class="ride-dismount-btn" id="btnRideDismount">내리기 (G / X)</button>
+    <button type="button" class="ride-dismount-btn" id="btnRideDismount">내리기 (G)</button>
   </div>
 
   <!-- 좌측 상단: Dieter Rams / Nothing Design 클릭형 미션 계측기 -->
@@ -8248,7 +8248,7 @@
       rightLeg.rotation.set(-Math.PI / 2 + 0.44, 0, -0.08);
       createMagicImpact(playerRig.position, '#facc15');
       showPlayerBubble('🛝 “야호! 미끄럼틀에 앉아서 슝— 신나게 내려간다!”');
-      showToast('🛝 <b>[놀이터 미끄럼틀 타기!]</b> 미끄럼틀에 앉아 바람을 가르며 내려갑니다! ([G]/[X] 내리기 · +80점)');
+      showToast('🛝 <b>[놀이터 미끄럼틀 타기!]</b> 미끄럼틀에 앉아 바람을 가르며 내려갑니다! ([G] 내리기 · +80점)');
       window.addMindScore(80, '🛝 놀이터 미끄럼틀 타기');
     };
 
@@ -8260,7 +8260,7 @@
       playerRig.rotation.set(0, Math.PI, 0);
       createMagicImpact(playerRig.position, '#10b981');
       showPlayerBubble('⚖️ “시소에 앉아 영차! 박자에 맞춰 오르락내리락!”');
-      showToast('⚖️ <b>[놀이터 시소 타기!]</b> 좌석에 앉아 시소와 딱 맞춰 신나게 오르락내리락합니다! (+80점)');
+      showToast('⚖️ <b>[놀이터 시소 타기!]</b> 좌석에 앉아 시소와 딱 맞춰 신나게 오르락내리락합니다! ([G] 내리기 · +80점)');
       window.addMindScore(80, '⚖️ 놀이터 시소 타기');
     };
 
@@ -8278,7 +8278,7 @@
       rightArm.rotation.set(-1.85, 0, 0.32);
       createMagicImpact(playerRig.position, '#f43f5e');
       showPlayerBubble('🎠 “높은 그네에 앉아 하늘까지 시원하게 날아올라요!”');
-      showToast('🎠 <b>[놀이터 그네 타기!]</b> 높은 그네에 앉아 앞뒤로 시원하게 흔들립니다! ([G]/[X] 내리기 · +80점)');
+      showToast('🎠 <b>[놀이터 그네 타기!]</b> 높은 그네에 앉아 앞뒤로 시원하게 흔들립니다! ([G] 내리기 · +80점)');
       window.addMindScore(80, '🎠 놀이터 그네 타기');
     };
 
@@ -8774,17 +8774,17 @@
       createMagicImpact(playerRig.position, meta.color);
       window.addMindScore(80, `${meta.label} 하늘 비행!`);
       if (kind === 'ufo') {
-        showPlayerBubble('🛸 “초고속 UFO 워프 가동! ([G]/[X] 언제든 내리기)”');
-        showToast('🛸 <b>초고속 UFO 워프 비행!</b> <b>4.3배</b> 속도로 날아보세요! ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)');
+        showPlayerBubble('🛸 “초고속 UFO 워프 가동! ([G] 내리기)”');
+        showToast('🛸 <b>초고속 UFO 워프 비행!</b> <b>4.3배</b> 속도로 날아보세요! ([SPACE] 상승 · [G] 내리기)');
       } else if (kind === 'chukji') {
-        showPlayerBubble('⚡ “하늘 축지법 발동! ([G]/[X] 언제든 내리기)”');
-        showToast('⚡ <b>하늘 축지법 발동!</b> 평소 <b>4배 속도</b>로 성큼성큼 날아갑니다! ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)');
+        showPlayerBubble('⚡ “하늘 축지법 발동! ([G] 내리기)”');
+        showToast('⚡ <b>하늘 축지법 발동!</b> 평소 <b>4배 속도</b>로 성큼성큼 날아갑니다! ([SPACE] 상승 · [G] 내리기)');
       } else if (kind === 'cloud') {
-        showPlayerBubble('☁️ “황금 근두운에 올라탔어! ([G]/[X] 언제든 내리기)”');
-        showToast('☁️ <b>황금 근두운 비행 시작!</b> 자유롭게 날아보세요! ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)');
+        showPlayerBubble('☁️ “황금 근두운에 올라탔어! ([G] 내리기)”');
+        showToast('☁️ <b>황금 근두운 비행 시작!</b> 자유롭게 날아보세요! ([SPACE] 상승 · [G] 내리기)');
       } else {
-        showPlayerBubble(`${meta.label} 탑승! ([G] 또는 [X] 키로 언제든 내릴 수 있어요)`);
-        showToast(`${meta.label} <b>하늘 비행 시작!</b> 고도 ${meta.baseAlt.toFixed(1)}m 비행 중 ([SPACE] 상승 · [G]·[X]·터치 언제든 내리기)`);
+        showPlayerBubble(`${meta.label} 탑승! ([G] 키로 언제든 내릴 수 있어요)`);
+        showToast(`${meta.label} <b>하늘 비행 시작!</b> 고도 ${meta.baseAlt.toFixed(1)}m 비행 중 ([SPACE] 상승 · [G] 내리기)`);
       }
     }
 
@@ -8829,7 +8829,7 @@
         createMagicImpact(playerRig.position, theme.hex);
         window.addMindScore(40, `${theme.shortTag} 아머 체인지!`);
         showPlayerBubble(`${theme.shortTag}로 즉시 체인지! 더 빠르게 날자!`);
-        showToast(`${theme.shortTag} <b>[${theme.name}] 변신 & 에너지 재충전!</b> ([G]·[X]·터치 언제든 내리기 · +40점)`);
+        showToast(`${theme.shortTag} <b>[${theme.name}] 변신 & 에너지 재충전!</b> ([G] 즉시 착지 · +40점)`);
         return;
       }
       cancelPlaygroundRide();
@@ -8856,8 +8856,8 @@
       createMagicImpact(playerRig.position, theme.hex);
       createMagicImpact(playerRig.position, '#fef08a');
       window.addMindScore(100, `${theme.shortTag} 장착!`);
-      showPlayerBubble(`${theme.shortTag} 가동! ([G]/[X] 언제든 착지)`);
-      showToast(`${theme.shortTag} <b>[${theme.name} 변신!]</b> 외곽 3레인 트랙 1바퀴를 고속 비행합니다! ([G]·[X]·터치 언제든 내리기)`);
+      showPlayerBubble(`${theme.shortTag} 가동! ([G] 언제든 착지)`);
+      showToast(`${theme.shortTag} <b>[${theme.name} 변신!]</b> 외곽 3레인 트랙 1바퀴를 고속 비행합니다! ([G] 언제든 착지)`);
     }
     window.startJetArmorAutoLap = startJetArmorAutoLap;
 
@@ -11989,17 +11989,17 @@
         if (playerPhysics.skyRide) {
           const sr = playerPhysics.skyRide;
           if (rideInfoEl) rideInfoEl.textContent = `${sr.label} · 고도 ${playerRig.position.y.toFixed(1)}m · ${Math.max(0, sr.timer).toFixed(1)}초`;
-          if (rideKeysEl) rideKeysEl.textContent = '[Space] 상승 · [G] / [X] / [ESC] 내리기';
+          if (rideKeysEl) rideKeysEl.textContent = '[Space] 상승 · [G] 내리기';
         } else if (playerPhysics.ironManAutoLap) {
           const lap = playerPhysics.ironManAutoLap;
           const pct = Math.min(100, Math.round((lap.traveled / (Math.PI * 2)) * 100));
           const thTag = (lap.theme && lap.theme.shortTag) || '⚡ 별빛 제트 슈트';
           if (rideInfoEl) rideInfoEl.textContent = `${thTag} 비행 중 · ${pct}%`;
-          if (rideKeysEl) rideKeysEl.textContent = '[G] / [X] / [ESC] 언제든 착지';
+          if (rideKeysEl) rideKeysEl.textContent = '[G] 언제든 착지';
         } else if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) {
           const rideLabels = { slide: '🛝 미끄럼틀', seesaw: '⚖️ 시소', swing: '🎠 그네', chair: '📚 독서대 의자' };
           if (rideInfoEl) rideInfoEl.textContent = `${rideLabels[activePlaygroundRide.type] || '🎡 놀이기구'} 이용 중`;
-          if (rideKeysEl) rideKeysEl.textContent = '[G] / [X] / [Space] 내리기';
+          if (rideKeysEl) rideKeysEl.textContent = '[G] 언제든 내리기';
         }
         rideBarEl.classList.toggle('active', isRidingAny);
       }
