@@ -8900,13 +8900,7 @@
       const theme = applyJetArmorTheme(chosenKey);
       if (playerPhysics.skyRide) endSkyRide(false);
       if (playerPhysics.ironManAutoLap) {
-        playerPhysics.ironManAutoLap.theme = theme;
-        playerPhysics.ironManAutoLap.angularSpeed = theme.angularSpeed;
-        soundChime(920);
-        createMagicImpact(playerRig.position, theme.hex);
-        window.addMindScore(40, `${theme.shortTag} 아머 체인지!`);
-        showPlayerBubble(`${theme.shortTag}로 즉시 체인지! 더 빠르게 날자!`);
-        showToast(`${theme.shortTag} <b>[${theme.name}] 변신 & 에너지 재충전!</b> ([G] 즉시 착지 · +40점)`);
+        // [규칙] 이미 하나의 아머를 착용 중이면 다른 아머에는 절대 반응하지 않고 기존 아머 유지
         return;
       }
       cancelPlaygroundRide();
@@ -9017,6 +9011,11 @@
 
     function activateTrackPowerItem(item) {
       if (!item || item.cleared) return;
+      // [아머 단일 장착 보호] 이미 하나의 아머를 착용 중이면 다른 아머에는 일체 반응하지 않음 (아이템 보존)
+      if (item.kind === 'jetarmor' && playerPhysics.ironManAutoLap) return;
+      // 탈것 탑승 중 중복 탑승 방지
+      if (SKY_RIDE_META[item.kind] && (playerPhysics.skyRide || playerPhysics.ironManAutoLap)) return;
+
       item.cleared = true;
       item.mesh.visible = false;
       item.respawnTimer = 0;
@@ -11434,9 +11433,10 @@
           }
           pi.mesh.rotation.y += dt * (pi.kind === 'banana' ? 1.4 : 2.6);
           pi.mesh.position.y = pi.baseY + Math.sin(time * 3.2 + pi.phase) * (pi.kind === 'banana' ? 0.04 : 0.18);
+          // 하나의 아머를 먹었을 때 다른 아머에는 일체 반응하지 않도록 차단 (중복 탈것 방지)
           const canTriggerPickup = playerPhysics.ironManAutoLap
-            ? (pi.kind === 'jetarmor')
-            : (!playerPhysics.skyRide);
+            ? (pi.kind !== 'jetarmor' && !SKY_RIDE_META[pi.kind])
+            : (playerPhysics.skyRide ? (!SKY_RIDE_META[pi.kind] && pi.kind !== 'jetarmor') : true);
           if (canTriggerPickup && Math.hypot(playerRig.position.x - pi.x, playerRig.position.z - pi.z) < 2.4 && playerRig.position.y < 3.8) {
             activateTrackPowerItem(pi);
           }
