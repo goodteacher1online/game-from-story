@@ -7249,9 +7249,13 @@
     let sadRainbowMesh = null;
     let sadFountainPillars = [];
     const sadBloomedLotuses = [];
+    let sadRitualCamTimer = 0;
+    let fireBreathCamTimer = 0;
 
     window.triggerSadRitual = function triggerSadRitual() {
       initAudio();
+      if (typeof cancelPlaygroundRide === 'function') cancelPlaygroundRide();
+      sadRitualCamTimer = 5.2; // 5.2초간 무지개 분수 & 연꽃 개화 시네마틱 와이드 앵글
       soundChime(432);
       setTimeout(() => soundChime(540), 120);
       setTimeout(() => soundChime(648), 240);
@@ -7839,10 +7843,12 @@
     }
 
     window.triggerDeepBreathCoolFire = function(shouldCoolFire = false) {
+      if (typeof cancelPlaygroundRide === 'function') cancelPlaygroundRide();
       // 남쪽 모닥불(0, 52) 근처일 때는 먼저 모닥불 쪽으로 자연스럽게 얼굴 방향을 회전
       const distToFire = Math.hypot(playerRig.position.x - 0, playerRig.position.z - 52);
       if (distToFire < 9.5 && distToFire > 0.2) {
         playerRig.rotation.y = Math.atan2(0 - playerRig.position.x, 52 - playerRig.position.z);
+        fireBreathCamTimer = 3.6; // 모닥불 심호흡 시네마틱 앵글 가동
       }
       // 인찬이 얼굴(눈·입)은 로컬 +Z 방향을 바라보므로 (0, 0, 1)에 playerRig.rotation.y를 적용!
       const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), playerRig.rotation.y).normalize();
@@ -8133,6 +8139,7 @@
 
     window.triggerStagePractice = function() {
       initAudio();
+      if (typeof cancelPlaygroundRide === 'function') cancelPlaygroundRide();
       if (!isMissionUnlocked('stage')) {
         soundChime(220);
         showToast(`🔒 <b>[제6장 심화 · 학예 발표 무대]</b><br>먼저 동화 기반 5대 핵심 감정(기쁨·슬픔·화·두려움·걱정)을 모두 해결하면 활성화됩니다! (${getCoreStoryDoneCount()}/5)`);
@@ -12651,17 +12658,109 @@
         }
       }
       updateZoomBadgeUI();
+      if (typeof sadRitualCamTimer !== 'undefined' && sadRitualCamTimer > 0) {
+        sadRitualCamTimer -= dt;
+      }
+      if (typeof fireBreathCamTimer !== 'undefined' && fireBreathCamTimer > 0) {
+        fireBreathCamTimer -= dt;
+      }
+
       let targetFov = 50;
+      let isCinematicCustomCam = false;
+
+      // 1. [엄마와의 따뜻한 포옹 시네마틱]
       if (momHugTimer > 0) {
-        // [시네마틱 포옹 카메라 연출: 스마트폰·패드·PC 최적화]
-        // 엄마(14, 12)와 인찬이(14, 13.05) 포옹 중심부를 따뜻하게 클로즈업
+        isCinematicCustomCam = true;
         const hugCenter = new THREE.Vector3(14.0, 1.35, 12.52);
         camState.targetPos.lerp(hugCenter, 0.14);
         const hugCamPos = new THREE.Vector3(11.85, 1.85, 13.85);
         camera.position.lerp(hugCamPos, 0.12);
         camera.lookAt(camState.targetPos);
         targetFov = 46; // 따스하고 집중도 높은 시네마틱 화각
-      } else {
+      }
+      // 2. [놀이터 놀이기구 타기 시네마틱: 미끄럼틀 · 시소 · 그네 · 숲속 독서대]
+      else if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) {
+        isCinematicCustomCam = true;
+        const rType = activePlaygroundRide.type;
+        if (rType === 'slide') {
+          // 미끄럼틀: 하단 앞에서 슝— 내려오는 인찬이를 멋지게 올려다보는 다이내믹 로우 앵글
+          const slideTarget = new THREE.Vector3(24.5, 1.25, playerRig.position.z);
+          camState.targetPos.lerp(slideTarget, 0.22);
+          const slideCamPos = new THREE.Vector3(27.4, 1.45, 27.2);
+          camera.position.lerp(slideCamPos, 0.16);
+          camera.lookAt(camState.targetPos);
+          targetFov = 52;
+        } else if (rType === 'seesaw') {
+          // 시소: 옆 측면에서 위아래로 신나게 오르락내리락하는 생생한 사이드 뷰
+          const seeTarget = new THREE.Vector3(31.0, 1.05, 21.0);
+          camState.targetPos.lerp(seeTarget, 0.16);
+          const seeCamPos = new THREE.Vector3(35.6, 1.75, 21.0);
+          camera.position.lerp(seeCamPos, 0.14);
+          camera.lookAt(camState.targetPos);
+          targetFov = 48;
+        } else if (rType === 'swing') {
+          // 그네: 하늘 높이 시원하게 솟아오르는 역동적인 사이드 프론트 앵글
+          const swTarget = new THREE.Vector3(27.5, 1.65, 25.2);
+          camState.targetPos.lerp(swTarget, 0.16);
+          const swCamPos = new THREE.Vector3(31.8, 1.85, 28.6);
+          camera.position.lerp(swCamPos, 0.14);
+          camera.lookAt(camState.targetPos);
+          targetFov = 52;
+        } else if (rType === 'chair') {
+          // 숲속 독서대: 포근하게 동화책을 읽는 감성 클로즈업
+          const chTarget = new THREE.Vector3(22.0, 1.05, -23.5);
+          camState.targetPos.lerp(chTarget, 0.14);
+          const chCamPos = new THREE.Vector3(19.8, 1.45, -21.8);
+          camera.position.lerp(chCamPos, 0.12);
+          camera.lookAt(camState.targetPos);
+          targetFov = 44;
+        } else {
+          isCinematicCustomCam = false;
+        }
+      }
+      // 3. [학예 발표 무대 스포트라이트 콘서트 앵글]
+      else if (typeof stageSpotlightTimer !== 'undefined' && stageSpotlightTimer > 0.1) {
+        isCinematicCustomCam = true;
+        const stageTarget = new THREE.Vector3(52.0, 1.95, -32.0);
+        camState.targetPos.lerp(stageTarget, 0.15);
+        const stageCamPos = new THREE.Vector3(46.2, 1.85, -25.8);
+        camera.position.lerp(stageCamPos, 0.12);
+        camera.lookAt(camState.targetPos);
+        targetFov = 48;
+      }
+      // 4. [장난감 로봇(화) 수리 완성 축하 투샷 앵글]
+      else if (typeof robotJumpTimer !== 'undefined' && robotJumpTimer > 0.1) {
+        isCinematicCustomCam = true;
+        const robotTarget = new THREE.Vector3(-7.5, 1.35, 48.0);
+        camState.targetPos.lerp(robotTarget, 0.15);
+        const robotCamPos = new THREE.Vector3(-11.2, 1.95, 51.5);
+        camera.position.lerp(robotCamPos, 0.12);
+        camera.lookAt(camState.targetPos);
+        targetFov = 46;
+      }
+      // 5. [슬픔의 연꽃 & 22m 무지개 분수 웅장한 시네마틱 와이드 앵글]
+      else if (typeof sadRitualCamTimer !== 'undefined' && sadRitualCamTimer > 0.1) {
+        isCinematicCustomCam = true;
+        const sadTarget = new THREE.Vector3(-36.0, 3.6, 0.0);
+        camState.targetPos.lerp(sadTarget, 0.14);
+        const sadCamPos = new THREE.Vector3(-23.5, 4.4, 9.5);
+        camera.position.lerp(sadCamPos, 0.10);
+        camera.lookAt(camState.targetPos);
+        targetFov = 56;
+      }
+      // 6. [화의 모닥불 심호흡 쿨링 따뜻한 사이드 앵글]
+      else if (typeof fireBreathCamTimer !== 'undefined' && fireBreathCamTimer > 0.1) {
+        isCinematicCustomCam = true;
+        const fireTarget = new THREE.Vector3(0.0, 1.6, 52.0);
+        camState.targetPos.lerp(fireTarget, 0.15);
+        const fireCamPos = new THREE.Vector3(5.8, 2.2, 48.2);
+        camera.position.lerp(fireCamPos, 0.12);
+        camera.lookAt(camState.targetPos);
+        targetFov = 48;
+      }
+
+      // 기본 3인칭 추적 카메라 (시네마틱 미가동 시 부드럽게 복귀)
+      if (!isCinematicCustomCam) {
         const focusTarget = isLighthousePanorama
           ? playerRig.position.clone().add(new THREE.Vector3(0, 2.2, 0)).lerp(new THREE.Vector3(0, 4.2, 0), 0.28)
           : playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0));
@@ -12675,6 +12774,13 @@
       }
       camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.1);
       camera.updateProjectionMatrix();
+
+      window._getCamDebug = () => ({
+        target: { x: Number(camState.targetPos.x.toFixed(2)), y: Number(camState.targetPos.y.toFixed(2)), z: Number(camState.targetPos.z.toFixed(2)) },
+        cam: { x: Number(camera.position.x.toFixed(2)), y: Number(camera.position.y.toFixed(2)), z: Number(camera.position.z.toFixed(2)) },
+        fov: Number(camera.fov.toFixed(1)),
+        isCinematic: isCinematicCustomCam
+      });
 
       
       // [엄마 3D NPC 생동감 인터랙티브 애니메이션 & 포옹 모션]
