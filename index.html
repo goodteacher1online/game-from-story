@@ -128,6 +128,17 @@
     .sd-guide-item {
       display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start;
       padding: 10px 12px; border-radius: 11px; border: 1px solid #e4e4e7; background: #fafaf9;
+      cursor: pointer; transition: all 0.16s ease; user-select: none; position: relative;
+    }
+    .sd-guide-item:hover {
+      background: #f0fdf4; border-color: #86efac; transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.14);
+    }
+    .sd-guide-item:active { transform: translateY(0); }
+    .sd-guide-tele-hint {
+      display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800;
+      color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0;
+      padding: 2px 7px; border-radius: 99px; margin-left: 6px;
     }
     .sd-guide-icon { font-size: 20px; line-height: 1.2; text-align: center; }
     .sd-guide-title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
@@ -2733,69 +2744,69 @@
           <span>💎 월드 보석 수집: <b id="sdGuideGemCount">0/15</b></span>
           <span>✨ 누적 마음 조각: <b id="sdGuideTotalCount">0</b>개</span>
         </div>
-        <p class="sd-guide-lead">상단 표시는 <b>[맵에서 주운 보석 개수/15 (누적 조각 합계)]</b>입니다. 보석을 줍거나 아래 감정 활동을 하면 마음 조각이 계속 쌓입니다!</p>
+        <p class="sd-guide-lead">항목을 <b>클릭(터치)</b>하면 해당 장소로 <b>즉시 순간이동</b>합니다! 보석을 줍거나 아래 감정 활동을 하면 마음 조각이 계속 쌓입니다.</p>
       </div>
       <div class="sd-guide-grid">
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('diamond')" title="월드 황금 다이아몬드 위치로 순간이동">
           <div class="sd-guide-icon">💎</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">월드 황금 다이아몬드 수집</span><span class="sd-guide-badge">+1개 · 총 15개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">월드 황금 다이아몬드 수집</span><span class="sd-guide-badge">+1개 · 총 15개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">광장·언덕·등대 길목 등에 떠서 회전하는 황금 보석에 다가가면 자동 수집(+40점)됩니다.</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('ore')" title="감정 광석 채굴 위치로 순간이동">
           <div class="sd-guide-icon">⛏️</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">감정 광석 채굴</span><span class="sd-guide-badge">+3개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">감정 광석 채굴</span><span class="sd-guide-badge">+3개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">맵 곳곳의 반짝이는 감정 광석을 클릭(터치)해 채굴하면 보너스 조각을 얻습니다.</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('worry')" title="걱정 털실 & 벤치 위치로 순간이동">
           <div class="sd-guide-icon">🏮</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">걱정 털실 모아 소원 연등 날리기</span><span class="sd-guide-badge">+10개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">걱정 털실 모아 소원 연등 날리기</span><span class="sd-guide-badge">+10개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">걱정 털실 3개를 모아 연등을 날리면 대량 획득합니다 (반복 가능).</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('robot')" title="장난감 로봇 수리소로 순간이동">
           <div class="sd-guide-icon">🤖</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">장난감 로봇 수리 · 나-전달법</span><span class="sd-guide-badge">+6개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">장난감 로봇 수리 · 나-전달법</span><span class="sd-guide-badge">+6개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">제4장 나-전달법 대화로 로봇을 수리하면 획득합니다.</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('sad')" title="슬픔의 치유 연못으로 순간이동">
           <div class="sd-guide-icon">💧</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">슬픔의 연못 눈물 떠나보내기</span><span class="sd-guide-badge">+5개</span></div>
-            <p class="sd-guide-desc">슬픔의 연못에서 무지개 연꽃을 피우면 획득합니다.</p>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">슬픔의 연못 눈물 떠나보내기</span><span class="sd-guide-badge">+5개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
+            <p class="sd-guide-desc">슬픔의 연못에서 물방울 7개를 모아 무지개 연꽃을 피우면 획득합니다.</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('stage')" title="학예 발표회 무대로 순간이동">
           <div class="sd-guide-icon">🎤</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">학예 발표회 연습 완성</span><span class="sd-guide-badge">+5개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">학예 발표회 연습 완성</span><span class="sd-guide-badge">+5개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">제6장 발표 연습 3단계를 마치면 획득합니다.</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('friend')" title="친구 NPC 위치로 순간이동">
           <div class="sd-guide-icon">🧺</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">친구와 광주리 같이 들기</span><span class="sd-guide-badge">+5개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">친구와 광주리 같이 들기</span><span class="sd-guide-badge">+5개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">NPC 친구 또는 접속한 다른 친구와 함께 광주리를 들면 획득합니다.</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('threefinger')" title="세 손가락 마음 탐정(설렘이) 위치로 순간이동">
           <div class="sd-guide-icon">🤟</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">세 손가락 마음 탐정 해결</span><span class="sd-guide-badge">+5개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">세 손가락 마음 탐정 해결</span><span class="sd-guide-badge">+5개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">탐정 사건을 해결할 때마다 획득합니다.</p>
           </div>
         </div>
-        <div class="sd-guide-item">
+        <div class="sd-guide-item" onclick="window.teleportToStardustActivity('mom')" title="엄마 NPC 위치로 순간이동">
           <div class="sd-guide-icon">🤗</div>
           <div>
-            <div class="sd-guide-title-row"><span class="sd-guide-title">엄마와 대화 · 따뜻하게 안아드리기</span><span class="sd-guide-badge">+5개</span></div>
+            <div class="sd-guide-title-row"><span class="sd-guide-title">엄마와 대화 · 따뜻하게 안아드리기</span><span class="sd-guide-badge">+5개</span><span class="sd-guide-tele-hint">🚀 순간이동</span></div>
             <p class="sd-guide-desc">엄마에게 칭찬을 듣거나 안아드리면 획득합니다.</p>
           </div>
         </div>
@@ -10750,6 +10761,84 @@
       if (totEl) totEl.textContent = `${state.stardustCount || 0}`;
       if (typeof soundChime === 'function') soundChime(620);
       openModal('modalStardustGuide');
+    };
+
+    window.teleportToStardustActivity = function(activityKey) {
+      initAudio();
+      if (typeof cancelPlaygroundRide === 'function') cancelPlaygroundRide();
+      if (typeof stopAutoWalk === 'function') stopAutoWalk();
+      closeModal('modalStardustGuide');
+
+      let targetPos = null;
+      let activityName = '';
+
+      if (activityKey === 'diamond') {
+        // 아직 수집하지 않은 가장 가까운 보석 또는 첫 번째 보석 위치
+        const uncollectedGem = stardustGems.find(g => !g.collected);
+        if (uncollectedGem) {
+          targetPos = { x: uncollectedGem.mesh.position.x, z: uncollectedGem.mesh.position.z };
+        } else {
+          targetPos = { x: 2, z: 4 };
+        }
+        activityName = '💎 월드 황금 다이아몬드';
+      } else if (activityKey === 'ore') {
+        // 남아있는 감정 광석 위치 또는 기본 광석 위치
+        if (emotionOres && emotionOres.length > 0) {
+          targetPos = { x: emotionOres[0].position.x, z: emotionOres[0].position.z };
+        } else {
+          targetPos = { x: 12, z: -8 };
+        }
+        activityName = '⛏️ 감정 광석 채굴지';
+      } else if (activityKey === 'worry') {
+        targetPos = { x: 34, z: -40 };
+        activityName = '🏮 걱정 털실 벤치 & 소원 연등';
+      } else if (activityKey === 'robot') {
+        targetPos = { x: -7.5, z: 48 };
+        activityName = '🤖 장난감 로봇 수리소';
+      } else if (activityKey === 'sad') {
+        targetPos = { x: -36, z: 0 };
+        activityName = '💧 슬픔의 치유 연못';
+      } else if (activityKey === 'stage') {
+        targetPos = { x: 52, z: -32 };
+        activityName = '🎤 학예 발표회 무대';
+      } else if (activityKey === 'friend') {
+        if (friendAgents && friendAgents.length > 0) {
+          targetPos = { x: friendAgents[0].group.position.x, z: friendAgents[0].group.position.z };
+        } else {
+          targetPos = { x: 2, z: 8 };
+        }
+        activityName = '🧺 친구 NPC (마음 광주리)';
+      } else if (activityKey === 'threefinger') {
+        targetPos = { x: 0, z: -10.5 };
+        activityName = '🤟 세 손가락 마음 탐정 · 설렘이';
+      } else if (activityKey === 'mom') {
+        targetPos = { x: 14, z: 12 };
+        activityName = '🤗 엄마 NPC (따뜻한 안아드리기)';
+      }
+
+      if (!targetPos) return;
+
+      const groundY = (typeof getGroundHeight === 'function')
+        ? getGroundHeight(targetPos.x, targetPos.z, playerRig.position.y)
+        : 0.1;
+
+      // 순간이동 이펙트 & 물리 리셋
+      if (typeof createMagicImpact === 'function') {
+        createMagicImpact(playerRig.position.clone(), '#a855f7');
+      }
+      playerRig.position.set(targetPos.x, groundY, targetPos.z);
+      playerPhysics.velX = 0; playerPhysics.velY = 0; playerPhysics.velZ = 0;
+      playerPhysics.isGrounded = true;
+      if (typeof portalCooldown !== 'undefined') portalCooldown = 2.0;
+
+      if (typeof createMagicImpact === 'function') {
+        createMagicImpact(playerRig.position.clone(), '#38bdf8');
+      }
+      if (typeof soundChime === 'function') {
+        soundChime(523); setTimeout(() => soundChime(659), 90); setTimeout(() => soundChime(784), 180);
+      }
+      showToast(`🚀 <b>[순간이동 완료!]</b> ${activityName} 앞으로 즉시 이동했습니다!`);
+      if (typeof updateZonePrompt === 'function') updateZonePrompt();
     };
     const stardustCoords = [
       [2, 1.2, 4], [-4, 1.2, 6], [8, 1.5, -4], [-8, 2.0, -12],
