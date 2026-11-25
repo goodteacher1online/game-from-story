@@ -7588,6 +7588,25 @@
     function getNextCoreStoryKey() {
       return CORE_STORY_KEYS.find(k => !state.quests[k]) || 'joy';
     }
+    // 1~10번 전체 미션 중 현재 해금되어 있고 아직 완료되지 않은 다음 미션 키 자동 탐색
+    function getNextAvailableMissionKey(currentKey = null) {
+      if (!isCoreStoryComplete()) {
+        return getNextCoreStoryKey();
+      }
+      // 5대 핵심 감정 완료 후: robot, stage, coop, flutter, track 순서대로 탐색
+      const unlockedPending = storyQuestMeta.filter(m => isMissionUnlocked(m.key) && !state.quests[m.key]);
+      if (unlockedPending.length === 0) {
+        return currentKey || 'flutter';
+      }
+      if (currentKey) {
+        const curIdx = storyQuestMeta.findIndex(m => m.key === currentKey);
+        // 현재 완료된 미션 이후의 미션들 중 미완료 탐색
+        const nextInOrder = storyQuestMeta.slice(curIdx + 1).find(m => isMissionUnlocked(m.key) && !state.quests[m.key]);
+        if (nextInOrder) return nextInOrder.key;
+      }
+      return unlockedPending[0].key;
+    }
+    window.getNextAvailableMissionKey = getNextAvailableMissionKey;
     function isMissionUnlocked(key) {
       return CORE_STORY_KEYS.includes(key) || isCoreStoryComplete();
     }
@@ -9262,6 +9281,7 @@
     let activeGuidedQuestKey = isCoreStoryComplete()
       ? (['robot', 'stage', 'coop', 'flutter', 'track'].find(k => !state.quests[k]) || 'flutter')
       : getNextCoreStoryKey();
+    window.getActiveGuidedQuestKey = () => activeGuidedQuestKey;
 
     function syncStoryUnlockState() {
       const coreDone = getCoreStoryDoneCount();
@@ -9337,6 +9357,14 @@
     function renderStoryMissionTracker() {
       const listEl = document.getElementById('storyMissionList');
       if (!listEl) return;
+
+      // 만약 현재 지정된 activeGuidedQuestKey 미션이 이미 완료되었는데, 아직 미완료된 다른 미션이 있다면 다음 미션으로 자동 전진!
+      if (state.quests[activeGuidedQuestKey]) {
+        const nextKey = getNextAvailableMissionKey(activeGuidedQuestKey);
+        if (nextKey && nextKey !== activeGuidedQuestKey && !state.quests[nextKey]) {
+          activeGuidedQuestKey = nextKey;
+        }
+      }
 
       // 완료 카운트 배지 업데이트 (총 10대 미션 기준)
       const doneQuests = storyQuestMeta.filter(m => !!state.quests[m.key]);
@@ -9560,7 +9588,7 @@
             activeGuidedQuestKey = getNextCoreStoryKey();
           }
         } else {
-          activeGuidedQuestKey = ['robot', 'stage', 'coop', 'flutter', 'track'].find(k => !state.quests[k]) || 'flutter';
+          activeGuidedQuestKey = getNextAvailableMissionKey(key);
         }
       }
       saveProgress(); syncQuestHUD(); soundQuestComplete();
@@ -9574,6 +9602,7 @@
         }, 1200);
       }
     }
+    window.checkQuestCollect = checkQuestCollect;
 
     window.completeExtraMission = function(key, rewardTitle) {
       if (!isMissionUnlocked(key)) {
@@ -9585,6 +9614,10 @@
       const firstDone = !state.quests[key];
       state.quests[key] = true;
       state.mission[key] = meta.max;
+      // 6~10번 심화 미션 완료 시 다음 미완료 미션으로 자동 갱신!
+      if (activeGuidedQuestKey === key || !state.quests[activeGuidedQuestKey]) {
+        activeGuidedQuestKey = getNextAvailableMissionKey(key);
+      }
       saveProgress();
       syncQuestHUD();
       if (firstDone) {
