@@ -6362,14 +6362,19 @@
       if (congratsBannerTimer) { clearTimeout(congratsBannerTimer); congratsBannerTimer = null; }
       document.getElementById('congratsBanner')?.classList.remove('show');
     };
-    function showCongratsBanner(title, sub) {
+    function showCongratsBanner(title, sub, hideButton = false) {
       const banner = document.getElementById('congratsBanner');
       if (!banner) return;
       if (congratsBannerTimer) clearTimeout(congratsBannerTimer);
       document.getElementById('congratsTitle').textContent = title;
       document.getElementById('congratsSub').textContent = sub;
+      const closeBtn = document.getElementById('btnCongratsClose');
+      if (closeBtn) {
+        closeBtn.style.display = hideButton ? 'none' : '';
+      }
+      banner.onclick = () => window.hideCongratsBanner();
       banner.classList.add('show');
-      congratsBannerTimer = setTimeout(() => window.hideCongratsBanner(), 4800);
+      congratsBannerTimer = setTimeout(() => window.hideCongratsBanner(), hideButton ? 3400 : 4800);
     }
 
     let lastBlockSlot = 1;
@@ -7754,10 +7759,12 @@
         if (Math.hypot(fr.group.position.x - 52, fr.group.position.z - 16.5) < 28) fr.danceTimer = 3.5;
       });
       showPlayerBubble('⚽ “와아!! GOOOOAL!! 기쁨이 폭죽처럼 터졌어!!”');
-      showCongratsBanner(`⚽ GOOOOAL! (${side === 'north' ? '북쪽' : '남쪽'} 골대 득점!)`, '환상적인 기쁨 슛이 터졌습니다! 무지개 폭죽과 함께 환호해 보세요! (+80점)');
+      // [골대 득점 축하 창: 번거로운 확인 버튼 없이 3.4초 후 자동 소멸 & 터치 시 즉시 닫힘]
+      showCongratsBanner(`⚽ GOOOOAL! (${side === 'north' ? '북쪽' : '남쪽'} 골대 득점!)`, '환상적인 기쁨 슛이 터졌습니다! 무지개 폭죽과 함께 환호해 보세요! (+80점)', true);
       showToast(`⚽ <b>GOOOOAL! 기쁨 대폭발!</b> ${side === 'north' ? '북쪽' : '남쪽'} 골대에 멋지게 골인했습니다! (+80점)`);
       window.addMindScore(80, '⚽ 기쁨 축구 골인 세리머니!');
     }
+    window.triggerSoccerGoalCelebration = triggerSoccerGoalCelebration;
 
     // 굴러가는 3D 축구공 (축구장 중앙 스팟 (52, 0.42, 16.5)에 배치)
     const soccerBall = {
@@ -9704,8 +9711,8 @@
             showToast(state.mission.worry >= 3 ? '🧶 <b>엉킨 털실 매듭을 모두 풀었어요!</b> 벤치에 앉아 [G키]로 소원 연등을 날려보세요!' : `🧶 <b>털실 매듭 풀기 (${state.mission.worry}/3)</b>`);
           }
         }
-        else if (hit?.type === 'friend') openFriendModal(hit.id);
-        else if (hit?.type === 'peer') openFriendModal('peer:' + hit.id);
+        else if (hit?.type === 'friend') window.quickRescueFriendBasket(hit.id);
+        else if (hit?.type === 'peer') window.quickRescueFriendBasket('peer:' + hit.id);
         else {
           if (currentHotbarSlot >= 1 && currentHotbarSlot <= 4) {
             // 1~4번 블록이 선택된 상태에서 바닥이나 블록 옆/위를 클릭(터치)하면 즉시 블록 쌓기!
@@ -10082,7 +10089,8 @@
         }
       }
       if (state.activeZone.startsWith('friend:') || state.activeZone.startsWith('peer:')) {
-        openFriendModal(state.activeZone.startsWith('peer:') ? state.activeZone : state.activeZone.split(':')[1]);
+        const targetId = state.activeZone.startsWith('peer:') ? state.activeZone : state.activeZone.split(':')[1];
+        window.quickRescueFriendBasket(targetId);
         return;
       }
       openNpcDialogue(state.activeZone);
@@ -10470,13 +10478,12 @@
 
         document.getElementById('zpChip').style.background = '#f43f5e';
         document.getElementById('zpTitle').textContent = '💕 온화한 엄마 (마음의 안식처)';
-        document.getElementById('zpDesc').textContent = `“우리 ${childTitle} ${vocative}! 언제든 엄마 품에 오렴. 포근하게 안아줄게.”`;
+        document.getElementById('zpDesc').textContent = `“우리 ${childTitle} ${vocative}! 언제든 엄마에게 마음을 편하게 털어놓으렴.”`;
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
+        // [엄마는 이야기 나누기 먼저! 안아드리기는 대화 모달 내부에서만 선택 가능]
         const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '엄마와 이야기 나누기 (G)'; b1.onclick = () => window.openMomModal();
-        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '따뜻하게 안아드리기 🤗'; b2.onclick = () => window.doMomHug();
         btnsEl.appendChild(b1);
-        btnsEl.appendChild(b2);
         box.classList.add('visible');
 
         // 머리 위 말풍선도 학생의 이름으로 다정하게 동적 변경!
@@ -10493,10 +10500,10 @@
         document.getElementById('zpDesc').textContent = `${pName}님과 함께 마음 광주리를 들어올리거나 신바람 춤을 추어 보세요.`;
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
-        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '🧺 광주리 같이 들기'; b1.onclick = () => window.quickRescueFriendBasket('peer:' + rPeer.peerId);
+        // [친구 상호작용: 광주리 같이 들기 + 함께 춤추기만 제공]
+        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '🧺 광주리 같이 들기 (G)'; b1.onclick = () => window.quickRescueFriendBasket('peer:' + rPeer.peerId);
         const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '💃 함께 춤추기'; b2.onclick = () => window.danceWithTarget('peer:' + rPeer.peerId);
-        const b3 = document.createElement('button'); b3.className = 'zp-btn secondary'; b3.textContent = '친구 메뉴 (G)'; b3.onclick = () => openFriendModal('peer:' + rPeer.peerId);
-        btnsEl.appendChild(b1); btnsEl.appendChild(b2); btnsEl.appendChild(b3);
+        btnsEl.appendChild(b1); btnsEl.appendChild(b2);
         box.classList.add('visible');
         return;
       }
@@ -10513,12 +10520,12 @@
           : `${fr.name}와(과) 마음 광주리를 함께 들어올리거나 신나게 춤출 수 있어요.`;
         document.getElementById('breathBarWrap').classList.remove('active');
         const btnsEl = document.getElementById('zpBtns'); btnsEl.innerHTML = '';
-        const b1 = document.createElement('button'); b1.className = 'zp-btn'; b1.textContent = '친구와 함께하기 (G)'; b1.onclick = () => openFriendModal(fr.id);
-        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary';
-        b2.textContent = coopOpen ? '🧺 광주리 같이 들기 (+250점)' : '🧺 광주리 같이 들기';
-        b2.onclick = () => window.quickRescueFriendBasket(fr.id);
-        const b3 = document.createElement('button'); b3.className = 'zp-btn secondary'; b3.textContent = '💃 함께 춤추기'; b3.onclick = () => window.danceWithTarget(fr.id);
-        btnsEl.appendChild(b1); btnsEl.appendChild(b2); btnsEl.appendChild(b3);
+        // [친구 상호작용: '친구와 함께하기' 모달 삭제 -> 광주리 같이 들기 + 함께 춤추기만 직관적 제공]
+        const b1 = document.createElement('button'); b1.className = 'zp-btn';
+        b1.textContent = coopOpen ? '🧺 광주리 같이 들기 (+250점) (G)' : '🧺 광주리 같이 들기 (G)';
+        b1.onclick = () => window.quickRescueFriendBasket(fr.id);
+        const b2 = document.createElement('button'); b2.className = 'zp-btn secondary'; b2.textContent = '💃 함께 춤추기'; b2.onclick = () => window.danceWithTarget(fr.id);
+        btnsEl.appendChild(b1); btnsEl.appendChild(b2);
         box.classList.add('visible');
         return;
       }
