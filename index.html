@@ -9628,7 +9628,28 @@
       if (k === 'q') doMeditate();
       if (k === 'g') interactCurrentZone();
       if (k === 'x') { if (dismountActiveRide()) return; }
-      if (e.key === 'Escape' && !document.querySelector('.modal-overlay.open')) { if (dismountActiveRide()) return; }
+      if (e.key === 'Escape') {
+        // 1. 열려있는 모달창, 상단 메뉴, 축하 배너가 있으면 ESC로 모두 닫기
+        let closedModal = false;
+        if (typeof window.closeAllOpenModals === 'function') {
+          closedModal = window.closeAllOpenModals();
+        }
+        // 2. 근접 상호작용 안내창(#zonePrompt)이 떠있으면 닫기
+        const zpBox = document.getElementById('zonePrompt');
+        if (zpBox && zpBox.classList.contains('visible')) {
+          if (state.activeZone && typeof window.dismissZonePrompt === 'function') {
+            window.dismissZonePrompt(state.activeZone);
+          } else {
+            zpBox.classList.remove('visible');
+          }
+          closedModal = true;
+        }
+        // 3. 열린 모달/안내창이 없었을 경우 탑승 중인 놀이기구/탈것 내리기
+        if (!closedModal) {
+          dismountActiveRide();
+        }
+        return;
+      }
       if (k === 'm') { if (typeof window.openThreeFingerModal === 'function') window.openThreeFingerModal(); }
       if (k === 'r') { if (typeof window.openRobotIMessageModal === 'function') window.openRobotIMessageModal(); }
       if (['1','2','3','4','5','6'].includes(k)) {
@@ -13231,6 +13252,18 @@
       if (!document.querySelector('.modal-overlay.open')) {
         document.body.classList.remove('modal-open');
       }
+    };
+    window.closeAllOpenModals = function() {
+      let closedAny = false;
+      document.querySelectorAll('.modal-overlay.open').forEach(m => {
+        m.classList.remove('open');
+        if (m.id === 'modalAdmin' && typeof lockAdminSessionUI === 'function') lockAdminSessionUI();
+        closedAny = true;
+      });
+      document.body.classList.remove('modal-open');
+      if (typeof window.closeTopSettingsMenu === 'function') window.closeTopSettingsMenu();
+      if (typeof window.hideCongratsBanner === 'function') window.hideCongratsBanner();
+      return closedAny;
     };
     function showToast(msg) {
       const box = document.getElementById('toastBox'), el = document.createElement('div');
