@@ -8624,22 +8624,74 @@
       window.addMindScore(90, '📚 숲속 독서대 동화책 읽기');
     };
 
-    window.interactZooAnimals = function() {
+    // 동물 친구들과의 초실감 다채로운 인터랙티브 교감 시스템 (쓰다듬기, 당근 먹이주기, 따뜻한 포옹, 피리 합주)
+    let zooFollowTimer = 0;
+    let zooHeartAnimTimer = 0;
+
+    window.interactZooPet = function() {
       initAudio();
-      soundChime(659);
-      setTimeout(() => soundChime(784), 90);
+      soundChime(784);
+      setTimeout(() => soundChime(988), 120);
       triggerArmSwing(-18, -22);
+      zooFollowTimer = 6.0; // 6초간 아기 동물들이 인찬이 곁으로 다가와 애교를 부림
       if (typeof animatedAnimals !== 'undefined') {
         animatedAnimals.forEach((a, idx) => {
+          a.happyTimer = 5.0;
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
-          a.group.position.y = 0.65;
-          createMagicImpact(wp.add(new THREE.Vector3(0, 0.5, 0)), idx % 2 === 0 ? '#f472b6' : '#86efac');
+          createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.6, 0)), '#f472b6');
         });
       }
-      showPlayerBubble('🐾 “토끼야, 아기곰아, 펭귄아! 너희와 함께 있으니 마음이 포근해져!”');
-      showToast('🐾 <b>[숲속 아기 동물원 교감!]</b> 귀여운 동물 친구들을 쓰다듬고 당근을 나눠주었습니다! (+60점)');
-      window.addMindScore(60, '🐾 아기 동물원 친구들과 교감');
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.6, 0)));
+      showPlayerBubble('🥰 “착하지 착해~ 머리를 토닥토닥 쓰다듬어 주니 폭 안겨오네!”');
+      showToast('💖 <b>[동물 쓰다듬기 교감]</b> 아기 동물들이 눈을 감고 기분 좋게 갸르릉거리며 하트를 뿜어냅니다! (+60점)');
+      window.addMindScore(60, '🐾 아기 동물 부드럽게 쓰다듬기');
+    };
+
+    window.interactZooFeed = function() {
+      initAudio();
+      soundChime(659);
+      setTimeout(() => soundChime(880), 100);
+      setTimeout(() => soundChime(1046), 200);
+      triggerArmSwing(-18, -22);
+      zooFollowTimer = 8.0; // 먹이를 보고 신나서 인찬이 주변을 깡총깡총 모여듦
+      if (typeof animatedAnimals !== 'undefined') {
+        animatedAnimals.forEach((a, idx) => {
+          a.happyTimer = 7.0;
+          const wp = new THREE.Vector3();
+          a.group.getWorldPosition(wp);
+          createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.4, 0)), '#f97316');
+        });
+      }
+      createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 0.8, 0)), '#facc15');
+      showPlayerBubble('🥕 “맛있는 싱싱 당근과 꿀열매야! 맛있게 먹고 쑥쑥 자라렴!”');
+      showToast('🥕 <b>[달콤 당근 & 열매 피딩!]</b> 동물들이 깡총깡총 뛰어와 당근을 오물오물 맛있게 먹습니다! (+70점)');
+      window.addMindScore(70, '🥕 아기 동물원 달콤 먹이주기');
+    };
+
+    window.interactZooPlay = function() {
+      initAudio();
+      [523, 659, 784, 1046, 1318].forEach((freq, i) => {
+        setTimeout(() => soundChime(freq), i * 90);
+      });
+      triggerArmSwing(-18, -22);
+      zooFollowTimer = 9.0;
+      if (typeof animatedAnimals !== 'undefined') {
+        animatedAnimals.forEach((a, idx) => {
+          a.happyTimer = 8.5;
+          const wp = new THREE.Vector3();
+          a.group.getWorldPosition(wp);
+          setTimeout(() => createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.8, 0)), '#22c55e'), idx * 80);
+        });
+      }
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2.0, 0)));
+      showPlayerBubble('🎶 “동물 친구들과 다 함께 빙글빙글 춤추며 마음의 행복을 나눠요!”');
+      showToast('🎉 <b>[신나는 동물 댄스 파티!]</b> 곰돌이와 펭귄, 토끼가 인찬이 주위를 빙글빙글 돌며 신나게 춤을 춥니다! (+80점)');
+      window.addMindScore(80, '🎶 동물 친구들과 신나는 댄스');
+    };
+
+    window.interactZooAnimals = function() {
+      window.interactZooPet();
     };
 
     window.interactGardenBloom = function() {
@@ -9281,8 +9333,7 @@
       'chukji', 'chukji', 'chukji',
       'cloud', 'cloud',
       'skycar', 'skycar',
-      'carpet', 'carpet',
-      'jetarmor', 'jetarmor'
+      'carpet', 'carpet'
     ];
     ISLAND_RANDOM_FLIGHT_KINDS.forEach((kind, si) => {
       const isSuit = (kind === 'jetarmor');
@@ -9385,6 +9436,7 @@
     portalCoreTex.colorSpace = THREE.SRGBColorSpace;
 
     const strangePortals = [];
+    window.strangePortals = strangePortals;
     const PORTAL_DEFS = [
       { id: 0, pairId: 1, x: 16, z: -6, yaw: 0.4, color: 0xf97316, label: '🌀 황금 포털 ↔ 등대·해변' },
       { id: 1, pairId: 0, x: -42, z: -32, yaw: -0.7, color: 0xf97316, label: '🌀 황금 포털 ↔ 중앙 광장' },
@@ -10901,7 +10953,17 @@
         stage: { color: '#e11d48', t: '제6장 학예 발표회 미니 무대', d: state.quests.stage ? '차근차근 준비해 학예 발표회를 멋지게 마쳤어요!' : (isMissionUnlocked('stage') ? '무대에 올라 지금 할 수 있는 발표 연습을 3단계로 진행해 보세요.' : `🔒 동화 5대 감정 해결 후 활성화 (${getCoreStoryDoneCount()}/5)`), actText: isMissionUnlocked('stage') ? '발표 연습하기 (G)' : `🔒 5대 감정 해결 후 활성 (${getCoreStoryDoneCount()}/5)`, actFn: () => window.triggerStagePractice() },
         soccer: { color: '#f59e0b', t: '기쁨 축구 광장 · 양쪽 골대', d: '남쪽·북쪽 어느 골대로든 차 넣을 수 있어요! 골인 시 무지개 폭죽과 함께 기쁨 대폭발! ([G] 슛/리셋)', actText: '슛 날리기 / 공 리셋 (G)', actFn: () => window.kickOrResetSoccerBall() },
         track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '트랙과 하늘의 제트 아머·근두운·축지법·UFO·호버보드를 모으며 8개 부스터 게이트를 돌파하세요!' : `트랙과 다양한 비행 아이템을 자유롭게 체험할 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`, actFn: () => window.startOuterTrackDash() },
-        zoo: { color: '#22c55e', t: '숲속 아기 동물원', d: '토끼, 아기곰, 펭귄 친구들과 교감하며 마음을 따뜻하게 달래보세요.', actText: '동물 친구들과 교감하기 (G)', actFn: () => window.interactZooAnimals() },
+        zoo: {
+          color: '#22c55e',
+          t: '숲속 아기 동물원 · 따뜻한 감정 교감',
+          d: '토끼, 아기곰, 펭귄 친구들을 쓰다듬고, 당근을 먹여주며 신나게 춤춰보세요! ([G] 쓰다듬기)',
+          actText: '🥰 쓰다듬기 (G)',
+          actFn: () => window.interactZooPet(),
+          extraBtns: [
+            { text: '🥕 당근 먹이주기', class: 'zp-btn secondary', fn: () => window.interactZooFeed() },
+            { text: '🎶 댄스 파티', class: 'zp-btn secondary', fn: () => window.interactZooPlay() }
+          ]
+        },
         garden: { color: '#f43f5e', t: '치유의 유리온실 식물원', d: '무지개 빛 꽃향기를 깊게 들이마시며 편안하게 숨을 고르고 가벼운 발걸음을 얻어보세요.', actText: '꽃향기 치유 호흡 (G)', actFn: () => window.interactGardenBloom() },
         beach: {
           color: '#38bdf8',
@@ -11913,7 +11975,7 @@
             const respawnSec = (pi.kind === 'jetarmor') ? 7.5 : (SKY_RIDE_META[pi.kind] ? 10.0 : 12.0);
             if (pi.respawnTimer > respawnSec) {
               if (pi.relocateOnRespawn) {
-                const nSpot = (pi.kind === 'jetarmor' && pi.parentGroup === runningTrackGroup)
+                const nSpot = (pi.kind === 'jetarmor' || pi.parentGroup === runningTrackGroup)
                   ? getTrackSuitSpot()
                   : getRandomSkyItemSpot(false);
                 pi.x = nSpot.x; pi.z = nSpot.z;
@@ -11966,7 +12028,7 @@
             const sr = 1.48 + Math.sin(time * 12 + sp.phase) * 0.14;
             sp.mesh.position.set(Math.cos(sa) * sr, 2.05 + Math.sin(sa) * sr, Math.sin(time * 8 + sp.phase) * 0.12);
           });
-          if (portalCooldown <= 0 && !activeElevatorRide && !playerPhysics.ironManAutoLap) {
+          if (portalCooldown <= 0 && !activeElevatorRide && !playerPhysics.ironManAutoLap && !playerPhysics.skyRide) {
             if (Math.hypot(playerRig.position.x - pt.x, playerRig.position.z - pt.z) < 1.95) {
               triggerPortalWarp(pt);
             }
@@ -12228,17 +12290,56 @@
       }
 
       
-      // [동물원 아기 동물 & 놀이기구 실시간 애니메이션]
+      // [동물원 아기 동물 실시간 인터랙티브 교감 & 놀이기구 애니메이션]
+      if (typeof zooFollowTimer !== 'undefined' && zooFollowTimer > 0) {
+        zooFollowTimer = Math.max(0, zooFollowTimer - dt);
+      }
       if (typeof animatedAnimals !== 'undefined') {
-        animatedAnimals.forEach((anim) => {
+        animatedAnimals.forEach((anim, aIdx) => {
+          if (anim.happyTimer && anim.happyTimer > 0) {
+            anim.happyTimer = Math.max(0, anim.happyTimer - dt);
+          }
+          const isHappy = (anim.happyTimer && anim.happyTimer > 0);
+          const isFollowing = (typeof zooFollowTimer !== 'undefined' && zooFollowTimer > 0);
+
+          // 인찬이가 동물원 안에 있을 때 교감 중이면 인찬이 쪽을 바라보고 가까이 다가옴
+          if (isFollowing) {
+            const localPx = playerRig.position.x - (-18);
+            const localPz = playerRig.position.z - (-22);
+            const targetAng = Math.atan2(localPx - anim.group.position.x, localPz - anim.group.position.z);
+            anim.group.rotation.y = targetAng;
+
+            const approachDist = 1.6 + aIdx * 0.45;
+            const dirX = localPx - anim.baseX;
+            const dirZ = localPz - anim.baseZ;
+            const len = Math.hypot(dirX, dirZ);
+            if (len > approachDist) {
+              const moveTargetX = anim.baseX + (dirX / len) * (len - approachDist) * 0.6;
+              const moveTargetZ = anim.baseZ + (dirZ / len) * (len - approachDist) * 0.6;
+              anim.group.position.x += (moveTargetX - anim.group.position.x) * dt * 2.0;
+              anim.group.position.z += (moveTargetZ - anim.group.position.z) * dt * 2.0;
+            }
+          } else {
+            anim.group.position.x += (anim.baseX - anim.group.position.x) * dt * 1.5;
+            anim.group.position.z += (anim.baseZ - anim.group.position.z) * dt * 1.5;
+          }
+
           if (anim.type === 'bunny') {
-            const hop = Math.max(0, Math.sin(time * 6.0 + anim.phase));
-            anim.group.position.y = hop * 0.45;
-            anim.group.rotation.x = hop * 0.25;
+            const hopSpeed = isHappy ? 12.0 : 6.0;
+            const hopHeight = isHappy ? 0.75 : 0.45;
+            const hop = Math.max(0, Math.sin(time * hopSpeed + anim.phase));
+            anim.group.position.y = hop * hopHeight;
+            anim.group.rotation.x = hop * (isHappy ? 0.4 : 0.25);
+            if (isHappy) anim.group.rotation.y += dt * 3.0;
           } else if (anim.type === 'penguin') {
-            anim.group.rotation.z = Math.sin(time * 5.0 + anim.phase) * 0.18;
+            const waddleSpeed = isHappy ? 10.0 : 5.0;
+            const waddleAngle = isHappy ? 0.35 : 0.18;
+            anim.group.rotation.z = Math.sin(time * waddleSpeed + anim.phase) * waddleAngle;
+            anim.group.position.y = Math.abs(Math.sin(time * waddleSpeed + anim.phase)) * (isHappy ? 0.25 : 0.08);
           } else if (anim.type === 'bear') {
-            anim.group.scale.set(1 + Math.sin(time * 2.5) * 0.04, 1 + Math.cos(time * 2.5) * 0.05, 1);
+            const pulse = isHappy ? (1 + Math.sin(time * 6.0) * 0.15) : (1 + Math.sin(time * 2.5) * 0.04);
+            anim.group.scale.set(pulse, isHappy ? (1 + Math.cos(time * 6.0) * 0.18) : (1 + Math.cos(time * 2.5) * 0.05), pulse);
+            if (isHappy) anim.group.position.y = Math.abs(Math.sin(time * 4.0)) * 0.35;
           }
         });
       }
