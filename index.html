@@ -7353,6 +7353,7 @@
     // [슬픔의 치유 연못] 초실감 인터랙티브 '치유의 눈물 떠나보내기' (인찬이의 눈물 구슬 방류 + 연꽃 개화 + 22m 무지개 분수 + 파란 별 승천)
     let sadRainbowMesh = null;
     window.sadRainbowMesh = null;
+    let sadRainbowAnimInterval = null;
     let sadFountainPillars = [];
     const sadBloomedLotuses = [];
     let sadRitualCamTimer = 0;
@@ -7514,19 +7515,64 @@
         worldGroup.add(sadRainbowMesh);
       }
 
-      // 무지개가 웅장하게 솟아오르는 상승 애니메이션 (바운스 ease-out)
+      // 무지개가 솟아오른 뒤 의식 동안 머무르고, 의식이 끝나면 은은하게 사라지는 생애주기 애니메이션
+      if (sadRainbowAnimInterval) clearInterval(sadRainbowAnimInterval);
       sadRainbowMesh.visible = true;
       sadRainbowMesh.scale.set(0.01, 0.01, 0.01);
+      // 아치 및 스파클 투명도 리셋
+      sadRainbowMesh.children.forEach(child => {
+        if (child.material) child.material.opacity = 0.95;
+      });
+      if (sadRainbowMesh.sparkleGroup) {
+        sadRainbowMesh.sparkleGroup.children.forEach(st => {
+          if (st.material) st.material.opacity = 1.0;
+        });
+      }
+
       const rbStartMs = performance.now();
-      let rbAnimTimer = setInterval(() => {
+      sadRainbowAnimInterval = setInterval(() => {
         const elapsed = (performance.now() - rbStartMs) / 1000;
-        const progress = Math.min(1.0, elapsed / 2.2);
-        // ease-out back bounce
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
-        const easeVal = progress >= 1.0 ? 1.0 : (1 + c3 * Math.pow(progress - 1, 3) + c1 * Math.pow(progress - 1, 2));
-        sadRainbowMesh.scale.set(easeVal, easeVal, easeVal);
-        if (sadRainbowMesh.sparkleGroup) {
+        
+        // 1단계 (0.0s ~ 2.2s): 바운스 상승
+        if (elapsed <= 2.2) {
+          const progress = elapsed / 2.2;
+          const c1 = 1.70158;
+          const c3 = c1 + 1;
+          const easeVal = 1 + c3 * Math.pow(progress - 1, 3) + c1 * Math.pow(progress - 1, 2);
+          sadRainbowMesh.scale.set(easeVal, easeVal, easeVal);
+        }
+        // 2단계 (2.2s ~ 7.0s): 정점에서 완전한 크기로 찬란히 유지
+        else if (elapsed <= 7.0) {
+          sadRainbowMesh.scale.set(1.0, 1.0, 1.0);
+        }
+        // 3단계 (7.0s ~ 9.0s): 의식이 마무리되며 하늘로 부드럽게 페이드아웃 (사라짐)
+        else if (elapsed <= 9.0) {
+          const fadeProgress = (elapsed - 7.0) / 2.0; // 0.0 -> 1.0
+          const currentAlpha = Math.max(0, 1.0 - fadeProgress);
+          sadRainbowMesh.children.forEach(child => {
+            if (child.material) child.material.opacity = 0.95 * currentAlpha;
+          });
+          if (sadRainbowMesh.sparkleGroup) {
+            sadRainbowMesh.sparkleGroup.children.forEach(st => {
+              if (st.material) st.material.opacity = currentAlpha;
+            });
+          }
+          const s = 1.0 + fadeProgress * 0.15; // 하늘로 흩어지듯 살짝 확장
+          sadRainbowMesh.scale.set(s, s, s);
+        }
+        // 4단계 (9.0s 이후): 완전 소멸 및 정리
+        else {
+          clearInterval(sadRainbowAnimInterval);
+          sadRainbowAnimInterval = null;
+          sadRainbowMesh.visible = false;
+          sadRainbowMesh.scale.set(0.001, 0.001, 0.001);
+          sadRainbowMesh.children.forEach(child => {
+            if (child.material) child.material.opacity = 0.95;
+          });
+        }
+
+        // 스파클 회전 및 펄스
+        if (sadRainbowMesh.sparkleGroup && sadRainbowMesh.visible) {
           sadRainbowMesh.sparkleGroup.rotation.z += 0.03;
           sadRainbowMesh.sparkleGroup.children.forEach((st, idx) => {
             st.rotation.x += 0.05;
@@ -7534,10 +7580,6 @@
             const pulse = 1.0 + Math.sin(elapsed * 6 + idx) * 0.35;
             st.scale.set(pulse, pulse, pulse);
           });
-        }
-        if (progress >= 1.0) {
-          clearInterval(rbAnimTimer);
-          sadRainbowMesh.scale.set(1.0, 1.0, 1.0);
         }
       }, 30);
 
