@@ -7352,6 +7352,7 @@
 
     // [슬픔의 치유 연못] 초실감 인터랙티브 '치유의 눈물 떠나보내기' (인찬이의 눈물 구슬 방류 + 연꽃 개화 + 22m 무지개 분수 + 파란 별 승천)
     let sadRainbowMesh = null;
+    window.sadRainbowMesh = null;
     let sadFountainPillars = [];
     const sadBloomedLotuses = [];
     let sadRitualCamTimer = 0;
@@ -7469,25 +7470,93 @@
         fountainGroup.add(drop);
       }
 
-      // 3. 연못 상공에 찬란하게 걸리는 일곱 빛깔 3D 무지개 아치!
+      // 3. 연못 상공에 찬란하게 걸리는 일곱 빛깔 3D 무지개 아치 & 기쁨의 환희 연출! (처음엔 없고, 의식 시 꽃피듯 찬란히 솟아오름)
       if (!sadRainbowMesh) {
         const rbGroup = new THREE.Group();
-        const rainbowColors = [0xef4444, 0xf97316, 0xfacc15, 0x22c55e, 0x06b6d4, 0x3b82f6, 0xa855f7];
+        const rainbowColors = [0xff2a55, 0xff7a00, 0xffd000, 0x10b981, 0x06b6d4, 0x3b82f6, 0xa855f7];
         rainbowColors.forEach((col, cIdx) => {
-          const rGeo = new THREE.TorusGeometry(8.5 + cIdx * 0.45, 0.22, 8, 32, Math.PI);
+          const rGeo = new THREE.TorusGeometry(8.8 + cIdx * 0.48, 0.26, 12, 48, Math.PI);
           const rMat = new THREE.MeshStandardMaterial({
-            color: col, emissive: col, emissiveIntensity: 1.6,
-            transparent: true, opacity: 0.9, roughness: 0.3
+            color: col, emissive: col, emissiveIntensity: 2.2,
+            transparent: true, opacity: 0.95, roughness: 0.2
           });
           const rMesh = new THREE.Mesh(rGeo, rMat);
           rMesh.position.set(-36, 1.2, 0);
           rMesh.rotation.y = Math.PI / 4;
           rbGroup.add(rMesh);
         });
+
+        // 무지개 아치를 수놓는 24개의 빛나는 프리즘 별 파티클
+        const sparkleGroup = new THREE.Group();
+        sparkleGroup.position.set(-36, 1.2, 0);
+        sparkleGroup.rotation.y = Math.PI / 4;
+        for (let si = 0; si < 24; si++) {
+          const starAngle = (si / 24) * Math.PI;
+          const starRadius = 9.0 + (si % 7) * 0.48;
+          const starGeo = new THREE.OctahedronGeometry(0.32, 0);
+          const starMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: rainbowColors[si % 7],
+            emissiveIntensity: 2.5,
+            roughness: 0.1
+          });
+          const starMesh = new THREE.Mesh(starGeo, starMat);
+          starMesh.position.set(Math.cos(starAngle) * starRadius, Math.sin(starAngle) * starRadius, (Math.random() - 0.5) * 0.8);
+          sparkleGroup.add(starMesh);
+        }
+        rbGroup.add(sparkleGroup);
+        rbGroup.sparkleGroup = sparkleGroup;
+
         sadRainbowMesh = rbGroup;
+        window.sadRainbowMesh = rbGroup;
+        sadRainbowMesh.visible = false;
+        sadRainbowMesh.scale.set(0.001, 0.001, 0.001);
         worldGroup.add(sadRainbowMesh);
       }
+
+      // 무지개가 웅장하게 솟아오르는 상승 애니메이션 (바운스 ease-out)
       sadRainbowMesh.visible = true;
+      sadRainbowMesh.scale.set(0.01, 0.01, 0.01);
+      const rbStartMs = performance.now();
+      let rbAnimTimer = setInterval(() => {
+        const elapsed = (performance.now() - rbStartMs) / 1000;
+        const progress = Math.min(1.0, elapsed / 2.2);
+        // ease-out back bounce
+        const c1 = 1.70158;
+        const c3 = c1 + 1;
+        const easeVal = progress >= 1.0 ? 1.0 : (1 + c3 * Math.pow(progress - 1, 3) + c1 * Math.pow(progress - 1, 2));
+        sadRainbowMesh.scale.set(easeVal, easeVal, easeVal);
+        if (sadRainbowMesh.sparkleGroup) {
+          sadRainbowMesh.sparkleGroup.rotation.z += 0.03;
+          sadRainbowMesh.sparkleGroup.children.forEach((st, idx) => {
+            st.rotation.x += 0.05;
+            st.rotation.y += 0.07;
+            const pulse = 1.0 + Math.sin(elapsed * 6 + idx) * 0.35;
+            st.scale.set(pulse, pulse, pulse);
+          });
+        }
+        if (progress >= 1.0) {
+          clearInterval(rbAnimTimer);
+          sadRainbowMesh.scale.set(1.0, 1.0, 1.0);
+        }
+      }, 30);
+
+      // 무지개 주변 축하 폭죽 & 찬란한 기쁨의 팡파레 효과음
+      for (let fi = 0; fi < 5; fi++) {
+        setTimeout(() => {
+          const fx = -36 + (Math.random() - 0.5) * 14;
+          const fz = 0 + (Math.random() - 0.5) * 14;
+          const fy = 6 + Math.random() * 8;
+          spawnConfetti(new THREE.Vector3(fx, fy, fz));
+          createMagicImpact(new THREE.Vector3(fx, fy - 2, fz), '#fde047');
+        }, fi * 400);
+      }
+      // 기쁨의 5단 멜로디
+      setTimeout(() => soundChime(523), 100);
+      setTimeout(() => soundChime(659), 300);
+      setTimeout(() => soundChime(784), 500);
+      setTimeout(() => soundChime(1046), 750);
+      setTimeout(() => soundChime(1318), 1000);
 
       worldGroup.add(fountainGroup);
       sadFountainPillars.push(fountainGroup);
