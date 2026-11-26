@@ -6513,6 +6513,8 @@
     }
 
     // 설치 블록 10분 유효시간(TTL) & 먼지 소멸 시스템
+    var isAdminInfiniteBuild = false; // 관리자 모드 무한 블록 설치 플래그
+    window.isAdminInfiniteBuild = false;
     const BLOCK_TTL_MS = 10 * 60 * 1000;
     const blockDustParticles = [];
     const blockDustGeo = new THREE.BoxGeometry(0.22, 0.22, 0.22);
@@ -6568,7 +6570,7 @@
       worldGroup.add(hitBox);
 
       const blockTs = (typeof createdAt === 'number' && Number.isFinite(createdAt) && createdAt > 0) ? createdAt : Date.now();
-      const blockObj = { mesh: bMesh, hitBox, x: bx, y: by, z: bz, type: slotType, createdAt: blockTs };
+      const blockObj = { mesh: bMesh, hitBox, x: bx, y: by, z: bz, type: slotType, createdAt: blockTs, isInfinite: !!isAdminInfiniteBuild };
       hitBox.userData.blockObj = blockObj;
       placedBlocks.push(blockObj);
 
@@ -6695,9 +6697,9 @@
 
     // 블록 설치 (캐릭터 회전 + 오른팔 스윙 + 손에서 날아가는 궤적 애니메이션)
     function placeBlockAtPointer(clientX, clientY) {
-      // 🧱 마음 벽돌(보석/미션으로 얻은 조각) 잔여 수량 체크
+      // 🧱 마음 벽돌(보석/미션으로 얻은 조각) 잔여 수량 체크 (관리자 무한 모드 시 무제한 건축!)
       const currentBricks = state.stardustCount || 0;
-      if (currentBricks <= 0) {
+      if (!isAdminInfiniteBuild && currentBricks <= 0) {
         soundChime(220);
         showToast('🧱 <b>건축 벽돌이 부족합니다!</b><br>맵 곳곳의 황금 보석(💎)을 줍거나 퀴즈·활동을 완료해 건축 벽돌을 모아보세요!');
         return null;
@@ -6711,10 +6713,12 @@
 
       const { bx, by, bz } = computePlacementTarget(clientX, clientY);
 
-      // 건축 벽돌 1개 소모 및 UI 동기화
-      state.stardustCount = Math.max(0, currentBricks - 1);
-      saveProgress();
-      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
+      // 건축 벽돌 소모 및 UI 동기화 (관리자 무한 모드 시 벽돌 미차감!)
+      if (!isAdminInfiniteBuild) {
+        state.stardustCount = Math.max(0, currentBricks - 1);
+        saveProgress();
+        if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
+      }
 
       // 캐릭터가 블록 놓는 방향을 바라보고 오른팔을 힘차게 스윙!
       triggerArmSwing(bx, bz);
@@ -6740,7 +6744,11 @@
         }
       } else {
         const blockNames = ['기쁨 블록', '슬픔 블록', '용기 블록', '평온 블록'];
-        showToast(`🧱 <b>[${blockNames[buildSlot-1]} 건축! (남은 벽돌: ${state.stardustCount}개)]</b> 점프(SPACE)로 올라가 보세요! <small>(10분 후 먼지처럼 사라집니다)</small>`);
+        if (isAdminInfiniteBuild) {
+          showToast(`♾️ <b>[${blockNames[buildSlot-1]} 건축! (관리자 무한 모드)]</b> 블록이 영구 유지됩니다!`);
+        } else {
+          showToast(`🧱 <b>[${blockNames[buildSlot-1]} 건축! (남은 벽돌: ${state.stardustCount}개)]</b> 점프(SPACE)로 올라가 보세요! <small>(10분 후 먼지처럼 사라집니다)</small>`);
+        }
       }
 
       if (typeof worldChannel !== 'undefined' && worldChannel) {
@@ -10898,7 +10906,11 @@
     let collectedStardust = Array.isArray(state.collectedGemIds) ? Math.min(15, state.collectedGemIds.length) : 0;
     window.updateStardustCountUI = function() {
       const stEl = document.getElementById('stardustText');
-      if (stEl) stEl.textContent = `${state.stardustCount || 0}개 (보석 ${collectedStardust}/15)`;
+      if (stEl) {
+        stEl.textContent = isAdminInfiniteBuild
+          ? `♾️ 무한 (보석 ${collectedStardust}/15)`
+          : `${state.stardustCount || 0}개 (보석 ${collectedStardust}/15)`;
+      }
     };
     window.openStardustGuide = function() {
       const gemEl = document.getElementById('sdGuideGemCount');
@@ -11839,12 +11851,12 @@
         });
       }
 
-      // 블록 10분 TTL(유효시간) 만료 자동 청소 & 먼지 흩날림 파티클 업데이트
+      // 블록 10분 TTL(유효시간) 만료 자동 청소 & 먼지 흩날림 파티클 업데이트 (관리자 영구 블록 또는 무한 모드 시 만료 보류)
       if (placedBlocks.length > 0) {
         const nowEpoch = Date.now();
         for (let bi = placedBlocks.length - 1; bi >= 0; bi--) {
           const blk = placedBlocks[bi];
-          if (typeof blk.createdAt === 'number' && (nowEpoch - blk.createdAt) >= BLOCK_TTL_MS) {
+          if (blk && !blk.isInfinite && !isAdminInfiniteBuild && typeof blk.createdAt === 'number' && (nowEpoch - blk.createdAt) >= BLOCK_TTL_MS) {
             dissolveBlockIntoDust(blk);
           }
         }
@@ -15773,6 +15785,45 @@
       closeModal('modalAdmin');
     }
 
+    function updateAdminInfiniteBuildUI() {
+      const badge = document.getElementById('adminInfiniteBadge');
+      const btn = document.getElementById('btnToggleInfiniteBuild');
+      if (badge) {
+        if (isAdminInfiniteBuild) {
+          badge.textContent = '🔥 활성화 (무한 건축)';
+          badge.style.background = '#dcfce7';
+          badge.style.color = '#15803d';
+          badge.style.borderColor = '#86efac';
+        } else {
+          badge.textContent = '비활성화';
+          badge.style.background = '#dbeafe';
+          badge.style.color = '#1d4ed8';
+          badge.style.borderColor = '#93c5fd';
+        }
+      }
+      if (btn) {
+        btn.textContent = isAdminInfiniteBuild ? '⏸️ 무한 건축 모드 끄기' : '✨ 무한 건축 모드 켜기 (ON)';
+        btn.style.background = isAdminInfiniteBuild ? '#16a34a' : '#2563eb';
+      }
+      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
+    }
+    window.toggleAdminInfiniteBuild = function() {
+      isAdminInfiniteBuild = !isAdminInfiniteBuild;
+      window.isAdminInfiniteBuild = isAdminInfiniteBuild;
+      updateAdminInfiniteBuildUI();
+      soundQuestComplete();
+      showToast(isAdminInfiniteBuild
+        ? '♾️ <b>[관리자 무한 건축 모드 활성화!]</b><br>벽돌 소모 없이 무한으로 블록을 지을 수 있습니다! (10분 시간 제한 해제)'
+        : '🔒 <b>[관리자 무한 건축 모드 비활성화]</b><br>일반 벽돌 소모 모드로 전환되었습니다.');
+    };
+    window.refillAdminBricks = function(amount = 999) {
+      state.stardustCount = Math.min(99999, (state.stardustCount || 0) + amount);
+      saveProgress();
+      if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
+      soundQuestComplete();
+      showToast(`🧱 <b>건축 벽돌 +${amount}개가 충전되었습니다! (현재 보유: ${state.stardustCount}개)</b>`);
+    };
+
     function renderAdminDashboard(summary) {
       const lbl = document.getElementById('adminActiveRoomLabel');
       if (lbl) lbl.textContent = summary.offlineMode ? `방 ${summary.room} (오프라인 로컬 관리)` : `방 ${summary.room} 실시간 서버 연결`;
@@ -15781,6 +15832,7 @@
         ? !!localStorage.getItem(LOCAL_ADMIN_HASH_KEY)
         : !!summary.hasCustomPassword;
       updateAdminPwBadge(isCustom);
+      updateAdminInfiniteBuildUI();
       const sOn = document.getElementById('adminStatOnline');
       const sPl = document.getElementById('adminStatPlayers');
       const sBd = document.getElementById('adminStatBoard');
@@ -15913,6 +15965,7 @@
     }
     window.adminVerifyAndLoad = adminVerifyAndLoad;
     window.openAdminModal = openAdminModal;
+    window.openAdminModalUnlocked = openAdminModalUnlocked;
 
     async function adminSwitchRoom(targetRoom) {
       if (!adminSessionPw) return;
@@ -16169,6 +16222,8 @@
     bindClick('btnAdminUnlock', () => adminVerifyAndLoad(false));
     bindClick('btnAdminRefresh', () => adminVerifyAndLoad(true));
     bindClick('btnAdminLock', () => lockAdminSessionUI());
+    bindClick('btnToggleInfiniteBuild', () => window.toggleAdminInfiniteBuild());
+    bindClick('btnAdminRefillBricks', () => window.refillAdminBricks(999));
     document.querySelectorAll('#adminDashRoomPicker .admin-dash-room-btn').forEach(btn => {
       btn.addEventListener('click', () => adminSwitchRoom(btn.dataset.room));
     });
@@ -17737,6 +17792,27 @@
         <div style="margin-top:14px;">
           <div style="font-size:14.5px; font-weight:800; color:#18181b; margin-bottom:6px;">👥 이 방에 저장된 학생 기록</div>
           <div class="admin-player-list" id="adminPlayerList"></div>
+        </div>
+
+        <!-- 관리자 전용: 무한 건축 및 블록 설치 제한 해제 -->
+        <div style="margin-top:14px; padding:13px 14px; border-radius:12px; background:#eff6ff; border:1.5px solid #bfdbfe;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+            <div style="font-size:15px; font-weight:800; color:#1e40af; display:flex; align-items:center; gap:6px;">
+              <span>♾️ 무한 블록 건축 모드 (벽돌/시간제한 해제)</span>
+            </div>
+            <span id="adminInfiniteBadge" style="display:inline-flex; align-items:center; padding:3px 9px; border-radius:999px; font-size:12px; font-weight:800; background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd;">비활성화</span>
+          </div>
+          <p style="font-size:13.5px; color:#1e3a8a; margin:0 0 10px 0; line-height:1.5;">
+            활성화 시 건축 벽돌 소모 없이 무한으로 블록을 쌓을 수 있으며, 10분 자동 소멸(TTL) 제한이 해제되어 자유롭게 거대한 구조물을 건축할 수 있습니다.
+          </p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="admin-scope-btn" id="btnToggleInfiniteBuild" style="flex:1; min-width:180px; background:#2563eb; color:#ffffff; border-color:#1d4ed8; font-weight:800;">
+              ✨ 무한 건축 모드 토글 (ON / OFF)
+            </button>
+            <button type="button" class="admin-scope-btn" id="btnAdminRefillBricks" style="background:#ffffff; color:#1e40af; border-color:#93c5fd;">
+              🧱 벽돌 999개 충전
+            </button>
+          </div>
         </div>
 
         <div style="margin-top:14px;">
