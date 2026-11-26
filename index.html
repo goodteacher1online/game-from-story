@@ -3593,10 +3593,13 @@
     momShoeR.position.set(0.25, 0.08, 0.06);
     momGroup.add(momShoeL, momShoeR);
 
-    // 양팔 (오른팔은 환영 손인사 피벗)
+    // 양팔 (좌우 대칭 어깨 피벗으로 자연스러운 포옹 모션 구현)
+    const momLeftArmPivot = new THREE.Group();
+    momLeftArmPivot.position.set(-0.68, 1.85, 0);
     const momArmL = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.96, 0.28), momSweaterMat);
-    momArmL.position.set(-0.68, 1.45, 0); momArmL.castShadow = true;
-    momGroup.add(momArmL);
+    momArmL.position.set(0, -0.48, 0); momArmL.castShadow = true;
+    momLeftArmPivot.add(momArmL);
+    momGroup.add(momLeftArmPivot);
 
     const momRightArmPivot = new THREE.Group();
     momRightArmPivot.position.set(0.68, 1.85, 0);
@@ -5755,7 +5758,9 @@
       return pivot;
     }
     const leftArm = makeArm(true);
+    window.leftArm = leftArm;
     const rightArm = makeArm(false);
+    window.rightArm = rightArm;
 
     // [핫바 6번] 별빛 지팡이
     const wandGroup = new THREE.Group();
@@ -11223,6 +11228,7 @@
     // [온화한 엄마 상호작용 시스템: 대화 선택지, 3D 포옹, 하트 버스트, 치유 보상]
     // ============================================================
     let momHugTimer = 0;
+    window.momHugTimer = 0;
     let isCinematicHugging = false;
     const momBurstHearts = [];
 
@@ -11425,29 +11431,29 @@
       // 1. [스마트폰·패드·PC 뷰포트 시야 확보] 화면을 가리는 대화 모달 즉각 닫기
       closeModal('modalMom');
 
-      // 2. [캐릭터 위치 및 시선 정렬] 플레이어를 엄마(14, 12) 정면에 마주보도록 정렬
+      // 2. [캐릭터 위치 및 시선 정렬] 플레이어가 엄마(14, 12)의 허리/품에 쏙 안기도록 자연스러운 거리(12.75)로 정렬
       const groundY = (typeof getGroundHeight === 'function')
-        ? getGroundHeight(14.0, 13.05, playerRig.position.y)
+        ? getGroundHeight(14.0, 12.75, playerRig.position.y)
         : playerRig.position.y;
-      playerRig.position.set(14.0, groundY, 13.05);
-      playerRig.rotation.set(0, Math.PI, 0); // 엄마를 똑바로 마주봄
+      playerRig.position.set(14.0, groundY, 12.75);
+      playerRig.rotation.set(0, Math.PI, 0); // 엄마를 다정하게 마주봄
       if (typeof playerPhysics !== 'undefined') {
         playerPhysics.velX = 0; playerPhysics.velZ = 0; playerPhysics.velY = 0;
       }
 
-      // 3. [시네마틱 포옹 가동] 4초간 카메라 클로즈업 + 상호 포옹 3D 애니메이션
-      momHugTimer = 4.0;
+      // 3. [시네마틱 포옹 가동] 지루하지 않고 감동적인 3.0초 궤도 회전 시네마틱 카메라 가동
+      momHugTimer = 3.0;
+      window.momHugTimer = 3.0;
       isCinematicHugging = true;
 
       // 4. [오디오 & 하트 버스트 파티클]
       soundMomHug();
       spawnHugHeartBurst();
 
-      // 5. [두근두근 심장 박동 햅틱 피드백] 쿵-쾅 리듬 3회 반복
+      // 5. [두근두근 심장 박동 햅틱 피드백] 쿵-쾅 리듬 2회 반복
       triggerHaptic('heavy');
       setTimeout(() => triggerHaptic('medium'), 180);
-      setTimeout(() => { triggerHaptic('heavy'); setTimeout(() => triggerHaptic('medium'), 180); }, 1300);
-      setTimeout(() => { triggerHaptic('heavy'); setTimeout(() => triggerHaptic('medium'), 180); }, 2600);
+      setTimeout(() => { triggerHaptic('heavy'); setTimeout(() => triggerHaptic('medium'), 180); }, 1200);
 
       const name = state.playerName || '인찬이';
       const vocative = typeof getKoreanVocative === 'function' ? getKoreanVocative(name) : (name + '아');
@@ -11462,7 +11468,7 @@
       saveProgress();
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
 
-      // 7. [행동 우선 감상 후 안내 텀 연출] 4초간 포옹 감상 후 따뜻한 마무리 축복 안내 팝업
+      // 7. [행동 우선 감상 후 안내 텀 연출] 3초간 멋진 회전 시네마틱 후 따뜻한 마무리 축복 안내 팝업
       setTimeout(() => {
         isCinematicHugging = false;
         soundMomVoice();
@@ -11479,7 +11485,7 @@
           txtEl.innerHTML = `“언제든 이리 오렴! 우리 사랑하는 ${escChildTitle} <b>${escVocative}</b>, 넌 세상에서 가장 귀하고 소중한 보물이란다. 포근한 엄마 품에서 편안하게 쉬렴~”`;
         }
         openModal('modalMom');
-      }, 4000);
+      }, 3000);
     };
 
     function soundMomVoice() {
@@ -12832,15 +12838,15 @@
       } else if (!playerPhysics.isDancing && !playerPhysics.isMeditating && !activePlaygroundRide && !activeElevatorRide && !playerPhysics.ironManAutoLap && !playerPhysics.skyRide && playerPhysics.slipTimer <= 0) {
         resolveHorizontalCollisions();
         if (momHugTimer > 0) {
-          // [인찬이 따뜻한 상호 포옹 3D 애니메이션]
-          // 양팔을 앞으로 뻗어 엄마를 감싸 안고, 상체를 기대며 편안한 표정 짓기
-          leftArm.rotation.set(-1.25, 0.22, 0.45);
-          rightArm.rotation.set(-1.25, -0.22, -0.45);
+          // [인찬이 따뜻한 상호 포옹 3D 애니메이션: 엄마의 가슴이 아닌 허리/품을 감싸 안음]
+          // 가슴으로 손이 가지 않도록 팔을 아래-앞쪽(-0.48rad)으로 내리고, 엄마 허리를 부드럽게 감싸는 각도
+          leftArm.rotation.set(-0.48, 0.35, 0.38);
+          rightArm.rotation.set(-0.48, -0.35, -0.38);
           leftLeg.rotation.set(0, 0, 0);
           rightLeg.rotation.set(0, 0, 0);
-          torso.rotation.x = 0.08;
-          torso.position.y = 1.35;
-          head.rotation.x = -0.08;
+          torso.rotation.x = 0.12; // 엄마 품 쪽으로 살짝 기대는 포근한 상체 숙임
+          torso.position.y = 1.32;
+          head.rotation.x = -0.18; // 엄마를 편안하게 올려다보거나 품에 기댐
         } else {
           leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15);
           if (playerPhysics.armSwingTimer <= 0) {
@@ -13271,15 +13277,25 @@
       let targetFov = 50;
       let isCinematicCustomCam = false;
 
-      // 1. [엄마와의 따뜻한 포옹 시네마틱]
+      // 1. [엄마와의 따뜻한 포옹 시네마틱: 360도 부드러운 궤도 회전 + 다이내믹 시네마틱 워크]
       if (momHugTimer > 0) {
         isCinematicCustomCam = true;
-        const hugCenter = new THREE.Vector3(14.0, 1.35, 12.52);
-        camState.targetPos.lerp(hugCenter, 0.14);
-        const hugCamPos = new THREE.Vector3(11.85, 1.85, 13.85);
-        camera.position.lerp(hugCamPos, 0.12);
+        const hugCenter = new THREE.Vector3(14.0, 1.28, 12.38); // 인찬이와 엄마의 포옹 중심점
+        camState.targetPos.lerp(hugCenter, 0.16);
+
+        // 3초간 원형 궤도를 그리며 부드럽게 돌아가는 시네마틱 앵글 (정면 대각선 -> 측면 따스한 투샷)
+        const hugElapsed = Math.max(0, 3.0 - momHugTimer);
+        const orbitAngle = Math.PI * 0.28 + (hugElapsed / 3.0) * 0.72; // 약 45도 회전 패닝
+        const orbitRadius = 2.65 - Math.sin((hugElapsed / 3.0) * Math.PI) * 0.22; // 부드러운 줌인-줌아웃 돌리
+        const camHeight = 1.62 + Math.sin((hugElapsed / 3.0) * Math.PI) * 0.18;
+        
+        const targetCamX = 14.0 - Math.sin(orbitAngle) * orbitRadius;
+        const targetCamZ = 12.38 + Math.cos(orbitAngle) * orbitRadius;
+        const dynHugCamPos = new THREE.Vector3(targetCamX, camHeight, targetCamZ);
+
+        camera.position.lerp(dynHugCamPos, 0.14);
         camera.lookAt(camState.targetPos);
-        targetFov = 46; // 따스하고 집중도 높은 시네마틱 화각
+        targetFov = 43 - Math.sin((hugElapsed / 3.0) * Math.PI) * 4.0; // 온화하고 몰입감 있는 클로즈업 FOV
       }
       // 2. [놀이터 놀이기구 타기 시네마틱: 미끄럼틀 · 시소 · 그네 · 숲속 독서대]
       else if (typeof activePlaygroundRide !== 'undefined' && activePlaygroundRide) {
@@ -13408,17 +13424,21 @@
         // 포옹 상태 모션 or 평소 손인사 모션
         if (momHugTimer > 0) {
           momHugTimer -= dt;
-          // 포옹: 양팔을 인찬이 어깨와 등 뒤로 활짝 뻗어 꼭 감싸 안음
-          momRightArmPivot.rotation.z = 0.55;
-          momRightArmPivot.rotation.x = -1.25;
-          momArmL.rotation.z = -0.55;
-          momArmL.rotation.x = -1.25;
+          // 포옹: 양팔을 인찬이 어깨와 등 뒤로 포근하게 감싸 안음 (좌우 피벗 대칭 적용)
+          momRightArmPivot.rotation.z = 0.42;
+          momRightArmPivot.rotation.x = -0.95;
+          if (typeof momLeftArmPivot !== 'undefined') {
+            momLeftArmPivot.rotation.z = -0.42;
+            momLeftArmPivot.rotation.x = -0.95;
+          }
         } else {
-          // 평소: 오른팔로 부드럽게 손을 흔들며 맞이
+          // 평소: 오른팔로 부드럽게 손을 흔들며 맞이, 왼팔은 단정하게 내림
           momRightArmPivot.rotation.z = Math.sin(time * 3.5) * 0.35 - 0.7;
           momRightArmPivot.rotation.x = 0;
-          momArmL.rotation.z = 0;
-          momArmL.rotation.x = 0;
+          if (typeof momLeftArmPivot !== 'undefined') {
+            momLeftArmPivot.rotation.z = 0;
+            momLeftArmPivot.rotation.x = 0;
+          }
         }
 
         if (momBubbleMesh) {
