@@ -3197,7 +3197,7 @@
 
     function syncWorldCollectiblesFromState() {
       const doneGems = Array.isArray(state.collectedGemIds) ? state.collectedGemIds : [];
-      collectedStardust = Math.min(15, doneGems.length);
+      collectedStardust = Math.min(stardustCoords.length, doneGems.length);
       stardustGems.forEach((sg, idx) => {
         const isDone = doneGems.includes(idx);
         sg.collected = isDone;
@@ -6907,7 +6907,7 @@
         const idx = emotionOres.indexOf(oreGroup);
         if (idx !== -1) emotionOres.splice(idx, 1);
         state.stardustCount = (state.stardustCount || 0) + 3;
-        collectedStardust = Math.min(15, collectedStardust + 1);
+        collectedStardust = Math.min(stardustCoords.length, collectedStardust + 1);
         if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
         saveProgress();
         showToast(`⛏️ <b>[${oData.name} 채굴 성공!]</b> 마음 별가루 보너스 획득!`);
@@ -8711,7 +8711,7 @@
       setTimeout(() => soundChime(792), 360);
       activePlaygroundRide = { type: 'chair', timer: 7.0, elapsed: 0 };
       playerRig.position.set(22.0, 0.58, -23.5);
-      playerRig.rotation.y = Math.PI; // 책장과 독서 테이블 쪽을 바라봄
+      playerRig.rotation.y = 0; // 원형 독서 테이블(z: -24.8)을 정면으로 바르게 마주보고 착석!
       setHandCareItem('book');
       createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 0.6, 0)), '#38bdf8');
       showPlayerBubble('📚 “숲속 소파에 편안히 앉아 《인찬이의 마음 손님》 동화책을 읽으니 마음이 차분하고 따뜻해져요!”');
@@ -8724,16 +8724,41 @@
     window.zooFollowTimer = 0;
     let zooCareCamTimer = 0;
     window.zooCareCamTimer = 0;
+    let zooCareCamMode = 'wide'; // 'wide' | 'cuddle'
+    window.zooCareCamMode = 'wide';
+    let zooCuddleTimer = 0;
+    window.zooCuddleTimer = 0;
     let zooTotalCareCount = 0;
     window.zooTotalCareCount = 0;
 
-    // 인찬이 손에 실시간 3D 돌봄 아이템(당근, 빗, 장난감 공) 장착 메쉬
+    // 인찬이 손에 실시간 3D 돌봄 아이템(당근, 빗, 장난감 공, 책) 장착 메쉬
     const playerHandCareItem = new THREE.Group();
     window.playerHandCareItem = playerHandCareItem;
     playerHandCareItem.position.set(0, -0.65, 0.28);
     playerHandCareItem.visible = false;
     if (typeof rightArm !== 'undefined') {
       rightArm.add(playerHandCareItem);
+    }
+
+    // 🤗 [품에 안아주기 전용] 인찬이 품(가슴/두 팔)에 쏙 안겨 골골송을 부르는 아기 토끼 3D 메쉬
+    const cuddleBunnyMesh = new THREE.Group();
+    window.cuddleBunnyMesh = cuddleBunnyMesh;
+    const cbMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+    const cbBody = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.32, 0.44), cbMat); cbBody.position.y = 0.16;
+    const cbHead = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.26, 0.28), cbMat); cbHead.position.set(0, 0.35, 0.14);
+    const cbEar1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.26, 0.06), cbMat); cbEar1.position.set(-0.08, 0.52, 0.12);
+    const cbEar2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.26, 0.06), cbMat); cbEar2.position.set(0.08, 0.52, 0.12);
+    const cbEyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
+    const cbEye1 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.03), cbEyeMat); cbEye1.position.set(-0.08, 0.38, 0.28);
+    const cbEye2 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.03), cbEyeMat); cbEye2.position.set(0.08, 0.38, 0.28);
+    const cbNose = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: 0xf472b6 })); cbNose.position.set(0, 0.33, 0.29);
+    const cbTail = new THREE.Mesh(new THREE.DodecahedronGeometry(0.07), cbMat); cbTail.position.set(0, 0.2, -0.23);
+    cuddleBunnyMesh.add(cbBody, cbHead, cbEar1, cbEar2, cbEye1, cbEye2, cbNose, cbTail);
+    cuddleBunnyMesh.position.set(0, 0.98, 0.38); // 인찬이 가슴-허리 품 중심
+    cuddleBunnyMesh.rotation.set(-0.15, Math.PI, 0); // 인찬이 가슴 쪽을 포근히 파고드는 각도
+    cuddleBunnyMesh.visible = false;
+    if (typeof playerRig !== 'undefined') {
+      playerRig.add(cuddleBunnyMesh);
     }
 
     function setHandCareItem(type) {
@@ -8774,7 +8799,7 @@
       setTimeout(() => { playerHandCareItem.visible = false; }, (type === 'book' ? 7000 : 3500));
     }
 
-    // 1. [부드럽게 빗질 & 쓰다듬기 돌봄]
+    // 1. [부드럽게 빗질 & 쓰다듬기 돌봄] - 차분하게 다가와 몸을 비비며 골골송
     window.interactZooPet = function() {
       initAudio();
       soundChime(659);
@@ -8783,14 +8808,17 @@
       triggerArmSwing(-18, -22);
       setHandCareItem('brush');
 
-      window.zooCareCamTimer = zooCareCamTimer = 3.2; // 따뜻한 클로즈업 돌봄 카메라
+      window.zooCareCamMode = 'wide';
+      window.zooCareCamTimer = zooCareCamTimer = 3.6;
       window.zooFollowTimer = zooFollowTimer = 7.0;
       zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
 
       if (typeof animatedAnimals !== 'undefined') {
-        const messages = ['골골송~♥', '따뜻해~♥', '행복해!', '기분 최고!', '포근포근~'];
+        const messages = ['골골송~♥', '따뜻해~♥', '손길이 좋아!', '기분 최고!', '포근포근~'];
         animatedAnimals.forEach((a, idx) => {
+          a.actionMode = 'pet'; // 차분한 쓰다듬기 반응
           a.happyTimer = 6.0;
+          a.somersaultProgress = -1; // 공중제비 돌지 않음
           a.careCount = (a.careCount || 0) + 1;
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
@@ -8803,15 +8831,15 @@
         });
       }
       spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
-      showPlayerBubble('🥰 “아가들아 시원하지? 털을 곱게 빗겨주니 기분 좋아서 몸을 비벼오네!”');
-      showToast('💖 <b>[아기 동물 브러싱 & 쓰다듬기 완료!]</b> 동물들이 골골송을 부르며 하트를 뿜어냅니다! (+별빛가루 2 / +70점)');
+      showPlayerBubble('🥰 “아가들아 시원하지? 부드러운 빗질에 눈을 감고 편안해하네!”');
+      showToast('💖 <b>[아기 동물 브러싱 & 쓰다듬기 완료!]</b> 동물들이 곁에 바짝 다가와 부드럽게 골골송을 부릅니다! (+별빛가루 2 / +70점)');
       state.stardustCount = (state.stardustCount || 0) + 2;
       saveProgress();
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
       window.addMindScore(70, '🐾 동물 친구들 사랑의 브러싱 돌봄');
     };
 
-    // 2. [달콤 당근 & 신선한 과일 먹이주기]
+    // 2. [달콤 당근 & 신선한 과일 먹이주기] - 오물오물 냠냠 먹방
     window.interactZooFeed = function() {
       initAudio();
       soundChime(523);
@@ -8821,14 +8849,17 @@
       triggerArmSwing(-18, -22);
       setHandCareItem('carrot');
 
-      window.zooCareCamTimer = zooCareCamTimer = 3.5;
-      window.zooFollowTimer = zooFollowTimer = 9.0;
+      window.zooCareCamMode = 'wide';
+      window.zooCareCamTimer = zooCareCamTimer = 4.0;
+      window.zooFollowTimer = zooFollowTimer = 8.5;
       zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
 
       if (typeof animatedAnimals !== 'undefined') {
-        const feedMessages = ['냠냠 꿀맛!', '아삭아삭!', '당근 최고!', '더 주세요~!', '배불러요!'];
+        const feedMessages = ['오물오물!', '냠냠 꿀맛!', '아삭아삭!', '당근 최고!', '배불러요!'];
         animatedAnimals.forEach((a, idx) => {
+          a.actionMode = 'feed'; // 오물오물 고개 끄덕이며 먹는 반응
           a.happyTimer = 8.0;
+          a.somersaultProgress = -1; // 텀블링 없음
           a.careCount = (a.careCount || 0) + 1;
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
@@ -8842,15 +8873,15 @@
         });
       }
       createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 0.8, 0)), '#facc15');
-      showPlayerBubble('🥕 “맛있는 싱싱 당근과 달콤한 꿀열매야! 꼭꼭 씹어 맛있게 먹어!”');
-      showToast('🥕 <b>[달콤 먹이 피딩 대성공!]</b> 배고픈 동물 친구들이 모여들어 맛있게 먹이를 먹었습니다! (+별빛가루 3 / +80점)');
+      showPlayerBubble('🥕 “맛있는 싱싱 당근이야! 아삭아삭 오물오물 정말 잘 먹네!”');
+      showToast('🥕 <b>[달콤 먹이 피딩 대성공!]</b> 모여든 동물 친구들이 당근을 맛있게 오물오물 먹었습니다! (+별빛가루 3 / +80점)');
       state.stardustCount = (state.stardustCount || 0) + 3;
       saveProgress();
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
       window.addMindScore(80, '🥕 아기 동물원 정성 먹이주기');
     };
 
-    // 3. [신나는 장난감 놀이 & 동물 서커스 댄스]
+    // 3. [신나는 장난감 놀이 & 축제 댄스] - 딱 1회 멋진 공중 2회전 텀블링 후 신나는 댄스 군무
     window.interactZooPlay = function() {
       initAudio();
       [523, 659, 784, 988, 1175, 1318].forEach((freq, i) => {
@@ -8859,14 +8890,17 @@
       triggerArmSwing(-18, -22);
       setHandCareItem('ball');
 
-      window.zooCareCamTimer = zooCareCamTimer = 4.0;
+      window.zooCareCamMode = 'wide';
+      window.zooCareCamTimer = zooCareCamTimer = 4.8;
       window.zooFollowTimer = zooFollowTimer = 10.0;
       zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
 
       if (typeof animatedAnimals !== 'undefined') {
-        const playMessages = ['야호! 신난다!', '빙글빙글~', '폴짝폴짝!', '점프 점프!', '우와 축제다!'];
+        const playMessages = ['야호! 2회전 텀블링!', '신나는 축제다!', '쿵덕쿵덕!', '뒤뚱뒤뚱 댄스!', '만세!'];
         animatedAnimals.forEach((a, idx) => {
+          a.actionMode = 'play'; // 딱 1회 공중제비 + 신나는 댄스 파티
           a.happyTimer = 9.5;
+          a.somersaultProgress = 0.0; // 0.0에서 시작하여 1.0(딱 1회 고공 점프 2회전) 완료 후 자동 종료!
           a.careCount = (a.careCount || 0) + 1;
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
@@ -8880,46 +8914,61 @@
         });
       }
       spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2.2, 0)));
-      showPlayerBubble('🎶 “동물 친구들과 다 함께 빙글빙글 춤추며 마음의 행복을 나눠요!”');
-      showToast('🎉 <b>[동물 친구들과의 신나는 놀이 파티!]</b> 온 동물원이 축제 분위기로 물들었습니다! (+별빛가루 5 / +100점)');
+      showPlayerBubble('🎶 “우와! 장난감 공을 보고 토끼가 하늘 높이 2회전 텀블링을 멋지게 성공했어!”');
+      showToast('🎉 <b>[동물 축제 댄스 & 공중 텀블링 대성공!]</b> 환상적인 공중제비와 신나는 댄스 파티! (+별빛가루 5 / +100점)');
       state.stardustCount = (state.stardustCount || 0) + 5;
       saveProgress();
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
       window.addMindScore(100, '🎶 숲속 아기 동물 축제 댄스 파티');
     };
 
-    // 4. [포근한 품에 안아주기 (1:1 밀착 힐링 교감)]
+    // 4. [진짜 포근한 품에 안아주기 (1:1 밀착 힐링 포옹)] - 인찬이가 두 팔로 아기 토끼를 가슴에 꼬옥 안음
     window.interactZooCuddle = function() {
       initAudio();
       [587, 740, 880, 1175].forEach((freq, i) => {
         setTimeout(() => soundChime(freq), i * 110);
       });
-      triggerArmSwing(-18, -22);
 
-      window.zooCareCamTimer = zooCareCamTimer = 3.6;
-      window.zooFollowTimer = zooFollowTimer = 8.0;
+      // 4.5초간 품에 안아주기 모드 가동!
+      window.zooCuddleTimer = zooCuddleTimer = 4.5;
+      window.zooCareCamMode = 'cuddle';
+      window.zooCareCamTimer = zooCareCamTimer = 4.5;
+      window.zooFollowTimer = zooFollowTimer = 6.0;
       zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
 
+      if (typeof cuddleBunnyMesh !== 'undefined' && cuddleBunnyMesh) {
+        cuddleBunnyMesh.visible = true;
+      }
+      if (typeof playerHandCareItem !== 'undefined') {
+        playerHandCareItem.visible = false; // 안고 있을 때는 손 도구 숨김
+      }
+
       if (typeof animatedAnimals !== 'undefined') {
+        // 첫 번째 토끼(토토)는 인찬이 품에 안겨있으므로 바닥 메쉬는 잠시 숨김
+        if (animatedAnimals[0] && animatedAnimals[0].group) {
+          animatedAnimals[0].group.visible = false;
+        }
         animatedAnimals.forEach((a, idx) => {
-          a.happyTimer = 7.5;
+          a.actionMode = 'cuddle';
+          a.happyTimer = 6.0;
+          a.somersaultProgress = -1; // 텀블링 없음
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
           setTimeout(() => {
             createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.6, 0)), '#a855f7');
             if (typeof setAnimalMood === 'function') {
-              setAnimalMood(a, '💖', '따뜻해요~ 고마워요!', 'rgba(147, 51, 234, 0.92)', '#f3e8ff', 3.8);
+              setAnimalMood(a, '💖', (idx === 0 ? '품이 정말 따뜻해요~♥' : '포근포근 행복해~♥'), 'rgba(147, 51, 234, 0.92)', '#f3e8ff', 4.2);
             }
           }, idx * 100);
         });
       }
       spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
-      showPlayerBubble('🤗 “포근한 아기 동물들을 품에 꼭 안아주니 심장이 콩닥콩닥 마음이 스르륵 녹아요!”');
-      showToast('🤗 <b>[포근한 동물 포옹 교감 완료!]</b> 따스한 온기로 마음의 긴장이 풀리고 평화가 깃듭니다! (+별빛가루 3 / +90점)');
-      state.stardustCount = (state.stardustCount || 0) + 3;
+      showPlayerBubble('🤗 “포근한 아기 토끼를 품에 꼭 안아주니 심장이 콩닥콩닥, 온몸이 사르르 녹아내려요!”');
+      showToast('🤗 <b>[포근한 1:1 아기 동물 포옹!]</b> 두 팔로 아기 토끼를 따스하게 감싸 안았습니다! (+별빛가루 4 / +95점)');
+      state.stardustCount = (state.stardustCount || 0) + 4;
       saveProgress();
       if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
-      window.addMindScore(90, '🤗 동물 친구들과 따스한 포옹 교감');
+      window.addMindScore(95, '🤗 아기 동물과 따스한 품 속 포옹');
     };
 
     window.interactZooAnimals = function() {
@@ -11314,20 +11363,20 @@
     });
 
     // 15개 황금 마음 별가루 (Stardust Gems)
-    const stardustGems = [];
+    const stardustGems = []; window.stardustGems = stardustGems;
     let collectedStardust = Array.isArray(state.collectedGemIds) ? Math.min(15, state.collectedGemIds.length) : 0;
     window.updateStardustCountUI = function() {
       const stEl = document.getElementById('stardustText');
       if (stEl) {
         stEl.textContent = isAdminInfiniteBuild
-          ? `♾️ 무한 (보석 ${collectedStardust}/15)`
-          : `${state.stardustCount || 0}개 (보석 ${collectedStardust}/15)`;
+          ? `♾️ 무한 (보석 ${collectedStardust}/${stardustCoords.length})`
+          : `${state.stardustCount || 0}개 (보석 ${collectedStardust}/${stardustCoords.length})`;
       }
     };
     window.openStardustGuide = function() {
       const gemEl = document.getElementById('sdGuideGemCount');
       const totEl = document.getElementById('sdGuideTotalCount');
-      if (gemEl) gemEl.textContent = `${collectedStardust}/15`;
+      if (gemEl) gemEl.textContent = `${collectedStardust}/${stardustCoords.length}`;
       if (totEl) totEl.textContent = `${state.stardustCount || 0}`;
       if (typeof soundChime === 'function') soundChime(620);
       openModal('modalStardustGuide');
@@ -11410,11 +11459,22 @@
       showToast(`🚀 <b>[순간이동 완료!]</b> ${activityName} 앞으로 즉시 이동했습니다!`);
       if (typeof updateZonePrompt === 'function') updateZonePrompt();
     };
+    // 15개 마을 내부 보석 + 16개 외곽 달리기 트랙 전용 황금 다이아몬드 건축 보석 (총 31개)
+    const trackGemAngles = [0.15, 0.52, 0.94, 1.32, 1.75, 2.15, 2.55, 2.95, 3.35, 3.75, 4.15, 4.55, 4.95, 5.35, 5.75, 6.10];
+    const trackGemCoords = trackGemAngles.map((ang, i) => {
+      // 3개 레인에 골고루 지그재그 랜덤 배치 (반경 89.5m ~ 93.5m)
+      const r = 91.5 + ((i % 3) - 1) * 1.8;
+      const gx = Number((Math.cos(ang) * r).toFixed(1));
+      const gz = Number((Math.sin(ang) * r).toFixed(1));
+      return [gx, 1.45, gz];
+    });
+
     const stardustCoords = [
       [2, 1.2, 4], [-4, 1.2, 6], [8, 1.5, -4], [-8, 2.0, -12],
       [-16, 2.5, 8], [14, 1.8, 14], [-2, 1.5, 22], [4, 1.5, 18],
       [-12, 1.8, -2], [10, 2.2, -18], [-20, 6.0, -35], [-30, 8.0, -50],
-      [16, 3.0, 4], [0, 2.5, -10], [-6, 1.8, 16]
+      [16, 3.0, 4], [0, 2.5, -10], [-6, 1.8, 16],
+      ...trackGemCoords
     ];
 
     stardustCoords.forEach((coord, idx) => {
@@ -12076,7 +12136,7 @@
           activePlaygroundRide.elapsed = (activePlaygroundRide.elapsed || 0) + dt;
           // 의자 착석 깊이 (Y: 0.58로 자연스러운 쿠션 착석)
           playerRig.position.set(22.0, 0.58, -23.5);
-          playerRig.rotation.y = Math.PI;
+          playerRig.rotation.y = 0; // 테이블 쪽을 똑바로 향해 바른 자세로 착석!
           // 상체 자연스러운 착석 포즈: 몸을 살짝 숙이고 책을 바라보는 각도
           const readBreath = Math.sin(activePlaygroundRide.elapsed * 2.2) * 0.03;
           torso.position.y = 1.12 + readBreath;
@@ -12586,39 +12646,67 @@
             anim.group.rotation.y += (0 - anim.group.rotation.y) * dt * 1.2;
           }
 
-          if (anim.type === 'bunny') {
-            if (isHappy) {
-              // 🐰 기쁨 폭발: 하늘 높이(2.6m~3.2m) 점프하여 공중에서 멋지게 2회전(4π = 720도) 공중제비 텀블링!
-              const cycleTime = 1.35; // 한 번의 고공 점프 텀블링 주기(초)
-              const jumpProgress = ((time * 1.05 + anim.phase) % cycleTime) / cycleTime; // 0.0 ~ 1.0
-              // 포물선 도약 궤적 (sin 곡선 0 -> 1 -> 0)
-              const jumpArc = Math.sin(jumpProgress * Math.PI);
-              const maxJumpHeight = 2.85 + (aIdx % 3) * 0.35; // 2.85m ~ 3.55m 고공 점프
-              anim.group.position.y = jumpArc * maxJumpHeight;
-              
-              // 공중에서 정확하게 2바퀴(720도, 4π) 백플립/피루엣 텀블링 회전
-              anim.group.rotation.x = jumpProgress * Math.PI * 4.0;
-              // 몸체 Y축도 살짝 나선형으로 1바퀴 트위스트
-              anim.group.rotation.y = (anim.baseRotY || 0) + jumpProgress * Math.PI * 2.0;
+          const aMode = anim.actionMode || 'none';
 
-              // 귀도 공중바람에 펄럭이며 기쁨 폭발
+          if (anim.type === 'bunny') {
+            // [놀이 파티 시 딱 1회만 하늘 높이 솟구쳐 공중 2회전 텀블링!]
+            if (aMode === 'play' && typeof anim.somersaultProgress === 'number' && anim.somersaultProgress >= 0 && anim.somersaultProgress <= 1.0) {
+              anim.somersaultProgress += dt / 1.45; // 약 1.45초 동안 1회 정밀 실행
+              const pProg = Math.min(1.0, anim.somersaultProgress);
+              const jumpArc = Math.sin(pProg * Math.PI);
+              const maxJumpHeight = 2.85 + (aIdx % 3) * 0.35;
+              anim.group.position.y = jumpArc * maxJumpHeight;
+              // 공중에서 정확하게 2바퀴(4π, 720도) 백플립
+              anim.group.rotation.x = pProg * Math.PI * 4.0;
+              anim.group.rotation.y = (anim.baseRotY || 0) + pProg * Math.PI * 2.0;
               if (anim.earL && anim.earR) {
-                const earFly = Math.sin(time * 22.0 + anim.phase) * 0.75;
-                anim.earL.rotation.z = earFly;
-                anim.earR.rotation.z = -earFly;
-                anim.earL.rotation.x = jumpArc * 0.6;
-                anim.earR.rotation.x = jumpArc * 0.6;
+                anim.earL.rotation.z = Math.sin(time * 24.0) * 0.65;
+                anim.earR.rotation.z = -Math.sin(time * 24.0) * 0.65;
               }
+              if (pProg >= 1.0) {
+                anim.somersaultProgress = 2.0; // 텀블링 1회 완료 -> 이후엔 신나는 지상 댄스 모드로 전환
+                anim.group.rotation.x = 0;
+              }
+            } else if (aMode === 'play') {
+              // 1회 텀블링 후: 축제 분위기 지상 댄스 스텝
+              const hop = Math.max(0, Math.sin(time * 12.0 + anim.phase));
+              anim.group.position.y = hop * 0.55;
+              anim.group.rotation.x = hop * 0.25;
+              if (anim.earL && anim.earR) {
+                anim.earL.rotation.z = Math.sin(time * 14.0) * 0.35;
+                anim.earR.rotation.z = -Math.sin(time * 14.0) * 0.35;
+              }
+            } else if (aMode === 'feed') {
+              // 🥕 먹이주기: 제자리에 얌전히 앉아 고개를 끄덕거리며 당근을 오물오물 씹는 귀여운 먹방
+              anim.group.position.y = 0;
+              anim.group.rotation.x = Math.sin(time * 8.0 + anim.phase) * 0.12; // 냠냠 고개 끄덕임
+              if (anim.earL && anim.earR) {
+                anim.earL.rotation.x = 0.22 + Math.sin(time * 8.0) * 0.08;
+                anim.earR.rotation.x = 0.22 + Math.sin(time * 8.0) * 0.08;
+              }
+            } else if (aMode === 'pet') {
+              // ✨ 빗질 & 쓰다듬기: 눈을 가늘게 뜨고 기분 좋아서 몸을 살살 비비며 살랑살랑 부드럽게 흔들림
+              anim.group.position.y = Math.sin(time * 3.5 + anim.phase) * 0.04;
+              anim.group.rotation.z = Math.sin(time * 3.0 + anim.phase) * 0.08;
+              anim.group.rotation.x = -0.08;
+              if (anim.earL && anim.earR) {
+                anim.earL.rotation.z = Math.sin(time * 4.0 + anim.phase) * 0.18;
+                anim.earR.rotation.z = -Math.sin(time * 4.0 + anim.phase) * 0.18;
+              }
+            } else if (aMode === 'cuddle') {
+              // 🤗 품에 안기기: 품 안에서 포근하게 가슴을 맞대고 안정된 호흡
+              anim.group.position.y = Math.sin(time * 2.8) * 0.02;
+              anim.group.rotation.x = 0;
             } else {
-              // 평상시: 귀엽고 아담하게 깡총깡총 뛰기
-              const hopSpeed = 6.0;
-              const hopHeight = 0.45;
+              // 🌿 평상시: 귀엽고 자연스럽게 아담한 깡총깡총 뛰기
+              const hopSpeed = 5.5;
+              const hopHeight = 0.35;
               const hop = Math.max(0, Math.sin(time * hopSpeed + anim.phase));
               anim.group.position.y = hop * hopHeight;
-              anim.group.rotation.x = hop * 0.22;
+              anim.group.rotation.x = hop * 0.18;
               anim.group.rotation.y = anim.baseRotY || 0;
               if (anim.earL && anim.earR) {
-                const earWiggle = Math.sin(time * 8.0 + anim.phase) * 0.18;
+                const earWiggle = Math.sin(time * 7.0 + anim.phase) * 0.15;
                 anim.earL.rotation.z = earWiggle;
                 anim.earR.rotation.z = -earWiggle;
                 anim.earL.rotation.x = 0;
@@ -12626,23 +12714,52 @@
               }
             }
           } else if (anim.type === 'penguin') {
-            const waddleSpeed = isHappy ? 12.0 : 5.0;
-            const waddleAngle = isHappy ? 0.45 : 0.18;
-            anim.group.rotation.z = Math.sin(time * waddleSpeed + anim.phase) * waddleAngle;
-            anim.group.position.y = Math.abs(Math.sin(time * waddleSpeed + anim.phase)) * (isHappy ? 0.38 : 0.08);
-            // 날개 파닥파닥 모션
-            if (anim.wingL && anim.wingR) {
-              const flap = Math.sin(time * (isHappy ? 18.0 : 6.0)) * (isHappy ? 0.65 : 0.2);
-              anim.wingL.rotation.z = flap;
-              anim.wingR.rotation.z = -flap;
+            if (aMode === 'play') {
+              // 놀이 파티: 고속 플래핑과 함께 신나게 뒤뚱뒤뚱 점프
+              anim.group.rotation.z = Math.sin(time * 12.0 + anim.phase) * 0.35;
+              anim.group.position.y = Math.abs(Math.sin(time * 12.0 + anim.phase)) * 0.32;
+              if (anim.wingL && anim.wingR) {
+                const flap = Math.sin(time * 18.0) * 0.7;
+                anim.wingL.rotation.z = flap; anim.wingR.rotation.z = -flap;
+              }
+            } else if (aMode === 'feed') {
+              // 먹이: 부리를 콕콕 쪼며 냠냠
+              anim.group.position.y = 0;
+              anim.group.rotation.x = Math.sin(time * 9.0) * 0.18;
+              if (anim.wingL && anim.wingR) { anim.wingL.rotation.z = 0.15; anim.wingR.rotation.z = -0.15; }
+            } else if (aMode === 'pet') {
+              // 빗질: 날개를 부드럽게 펴고 몸을 기댐
+              anim.group.position.y = 0;
+              anim.group.rotation.z = Math.sin(time * 3.0) * 0.08;
+              if (anim.wingL && anim.wingR) { anim.wingL.rotation.z = 0.25; anim.wingR.rotation.z = -0.25; }
+            } else {
+              // 평상시: 아장아장 펭귄 걸음
+              const waddle = Math.sin(time * 4.5 + anim.phase) * 0.16;
+              anim.group.rotation.z = waddle;
+              anim.group.position.y = Math.abs(waddle) * 0.18;
+              if (anim.wingL && anim.wingR) { anim.wingL.rotation.z = Math.sin(time * 5.0) * 0.2; anim.wingR.rotation.z = -Math.sin(time * 5.0) * 0.2; }
             }
           } else if (anim.type === 'bear') {
-            const pulse = isHappy ? (1 + Math.sin(time * 7.0) * 0.18) : (1 + Math.sin(time * 2.5) * 0.04);
-            anim.group.scale.set(pulse, isHappy ? (1 + Math.cos(time * 7.0) * 0.22) : (1 + Math.cos(time * 2.5) * 0.05), pulse);
-            if (isHappy) {
-              anim.group.position.y = Math.abs(Math.sin(time * 5.0)) * 0.5; // 쿵덕쿵덕 신나는 곰 댄스
+            if (aMode === 'play') {
+              // 놀이 파티: 몸체 펄스와 쿵덕쿵덕 신나는 곰 댄스
+              const pulse = 1 + Math.sin(time * 6.0) * 0.16;
+              anim.group.scale.set(pulse, 1 + Math.cos(time * 6.0) * 0.2, pulse);
+              anim.group.position.y = Math.abs(Math.sin(time * 5.0)) * 0.45;
               anim.group.rotation.z = Math.sin(time * 4.0) * 0.18;
+            } else if (aMode === 'feed') {
+              // 먹이: 얌전히 앉아 양손을 모으듯 고개를 끄덕임
+              anim.group.scale.set(1, 1, 1);
+              anim.group.position.y = 0;
+              anim.group.rotation.x = Math.sin(time * 5.5) * 0.12;
+            } else if (aMode === 'pet') {
+              // 빗질: 포근하게 눈을 감고 살포시 고개를 기울임
+              anim.group.scale.set(1, 1, 1);
+              anim.group.position.y = 0;
+              anim.group.rotation.z = Math.sin(time * 2.5) * 0.08;
             } else {
+              // 평상시: 숨쉬는 곰
+              const breathe = 1 + Math.sin(time * 2.2) * 0.03;
+              anim.group.scale.set(breathe, breathe, breathe);
               anim.group.position.y = 0;
               anim.group.rotation.z = 0;
             }
@@ -13147,6 +13264,16 @@
           torso.rotation.x = 0.12; // 엄마 품 쪽으로 살짝 기대는 포근한 상체 숙임
           torso.position.y = 1.32;
           head.rotation.x = -0.18; // 엄마를 편안하게 올려다보거나 품에 기댐
+        } else if (typeof zooCuddleTimer !== 'undefined' && zooCuddleTimer > 0) {
+          // 🤗 [동물 친구 품에 꼬옥 안아주기 3D 포즈]
+          leftArm.rotation.set(-1.18, 0.42, 0.45); // 양팔을 앞으로 모아 아기 토끼를 포근히 감싸 안음
+          rightArm.rotation.set(-1.18, -0.42, -0.45);
+          leftLeg.rotation.set(0, 0, 0);
+          rightLeg.rotation.set(0, 0, 0);
+          const cuddleBreath = Math.sin(time * 3.0) * 0.02;
+          torso.rotation.x = 0.15; // 아기 동물을 사랑스럽게 내려다보며 살짝 숙임
+          torso.position.y = 1.32 + cuddleBreath;
+          head.rotation.x = 0.28; // 품 안의 토끼를 다정하게 응시
         } else {
           leftArm.rotation.x = THREE.MathUtils.lerp(leftArm.rotation.x, 0, 0.15);
           if (playerPhysics.armSwingTimer <= 0) {
@@ -13237,12 +13364,12 @@
             sg.mesh.visible = false;
             if (!Array.isArray(state.collectedGemIds)) state.collectedGemIds = [];
             if (!state.collectedGemIds.includes(idx)) state.collectedGemIds.push(idx);
-            collectedStardust = Math.min(15, state.collectedGemIds.length);
+            collectedStardust = Math.min(stardustCoords.length, state.collectedGemIds.length);
             state.stardustCount = (state.stardustCount || 0) + 1;
             if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
             soundCoin();
             createMagicImpact(sg.mesh.position, '#fbbf24');
-            window.addMindScore(40, `마음 조각 수집 (${collectedStardust}/15)`);
+            window.addMindScore(40, `마음 조각 수집 (${collectedStardust}/${stardustCoords.length})`);
             saveProgress();
           }
         });
@@ -13577,19 +13704,45 @@
       let targetFov = 50;
       let isCinematicCustomCam = false;
 
-      // 0. [동물 친구 돌봄 시네마틱 카메라: 토끼 고공 점프와 전체 동물 친구들이 시원하게 모두 담기는 와이드 파노라마 앵글]
+      // 0. [동물 친구 돌봄 시네마틱 카메라: 품에 안아주기(Cuddle 밀착 앵글) vs 놀이/먹이/빗질(시원한 와이드 파노라마)]
       if (typeof zooCareCamTimer !== 'undefined' && zooCareCamTimer > 0) {
         window.zooCareCamTimer = zooCareCamTimer = Math.max(0, zooCareCamTimer - dt);
         isCinematicCustomCam = true;
-        // 동물원 중앙과 인찬이 사이를 중심으로 포커스
-        const zooFocus = playerRig.position.clone().add(new THREE.Vector3(0, 1.35, 0));
-        camState.targetPos.lerp(zooFocus, 0.18);
-        
-        // 카메라 거리와 높이를 충분히 확보하여(거리 6.8m, 높이 3.6m), 토끼의 3.5m 고공 2회전 텀블링과 곰·펭귄 군무가 한눈에 다 보이도록 확장
-        const dynCamPos = playerRig.position.clone().add(new THREE.Vector3(4.5, 3.6, 5.2));
-        camera.position.lerp(dynCamPos, 0.14);
-        camera.lookAt(camState.targetPos);
-        targetFov = 58; // 시원하고 탁 트인 시야각
+
+        if (typeof zooCuddleTimer !== 'undefined' && zooCuddleTimer > 0) {
+          window.zooCuddleTimer = zooCuddleTimer = Math.max(0, zooCuddleTimer - dt);
+          // 🤗 [품에 안아주기 감성 밀착 시네마틱]: 인찬이의 품과 사랑스러운 아기 토끼의 얼굴을 3D 원형 궤도로 따뜻하게 비춤
+          const cuddleElapsed = Math.max(0, 4.5 - zooCuddleTimer);
+          const cFocus = playerRig.position.clone().add(new THREE.Vector3(0, 1.15, 0.15));
+          camState.targetPos.lerp(cFocus, 0.18);
+          // 인찬이 앞대각선에서 옆쪽으로 약 50도 부드럽게 패닝하는 감성 궤도
+          const cAngle = playerRig.rotation.y + 0.35 + (cuddleElapsed / 4.5) * 0.75;
+          const cDist = 2.45 - Math.sin((cuddleElapsed / 4.5) * Math.PI) * 0.2;
+          const cHeight = 1.35 + Math.sin((cuddleElapsed / 4.5) * Math.PI) * 0.15;
+          const dynCuddleCamPos = new THREE.Vector3(
+            playerRig.position.x - Math.sin(cAngle) * cDist,
+            cHeight,
+            playerRig.position.z + Math.cos(cAngle) * cDist
+          );
+          camera.position.lerp(dynCuddleCamPos, 0.15);
+          camera.lookAt(camState.targetPos);
+          targetFov = 44; // 포근한 감성 투샷 FOV
+
+          if (zooCuddleTimer <= 0) {
+            if (typeof cuddleBunnyMesh !== 'undefined' && cuddleBunnyMesh) cuddleBunnyMesh.visible = false;
+            if (typeof animatedAnimals !== 'undefined' && animatedAnimals[0] && animatedAnimals[0].group) {
+              animatedAnimals[0].group.visible = true;
+            }
+          }
+        } else {
+          // 🎪 [놀이/먹이/빗질]: 동물원 전체와 인찬이가 시원하게 모두 담기는 와이드 파노라마 앵글
+          const zooFocus = playerRig.position.clone().add(new THREE.Vector3(0, 1.35, 0));
+          camState.targetPos.lerp(zooFocus, 0.18);
+          const dynCamPos = playerRig.position.clone().add(new THREE.Vector3(4.5, 3.6, 5.2));
+          camera.position.lerp(dynCamPos, 0.14);
+          camera.lookAt(camState.targetPos);
+          targetFov = 58;
+        }
       }
       // 1. [엄마와의 따뜻한 포옹 시네마틱: 360도 부드러운 궤도 회전 + 다이내믹 시네마틱 워크]
       if (momHugTimer > 0) {
