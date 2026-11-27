@@ -4066,26 +4066,91 @@
     }
 
     const animatedAnimals = [];
+    window.animatedAnimals = animatedAnimals;
 
-    // [토끼 3마리] (하양, 핑크, 갈색)
+    // [동물 머리 위 실시간 감정 반응 스프라이트 생성 헬퍼]
+    function createAnimalReactionSprite(headY = 1.35) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 384; canvas.height = 140;
+      const ctx = canvas.getContext('2d');
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+      sprite.scale.set(1.9, 0.7, 1);
+      sprite.position.y = headY;
+      sprite.visible = false;
+      return { sprite, canvas, ctx, tex };
+    }
+
+    function setAnimalMood(anim, emoji, text, bgCol = 'rgba(15, 23, 42, 0.88)', borderCol = '#f472b6', duration = 4.0) {
+      if (!anim.reaction) return;
+      const { ctx, canvas, tex, sprite } = anim.reaction;
+      ctx.clearRect(0, 0, 384, 140);
+      ctx.save();
+      // 둥근 버블
+      ctx.fillStyle = bgCol;
+      ctx.strokeStyle = borderCol;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.roundRect(10, 10, 364, 100, 24);
+      ctx.fill();
+      ctx.stroke();
+      // 하단 꼬리
+      ctx.fillStyle = bgCol;
+      ctx.beginPath();
+      ctx.moveTo(172, 110); ctx.lineTo(192, 134); ctx.lineTo(212, 110);
+      ctx.fill();
+      // 텍스트 출력
+      ctx.font = 'bold 36px "Noto Sans KR", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`${emoji} ${text}`, 192, 60);
+      ctx.restore();
+      tex.needsUpdate = true;
+      sprite.visible = true;
+      anim.moodTimer = duration;
+    }
+
+    // [토끼 3마리] (하양, 핑크, 갈색 + 귀 움직임 + 실시간 반응 스프라이트)
     const bunnyColors = [0xffffff, 0xfce7f3, 0xd97706];
+    const bunnyNames = ['토토', '로미', '초코'];
     [[-1.2, 0, -1.0], [1.5, 0, 1.2], [-0.5, 0, 2.5]].forEach(([bx, by, bz], idx) => {
       const bg = new THREE.Group(); bg.position.set(bx, 0, bz);
       const bMat = new THREE.MeshStandardMaterial({ color: bunnyColors[idx], roughness: 0.5 });
       const bBody = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.42, 0.58), bMat); bBody.position.y = 0.25; bBody.castShadow = true;
       const bHead = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.36, 0.38), bMat); bHead.position.set(0, 0.52, 0.22);
-      const ear1 = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.38, 0.08), bMat); ear1.position.set(-0.11, 0.82, 0.18);
-      const ear2 = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.38, 0.08), bMat); ear2.position.set(0.11, 0.82, 0.18);
+      
+      const earPivot1 = new THREE.Group(); earPivot1.position.set(-0.11, 0.68, 0.18);
+      const ear1 = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.38, 0.08), bMat); ear1.position.y = 0.19;
+      earPivot1.add(ear1);
+      
+      const earPivot2 = new THREE.Group(); earPivot2.position.set(0.11, 0.68, 0.18);
+      const ear2 = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.38, 0.08), bMat); ear2.position.y = 0.19;
+      earPivot2.add(ear2);
+
       const eyeMat = new THREE.MeshBasicMaterial({ color: 0x18181b });
       const e1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.04), eyeMat); e1.position.set(-0.12, 0.54, 0.42);
       const e2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.04), eyeMat); e2.position.set(0.12, 0.54, 0.42);
+      const nose = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.04, 0.04), new THREE.MeshBasicMaterial({ color: 0xf472b6 }));
+      nose.position.set(0, 0.48, 0.43);
+
       const tail = new THREE.Mesh(new THREE.DodecahedronGeometry(0.1), bMat); tail.position.set(0, 0.3, -0.32);
-      bg.add(bBody, bHead, ear1, ear2, e1, e2, tail);
+      bg.add(bBody, bHead, earPivot1, earPivot2, e1, e2, nose, tail);
+
+      const react = createAnimalReactionSprite(1.35);
+      bg.add(react.sprite);
+
       zooGroup.add(bg);
-      animatedAnimals.push({ group: bg, type: 'bunny', baseX: bx, baseZ: bz, phase: idx * 1.5, jumpTimer: 0 });
+      animatedAnimals.push({
+        group: bg, type: 'bunny', name: bunnyNames[idx],
+        baseX: bx, baseZ: bz, phase: idx * 1.5,
+        earL: earPivot1, earR: earPivot2, reaction: react,
+        happyTimer: 0, moodTimer: 0, careCount: 0
+      });
     });
 
-    // [아기 곰 1마리] (포근한 테디 베어)
+    // [아기 곰 1마리] (포근한 테디 베어 '뭉치')
     const bearGroup = new THREE.Group(); bearGroup.position.set(-1.8, 0, 0.5);
     const bearMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.65 });
     const bearBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.85, 0.65), bearMat); bearBody.position.y = 0.48; bearBody.castShadow = true;
@@ -4093,11 +4158,21 @@
     const bEarL = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.1), bearMat); bEarL.position.set(-0.3, 1.4, 0.08);
     const bEarR = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.1), bearMat); bEarR.position.set(0.3, 1.4, 0.08);
     const bearSnout = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.18), new THREE.MeshStandardMaterial({ color: 0xfef08a })); bearSnout.position.set(0, 0.98, 0.42);
-    bearGroup.add(bearBody, bearHead, bEarL, bEarR, bearSnout);
-    zooGroup.add(bearGroup);
-    animatedAnimals.push({ group: bearGroup, type: 'bear', baseX: -1.8, baseZ: 0.5, phase: 2.2 });
+    const bearNose = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.06), new THREE.MeshBasicMaterial({ color: 0x18181b })); bearNose.position.set(0, 1.02, 0.52);
 
-    // [아기 펭귄 2마리] (뒤뚱뒤뚱 큐티 펭귄)
+    bearGroup.add(bearBody, bearHead, bEarL, bEarR, bearSnout, bearNose);
+    const bearReact = createAnimalReactionSprite(1.85);
+    bearGroup.add(bearReact.sprite);
+
+    zooGroup.add(bearGroup);
+    animatedAnimals.push({
+      group: bearGroup, type: 'bear', name: '뭉치',
+      baseX: -1.8, baseZ: 0.5, phase: 2.2,
+      reaction: bearReact, happyTimer: 0, moodTimer: 0, careCount: 0
+    });
+
+    // [아기 펭귄 2마리] (뒤뚱뒤뚱 큐티 펭귄 '핑구', '퐁구' + 날개 피벗)
+    const penguinNames = ['핑구', '퐁구'];
     [[0.8, 0, -1.8], [2.2, 0, -0.5]].forEach(([px, py, pz], idx) => {
       const pg = new THREE.Group(); pg.position.set(px, 0, pz);
       const pBlack = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.4 });
@@ -4106,11 +4181,22 @@
       const pBody = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.68, 0.42), pBlack); pBody.position.y = 0.38; pBody.castShadow = true;
       const pBelly = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.52, 0.06), pWhite); pBelly.position.set(0, 0.34, 0.22);
       const pBeak = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.18, 6), pOrange); pBeak.rotation.x = Math.PI/2; pBeak.position.set(0, 0.56, 0.28);
-      pg.add(pBody, pBelly, pBeak);
-      zooGroup.add(pg);
-      animatedAnimals.push({ group: pg, type: 'penguin', baseX: px, baseZ: pz, phase: idx * 2.0 });
-    });
+      
+      const wingL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.36, 0.18), pBlack); wingL.position.set(-0.28, 0.38, 0);
+      const wingR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.36, 0.18), pBlack); wingR.position.set(0.28, 0.38, 0);
 
+      pg.add(pBody, pBelly, pBeak, wingL, wingR);
+      const pReact = createAnimalReactionSprite(1.35);
+      pg.add(pReact.sprite);
+
+      zooGroup.add(pg);
+      animatedAnimals.push({
+        group: pg, type: 'penguin', name: penguinNames[idx],
+        baseX: px, baseZ: pz, phase: idx * 2.0,
+        wingL, wingR, reaction: pReact,
+        happyTimer: 0, moodTimer: 0, careCount: 0
+      });
+    });
     // 동물원 입구 간판 (그룹 로컬 좌표 기준)
     const zooSign = makeLandmarkStorySign({
       customGroup: true,
@@ -5610,6 +5696,7 @@
     // 5. 로블록스 스타일 아바타 '인찬이' + 커스터마이징 모자/의상/네임태그
     // ==========================================
     const playerRig = new THREE.Group();
+    window.playerRig = playerRig;
     playerRig.position.set(0, 0, 10);
     scene.add(playerRig);
     window.playerRig = playerRig;
@@ -8629,76 +8716,203 @@
       window.addMindScore(90, '📚 숲속 독서대 동화책 읽기');
     };
 
-    // 동물 친구들과의 초실감 다채로운 인터랙티브 교감 시스템 (쓰다듬기, 당근 먹이주기, 따뜻한 포옹, 피리 합주)
+    // [초실감 아기 동물원 대대적 돌봄 & 힐링 인터랙션 시스템]
     let zooFollowTimer = 0;
-    let zooHeartAnimTimer = 0;
+    window.zooFollowTimer = 0;
+    let zooCareCamTimer = 0;
+    window.zooCareCamTimer = 0;
+    let zooTotalCareCount = 0;
+    window.zooTotalCareCount = 0;
 
+    // 인찬이 손에 실시간 3D 돌봄 아이템(당근, 빗, 장난감 공) 장착 메쉬
+    const playerHandCareItem = new THREE.Group();
+    window.playerHandCareItem = playerHandCareItem;
+    playerHandCareItem.position.set(0, -0.65, 0.28);
+    playerHandCareItem.visible = false;
+    if (typeof rightArm !== 'undefined') {
+      rightArm.add(playerHandCareItem);
+    }
+
+    function setHandCareItem(type) {
+      while (playerHandCareItem.children.length > 0) {
+        playerHandCareItem.remove(playerHandCareItem.children[0]);
+      }
+      if (type === 'carrot') {
+        const cMat = new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.3 });
+        const lMat = new THREE.MeshStandardMaterial({ color: 0x16a34a });
+        const cBody = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.52, 8), cMat);
+        cBody.rotation.x = Math.PI;
+        const cLeaf = new THREE.Mesh(new THREE.DodecahedronGeometry(0.12), lMat);
+        cLeaf.position.y = 0.32;
+        playerHandCareItem.add(cBody, cLeaf);
+        playerHandCareItem.visible = true;
+      } else if (type === 'brush') {
+        const bWood = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.42, 0.12), new THREE.MeshStandardMaterial({ color: 0xd97706 }));
+        const bBristle = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.36, 0.14), new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.9 }));
+        bBristle.position.z = 0.1;
+        playerHandCareItem.add(bWood, bBristle);
+        playerHandCareItem.visible = true;
+      } else if (type === 'ball') {
+        const sBall = new THREE.Mesh(new THREE.DodecahedronGeometry(0.22), new THREE.MeshStandardMaterial({ color: 0xec4899, emissive: 0xdb2777, emissiveIntensity: 0.6 }));
+        playerHandCareItem.add(sBall);
+        playerHandCareItem.visible = true;
+      } else {
+        playerHandCareItem.visible = false;
+      }
+      setTimeout(() => { playerHandCareItem.visible = false; }, 3500);
+    }
+
+    // 1. [부드럽게 빗질 & 쓰다듬기 돌봄]
     window.interactZooPet = function() {
       initAudio();
-      soundChime(784);
-      setTimeout(() => soundChime(988), 120);
+      soundChime(659);
+      setTimeout(() => soundChime(880), 120);
+      setTimeout(() => soundChime(1046), 240);
       triggerArmSwing(-18, -22);
-      zooFollowTimer = 6.0; // 6초간 아기 동물들이 인찬이 곁으로 다가와 애교를 부림
+      setHandCareItem('brush');
+
+      window.zooCareCamTimer = zooCareCamTimer = 3.2; // 따뜻한 클로즈업 돌봄 카메라
+      window.zooFollowTimer = zooFollowTimer = 7.0;
+      zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
+
       if (typeof animatedAnimals !== 'undefined') {
+        const messages = ['골골송~♥', '따뜻해~♥', '행복해!', '기분 최고!', '포근포근~'];
         animatedAnimals.forEach((a, idx) => {
-          a.happyTimer = 5.0;
+          a.happyTimer = 6.0;
+          a.careCount = (a.careCount || 0) + 1;
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
-          createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.6, 0)), '#f472b6');
+          setTimeout(() => {
+            createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.6, 0)), '#f472b6');
+            if (typeof setAnimalMood === 'function') {
+              setAnimalMood(a, '🥰', messages[idx % messages.length], 'rgba(244, 63, 94, 0.92)', '#fbcfe8', 3.5);
+            }
+          }, idx * 120);
         });
       }
-      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.6, 0)));
-      showPlayerBubble('🥰 “착하지 착해~ 머리를 토닥토닥 쓰다듬어 주니 폭 안겨오네!”');
-      showToast('💖 <b>[동물 쓰다듬기 교감]</b> 아기 동물들이 눈을 감고 기분 좋게 갸르릉거리며 하트를 뿜어냅니다! (+60점)');
-      window.addMindScore(60, '🐾 아기 동물 부드럽게 쓰다듬기');
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
+      showPlayerBubble('🥰 “아가들아 시원하지? 털을 곱게 빗겨주니 기분 좋아서 몸을 비벼오네!”');
+      showToast('💖 <b>[아기 동물 브러싱 & 쓰다듬기 완료!]</b> 동물들이 골골송을 부르며 하트를 뿜어냅니다! (+별빛가루 2 / +70점)');
+      state.stardustCount = (state.stardustCount || 0) + 2;
+      saveProgress();
+      if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
+      window.addMindScore(70, '🐾 동물 친구들 사랑의 브러싱 돌봄');
     };
 
+    // 2. [달콤 당근 & 신선한 과일 먹이주기]
     window.interactZooFeed = function() {
       initAudio();
-      soundChime(659);
-      setTimeout(() => soundChime(880), 100);
-      setTimeout(() => soundChime(1046), 200);
+      soundChime(523);
+      setTimeout(() => soundChime(659), 100);
+      setTimeout(() => soundChime(784), 200);
+      setTimeout(() => soundChime(1046), 320);
       triggerArmSwing(-18, -22);
-      zooFollowTimer = 8.0; // 먹이를 보고 신나서 인찬이 주변을 깡총깡총 모여듦
+      setHandCareItem('carrot');
+
+      window.zooCareCamTimer = zooCareCamTimer = 3.5;
+      window.zooFollowTimer = zooFollowTimer = 9.0;
+      zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
+
       if (typeof animatedAnimals !== 'undefined') {
+        const feedMessages = ['냠냠 꿀맛!', '아삭아삭!', '당근 최고!', '더 주세요~!', '배불러요!'];
         animatedAnimals.forEach((a, idx) => {
-          a.happyTimer = 7.0;
+          a.happyTimer = 8.0;
+          a.careCount = (a.careCount || 0) + 1;
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
-          createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.4, 0)), '#f97316');
+          setTimeout(() => {
+            createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.45, 0)), '#f97316');
+            createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.8, 0)), '#facc15');
+            if (typeof setAnimalMood === 'function') {
+              setAnimalMood(a, '🥕', feedMessages[idx % feedMessages.length], 'rgba(234, 88, 12, 0.92)', '#fef08a', 4.0);
+            }
+          }, idx * 150);
         });
       }
       createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 0.8, 0)), '#facc15');
-      showPlayerBubble('🥕 “맛있는 싱싱 당근과 꿀열매야! 맛있게 먹고 쑥쑥 자라렴!”');
-      showToast('🥕 <b>[달콤 당근 & 열매 피딩!]</b> 동물들이 깡총깡총 뛰어와 당근을 오물오물 맛있게 먹습니다! (+70점)');
-      window.addMindScore(70, '🥕 아기 동물원 달콤 먹이주기');
+      showPlayerBubble('🥕 “맛있는 싱싱 당근과 달콤한 꿀열매야! 꼭꼭 씹어 맛있게 먹어!”');
+      showToast('🥕 <b>[달콤 먹이 피딩 대성공!]</b> 배고픈 동물 친구들이 모여들어 맛있게 먹이를 먹었습니다! (+별빛가루 3 / +80점)');
+      state.stardustCount = (state.stardustCount || 0) + 3;
+      saveProgress();
+      if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
+      window.addMindScore(80, '🥕 아기 동물원 정성 먹이주기');
     };
 
+    // 3. [신나는 장난감 놀이 & 동물 서커스 댄스]
     window.interactZooPlay = function() {
       initAudio();
-      [523, 659, 784, 1046, 1318].forEach((freq, i) => {
-        setTimeout(() => soundChime(freq), i * 90);
+      [523, 659, 784, 988, 1175, 1318].forEach((freq, i) => {
+        setTimeout(() => soundChime(freq), i * 80);
       });
       triggerArmSwing(-18, -22);
-      zooFollowTimer = 9.0;
+      setHandCareItem('ball');
+
+      window.zooCareCamTimer = zooCareCamTimer = 4.0;
+      window.zooFollowTimer = zooFollowTimer = 10.0;
+      zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
+
       if (typeof animatedAnimals !== 'undefined') {
+        const playMessages = ['야호! 신난다!', '빙글빙글~', '폴짝폴짝!', '점프 점프!', '우와 축제다!'];
         animatedAnimals.forEach((a, idx) => {
-          a.happyTimer = 8.5;
+          a.happyTimer = 9.5;
+          a.careCount = (a.careCount || 0) + 1;
           const wp = new THREE.Vector3();
           a.group.getWorldPosition(wp);
-          setTimeout(() => createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.8, 0)), '#22c55e'), idx * 80);
+          setTimeout(() => {
+            createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.9, 0)), '#22c55e');
+            createMagicImpact(wp.clone().add(new THREE.Vector3(0, 1.3, 0)), '#38bdf8');
+            if (typeof setAnimalMood === 'function') {
+              setAnimalMood(a, '🎉', playMessages[idx % playMessages.length], 'rgba(16, 185, 129, 0.92)', '#a7f3d0', 4.5);
+            }
+          }, idx * 100);
         });
       }
-      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2.0, 0)));
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 2.2, 0)));
       showPlayerBubble('🎶 “동물 친구들과 다 함께 빙글빙글 춤추며 마음의 행복을 나눠요!”');
-      showToast('🎉 <b>[신나는 동물 댄스 파티!]</b> 곰돌이와 펭귄, 토끼가 인찬이 주위를 빙글빙글 돌며 신나게 춤을 춥니다! (+80점)');
-      window.addMindScore(80, '🎶 동물 친구들과 신나는 댄스');
+      showToast('🎉 <b>[동물 친구들과의 신나는 놀이 파티!]</b> 온 동물원이 축제 분위기로 물들었습니다! (+별빛가루 5 / +100점)');
+      state.stardustCount = (state.stardustCount || 0) + 5;
+      saveProgress();
+      if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
+      window.addMindScore(100, '🎶 숲속 아기 동물 축제 댄스 파티');
+    };
+
+    // 4. [포근한 품에 안아주기 (1:1 밀착 힐링 교감)]
+    window.interactZooCuddle = function() {
+      initAudio();
+      [587, 740, 880, 1175].forEach((freq, i) => {
+        setTimeout(() => soundChime(freq), i * 110);
+      });
+      triggerArmSwing(-18, -22);
+
+      window.zooCareCamTimer = zooCareCamTimer = 3.6;
+      window.zooFollowTimer = zooFollowTimer = 8.0;
+      zooTotalCareCount += 1; window.zooTotalCareCount = zooTotalCareCount;
+
+      if (typeof animatedAnimals !== 'undefined') {
+        animatedAnimals.forEach((a, idx) => {
+          a.happyTimer = 7.5;
+          const wp = new THREE.Vector3();
+          a.group.getWorldPosition(wp);
+          setTimeout(() => {
+            createMagicImpact(wp.clone().add(new THREE.Vector3(0, 0.6, 0)), '#a855f7');
+            if (typeof setAnimalMood === 'function') {
+              setAnimalMood(a, '💖', '따뜻해요~ 고마워요!', 'rgba(147, 51, 234, 0.92)', '#f3e8ff', 3.8);
+            }
+          }, idx * 100);
+        });
+      }
+      spawnConfetti(playerRig.position.clone().add(new THREE.Vector3(0, 1.8, 0)));
+      showPlayerBubble('🤗 “포근한 아기 동물들을 품에 꼭 안아주니 심장이 콩닥콩닥 마음이 스르륵 녹아요!”');
+      showToast('🤗 <b>[포근한 동물 포옹 교감 완료!]</b> 따스한 온기로 마음의 긴장이 풀리고 평화가 깃듭니다! (+별빛가루 3 / +90점)');
+      state.stardustCount = (state.stardustCount || 0) + 3;
+      saveProgress();
+      if (typeof updateStardustCountUI === 'function') updateStardustCountUI();
+      window.addMindScore(90, '🤗 동물 친구들과 따스한 포옹 교감');
     };
 
     window.interactZooAnimals = function() {
       window.interactZooPet();
     };
-
     window.interactGardenBloom = function() {
       initAudio();
       [523, 659, 784, 988, 1175].forEach((freq, i) => {
@@ -10960,13 +11174,14 @@
         track: { color: '#06b6d4', t: '최외곽 달리기 트랙 & 스타트 아치', d: isMissionUnlocked('track') ? '트랙과 하늘의 제트 아머·근두운·축지법·UFO·호버보드를 모으며 8개 부스터 게이트를 돌파하세요!' : `트랙과 다양한 비행 아이템을 자유롭게 체험할 수 있고, 미션 완주는 5대 감정 해결 후 활성화됩니다 (${getCoreStoryDoneCount()}/5).`, actText: isMissionUnlocked('track') ? '스피드 대시 출발 (G)' : `🔒 완주 미션 (5대 감정 완료 후 · ${getCoreStoryDoneCount()}/5)`, actFn: () => window.startOuterTrackDash() },
         zoo: {
           color: '#22c55e',
-          t: '숲속 아기 동물원 · 따뜻한 감정 교감',
-          d: '토끼, 아기곰, 펭귄 친구들을 쓰다듬고, 당근을 먹여주며 신나게 춤춰보세요! ([G] 쓰다듬기)',
-          actText: '🥰 쓰다듬기 (G)',
+          t: '🐾 숲속 아기 동물원 · 행복 감정 돌봄 센터',
+          d: '귀여운 토끼, 아기곰, 펭귄에게 빗질해주고, 당근을 먹이고, 신나게 춤추며 품에 꼬옥 안아주세요!',
+          actText: '✨ 빗질 & 쓰다듬기 (G)',
           actFn: () => window.interactZooPet(),
           extraBtns: [
             { text: '🥕 당근 먹이주기', class: 'zp-btn secondary', fn: () => window.interactZooFeed() },
-            { text: '🎶 댄스 파티', class: 'zp-btn secondary', fn: () => window.interactZooPlay() }
+            { text: '🎉 놀이 & 댄스 파티', class: 'zp-btn secondary', fn: () => window.interactZooPlay() },
+            { text: '🤗 품에 안아주기', class: 'zp-btn secondary', fn: () => window.interactZooCuddle() }
           ]
         },
         garden: { color: '#f43f5e', t: '치유의 유리온실 식물원', d: '무지개 빛 꽃향기를 깊게 들이마시며 편안하게 숨을 고르고 가벼운 발걸음을 얻어보세요.', actText: '꽃향기 치유 호흡 (G)', actFn: () => window.interactGardenBloom() },
@@ -12298,13 +12513,25 @@
       
       // [동물원 아기 동물 실시간 인터랙티브 교감 & 놀이기구 애니메이션]
       if (typeof zooFollowTimer !== 'undefined' && zooFollowTimer > 0) {
-        zooFollowTimer = Math.max(0, zooFollowTimer - dt);
+        window.zooFollowTimer = zooFollowTimer = Math.max(0, zooFollowTimer - dt);
       }
       if (typeof animatedAnimals !== 'undefined') {
         animatedAnimals.forEach((anim, aIdx) => {
           if (anim.happyTimer && anim.happyTimer > 0) {
             anim.happyTimer = Math.max(0, anim.happyTimer - dt);
           }
+          if (anim.moodTimer && anim.moodTimer > 0) {
+            anim.moodTimer = Math.max(0, anim.moodTimer - dt);
+            if (anim.reaction && anim.reaction.sprite) {
+              anim.reaction.sprite.visible = true;
+              // 위아래로 둥실둥실 떠오르는 부유 모션
+              const bob = Math.sin(time * 4.0 + aIdx) * 0.12;
+              anim.reaction.sprite.position.y = (anim.type === 'bear' ? 1.85 : 1.35) + bob;
+            }
+          } else if (anim.reaction && anim.reaction.sprite) {
+            anim.reaction.sprite.visible = false;
+          }
+
           const isHappy = (anim.happyTimer && anim.happyTimer > 0);
           const isFollowing = (typeof zooFollowTimer !== 'undefined' && zooFollowTimer > 0);
 
@@ -12313,39 +12540,61 @@
             const localPx = playerRig.position.x - (-18);
             const localPz = playerRig.position.z - (-22);
             const targetAng = Math.atan2(localPx - anim.group.position.x, localPz - anim.group.position.z);
-            anim.group.rotation.y = targetAng;
+            anim.group.rotation.y = THREE.MathUtils.lerp(anim.group.rotation.y, targetAng, dt * 4.0);
 
-            const approachDist = 1.6 + aIdx * 0.45;
+            const approachDist = 1.35 + aIdx * 0.35;
             const dirX = localPx - anim.baseX;
             const dirZ = localPz - anim.baseZ;
             const len = Math.hypot(dirX, dirZ);
             if (len > approachDist) {
-              const moveTargetX = anim.baseX + (dirX / len) * (len - approachDist) * 0.6;
-              const moveTargetZ = anim.baseZ + (dirZ / len) * (len - approachDist) * 0.6;
-              anim.group.position.x += (moveTargetX - anim.group.position.x) * dt * 2.0;
-              anim.group.position.z += (moveTargetZ - anim.group.position.z) * dt * 2.0;
+              const moveTargetX = anim.baseX + (dirX / len) * (len - approachDist) * 0.75;
+              const moveTargetZ = anim.baseZ + (dirZ / len) * (len - approachDist) * 0.75;
+              anim.group.position.x += (moveTargetX - anim.group.position.x) * dt * 2.8;
+              anim.group.position.z += (moveTargetZ - anim.group.position.z) * dt * 2.8;
             }
           } else {
+            // 원래 위치로 천천히 복귀
             anim.group.position.x += (anim.baseX - anim.group.position.x) * dt * 1.5;
             anim.group.position.z += (anim.baseZ - anim.group.position.z) * dt * 1.5;
+            anim.group.rotation.y += (0 - anim.group.rotation.y) * dt * 1.2;
           }
 
           if (anim.type === 'bunny') {
-            const hopSpeed = isHappy ? 12.0 : 6.0;
-            const hopHeight = isHappy ? 0.75 : 0.45;
+            const hopSpeed = isHappy ? 14.0 : 6.0;
+            const hopHeight = isHappy ? 0.85 : 0.45;
             const hop = Math.max(0, Math.sin(time * hopSpeed + anim.phase));
             anim.group.position.y = hop * hopHeight;
-            anim.group.rotation.x = hop * (isHappy ? 0.4 : 0.25);
-            if (isHappy) anim.group.rotation.y += dt * 3.0;
+            anim.group.rotation.x = hop * (isHappy ? 0.35 : 0.22);
+            // 귀 쫑긋쫑긋 모션
+            if (anim.earL && anim.earR) {
+              const earWiggle = Math.sin(time * (isHappy ? 16.0 : 8.0) + anim.phase) * (isHappy ? 0.45 : 0.15);
+              anim.earL.rotation.z = earWiggle;
+              anim.earR.rotation.z = -earWiggle;
+            }
+            if (isHappy && hop > 0.5) {
+              anim.group.rotation.y += dt * 4.5; // 신나서 공중 스핀 점프
+            }
           } else if (anim.type === 'penguin') {
-            const waddleSpeed = isHappy ? 10.0 : 5.0;
-            const waddleAngle = isHappy ? 0.35 : 0.18;
+            const waddleSpeed = isHappy ? 12.0 : 5.0;
+            const waddleAngle = isHappy ? 0.45 : 0.18;
             anim.group.rotation.z = Math.sin(time * waddleSpeed + anim.phase) * waddleAngle;
-            anim.group.position.y = Math.abs(Math.sin(time * waddleSpeed + anim.phase)) * (isHappy ? 0.25 : 0.08);
+            anim.group.position.y = Math.abs(Math.sin(time * waddleSpeed + anim.phase)) * (isHappy ? 0.38 : 0.08);
+            // 날개 파닥파닥 모션
+            if (anim.wingL && anim.wingR) {
+              const flap = Math.sin(time * (isHappy ? 18.0 : 6.0)) * (isHappy ? 0.65 : 0.2);
+              anim.wingL.rotation.z = flap;
+              anim.wingR.rotation.z = -flap;
+            }
           } else if (anim.type === 'bear') {
-            const pulse = isHappy ? (1 + Math.sin(time * 6.0) * 0.15) : (1 + Math.sin(time * 2.5) * 0.04);
-            anim.group.scale.set(pulse, isHappy ? (1 + Math.cos(time * 6.0) * 0.18) : (1 + Math.cos(time * 2.5) * 0.05), pulse);
-            if (isHappy) anim.group.position.y = Math.abs(Math.sin(time * 4.0)) * 0.35;
+            const pulse = isHappy ? (1 + Math.sin(time * 7.0) * 0.18) : (1 + Math.sin(time * 2.5) * 0.04);
+            anim.group.scale.set(pulse, isHappy ? (1 + Math.cos(time * 7.0) * 0.22) : (1 + Math.cos(time * 2.5) * 0.05), pulse);
+            if (isHappy) {
+              anim.group.position.y = Math.abs(Math.sin(time * 5.0)) * 0.5; // 쿵덕쿵덕 신나는 곰 댄스
+              anim.group.rotation.z = Math.sin(time * 4.0) * 0.18;
+            } else {
+              anim.group.position.y = 0;
+              anim.group.rotation.z = 0;
+            }
           }
         });
       }
@@ -13277,6 +13526,17 @@
       let targetFov = 50;
       let isCinematicCustomCam = false;
 
+      // 0. [동물 친구 돌봄 시네마틱 카메라: 인찬이와 동물들이 한 화면에 잡히는 따스한 로우 앵글]
+      if (typeof zooCareCamTimer !== 'undefined' && zooCareCamTimer > 0) {
+        window.zooCareCamTimer = zooCareCamTimer = Math.max(0, zooCareCamTimer - dt);
+        isCinematicCustomCam = true;
+        const zooFocus = playerRig.position.clone().add(new THREE.Vector3(0, 0.85, 0));
+        camState.targetPos.lerp(zooFocus, 0.18);
+        const dynCamPos = playerRig.position.clone().add(new THREE.Vector3(2.8, 1.75, 3.2));
+        camera.position.lerp(dynCamPos, 0.14);
+        camera.lookAt(camState.targetPos);
+        targetFov = 46;
+      }
       // 1. [엄마와의 따뜻한 포옹 시네마틱: 360도 부드러운 궤도 회전 + 다이내믹 시네마틱 워크]
       if (momHugTimer > 0) {
         isCinematicCustomCam = true;
