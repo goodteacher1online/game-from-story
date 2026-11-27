@@ -4139,7 +4139,7 @@
       bg.add(bBody, bHead, earPivot1, earPivot2, e1, e2, nose, tail);
 
       const react = createAnimalReactionSprite(1.35);
-      bg.add(react.sprite);
+      zooGroup.add(react.sprite);
 
       zooGroup.add(bg);
       animatedAnimals.push({
@@ -4162,7 +4162,7 @@
 
     bearGroup.add(bearBody, bearHead, bEarL, bEarR, bearSnout, bearNose);
     const bearReact = createAnimalReactionSprite(1.85);
-    bearGroup.add(bearReact.sprite);
+    zooGroup.add(bearReact.sprite);
 
     zooGroup.add(bearGroup);
     animatedAnimals.push({
@@ -4187,7 +4187,7 @@
 
       pg.add(pBody, pBelly, pBeak, wingL, wingR);
       const pReact = createAnimalReactionSprite(1.35);
-      pg.add(pReact.sprite);
+      zooGroup.add(pReact.sprite);
 
       zooGroup.add(pg);
       animatedAnimals.push({
@@ -12524,9 +12524,12 @@
             anim.moodTimer = Math.max(0, anim.moodTimer - dt);
             if (anim.reaction && anim.reaction.sprite) {
               anim.reaction.sprite.visible = true;
-              // 위아래로 둥실둥실 떠오르는 부유 모션
+              // 동물의 현재 월드/로컬 위치를 따라가며 말풍선 표시 (토끼가 고공 회전해도 말풍선은 똑바로 떠있음)
               const bob = Math.sin(time * 4.0 + aIdx) * 0.12;
-              anim.reaction.sprite.position.y = (anim.type === 'bear' ? 1.85 : 1.35) + bob;
+              const headOffset = (anim.type === 'bear' ? 1.85 : 1.35);
+              anim.reaction.sprite.position.x = anim.group.position.x;
+              anim.reaction.sprite.position.z = anim.group.position.z;
+              anim.reaction.sprite.position.y = anim.group.position.y + headOffset + bob;
             }
           } else if (anim.reaction && anim.reaction.sprite) {
             anim.reaction.sprite.visible = false;
@@ -12560,19 +12563,43 @@
           }
 
           if (anim.type === 'bunny') {
-            const hopSpeed = isHappy ? 14.0 : 6.0;
-            const hopHeight = isHappy ? 0.85 : 0.45;
-            const hop = Math.max(0, Math.sin(time * hopSpeed + anim.phase));
-            anim.group.position.y = hop * hopHeight;
-            anim.group.rotation.x = hop * (isHappy ? 0.35 : 0.22);
-            // 귀 쫑긋쫑긋 모션
-            if (anim.earL && anim.earR) {
-              const earWiggle = Math.sin(time * (isHappy ? 16.0 : 8.0) + anim.phase) * (isHappy ? 0.45 : 0.15);
-              anim.earL.rotation.z = earWiggle;
-              anim.earR.rotation.z = -earWiggle;
-            }
-            if (isHappy && hop > 0.5) {
-              anim.group.rotation.y += dt * 4.5; // 신나서 공중 스핀 점프
+            if (isHappy) {
+              // 🐰 기쁨 폭발: 하늘 높이(2.6m~3.2m) 점프하여 공중에서 멋지게 2회전(4π = 720도) 공중제비 텀블링!
+              const cycleTime = 1.35; // 한 번의 고공 점프 텀블링 주기(초)
+              const jumpProgress = ((time * 1.05 + anim.phase) % cycleTime) / cycleTime; // 0.0 ~ 1.0
+              // 포물선 도약 궤적 (sin 곡선 0 -> 1 -> 0)
+              const jumpArc = Math.sin(jumpProgress * Math.PI);
+              const maxJumpHeight = 2.85 + (aIdx % 3) * 0.35; // 2.85m ~ 3.55m 고공 점프
+              anim.group.position.y = jumpArc * maxJumpHeight;
+              
+              // 공중에서 정확하게 2바퀴(720도, 4π) 백플립/피루엣 텀블링 회전
+              anim.group.rotation.x = jumpProgress * Math.PI * 4.0;
+              // 몸체 Y축도 살짝 나선형으로 1바퀴 트위스트
+              anim.group.rotation.y = (anim.baseRotY || 0) + jumpProgress * Math.PI * 2.0;
+
+              // 귀도 공중바람에 펄럭이며 기쁨 폭발
+              if (anim.earL && anim.earR) {
+                const earFly = Math.sin(time * 22.0 + anim.phase) * 0.75;
+                anim.earL.rotation.z = earFly;
+                anim.earR.rotation.z = -earFly;
+                anim.earL.rotation.x = jumpArc * 0.6;
+                anim.earR.rotation.x = jumpArc * 0.6;
+              }
+            } else {
+              // 평상시: 귀엽고 아담하게 깡총깡총 뛰기
+              const hopSpeed = 6.0;
+              const hopHeight = 0.45;
+              const hop = Math.max(0, Math.sin(time * hopSpeed + anim.phase));
+              anim.group.position.y = hop * hopHeight;
+              anim.group.rotation.x = hop * 0.22;
+              anim.group.rotation.y = anim.baseRotY || 0;
+              if (anim.earL && anim.earR) {
+                const earWiggle = Math.sin(time * 8.0 + anim.phase) * 0.18;
+                anim.earL.rotation.z = earWiggle;
+                anim.earR.rotation.z = -earWiggle;
+                anim.earL.rotation.x = 0;
+                anim.earR.rotation.x = 0;
+              }
             }
           } else if (anim.type === 'penguin') {
             const waddleSpeed = isHappy ? 12.0 : 5.0;
