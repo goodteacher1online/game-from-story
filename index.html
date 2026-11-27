@@ -8707,12 +8707,15 @@
     window.sitLibraryChair = function() {
       initAudio();
       soundChime(528);
-      activePlaygroundRide = { type: 'chair', timer: 3.5 };
-      playerRig.position.set(22.0, 0.68, -23.5);
+      setTimeout(() => soundChime(660), 180);
+      setTimeout(() => soundChime(792), 360);
+      activePlaygroundRide = { type: 'chair', timer: 7.0, elapsed: 0 };
+      playerRig.position.set(22.0, 0.58, -23.5);
       playerRig.rotation.y = Math.PI; // 책장과 독서 테이블 쪽을 바라봄
-      createMagicImpact(playerRig.position, '#38bdf8');
-      showPlayerBubble('📚 “숲속 독서대 의자에 앉아 《인찬이의 마음 손님》 동화책을 읽으니 마음이 따뜻해져!”');
-      showToast('📚 <b>[숲속 독서대 독서 타임]</b> 의자에 앉아 감정 손님 동화책의 지혜를 읽었습니다! (+90점)');
+      setHandCareItem('book');
+      createMagicImpact(playerRig.position.clone().add(new THREE.Vector3(0, 0.6, 0)), '#38bdf8');
+      showPlayerBubble('📚 “숲속 소파에 편안히 앉아 《인찬이의 마음 손님》 동화책을 읽으니 마음이 차분하고 따뜻해져요!”');
+      showToast('📖 <b>[숲속 독서대 독서 타임]</b> 편안하게 의자에 앉아 동화책을 펼쳐 읽습니다! ([G] 일어서기 · +90점)');
       window.addMindScore(90, '📚 숲속 독서대 동화책 읽기');
     };
 
@@ -8756,10 +8759,19 @@
         const sBall = new THREE.Mesh(new THREE.DodecahedronGeometry(0.22), new THREE.MeshStandardMaterial({ color: 0xec4899, emissive: 0xdb2777, emissiveIntensity: 0.6 }));
         playerHandCareItem.add(sBall);
         playerHandCareItem.visible = true;
+      } else if (type === 'book') {
+        // 📚 양손으로 펼쳐 든 《인찬이의 마음 손님》 동화책
+        const bookCover = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.04, 0.38), new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.4 }));
+        const bookPages = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.05, 0.34), new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfef08a, emissiveIntensity: 0.25 }));
+        bookPages.position.y = 0.03;
+        playerHandCareItem.add(bookCover, bookPages);
+        playerHandCareItem.position.set(0, -0.45, 0.35);
+        playerHandCareItem.rotation.set(-0.35, 0, 0);
+        playerHandCareItem.visible = true;
       } else {
         playerHandCareItem.visible = false;
       }
-      setTimeout(() => { playerHandCareItem.visible = false; }, 3500);
+      setTimeout(() => { playerHandCareItem.visible = false; }, (type === 'book' ? 7000 : 3500));
     }
 
     // 1. [부드럽게 빗질 & 쓰다듬기 돌봄]
@@ -12061,8 +12073,20 @@
           rightArm.rotation.set(-1.85, 0, 0.32);
           if (activePlaygroundRide.timer <= 0) cancelPlaygroundRide();
         } else if (rType === 'chair') {
-          playerRig.position.set(22.0, 0.68, -23.5);
+          activePlaygroundRide.elapsed = (activePlaygroundRide.elapsed || 0) + dt;
+          // 의자 착석 깊이 (Y: 0.58로 자연스러운 쿠션 착석)
+          playerRig.position.set(22.0, 0.58, -23.5);
           playerRig.rotation.y = Math.PI;
+          // 상체 자연스러운 착석 포즈: 몸을 살짝 숙이고 책을 바라보는 각도
+          const readBreath = Math.sin(activePlaygroundRide.elapsed * 2.2) * 0.03;
+          torso.position.y = 1.12 + readBreath;
+          torso.rotation.set(0.12, 0, 0); // 독서대를 향해 상체를 앞으로 7도 숙임
+          // 다리 90도 굽혀 소파에 편안히 걸터앉는 착석 포즈
+          leftLeg.rotation.set(-Math.PI / 2 + 0.18, 0, 0.06);
+          rightLeg.rotation.set(-Math.PI / 2 + 0.18, 0, -0.06);
+          // 양손을 앞으로 모아 동화책을 정성껏 받쳐 들고 읽는 독서 제스처
+          leftArm.rotation.set(-1.05 + readBreath * 0.4, 0.28, -0.22);
+          rightArm.rotation.set(-1.05 + readBreath * 0.4, -0.28, 0.22);
           if (activePlaygroundRide.timer <= 0) cancelPlaygroundRide();
         } else if (rType === 'tube') {
           // 🍩 치유의 도넛 튜브: 풀장 물 위를 둥실둥실 떠다니는 여유로운 물결 회전
@@ -13553,16 +13577,19 @@
       let targetFov = 50;
       let isCinematicCustomCam = false;
 
-      // 0. [동물 친구 돌봄 시네마틱 카메라: 인찬이와 동물들이 한 화면에 잡히는 따스한 로우 앵글]
+      // 0. [동물 친구 돌봄 시네마틱 카메라: 토끼 고공 점프와 전체 동물 친구들이 시원하게 모두 담기는 와이드 파노라마 앵글]
       if (typeof zooCareCamTimer !== 'undefined' && zooCareCamTimer > 0) {
         window.zooCareCamTimer = zooCareCamTimer = Math.max(0, zooCareCamTimer - dt);
         isCinematicCustomCam = true;
-        const zooFocus = playerRig.position.clone().add(new THREE.Vector3(0, 0.85, 0));
+        // 동물원 중앙과 인찬이 사이를 중심으로 포커스
+        const zooFocus = playerRig.position.clone().add(new THREE.Vector3(0, 1.35, 0));
         camState.targetPos.lerp(zooFocus, 0.18);
-        const dynCamPos = playerRig.position.clone().add(new THREE.Vector3(2.8, 1.75, 3.2));
+        
+        // 카메라 거리와 높이를 충분히 확보하여(거리 6.8m, 높이 3.6m), 토끼의 3.5m 고공 2회전 텀블링과 곰·펭귄 군무가 한눈에 다 보이도록 확장
+        const dynCamPos = playerRig.position.clone().add(new THREE.Vector3(4.5, 3.6, 5.2));
         camera.position.lerp(dynCamPos, 0.14);
         camera.lookAt(camState.targetPos);
-        targetFov = 46;
+        targetFov = 58; // 시원하고 탁 트인 시야각
       }
       // 1. [엄마와의 따뜻한 포옹 시네마틱: 360도 부드러운 궤도 회전 + 다이내믹 시네마틱 워크]
       if (momHugTimer > 0) {
@@ -13613,13 +13640,24 @@
           camera.lookAt(camState.targetPos);
           targetFov = 52;
         } else if (rType === 'chair') {
-          // 숲속 독서대: 포근하게 동화책을 읽는 감성 클로즈업
-          const chTarget = new THREE.Vector3(22.0, 1.05, -23.5);
-          camState.targetPos.lerp(chTarget, 0.14);
-          const chCamPos = new THREE.Vector3(19.8, 1.45, -21.8);
-          camera.position.lerp(chCamPos, 0.12);
+          // 숲속 독서대: 책 읽는 인찬이와 숲속 책 카페 전체가 감성적으로 담기는 360도 궤도 시네마틱 워크
+          const chElapsed = activePlaygroundRide.elapsed || 0;
+          const readCenter = new THREE.Vector3(22.0, 1.08, -23.8); // 소파와 독서 테이블 중심
+          camState.targetPos.lerp(readCenter, 0.16);
+
+          // 7초간 앞대각선에서 반대편으로 부드럽게 감싸 돌며 인찬이와 동화책, 테이블을 비추는 영화적 카메라 궤도
+          const readAngle = Math.PI * 0.85 + (chElapsed / 7.0) * 1.35; // 약 77도 와이드 궤도 회전
+          const readDist = 3.65 - Math.sin((chElapsed / 7.0) * Math.PI) * 0.35; // 3.3m ~ 3.65m의 안정적인 시네마틱 줌
+          const readHeight = 1.65 + Math.sin((chElapsed / 7.0) * Math.PI) * 0.25;
+
+          const dynChCamPos = new THREE.Vector3(
+            22.0 + Math.sin(readAngle) * readDist,
+            readHeight,
+            -23.8 + Math.cos(readAngle) * readDist
+          );
+          camera.position.lerp(dynChCamPos, 0.14);
           camera.lookAt(camState.targetPos);
-          targetFov = 44;
+          targetFov = 48;
         } else if (rType === 'tube') {
           // 🍩 치유의 도넛 튜브: 에메랄드 풀장을 시원하게 내려다보는 트로피컬 와이드 앵글
           const tubeTarget = new THREE.Vector3(-48.0, 1.0, -22.0);
