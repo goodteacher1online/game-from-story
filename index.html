@@ -3572,10 +3572,14 @@
     // 지상에서 천공섬으로 단숨에 솟구쳐 오르는 신비로운 무지개 빛 바람기둥 발판 4기
     const skyAirVents = window.skyAirVents = [];
     const airVentLocations = [
-      { x: -55, z: 42, targetY: 19.5, name: "별무리 천공섬 상승 바람기둥", color: 0x38bdf8 },
-      { x: -25, z: -5, targetY: 24.5, name: "제니스 최고봉 상승 바람기둥", color: 0xa855f7 },
-      { x: 5, z: 56, targetY: 22.0, name: "무지개 구름섬 상승 바람기둥", color: 0xf472b6 },
-      { x: -65, z: 15, targetY: 21.0, name: "바람개비 구름섬 상승 바람기둥", color: 0x34d399 }
+      { x: -55, z: 42, targetY: 19.5, name: "별무리 천공섬 에어 엘리베이터", color: 0xffd54f },
+      { x: -25, z: -5, targetY: 24.5, name: "제니스 최고봉 에어 엘리베이터", color: 0xffb74d },
+      { x: 5, z: 56, targetY: 22.0, name: "무지개 구름섬 에어 엘리베이터", color: 0xf06292 },
+      { x: -65, z: 15, targetY: 21.0, name: "바람개비 구름섬 에어 엘리베이터", color: 0x4fc3f7 },
+      { x: 10, z: -52, targetY: 20.0, name: "북쪽 은하수섬 에어 엘리베이터", color: 0x4db6ac },
+      { x: 60, z: -15, targetY: 17.5, name: "동북 오로라섬 에어 엘리베이터", color: 0xba68c8 },
+      { x: 55, z: 48, targetY: 15.0, name: "동남 햇살섬 에어 엘리베이터", color: 0xff8a65 },
+      { x: -58, z: -25, targetY: 14.0, name: "서북 에메랄드섬 에어 엘리베이터", color: 0x81c784 }
     ];
 
     airVentLocations.forEach(vent => {
@@ -10295,7 +10299,7 @@
     // ==========================================
     // 9. 입력 & 물리 & NPC 대화
     // ==========================================
-    const input = window.input = { w: false, a: false, s: false, d: false, shift: false, space: false, joyX: 0, joyY: 0, lookJoyX: 0, lookJoyY: 0 };
+    const input = window.input = { w: false, a: false, s: false, d: false, shift: false, space: false, descend: false, joyX: 0, joyY: 0, lookJoyX: 0, lookJoyY: 0 };
     const playerPhysics = window.playerPhysics = {
       velY: 0, prevVelY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true,
       isDancing: false, danceTimer: 0, isMeditating: false,
@@ -10319,7 +10323,18 @@
         doJump();
       }
       if (k === 'f') shootMagicBullet();
-      if (k === 'c') doBreatheWind();
+      if (k === 'c') {
+        if (playerPhysics.skyRide) {
+          input.descend = true;
+          // 비행 중 [C] 단발 탭 시 즉시 3.5m 부드러운 하강
+          const curAlt = playerPhysics.skyRide.alt || playerRig.position.y;
+          const localG = (typeof getGroundHeight === 'function') ? getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y) : 0;
+          playerPhysics.skyRide.alt = Math.max(localG + 1.8, curAlt - 3.5);
+          soundJump(false);
+        } else {
+          doBreatheWind();
+        }
+      }
       if (k === 'e') doDance();
       if (k === 'q') doMeditate();
       if (k === 'g') interactCurrentZone();
@@ -10366,6 +10381,7 @@
       if (k === 'd' || k === 'arrowright') input.d = false;
       if (e.key === 'Shift') input.shift = false;
       if (e.code === 'Space') input.space = false;
+      if (k === 'c') input.descend = false;
     });
 
     // raycaster initialized globally above
@@ -13282,16 +13298,19 @@
         const sr = playerPhysics.skyRide;
         sr.timer -= dt;
         sr.trailTimer = (sr.trailTimer || 0) + dt;
-        // [천공 비행 탈것 물리: 스페이스바 누르고 있으면 초속 10m로 부드럽게 고공 상승]
+        // [천공 비행 탈것 물리: Space 홀드 = 고공 상승 / C 또는 Shift 홀드 = 하강]
         if (input.space) {
           sr.alt = Math.min(35.0, (sr.alt || playerRig.position.y) + dt * 10.5);
+        } else if (input.descend || (input.shift && isFlyingMode)) {
+          // [C] 키나 [Shift] 키를 누르고 있으면 초속 8.5m 속도로 시원하고 안전하게 하강
+          sr.alt = Math.max(0.5, (sr.alt || playerRig.position.y) - dt * 8.5);
         }
         
-        // 지형(천공섬 등) 아래로 파고들지 않도록 현재 발밑 지형 높이 + 1.8m 안전 고도 자동 확보
+        // 지형(천공섬 등) 아래로 파고들지 않도록 현재 발밑 지형 높이 + 1.6m 안전 고도 확보
         const localGroundY = (typeof getGroundHeight === 'function')
           ? getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y)
           : 0;
-        const minSafetyAlt = Math.max(sr.baseAlt, localGroundY + 1.8);
+        const minSafetyAlt = Math.max(sr.baseAlt * 0.65, localGroundY + 1.6);
         if ((sr.alt || sr.baseAlt) < minSafetyAlt) {
           sr.alt = minSafetyAlt;
         }
@@ -13427,7 +13446,7 @@
         if (playerPhysics.skyRide) {
           const sr = playerPhysics.skyRide;
           if (rideInfoEl) rideInfoEl.textContent = `${sr.label} · 고도 ${playerRig.position.y.toFixed(1)}m · ${Math.max(0, sr.timer).toFixed(1)}초`;
-          if (rideKeysEl) rideKeysEl.textContent = '[Space 홀드] 고공 상승(최대 35m) · [G] 천공섬 착지';
+          if (rideKeysEl) rideKeysEl.textContent = '[Space] 상승 · [C/Shift] 하강 · [G] 천공섬 착지';
         } else if (playerPhysics.ironManAutoLap) {
           const lap = playerPhysics.ironManAutoLap;
           const pct = Math.min(100, Math.round((lap.traveled / (Math.PI * 2)) * 100));
@@ -13658,6 +13677,24 @@
             window.addMindScore(sg.isSkyGem ? 60 : 40, sg.isSkyGem ? `천공 보석 획득! (${collectedStardust}/${stardustCoords.length})` : `마음 조각 수집 (${collectedStardust}/${stardustCoords.length})`);
             showToast(sg.isSkyGem ? '💎✨ <b>[천공의 보석 획득!]</b> 신비로운 천공섬의 보석을 모았습니다! (+60점)' : '⭐ 마음 조각을 모았습니다! (+40점)');
             saveProgress();
+
+            // [천공섬 보석 무한 리스폰]: 천공섬 보석은 획득 후 12초 뒤 하늘에서 반짝이며 무한 재생성!
+            if (sg.isSkyGem) {
+              setTimeout(() => {
+                sg.collected = false;
+                sg.mesh.visible = true;
+                sg.mesh.scale.set(0.01, 0.01, 0.01);
+                createMagicImpact(sg.mesh.position, '#67e8f9');
+                // 부드러운 스케일 팝업
+                let popT = 0;
+                const popTimer = setInterval(() => {
+                  popT += 0.1;
+                  const sc = Math.min(1.0, popT * 1.5);
+                  sg.mesh.scale.set(sc, sc, sc);
+                  if (popT >= 1.0) clearInterval(popTimer);
+                }, 30);
+              }, 12000);
+            }
           }
         });
       }
