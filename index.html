@@ -11660,24 +11660,54 @@
     ];
 
     stardustCoords.forEach((coord, idx) => {
-      const starGeo = new THREE.OctahedronGeometry(0.28, 0);
+      // 천공섬 보석 여부 확인: y > 10.0인 경우 천공 보석으로 등록
+      const isSkyGem = coord[1] > 10.0;
+      // 가장 가까운 천공섬 찾기
+      let nearestIsland = null;
+      if (isSkyGem && typeof miniIslands !== 'undefined' && Array.isArray(miniIslands)) {
+        for (let i = 0; i < miniIslands.length; i++) {
+          const isl = miniIslands[i];
+          if (Math.hypot(coord[0] - isl.x, coord[2] - isl.z) <= (isl.r + 1.5)) {
+            nearestIsland = isl;
+            break;
+          }
+        }
+      }
+
+      // 보석 크기: 천공섬 보석은 시인성이 뛰어나도록 1.5배(0.42)로 큼직하고 화려하게 제작
+      const gemRadius = isSkyGem ? 0.42 : 0.28;
+      const starGeo = new THREE.OctahedronGeometry(gemRadius, 0);
       const starMat = new THREE.MeshStandardMaterial({
-        color: 0xfbbf24, emissive: 0xf59e0b, emissiveIntensity: 0.9, roughness: 0.2, metalness: 0.5
+        color: isSkyGem ? 0xfef08a : 0xfbbf24,
+        emissive: isSkyGem ? 0xf59e0b : 0xf59e0b,
+        emissiveIntensity: isSkyGem ? 1.35 : 0.9,
+        roughness: 0.15,
+        metalness: 0.6
       });
       const starMesh = new THREE.Mesh(starGeo, starMat);
       starMesh.position.set(coord[0], coord[1], coord[2]);
       worldGroup.add(starMesh);
 
       const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(0.38, 0.02, 8, 20),
-        new THREE.MeshBasicMaterial({ color: 0xfde047, transparent: true, opacity: 0.7 })
+        new THREE.TorusGeometry(gemRadius * 1.45, 0.028, 8, 20),
+        new THREE.MeshBasicMaterial({ color: isSkyGem ? 0x67e8f9 : 0xfde047, transparent: true, opacity: 0.85 })
       );
       ring.rotation.x = Math.PI / 3;
       starMesh.add(ring);
 
       const wasCollected = Array.isArray(state.collectedGemIds) && state.collectedGemIds.includes(idx);
       starMesh.visible = !wasCollected;
-      stardustGems.push({ mesh: starMesh, collected: wasCollected, baseY: coord[1], phase: idx * 0.7 });
+      stardustGems.push({
+        mesh: starMesh,
+        collected: wasCollected,
+        baseX: coord[0],
+        baseZ: coord[2],
+        baseY: coord[1],
+        isSkyGem,
+        island: nearestIsland,
+        relY: nearestIsland ? (coord[1] - nearestIsland.topY) : 0,
+        phase: idx * 0.7
+      });
     });
     window.updateStardustCountUI();
 
@@ -13579,28 +13609,41 @@
       if (typeof stardustGems !== 'undefined') {
         stardustGems.forEach((sg, idx) => {
           if (sg.collected) return;
-          sg.mesh.rotation.y += dt * 2.2;
-          const bobY = sg.baseY + Math.sin(time * 2.8 + sg.phase) * 0.18;
-          sg.mesh.position.y = bobY;
+          sg.mesh.rotation.y += dt * 2.5;
 
-          // [아머 / 비행 탈것 자석 흡수 & 넉넉한 획득 판정]
+          // 천공섬 보석은 천공섬의 실시간 수직 부유(m.group.position.y)와 정확히 1:1 동기화
+          if (sg.isSkyGem && sg.island && sg.island.group) {
+            const islandCurrSurface = sg.island.group.position.y + 2.7;
+            sg.mesh.position.y = islandCurrSurface + 0.45 + Math.sin(time * 3.0 + sg.phase) * 0.12;
+          } else {
+            const bobY = sg.baseY + Math.sin(time * 2.8 + sg.phase) * 0.18;
+            sg.mesh.position.y = bobY;
+          }
+
           const isFlyingMode = !!(playerPhysics.ironManAutoLap || playerPhysics.skyRide);
           const pPos = playerRig.position;
           const dXZ = Math.hypot(pPos.x - sg.mesh.position.x, pPos.z - sg.mesh.position.z);
           const dY = Math.abs(pPos.y - sg.mesh.position.y);
           const dist3D = pPos.distanceTo(sg.mesh.position);
 
-          // 비행 중에는 넓은 자석 범위(반경 7.5m)로 보석을 플레이어 쪽으로 빨아들임
-          if (isFlyingMode && dXZ < 7.5 && dY < 5.0) {
-            const pullFactor = Math.min(1.0, dt * 8.5);
-            sg.mesh.position.x += (pPos.x - sg.mesh.position.x) * pullFactor;
-            sg.mesh.position.z += (pPos.z - sg.mesh.position.z) * pullFactor;
-            sg.mesh.position.y += ((pPos.y + 0.5) - sg.mesh.position.y) * pullFactor;
+          // [자석 흡수]: 비행 중(반경 8.5m)뿐만 아니라 천공섬 위 보행 시에도 반경 3.8m 내의 보석을 플레이어 쪽으로 자연스럽게 빨아들임
+          const pullRangeXZ = isFlyingMode ? 8.5 : (sg.isSkyGem ? 4.2 : 2.5);
+          const pullRangeY = isFlyingMode ? 6.0 : 3.0;
+
+          if (dXZ < pullRangeXZ && dY < pullRangeY) {
+            const pullSpeed = isFlyingMode ? (dt * 9.5) : (dt * 5.0);
+            sg.mesh.position.x += (pPos.x - sg.mesh.position.x) * Math.min(1.0, pullSpeed);
+            sg.mesh.position.z += (pPos.z - sg.mesh.position.z) * Math.min(1.0, pullSpeed);
+            sg.mesh.position.y += ((pPos.y + 0.6) - sg.mesh.position.y) * Math.min(1.0, pullSpeed);
           }
 
+          // [넉넉한 획득 판정]
+          // - 비행 중: 반경 4.8m 이내 획득
+          // - 천공섬 위 보행: 수평 반경 2.85m 및 수직 높이차 2.6m 이내면 시원하게 획득!
+          // - 일반 지상: 수평 2.4m, 수직 2.2m (충분히 여유로운 획득)
           const canPickup = isFlyingMode
-            ? (dXZ < 4.2 && dY < 4.0) // 초고속 비행 및 아머 트랙 주행 시 넉넉한 획득 판정
-            : (dist3D < 1.95); // 일반 보행 시 정밀 판정
+            ? (dXZ < 4.8 && dY < 4.5)
+            : (dXZ < 2.85 && dY < 2.6);
 
           if (canPickup) {
             sg.collected = true;
@@ -13611,8 +13654,9 @@
             state.stardustCount = (state.stardustCount || 0) + 1;
             if (typeof window.updateStardustCountUI === 'function') window.updateStardustCountUI();
             soundCoin();
-            createMagicImpact(sg.mesh.position, '#fbbf24');
-            window.addMindScore(40, `마음 조각 수집 (${collectedStardust}/${stardustCoords.length})`);
+            createMagicImpact(sg.mesh.position, sg.isSkyGem ? '#67e8f9' : '#fbbf24');
+            window.addMindScore(sg.isSkyGem ? 60 : 40, sg.isSkyGem ? `천공 보석 획득! (${collectedStardust}/${stardustCoords.length})` : `마음 조각 수집 (${collectedStardust}/${stardustCoords.length})`);
+            showToast(sg.isSkyGem ? '💎✨ <b>[천공의 보석 획득!]</b> 신비로운 천공섬의 보석을 모았습니다! (+60점)' : '⭐ 마음 조각을 모았습니다! (+40점)');
             saveProgress();
           }
         });
