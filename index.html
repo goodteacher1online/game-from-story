@@ -3506,19 +3506,66 @@
     plaza.position.y = 0.02; plaza.receiveShadow = true;
     worldGroup.add(plaza);
 
-    // 서브 플로팅 미니 아일랜드 (배경 입체감 극대화)
-    const miniIslands = [];
-    [[-68, 8, -25, 7], [70, 12, -15, 6], [-55, 14, 52, 5.5], [64, 9, 48, 6.5]].forEach(([ix, iy, iz, ir], idx) => {
+    // [천공의 군도 (Floating Sky Archipelago) - 다채로운 8대 천공섬 생성]
+    // 중앙 네모 큐브를 없애고 유려한 자연석, 천공 잔디, 반투명 크리스탈 젬과 꽃으로 장식된 신비로운 부유 군도
+    const miniIslands = window.miniIslands = [];
+    const skyIslandConfigs = [
+      { id: "sky_summit", x: -55, y: 15.0, z: 52, r: 6.2, name: "별무리 천공 정상섬", flowerColor: 0xffd54f },
+      { id: "sky_northwest", x: -68, y: 9.0, z: -25, r: 7.2, name: "서북 에메랄드 부유섬", flowerColor: 0x81c784 },
+      { id: "sky_northeast", x: 70, y: 12.5, z: -15, r: 6.8, name: "동북 오로라 부유섬", flowerColor: 0xba68c8 },
+      { id: "sky_southeast", x: 64, y: 10.0, z: 48, r: 7.0, name: "동남 햇살 부유섬", flowerColor: 0xff8a65 },
+      { id: "sky_high_west", x: -75, y: 16.5, z: 15, r: 5.5, name: "서쪽 바람개비 구름섬", flowerColor: 0x4fc3f7 },
+      { id: "sky_high_south", x: 5, y: 17.5, z: 68, r: 6.0, name: "남쪽 무지개 구름섬", flowerColor: 0xf06292 },
+      { id: "sky_high_north", x: 10, y: 15.5, z: -62, r: 5.8, name: "북쪽 은하수 구름섬", flowerColor: 0x4db6ac },
+      { id: "sky_zenith", x: -25, y: 19.5, z: -15, r: 4.8, name: "최고도 천공 제니스섬", flowerColor: 0xffb74d }
+    ];
+
+    skyIslandConfigs.forEach((cfg, idx) => {
       const mg = new THREE.Group();
-      mg.position.set(ix, iy, iz);
-      const rock = new THREE.Mesh(new THREE.CylinderGeometry(ir, ir * 0.6, 4.5, 8), new THREE.MeshStandardMaterial({ color: 0x4b423b, flatShading: true }));
-      const top = new THREE.Mesh(new THREE.CylinderGeometry(ir + 0.4, ir + 0.2, 0.6, 8), new THREE.MeshStandardMaterial({ color: 0x6ba350, flatShading: true }));
-      top.position.y = 2.4;
-      const miniTree = new THREE.Mesh(new THREE.BoxGeometry(2.2, 2.2, 2.2), new THREE.MeshStandardMaterial({ color: 0x43a047, flatShading: true }));
-      miniTree.position.y = 4.6;
-      mg.add(rock, top, miniTree);
+      mg.position.set(cfg.x, cfg.y, cfg.z);
+
+      // 1. 하단 자연석 바위 기둥 (역원뿔 자연 암석 형태)
+      const rockGeo = new THREE.CylinderGeometry(cfg.r, cfg.r * 0.45, 5.0, 10);
+      const rockMat = new THREE.MeshStandardMaterial({ color: 0x4e4640, roughness: 0.9, flatShading: true });
+      const rock = new THREE.Mesh(rockGeo, rockMat);
+      rock.position.y = -0.5;
+
+      // 2. 상단 푸른 천공 잔디 대지 (부드러운 유선형 실린더)
+      const topGeo = new THREE.CylinderGeometry(cfg.r + 0.35, cfg.r + 0.1, 0.7, 10);
+      const topMat = new THREE.MeshStandardMaterial({ color: 0x5fa83b, roughness: 0.7, flatShading: true });
+      const top = new THREE.Mesh(topGeo, topMat);
+      top.position.y = 2.35; // 상단 표면 = cfg.y + 2.35 + 0.35 = cfg.y + 2.7m
+
+      // 3. 천공섬 장식: (네모 큐브 미니트리 제거) 대신 유려한 요정의 꽃 & 크리스탈 등잔 배치
+      const decoGroup = new THREE.Group();
+      decoGroup.position.y = 2.7;
+
+      // 둥근 파스텔 요정 꽃망울 4개
+      for (let f = 0; f < 4; f++) {
+        const fa = (f / 4) * Math.PI * 2 + 0.4;
+        const fr = (cfg.r * 0.65);
+        const fx = Math.cos(fa) * fr;
+        const fz = Math.sin(fa) * fr;
+        const flower = new THREE.Mesh(
+          new THREE.SphereGeometry(0.38, 7, 7),
+          new THREE.MeshStandardMaterial({ color: cfg.flowerColor, roughness: 0.3, emissive: cfg.flowerColor, emissiveIntensity: 0.45 })
+        );
+        flower.position.set(fx, 0.35, fz);
+        decoGroup.add(flower);
+      }
+
+      mg.add(rock, top, decoGroup);
       worldGroup.add(mg);
-      miniIslands.push({ group: mg, baseY: iy, phase: idx * 1.4 });
+      miniIslands.push({
+        id: cfg.id,
+        group: mg,
+        baseY: cfg.y,
+        topY: cfg.y + 2.7,
+        x: cfg.x,
+        z: cfg.z,
+        r: cfg.r + 0.3,
+        phase: idx * 1.05
+      });
     });
 
     // [일본풍 토리이 섬 및 어색한 2D 판때기 완전 영구 삭제]
@@ -7121,6 +7168,22 @@
       if (Math.hypot(px - (-41.9), pz - (-46.0)) <= 1.65) {
         const elevPadTop = 0.25;
         if (elevPadTop <= py + 0.55 && elevPadTop > highest) highest = elevPadTop;
+      }
+
+      // 18. 다채로운 천공 군도 (8대 천공 부유섬) 정상 보행 및 착지 콜라이더
+      // 네모난 박스 없이 섬 정상에서 자유롭게 걷고, 비행 아머/스카이 라이드에서 내렸을 때 단단하게 착지
+      if (typeof miniIslands !== 'undefined' && Array.isArray(miniIslands)) {
+        for (let i = 0; i < miniIslands.length; i++) {
+          const isl = miniIslands[i];
+          const distToIsland = Math.hypot(px - isl.x, pz - isl.z);
+          if (distToIsland <= isl.r) {
+            const islandSurfaceY = isl.group ? (isl.group.position.y + 2.7) : isl.topY;
+            // 플레이어가 천공섬 높이 근처에 있거나 상공에서 낙하/착지할 때
+            if (py >= isl.baseY || islandSurfaceY <= py + 3.0) {
+              if (islandSurfaceY > highest) highest = islandSurfaceY;
+            }
+          }
+        }
       }
 
       return highest;
@@ -11469,12 +11532,60 @@
       return [gx, 1.45, gz];
     });
 
+    // 18. 천공의 군도 (8대 부유섬) 정상에 즐비하게 놓인 신비로운 별무리 보석들
+    const skyIslandGemCoords = [
+      // 별무리 천공 정상섬 (-55, 15.0, 52 / surface: 17.7m)
+      [-55.0, 18.15, 52.0], // 중앙 황금 왕관 보석
+      [-52.5, 18.05, 52.0],
+      [-57.5, 18.05, 52.0],
+      [-55.0, 18.05, 54.5],
+      [-55.0, 18.05, 49.5],
+      [-53.2, 18.05, 53.8],
+      [-56.8, 18.05, 50.2],
+
+      // 최고도 제니스섬 (-25, 19.5, -15 / surface: 22.2m)
+      [-25.0, 22.65, -15.0],
+      [-23.0, 22.55, -15.0],
+      [-27.0, 22.55, -15.0],
+      [-25.0, 22.55, -13.0],
+      [-25.0, 22.55, -17.0],
+
+      // 서쪽 구름섬 (-75, 16.5, 15 / surface: 19.2m)
+      [-75.0, 19.65, 15.0],
+      [-72.8, 19.55, 15.0],
+      [-77.2, 19.55, 15.0],
+
+      // 남쪽 무지개섬 (5, 17.5, 68 / surface: 20.2m)
+      [5.0, 20.65, 68.0],
+      [7.2, 20.55, 68.0],
+      [2.8, 20.55, 68.0],
+
+      // 북쪽 은하수섬 (10, 15.5, -62 / surface: 18.2m)
+      [10.0, 18.65, -62.0],
+      [12.0, 18.55, -62.0],
+      [8.0, 18.55, -62.0],
+
+      // 동북 오로라섬 (70, 12.5, -15 / surface: 15.2m)
+      [70.0, 15.65, -15.0],
+      [67.8, 15.55, -15.0],
+      [72.2, 15.55, -15.0],
+
+      // 동남 햇살섬 (64, 10.0, 48 / surface: 12.7m)
+      [64.0, 13.15, 48.0],
+      [61.8, 13.05, 48.0],
+
+      // 서북 에메랄드섬 (-68, 9.0, -25 / surface: 11.7m)
+      [-68.0, 12.15, -25.0],
+      [-65.8, 12.05, -25.0]
+    ];
+
     const stardustCoords = [
       [2, 1.2, 4], [-4, 1.2, 6], [8, 1.5, -4], [-8, 2.0, -12],
       [-16, 2.5, 8], [14, 1.8, 14], [-2, 1.5, 22], [4, 1.5, 18],
       [-12, 1.8, -2], [10, 2.2, -18], [-20, 6.0, -35], [-30, 8.0, -50],
       [16, 3.0, 4], [0, 2.5, -10], [-6, 1.8, 16],
-      ...trackGemCoords
+      ...trackGemCoords,
+      ...skyIslandGemCoords
     ];
 
     stardustCoords.forEach((coord, idx) => {
@@ -11811,7 +11922,9 @@
       // avatarMixer removed
 
       trees.forEach(t => { t.group.rotation.z = Math.sin(time * 1.8 + t.seed) * 0.03; });
-      miniIslands.forEach(m => { m.group.position.y = m.baseY + Math.sin(time * 0.8 + m.phase) * 0.8; });
+      miniIslands.forEach(m => {
+        m.group.position.y = m.baseY + Math.sin(time * 0.7 + m.phase) * 0.45;
+      });
       if (typeof runeRing !== 'undefined' && runeRing) runeRing.rotation.z += dt * 0.3;
       if (fearCelebrationTimer > 0) {
         fearCelebrationTimer = Math.max(0, fearCelebrationTimer - dt);
@@ -13358,8 +13471,29 @@
         stardustGems.forEach((sg, idx) => {
           if (sg.collected) return;
           sg.mesh.rotation.y += dt * 2.2;
-          sg.mesh.position.y = sg.baseY + Math.sin(time * 2.8 + sg.phase) * 0.18;
-          if (playerRig.position.distanceTo(sg.mesh.position) < 1.85) {
+          const bobY = sg.baseY + Math.sin(time * 2.8 + sg.phase) * 0.18;
+          sg.mesh.position.y = bobY;
+
+          // [아머 / 비행 탈것 자석 흡수 & 넉넉한 획득 판정]
+          const isFlyingMode = !!(playerPhysics.ironManAutoLap || playerPhysics.skyRide);
+          const pPos = playerRig.position;
+          const dXZ = Math.hypot(pPos.x - sg.mesh.position.x, pPos.z - sg.mesh.position.z);
+          const dY = Math.abs(pPos.y - sg.mesh.position.y);
+          const dist3D = pPos.distanceTo(sg.mesh.position);
+
+          // 비행 중에는 넓은 자석 범위(반경 7.5m)로 보석을 플레이어 쪽으로 빨아들임
+          if (isFlyingMode && dXZ < 7.5 && dY < 5.0) {
+            const pullFactor = Math.min(1.0, dt * 8.5);
+            sg.mesh.position.x += (pPos.x - sg.mesh.position.x) * pullFactor;
+            sg.mesh.position.z += (pPos.z - sg.mesh.position.z) * pullFactor;
+            sg.mesh.position.y += ((pPos.y + 0.5) - sg.mesh.position.y) * pullFactor;
+          }
+
+          const canPickup = isFlyingMode
+            ? (dXZ < 4.2 && dY < 4.0) // 초고속 비행 및 아머 트랙 주행 시 넉넉한 획득 판정
+            : (dist3D < 1.95); // 일반 보행 시 정밀 판정
+
+          if (canPickup) {
             sg.collected = true;
             sg.mesh.visible = false;
             if (!Array.isArray(state.collectedGemIds)) state.collectedGemIds = [];
