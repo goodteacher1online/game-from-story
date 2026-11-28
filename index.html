@@ -3568,6 +3568,69 @@
       });
     });
 
+    // [천공섬 수직 에어 리프트 (Sky Air Vents) 포탈 시스템]
+    // 지상에서 천공섬으로 단숨에 솟구쳐 오르는 신비로운 무지개 빛 바람기둥 발판 4기
+    const skyAirVents = window.skyAirVents = [];
+    const airVentLocations = [
+      { x: -55, z: 42, targetY: 19.5, name: "별무리 천공섬 상승 바람기둥", color: 0x38bdf8 },
+      { x: -25, z: -5, targetY: 24.5, name: "제니스 최고봉 상승 바람기둥", color: 0xa855f7 },
+      { x: 5, z: 56, targetY: 22.0, name: "무지개 구름섬 상승 바람기둥", color: 0xf472b6 },
+      { x: -65, z: 15, targetY: 21.0, name: "바람개비 구름섬 상승 바람기둥", color: 0x34d399 }
+    ];
+
+    airVentLocations.forEach(vent => {
+      const ventGroup = new THREE.Group();
+      ventGroup.position.set(vent.x, 0, vent.z);
+
+      // 바닥 매직 링 발판
+      const padGeo = new THREE.CylinderGeometry(2.2, 2.5, 0.3, 16);
+      const padMat = new THREE.MeshStandardMaterial({
+        color: vent.color,
+        emissive: vent.color,
+        emissiveIntensity: 0.6,
+        roughness: 0.3
+      });
+      const pad = new THREE.Mesh(padGeo, padMat);
+      pad.position.y = 0.15;
+
+      // 수직으로 솟아오르는 신비로운 반투명 빛기둥 빔
+      const beamGeo = new THREE.CylinderGeometry(1.6, 2.0, vent.targetY, 16, 1, true);
+      const beamMat = new THREE.MeshBasicMaterial({
+        color: vent.color,
+        transparent: true,
+        opacity: 0.28,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const beam = new THREE.Mesh(beamGeo, beamMat);
+      beam.position.y = vent.targetY / 2;
+
+      // 회전하는 링 장식 2단
+      const ringGeo = new THREE.TorusGeometry(1.9, 0.08, 8, 24);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8 });
+      const ring1 = new THREE.Mesh(ringGeo, ringMat);
+      ring1.rotation.x = Math.PI / 2;
+      ring1.position.y = 1.5;
+
+      const ring2 = ring1.clone();
+      ring2.position.y = 3.8;
+
+      ventGroup.add(pad, beam, ring1, ring2);
+      worldGroup.add(ventGroup);
+
+      skyAirVents.push({
+        group: ventGroup,
+        beam,
+        ring1,
+        ring2,
+        x: vent.x,
+        z: vent.z,
+        targetY: vent.targetY,
+        color: vent.color,
+        name: vent.name
+      });
+    });
+
     // [일본풍 토리이 섬 및 어색한 2D 판때기 완전 영구 삭제]
     // ============================================================
     // [100% 3D 복셀 온화한 엄마 NPC] (로블록스/마인크래프트 고품질 복셀 스타일)
@@ -7178,8 +7241,9 @@
           const distToIsland = Math.hypot(px - isl.x, pz - isl.z);
           if (distToIsland <= isl.r) {
             const islandSurfaceY = isl.group ? (isl.group.position.y + 2.7) : isl.topY;
-            // 플레이어가 천공섬 높이 근처에 있거나 상공에서 낙하/착지할 때
-            if (py >= isl.baseY || islandSurfaceY <= py + 3.0) {
+            // 플레이어가 천공섬 상공에서 착지하거나 비행 탈것이 섬 위를 지날 때
+            // 비행 탈것의 안전 고도 확보 및 자유로운 착지를 위해 천공섬 표면을 최우선 지형으로 인식
+            if (py >= isl.baseY - 4.0 || islandSurfaceY <= py + 4.5 || (playerPhysics && playerPhysics.skyRide)) {
               if (islandSurfaceY > highest) highest = islandSurfaceY;
             }
           }
@@ -9468,12 +9532,12 @@
     }
 
     const SKY_RIDE_META = {
-      skycar: { baseAlt: 4.0, label: '🚗✨ 하늘 플라잉카', color: '#38bdf8', duration: 18.0, speedMult: 2.5 },
-      carpet: { baseAlt: 3.5, label: '🧞 마법 양탄자', color: '#a855f7', duration: 18.0, speedMult: 2.2 },
-      ufo: { baseAlt: 4.5, label: '🛸 초고속 UFO', color: '#22d3ee', duration: 18.0, speedMult: 4.3 },
-      skyboard: { baseAlt: 3.4, label: '🛹✨ 네온 호버보드', color: '#38bdf8', duration: 18.0, speedMult: 2.9 },
-      cloud: { baseAlt: 4.2, label: '☁️ 황금 근두운', color: '#facc15', duration: 20.0, speedMult: 3.1 },
-      chukji: { baseAlt: 3.6, label: '⚡ 하늘 축지법', color: '#34d399', duration: 20.0, speedMult: 4.0 }
+      skycar: { baseAlt: 6.5, label: '🚗✨ 하늘 플라잉카', color: '#38bdf8', duration: 45.0, speedMult: 2.7 },
+      carpet: { baseAlt: 6.0, label: '🧞 마법 양탄자', color: '#a855f7', duration: 45.0, speedMult: 2.4 },
+      ufo: { baseAlt: 8.5, label: '🛸 초고속 우주선 UFO', color: '#22d3ee', duration: 50.0, speedMult: 4.5 },
+      skyboard: { baseAlt: 6.0, label: '🛹✨ 네온 호버보드', color: '#38bdf8', duration: 45.0, speedMult: 3.2 },
+      cloud: { baseAlt: 7.0, label: '☁️ 황금 근두운', color: '#facc15', duration: 45.0, speedMult: 3.3 },
+      chukji: { baseAlt: 6.5, label: '⚡ 하늘 축지법', color: '#34d399', duration: 45.0, speedMult: 4.2 }
     };
 
     function hideAllSkyRideMeshes() {
@@ -10231,7 +10295,7 @@
     // ==========================================
     // 9. 입력 & 물리 & NPC 대화
     // ==========================================
-    const input = { w: false, a: false, s: false, d: false, shift: false, joyX: 0, joyY: 0, lookJoyX: 0, lookJoyY: 0 };
+    const input = window.input = { w: false, a: false, s: false, d: false, shift: false, space: false, joyX: 0, joyY: 0, lookJoyX: 0, lookJoyY: 0 };
     const playerPhysics = window.playerPhysics = {
       velY: 0, prevVelY: 0, jumpCount: 0, maxJumps: 2, isGrounded: true,
       isDancing: false, danceTimer: 0, isMeditating: false,
@@ -10249,7 +10313,11 @@
       if (k === 'a' || k === 'arrowleft') input.a = true;
       if (k === 'd' || k === 'arrowright') input.d = true;
       if (e.key === 'Shift') input.shift = true;
-      if (e.code === 'Space') { e.preventDefault(); doJump(); }
+      if (e.code === 'Space') {
+        e.preventDefault();
+        input.space = true;
+        doJump();
+      }
       if (k === 'f') shootMagicBullet();
       if (k === 'c') doBreatheWind();
       if (k === 'e') doDance();
@@ -10297,6 +10365,7 @@
       if (k === 'a' || k === 'arrowleft') input.a = false;
       if (k === 'd' || k === 'arrowright') input.d = false;
       if (e.key === 'Shift') input.shift = false;
+      if (e.code === 'Space') input.space = false;
     });
 
     // raycaster initialized globally above
@@ -10435,7 +10504,9 @@
     function doJump() {
       if (playerPhysics.freezeTimer > 0 || activeElevatorRide || playerPhysics.ironManAutoLap) return;
       if (playerPhysics.skyRide) {
-        playerPhysics.skyRide.alt = Math.min(12.5, (playerPhysics.skyRide.alt || playerPhysics.skyRide.baseAlt) + 2.0);
+        // [천공섬 자유 도약] 최대 35m 상공까지 스페이스바 누를 때마다 +3.5m씩 쾌속 상승!
+        const curAlt = playerPhysics.skyRide.alt || playerRig.position.y || playerPhysics.skyRide.baseAlt;
+        playerPhysics.skyRide.alt = Math.min(35.0, curAlt + 3.5);
         soundJump(true);
         createMagicImpact(playerRig.position, playerPhysics.skyRide.color);
         return;
@@ -11925,6 +11996,30 @@
       miniIslands.forEach(m => {
         m.group.position.y = m.baseY + Math.sin(time * 0.7 + m.phase) * 0.45;
       });
+
+      // [천공섬 상승 바람기둥 발판 애니메이션 및 플레이어 고공 추진]
+      if (typeof skyAirVents !== 'undefined' && Array.isArray(skyAirVents)) {
+        skyAirVents.forEach(vent => {
+          if (vent.beam) vent.beam.rotation.y += dt * 1.5;
+          if (vent.ring1) { vent.ring1.rotation.z += dt * 2.0; vent.ring1.position.y = 1.5 + Math.sin(time * 3.0) * 0.4; }
+          if (vent.ring2) { vent.ring2.rotation.z -= dt * 2.5; vent.ring2.position.y = 4.0 + Math.cos(time * 3.0) * 0.5; }
+
+          // 플레이어가 바람기둥 발판(반경 2.4m)에 닿으면 천공섬 높이까지 수직 강력 추진!
+          const dVent = Math.hypot(playerRig.position.x - vent.x, playerRig.position.z - vent.z);
+          if (dVent <= 2.4 && playerRig.position.y < vent.targetY + 2.0) {
+            playerPhysics.velY = 16.5; // 고공 슈퍼 점프
+            playerPhysics.isGrounded = false;
+            if (playerPhysics.skyRide) {
+              playerPhysics.skyRide.alt = Math.max(playerPhysics.skyRide.alt || 0, vent.targetY + 2.0);
+            }
+            if (Math.random() < 0.15) {
+              soundJump(true);
+              createMagicImpact(playerRig.position, vent.color);
+              showToast(`🌀 ${vent.name}! 천공섬으로 단숨에 솟구쳐 오릅니다!`);
+            }
+          }
+        });
+      }
       if (typeof runeRing !== 'undefined' && runeRing) runeRing.rotation.z += dt * 0.3;
       if (fearCelebrationTimer > 0) {
         fearCelebrationTimer = Math.max(0, fearCelebrationTimer - dt);
@@ -13157,8 +13252,22 @@
         const sr = playerPhysics.skyRide;
         sr.timer -= dt;
         sr.trailTimer = (sr.trailTimer || 0) + dt;
-        const targetAlt = Math.max(3.2, sr.alt || sr.baseAlt) + Math.sin(time * 4.5) * 0.15;
-        playerRig.position.y = THREE.MathUtils.lerp(playerRig.position.y, targetAlt, 0.14);
+        // [천공 비행 탈것 물리: 스페이스바 누르고 있으면 초속 10m로 부드럽게 고공 상승]
+        if (input.space) {
+          sr.alt = Math.min(35.0, (sr.alt || playerRig.position.y) + dt * 10.5);
+        }
+        
+        // 지형(천공섬 등) 아래로 파고들지 않도록 현재 발밑 지형 높이 + 1.8m 안전 고도 자동 확보
+        const localGroundY = (typeof getGroundHeight === 'function')
+          ? getGroundHeight(playerRig.position.x, playerRig.position.z, playerRig.position.y)
+          : 0;
+        const minSafetyAlt = Math.max(sr.baseAlt, localGroundY + 1.8);
+        if ((sr.alt || sr.baseAlt) < minSafetyAlt) {
+          sr.alt = minSafetyAlt;
+        }
+
+        const targetAlt = Math.max(minSafetyAlt, sr.alt || sr.baseAlt) + Math.sin(time * 4.5) * 0.15;
+        playerRig.position.y = THREE.MathUtils.lerp(playerRig.position.y, targetAlt, 0.16);
         playerPhysics.velY = 0;
         playerPhysics.isGrounded = false;
         if (sr.kind === 'skycar') {
@@ -13288,7 +13397,7 @@
         if (playerPhysics.skyRide) {
           const sr = playerPhysics.skyRide;
           if (rideInfoEl) rideInfoEl.textContent = `${sr.label} · 고도 ${playerRig.position.y.toFixed(1)}m · ${Math.max(0, sr.timer).toFixed(1)}초`;
-          if (rideKeysEl) rideKeysEl.textContent = '[Space] 상승 · [G] 내리기';
+          if (rideKeysEl) rideKeysEl.textContent = '[Space 홀드] 고공 상승(최대 35m) · [G] 천공섬 착지';
         } else if (playerPhysics.ironManAutoLap) {
           const lap = playerPhysics.ironManAutoLap;
           const pct = Math.min(100, Math.round((lap.traveled / (Math.PI * 2)) * 100));
